@@ -1,0 +1,56 @@
+# This document contains sample HTTP request which can be executed with IntelliJ idea.
+
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+# POST request for issue #2785 Erster Integrationstest
+POST http://localhost:8080/api/test/recognizer
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Die Buslinie 637 ist am 01.03.2019 an der Gartenheimstraße in Langenberg(Schule!) um 13:46 nicht gekommen."
+}
+
+
+###
+
+# POST request for issue #2786 Einbindung eines externen Extraktors
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "texts": [
+    {
+      "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+    }
+  ]
+}
+
+###
+
+# POST request for issue #2787 Stapelverarbeitung
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "texts": [
+    {
+      "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+    },
+    {
+      "text": "Ich musste 50 € bezahlen, ich bitte um Rückerstattung"
+    },
+    {
+      "text": "Bitte erstatten Sie mir einen Betrag von 28,60 € so schnell wie möglich."
+    }
+  ]
+}
+
+###
