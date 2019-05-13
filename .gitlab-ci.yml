@@ -15,6 +15,8 @@ base-frontend: &base-frontend
   cache:
     paths:
     - frontend/node_modules/
+  script:
+   - echo 'overwrite'
   only:
    - frontend-prod, developement, master
 
@@ -52,6 +54,8 @@ base-backend: &base-backend
   cache:
     paths:
     - backend/target/
+  script:
+   - echo 'overwrite'
   only:
    - backend-prod, developement, master
 
