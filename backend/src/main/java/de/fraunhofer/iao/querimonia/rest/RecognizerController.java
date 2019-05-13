@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.rest;
 
 import de.fraunhofer.iao.querimonia.ner.AnnotatedText;
 import de.fraunhofer.iao.querimonia.ner.SimpleTestRecognizer;
+import de.fraunhofer.iao.querimonia.ner.TextominadoTestRecognizer;
 import de.fraunhofer.iao.querimonia.rest.restobjects.MultiTextInput;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,15 +39,10 @@ public class RecognizerController {
      * @return // TODO documentation for return
      */
     @PostMapping(value = "/api/test/textominado")
-    public String getAnswer(@RequestBody TextInput input) {
-        // turn into textominado text object
-
-
-        // send request to textmoninado
-
-
-        // generate message from money value
-        return "NOT IMPLEMENTED YET";
+    public List<AnnotatedText> getAnswer(@RequestBody TextInput input) {
+        List<AnnotatedText> results = new ArrayList<>();
+        results.add(new TextominadoTestRecognizer().annotateText(input.getText()));
+        return results;
     }
 
     @PostMapping(value = "/api/test/textominado-batch")

@@ -25,11 +25,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "texts": [
-    {
-      "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
-    }
-  ]
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
 }
 
 ###
@@ -54,3 +50,14 @@ Accept: application/json
 }
 
 ###
+
+# Test request for textominado
+POST https://textominado.iao.fraunhofer.de/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
