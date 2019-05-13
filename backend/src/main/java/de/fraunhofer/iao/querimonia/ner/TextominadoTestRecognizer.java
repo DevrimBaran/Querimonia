@@ -1,10 +1,12 @@
 package de.fraunhofer.iao.querimonia.ner;
 
 import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.Match;
+import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.Response;
 import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.TextominadoText;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -17,8 +19,14 @@ public class TextominadoTestRecognizer {
         TextominadoText text = new TextominadoText(input, "1", "de");
 
         RestTemplate template = new RestTemplate();
-        @SuppressWarnings("unchecked") List<Match> matches = (List<Match>) template.postForObject(
-                "https://textominado.iao.fraunhofer.de/entity-recognition/money-amount", text, List.class);
+        Response<List<Match>> matchesResponse;
+        //noinspection unchecked
+        matchesResponse = (Response<List<Match>>) template.postForObject(
+                "https://textominado.iao.fraunhofer.de/entity-recognition/money-amount", text, Response.class);
+        List<Match> matches = null;
+        if (matchesResponse != null) {
+            matches = Objects.requireNonNull(matchesResponse.getBody()).payload;
+        }
 
         String message = "Gerne erstatten wir Ihnen den Betrag.";
         if (matches != null) {
