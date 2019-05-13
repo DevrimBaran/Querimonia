@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.rest;
+package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.ner.AnnotatedText;
 import de.fraunhofer.iao.querimonia.ner.SimpleTestRecognizer;
