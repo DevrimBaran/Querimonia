@@ -1,0 +1,96 @@
+stages:
+  - build
+  - test
+  - prod
+  - dev
+  - master
+
+cache:
+  paths:
+  - ~/export
+
+#frontend
+base-frontend: &base-frontend
+  image: node:latest
+  cache:
+    paths:
+    - frontend/node_modules/
+  only:
+   - frontend-prod, developement, master
+
+build-frontend:
+  <<: *base-frontend
+  stage: build
+  script:
+   - cd frontend/
+   - npm install --no-progress
+  artifacts:
+   paths:
+   - node_modules/
+   expire_in: 1 week
+
+test-frontend:
+  <<: *base-frontend
+  stage: test
+  script:
+   - cd frontend/
+   - npm install --no-progress
+   - npm run test
+
+prod-frontend:
+  <<: *base-frontend
+  stage: prod
+  script:
+   - cd frontend/
+   - npm install --no-progress
+   - npm run build
+   - cp build ~/export/backend-prod
+
+# backend
+base-backend: &base-backend
+  image: maven:latest
+  cache:
+    paths:
+    - backend/target/
+  only:
+   - backend-prod, developement, master
+
+build-backend:
+  <<: *base-backend
+  stage: build
+  script:
+   - cd backend/
+   - mvn package
+  artifacts:
+   paths:
+    - backend/target/
+   expire_in: 1 week
+
+prod-backend:
+  <<: *base-backend
+  stage: prod
+  script:
+   - cd backend/
+   - mv target/*.jar ~/export/backend-prod
+   - fuser -k -n tcp 8082
+   - java -jar ~/export/backend-prod/*.jar --server.port=8082&
+
+# all
+dev:
+  stage: dev
+  only:
+    development
+  script:
+   - cp ~/export/backend-prod/*.jar ~/export/development/backend
+   - cp -r ~/export/frontend-prod/* ~/export/development/frontend
+   - fuser -k -n tcp 8081
+   - java -jar ~/export/backend-prod/*.jar --server.port=8081&
+
+master:
+  stage: master
+  only:
+    master
+  script:
+   - cp -r ~/export/development/* ~/export/master/
+   - fuser -k -n tcp 8080
+   - java -jar ~/export/development/backend/*.jar --server.port=8080&
