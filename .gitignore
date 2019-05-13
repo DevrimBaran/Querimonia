@@ -20,8 +20,6 @@
 *.rar
 
 # idea files
-.idea/*
-*.iml
 build/
 .gradle/
 
