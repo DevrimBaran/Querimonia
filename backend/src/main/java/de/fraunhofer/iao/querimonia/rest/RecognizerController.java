@@ -8,6 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is a rest controller for the integration tests. For example requests, see doc/rest-examples.http
  */
@@ -21,21 +24,33 @@ public class RecognizerController {
      * @return the text with the annotated entities.
      */
     @PostMapping(value = "/api/test/recognizer")
-    public AnnotatedText annotateText(@RequestBody TextInput input) {
-        return new SimpleTestRecognizer().annotateText(input.getText());
+    public List<AnnotatedText> annotateText(@RequestBody TextInput input) {
+        List<AnnotatedText> results = new ArrayList<>();
+        results.add(new SimpleTestRecognizer().annotateText(input.getText()));
+        return results;
     }
 
     /**
-     * This methods finds the money values in the given texts and creates a simple answer. The extraction is done using
+     * This methods finds the money value in the given text and creates a simple answer. The extraction is done using
      * textominado.
      *
-     * @param input all the complaint texts, where answers should be generated.
+     * @param input the complaint texts where answers should be generated.
      * @return // TODO documentation for return
      */
     @PostMapping(value = "/api/test/textominado")
-    public String getAnswers(@RequestBody MultiTextInput input) {
-        // TODO implement the connection to textominado
+    public String getAnswer(@RequestBody TextInput input) {
+        // turn into textominado text object
+
+
+        // send request to textmoninado
+
+
+        // generate message from money value
         return "NOT IMPLEMENTED YET";
     }
 
+    @PostMapping(value = "/api/test/textominado-batch")
+    public List<AnnotatedText> getAnswersWithTextominado() {
+        return null;
+    }
 }
