@@ -1,14 +1,12 @@
 package de.fraunhofer.iao.querimonia.rest;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iao.querimonia.ner.AnnotatedText;
 import de.fraunhofer.iao.querimonia.ner.SimpleTestRecognizer;
+import de.fraunhofer.iao.querimonia.rest.restobjects.MultiTextInput;
+import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * This is a rest controller for the integration tests. For example requests, see doc/rest-examples.http
@@ -40,37 +38,4 @@ public class RecognizerController {
         return "NOT IMPLEMENTED YET";
     }
 
-    /**
-     * Simple wrapper class for Strings. This is necessary to allow the JSON syntax in the POST-requests.
-     */
-    public static class TextInput {
-
-        private String text;
-
-        @JsonCreator
-        public TextInput(@JsonProperty String text) {
-            this.text = text;
-        }
-
-        public String getText() {
-            return text;
-        }
-    }
-
-    /**
-     * Simple wrapper class for a list of strings. This is necessary to allow the JSON syntax in the POST-requests.
-     */
-    public static class MultiTextInput {
-
-        private List<TextInput> texts;
-
-        @JsonCreator
-        public MultiTextInput(@JsonProperty("texts") List<TextInput> texts) {
-            this.texts = texts;
-        }
-
-        public List<TextInput> getTexts() {
-            return texts;
-        }
-    }
 }
