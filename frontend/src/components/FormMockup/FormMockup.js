@@ -19,13 +19,22 @@ export class FormMockup extends Component {
   }
 
   handleClick = () => {
-    let formData = new FormData();
-  
-    for (let name in this.state.data) {
-      formData.append(name, this.state.data[name]);
+    var options = {};
+    if (this.props.type === "file") {
+      let formData = new FormData();
+    
+      for (let name in this.state.data) {
+        formData.append(name, this.state.data[name]);
+      }
+      options = {method: "post", body: formData};
+    } else {
+      options = {method: "post", headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }, body: JSON.stringify({text: this.state.data.text})};
     }
-  
-    let p = fetch(this.props.action, {method: "post", body: formData})
+
+    let p = fetch(this.props.action, options)
       .then(response => {return response.json();});
     
     this.setState({ response: <TaggedText id="responseArea1" promise={p}></TaggedText>});

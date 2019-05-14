@@ -21,6 +21,7 @@ class TaggedText extends Component {
                     newData.push(<span className="tag" label={tag.label}>{data.text.substring(tag.start, tag.end)}</span>);
                     cpos = tag.end;
                 }
+                newData.push(<span>{data.text.substring(cpos, data.text.length)}</span>);
             }
             this.setState({ data: newData});
         });
