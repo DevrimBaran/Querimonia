@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * RestAPI for downloading and uploading files.
+ * Inspired by https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
  */
 @RestController
 public class FileController {
