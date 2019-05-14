@@ -1,0 +1,23 @@
+.toggle-fa {
+    position: relative;
+    i {
+        position: relative;
+        text-align: center;
+    }
+    &, &[active=false]:hover {
+        & > .on {
+            display: inline-block;
+        }
+        & > .off {
+            display: none;
+        }
+    }
+    &[active=false], &:hover {
+        & > .on {
+            display: none;
+        }
+        & > .off {
+            display: inline-block;
+        }
+    }
+}

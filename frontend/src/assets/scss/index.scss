@@ -1,0 +1,31 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    --black: black;
+    --white: white;
+    --dark: #282c34;
+    --light: #ccc;
+    --primary: orange;
+    --secondary: darkorange;
+    --topbar-height: 60px;
+}
+html, body {
+    width: 100%;
+    background-color: var(--black);
+}
+.fixed {
+    position: fixed;
+}
+
+ul {
+    list-style: none;
+}
+li {
+    white-space: nowrap;
+    padding: 15px 20px 5px;
+    border-bottom: 1px solid var(--light);
+}
+h2 {
+    color: var(--light);
+}

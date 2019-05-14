@@ -1,0 +1,10 @@
+.Body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: calc(100% - 80px);
+    #content {
+        flex-basis: 100%;
+        flex-shrink: 1;
+    }
+}
