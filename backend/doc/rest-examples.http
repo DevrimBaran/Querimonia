@@ -31,7 +31,7 @@ Accept: application/json
 ###
 
 # POST request for issue #2787 Stapelverarbeitung
-POST http://localhost:8080/api/test/textominado
+POST http://localhost:8080/api/test/textominado-batch
 Content-Type: multipart/form-data; boundary=----------287032381131322
 Accept: application/json
 

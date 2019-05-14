@@ -69,7 +69,7 @@ public class TextominadoTestRecognizer {
     }
 
     private ResponseEntity<Response> executeTextominadoRequest(String input) {
-        TextominadoText text = new TextominadoText(input, "1", "de");
+        TextominadoText text = new TextominadoText(input, getTextID(input), "de");
 
         HttpEntity<TextominadoText> request = new HttpEntity<>(text);
         // add authentication token
@@ -80,5 +80,10 @@ public class TextominadoTestRecognizer {
         // get response
         return template.exchange(URL, HttpMethod.POST,
                 request, Response.class);
+    }
+
+    private String getTextID(String text) {
+        long milis = System.currentTimeMillis();
+        return "" + text.hashCode() + milis;
     }
 }
