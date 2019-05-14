@@ -19,7 +19,7 @@
 *.tar.gz
 *.rar
 
-#
+# stored upload files
 backend/src/resources/uploads/*
 
 # idea files
