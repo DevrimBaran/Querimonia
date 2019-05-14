@@ -28,6 +28,9 @@
     height: var(--topbar-height);
     border-bottom: 2px solid var(--primary);
 }
+.App-logo {
+    height: calc(var(--topbar-height) - 2px);
+}
 #body {
     grid-area: body;
     position: relative;

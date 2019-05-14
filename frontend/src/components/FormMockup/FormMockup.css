@@ -13,7 +13,18 @@
     margin-left: auto;
     margin-right: auto;
 }
-
+.form-mockup {
+    color: var(--light);
+}
+.form-mockup[type=text] input[type=file] {
+    display: none;
+}
+.form-mockup textarea {
+    display: none;
+}
+.form-mockup[type=text] textarea {
+    display: block;
+}
 #fileArea1{
     margin-left: auto;
     margin-right: auto;

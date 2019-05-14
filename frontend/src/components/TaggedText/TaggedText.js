@@ -12,13 +12,15 @@ class TaggedText extends Component {
         }
     }
     handlePromise = (promise) => {
-        promise.then((data) => {
+        promise.then((res) => {
             let cpos = 0;
             var newData = [];
-            for (let tag of data.entities) {
-                newData.push(<span>data.text.substring(cpos, tag.start)</span>);
-                newData.push(<span className="tag" label={tag.label}>data.text.substring(tag.start, tag.end)</span>);
-                cpos = tag.end;
+            for (let data of res) {
+                for (let tag of data.entities) {
+                    newData.push(<span>{data.text.substring(cpos, tag.start)}</span>);
+                    newData.push(<span className="tag" label={tag.label}>{data.text.substring(tag.start, tag.end)}</span>);
+                    cpos = tag.end;
+                }
             }
             this.setState({ data: newData});
         });
