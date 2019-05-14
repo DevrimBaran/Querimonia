@@ -26,7 +26,16 @@ public class FileStorageService {
 
     @Autowired
     public FileStorageService(FileStorageProperties fileStorageProperties) {
-        this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
+        String uploadDir;
+        if (fileStorageProperties != null) {
+            uploadDir = fileStorageProperties.getUploadDir();
+            if (uploadDir == null) {
+                uploadDir = "";
+            }
+        } else {
+            uploadDir = "";
+        }
+        this.fileStorageLocation = Paths.get(uploadDir)
                 .toAbsolutePath().normalize();
 
         try {
