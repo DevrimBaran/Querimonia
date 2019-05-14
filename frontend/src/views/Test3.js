@@ -5,7 +5,9 @@ export const Test3 = function() {
     return (
         <div>
             <h2>Test 3</h2>
-            <FormMockup action="/api/test/textominado-batch" type="file" />
+            <FormMockup action="/api/test/textominado-batch" enctype="multipart/form-data" method="post">
+                <input type="file" name="file"></input>
+            </FormMockup>
         </div>
     );
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TaggedText from '../TaggedText/TaggedText';
 import './FormMockup.css';
-import { Promise } from 'q';
+//import fetch from './apiMock';
 
 export class FormMockup extends Component {
   constructor(props) {
@@ -19,19 +19,28 @@ export class FormMockup extends Component {
   }
 
   handleClick = () => {
-    var options = {};
-    if (this.props.type === "file") {
-      let formData = new FormData();
-    
-      for (let name in this.state.data) {
-        formData.append(name, this.state.data[name]);
-      }
-      options = {method: "post", body: formData};
-    } else {
-      options = {method: "post", headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }, body: JSON.stringify({text: this.state.data.text})};
+    var options = {
+      method: this.props.method,
+      credentials: 'include',
+      mode: 'cors',
+      headers: {
+        'Content-Type': this.props.enctype
+      },
+      body: null
+    };
+    switch (this.props.enctype) {
+      case 'application/json':
+        options.body = JSON.stringify(this.state.data);
+      break;
+      case 'multipart/form-data':
+        let formData = new FormData();
+
+        for (let name in this.state.data) {
+          formData.append(name, this.state.data[name]);
+        }
+        
+        options.body = formData;
+        break;
     }
 
     let p = fetch(this.props.action, options)
@@ -39,12 +48,14 @@ export class FormMockup extends Component {
     
     this.setState({ response: <TaggedText id="responseArea1" promise={p}></TaggedText>});
   };
-
+  
   render() {
+    const children = React.Children.map(this.props.children, child => {
+      return React.cloneElement(child, { onChange: this.handleChange });
+    });
     return (
-      <div className="form-mockup" {...this.props}>
-        <textarea onChange={this.handleChange} name="text" placeholder='Bitte geben sie die Beschwerde ein oder laden eine Textdatei hoch.' style={{ resize: 'none', width: '400px', height: '100px' }} />
-        <input onChange={this.handleChange} name="file" type="file"></input>
+      <div className="form-mockup">
+        {children}
         <button className='button' onClick={this.handleClick}>Senden</button>
         {this.state.response}
       </div>
