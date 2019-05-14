@@ -20,7 +20,7 @@
 *.rar
 
 #
-backend/src/resources/uploads
+backend/src/resources/uploads/*
 
 # idea files
 .idea/*
