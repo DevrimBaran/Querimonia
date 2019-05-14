@@ -2,11 +2,10 @@ package de.fraunhofer.iao.querimonia.ner;
 
 import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.Match;
 import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.Response;
+import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.TextPosition;
 import de.fraunhofer.iao.querimonia.rest.restobjects.textominado.TextominadoText;
-import io.micrometer.core.ipc.http.HttpSender;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -14,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This recognizer is used to find money values in the complaint and generate a simple answer message.
@@ -24,18 +24,15 @@ public class TextominadoTestRecognizer {
     private static final String URL = "https://textominado.iao.fraunhofer.de/backend/entity-recognition/money-amount";
 
     public AnnotatedText annotateText(String input) {
-        TextominadoText text = new TextominadoText(input, "1", "de");
+        ResponseEntity<Response> responseEntity = executeTextominadoRequest(input);
 
+        return getAnnotatedText(input, responseEntity);
+
+    }
+
+    private AnnotatedText getAnnotatedText(String input, ResponseEntity<Response> responseEntity) {
         Response matchesResponse;
-
-        HttpEntity<TextominadoText> request = new HttpEntity<>(text);
-        RestTemplate template = new RestTemplateBuilder()
-                .basicAuthentication("textominado", "TeamPass2018!")
-                .build();
-
-        // get response
-        ResponseEntity<Response> responseEntity = template.exchange(URL, HttpMethod.POST,
-                request, Response.class);
+        AnnotatedTextBuilder textBuilder = new AnnotatedTextBuilder(input);
 
         matchesResponse = responseEntity.getBody();
         List<Match> matches = null;
@@ -45,8 +42,16 @@ public class TextominadoTestRecognizer {
 
         String message = "Gerne erstatten wir Ihnen den Betrag.";
         if (matches != null) {
-            Optional<String> moneyValue = matches.stream()
+            List<Match> moneyMatches = matches.stream()
                     .filter(match -> match.getTag().getType().equalsIgnoreCase("Geldbetrag"))
+                    .collect(Collectors.toList());
+            moneyMatches.forEach(match -> {
+                List<TextPosition> positions = match.getPositions();
+                positions.stream().findAny().ifPresent(textPosition -> textBuilder.addEntity("money",
+                        textPosition.getStartPos(), textPosition.getEndPos()));
+            });
+
+            Optional<String> moneyValue = moneyMatches.stream()
                     .map(Match::getToken)
                     .findAny();
             if (moneyValue.isPresent()) {
@@ -54,9 +59,21 @@ public class TextominadoTestRecognizer {
             }
         }
 
-        return new AnnotatedTextBuilder(input)
+        return textBuilder
                 .setAnswer(message)
                 .createAnnotatedText();
+    }
 
+    private ResponseEntity<Response> executeTextominadoRequest(String input) {
+        TextominadoText text = new TextominadoText(input, "1", "de");
+
+        HttpEntity<TextominadoText> request = new HttpEntity<>(text);
+        RestTemplate template = new RestTemplateBuilder()
+                .basicAuthentication("textominado", "TeamPass2018!")
+                .build();
+
+        // get response
+        return template.exchange(URL, HttpMethod.POST,
+                request, Response.class);
     }
 }

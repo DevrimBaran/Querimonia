@@ -21,6 +21,7 @@
 
 # idea files
 .idea/*
+.idea/httpRequests/*
 *.iml
 build/
 .gradle/

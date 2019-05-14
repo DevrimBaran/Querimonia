@@ -6,6 +6,545 @@ Accept: application/json
   "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
 }
 
+<> 2019-05-14T032436.200.json
+
+###
+
+POST http://localhost:8080/api/test/recognizer
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Die Buslinie 637 ist am 01.03.2019 an der Gartenheimstraße in Langenberg(Schule!) um 13:46 nicht gekommen."
+}
+
+<> 2019-05-14T032427.200.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: multipart/form-data; boundary=----------287032381131322
+Accept: application/json
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file5.txt
+------------287032381131322--
+
+<> 2019-05-14T025704.415.json
+
+###
+
+POST http://localhost:8080/uploadFile
+Content-Type: application/json
+
+{
+ "filename": "Text.txt",
+  "fileDownloadUri": "C:/User/PaBre/Documents/Test.txt",
+  "fileType": "text/plain",
+}
+
+<> 2019-05-14T021122.500.json
+
+###
+
+POST http://localhost:8080/uploadFile
+Content-Type: application/json
+
+{
+ "filename": "Text.txt",
+  "fileDownloadUri": "C:/User/PaBre/Documents/Test.txt",
+  "fileType": "text/plain"
+}
+
+<> 2019-05-14T021038.500.json
+
+###
+
+POST http://localhost:8080/uploadFile
+Content-Type: multipart/form-data; boundary=----------287032381131322
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file11.txt
+------------287032381131322--
+
+<> 2019-05-14T015601.400.json
+
+###
+
+POST http://localhost:8080/uploadFile?file=C:/Users/PaBre/Documents/Test.txt
+Content-Type: multipart/form-data; boundary=----------287032381131322
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file8.txt
+------------287032381131322--
+
+<> 2019-05-14T015417.400.json
+
+###
+
+POST http://localhost:8080/uploadFile?file=datafile3
+Content-Type: multipart/form-data; boundary=----------287032381131322
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file7.txt
+------------287032381131322--
+
+<> 2019-05-14T015311.400.json
+
+###
+
+POST http://localhost:8080/uploadFile&file=datafile3
+Content-Type: multipart/form-data; boundary=----------287032381131322
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file4.txt
+------------287032381131322--
+
+<> 2019-05-14T015148.404.json
+
+###
+
+POST http://localhost:8080/uploadFile&file=datafile3
+Content-Type: multipart/form-data; boundary=----------287032381131322
+Accept: application/json
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file9.txt
+------------287032381131322--
+
+<> 2019-05-14T015114.404.json
+
+###
+
+POST http://localhost:8080/uploadFile&file="datafile3"
+Content-Type: multipart/form-data; boundary=----------287032381131322
+Accept: application/json
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file3.txt
+------------287032381131322--
+
+###
+
+POST http://localhost:8080/uploadFile
+Content-Type: multipart/form-data; boundary=----------287032381131322
+Accept: application/json
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file2.txt
+------------287032381131322--
+
+<> 2019-05-14T015041.400.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: multipart/form-data; boundary=----------287032381131322
+Accept: application/json
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file1.txt
+------------287032381131322--
+
+<> 2019-05-14T014034.415.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: multipart/form-data; boundary=----------287032381131322
+Accept: application/json
+
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+< C:\Users\PaBre\AppData\Local\Temp\http_request_input_file.txt
+------------287032381131322--
+
+<> 2019-05-14T012451.415.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: multipart/form-data
+Accept: application/json
+
+Content-Disposition: form-data; name="datafile1"; filename="r.gif"
+Content-Type: image/gif
+
+<> 2019-05-14T012043.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T010517.200.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T010157.200.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T125750.200.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T125235.500.json
+
+###
+
+POST https://textominado.iao.fraunhofer.de/backend/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-14T124858.200.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T124850.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T123809.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T123130.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T122749.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T122032.500.json
+
+###
+
+POST https://textominado.iao.fraunhofer.de/backend/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-14T121554.200.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T121524.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-14T120902.500.json
+
+###
+
+POST https://textominado.iao.fraunhofer.de/backend/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-14T115907.200.json
+
+###
+
+POST https://textominado.iao.fraunhofer.de/service/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T050841.404.html
+
+###
+
+POST https://textominado.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T050832.404.html
+
+###
+
+POST https://textominado.iao.fraunhofer.de/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T044915.404.html
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "texts": [
+    {
+      "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+    },
+    {
+      "text": "Ich musste 50 € bezahlen, ich bitte um Rückerstattung"
+    },
+    {
+      "text": "Bitte erstatten Sie mir einen Betrag von 28,60 € so schnell wie möglich."
+    }
+  ]
+}
+
+<> 2019-05-13T044721.500.json
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
+<> 2019-05-13T044602.500.json
+
+###
+
+POST https://textominado.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T044555.404.html
+
+###
+
+POST https://textominado.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T043936.404.html
+
+###
+
+POST https://textominado-dev.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T043929.404.html
+
+###
+
+POST https://textominado.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic textominado:TeamPass2018!
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T043150.404.html
+
+###
+
+POST https://textominado.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T042814.404.html
+
+###
+
+POST https://textominado.iao.fraunhofer.de/api/entity-recognition/money-amount
+Content-Type: application/json
+Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben",
+  "textID": "1",
+  "language": "de"
+}
+
+<> 2019-05-13T042529.404.html
+
+###
+
+POST http://localhost:8080/api/test/textominado
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
+}
+
 <> 2019-05-13T040127.500.json
 
 ###

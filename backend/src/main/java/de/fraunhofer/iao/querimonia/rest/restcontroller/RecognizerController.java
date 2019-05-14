@@ -4,6 +4,11 @@ import de.fraunhofer.iao.querimonia.ner.AnnotatedText;
 import de.fraunhofer.iao.querimonia.ner.SimpleTestRecognizer;
 import de.fraunhofer.iao.querimonia.ner.TextominadoTestRecognizer;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
+import de.fraunhofer.iao.querimonia.service.FileStorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,6 +27,9 @@ import java.util.Objects;
  */
 @RestController
 public class RecognizerController {
+
+    @Autowired
+    private FileStorageService fileStorageService;
 
     /**
      * This method annotates a given text input with "line" and "date" entities. It can be called with a POST-Request.
@@ -52,14 +60,17 @@ public class RecognizerController {
 
     @PostMapping(value = "/api/test/textominado-batch")
     public List<AnnotatedText> getAnswersWithTextominado(@RequestParam MultipartFile file) throws IOException {
+        Logger logger = LoggerFactory.getLogger("Test");
+        String fileName = fileStorageService.storeFile(file);
 
-        FileReader reader = new FileReader(Objects.requireNonNull(file.getOriginalFilename()));
+        FileReader reader = new FileReader("backend/src/resources/uploads/" + fileName);
         BufferedReader bufferedReader = new BufferedReader(reader);
 
         List<AnnotatedText> results = new ArrayList<>();
         TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
         bufferedReader.lines()
                 .map(recognizer::annotateText)
+                .peek(annotatedText -> logger.info(annotatedText.getAnswer()))
                 .forEach(results::add);
 
         return results;
