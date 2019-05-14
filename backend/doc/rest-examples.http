@@ -32,27 +32,20 @@ Accept: application/json
 
 # POST request for issue #2787 Stapelverarbeitung
 POST http://localhost:8080/api/test/textominado
-Content-Type: application/json
+Content-Type: multipart/form-data; boundary=----------287032381131322
 Accept: application/json
 
-{
-  "texts": [
-    {
-      "text": "Weil mein Bus zu spät war musste ich 23,70 € für das Taxi bezahlen, die will ich zurück haben"
-    },
-    {
-      "text": "Ich musste 50 € bezahlen, ich bitte um Rückerstattung"
-    },
-    {
-      "text": "Bitte erstatten Sie mir einen Betrag von 28,60 € so schnell wie möglich."
-    }
-  ]
-}
+------------287032381131322
+Content-Disposition: form-data; name="datafile3"; filename="C:/Users/PaBre/Documents/Test.txt"
+Content-Type: text/plain
+
+GIF87a.............,...........D..;
+------------287032381131322--
 
 ###
 
 # Test request for textominado
-POST https://textominado.iao.fraunhofer.de/entity-recognition/money-amount
+POST https://textominado.iao.fraunhofer.de/backend/entity-recognition/money-amount
 Content-Type: application/json
 Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
 
@@ -61,3 +54,5 @@ Authorization: Basic dGV4dG9taW5hZG86VGVhbVBhc3MyMDE4IQ==
   "textID": "1",
   "language": "de"
 }
+
+###

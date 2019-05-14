@@ -3,14 +3,18 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.ner.AnnotatedText;
 import de.fraunhofer.iao.querimonia.ner.SimpleTestRecognizer;
 import de.fraunhofer.iao.querimonia.ner.TextominadoTestRecognizer;
-import de.fraunhofer.iao.querimonia.rest.restobjects.MultiTextInput;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is a rest controller for the integration tests. For example requests, see doc/rest-examples.http
@@ -46,7 +50,17 @@ public class RecognizerController {
     }
 
     @PostMapping(value = "/api/test/textominado-batch")
-    public List<AnnotatedText> getAnswersWithTextominado() {
-        return null;
+    public List<AnnotatedText> getAnswersWithTextominado(@RequestBody MultipartFile file) throws IOException {
+
+        FileReader reader = new FileReader(Objects.requireNonNull(file.getOriginalFilename()));
+        BufferedReader bufferedReader = new BufferedReader(reader);
+
+        List<AnnotatedText> results = new ArrayList<>();
+        TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
+        bufferedReader.lines()
+                .map(recognizer::annotateText)
+                .forEach(results::add);
+
+        return results;
     }
 }

@@ -1,19 +1,23 @@
 package de.fraunhofer.iao.querimonia.rest.restobjects.textominado;
 
 import java.time.Instant;
+import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 
-public class Response<T> extends ResponseEntity<Response.OutputParcel<T>> {
+public class Response extends ResponseEntity<Response.OutputParcel<List<Match>>> {
 
-    public Response(T output, String nameOfTool, String path, FrontendException exception) {
-        super(new OutputParcel<T>(output, nameOfTool, path, exception), HttpStatus.INTERNAL_SERVER_ERROR);
+    public Response(List<Match> output, String nameOfTool, String path, FrontendException exception) {
+        super(new OutputParcel<>(output, nameOfTool, path, exception), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    public Response(T output, String nameOfTool, String path) {
-        super(new OutputParcel<T>(output, nameOfTool, path), HttpStatus.OK);
+    @JsonCreator
+    public Response(@JsonProperty("payload") List<Match> output, @JsonProperty("nameOfTool") String nameOfTool, @JsonProperty("path") String path) {
+        super(new OutputParcel<>(output, nameOfTool, path), HttpStatus.OK);
     }
 
     public static class OutputParcel<T> {
