@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        function doSubmit() {
+            sendContactForm();
+            return false;
+        }
+    </script>
+    <form enctype="multipart/form-data" onsubmit="return doSubmit()" action="http://localhost:8080/uploadFile" method="post">
+        <input type="file" name="file">
+        <input type="submit">
+    </form>
+</body>
+</html>

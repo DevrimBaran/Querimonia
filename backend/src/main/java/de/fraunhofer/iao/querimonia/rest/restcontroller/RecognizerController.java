@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.ner.TextominadoTestRecognizer;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -50,7 +51,7 @@ public class RecognizerController {
     }
 
     @PostMapping(value = "/api/test/textominado-batch")
-    public List<AnnotatedText> getAnswersWithTextominado(@RequestBody MultipartFile file) throws IOException {
+    public List<AnnotatedText> getAnswersWithTextominado(@RequestParam MultipartFile file) throws IOException {
 
         FileReader reader = new FileReader(Objects.requireNonNull(file.getOriginalFilename()));
         BufferedReader bufferedReader = new BufferedReader(reader);
