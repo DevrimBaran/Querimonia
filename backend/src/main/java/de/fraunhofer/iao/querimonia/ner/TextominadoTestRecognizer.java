@@ -23,18 +23,19 @@ public class TextominadoTestRecognizer {
 
     private static final String URL = "https://textominado.iao.fraunhofer.de/backend/entity-recognition/money-amount";
 
+    /**
+     * Annotates the text with money tags and generates a simple response.
+     */
     public AnnotatedText annotateText(String input) {
         ResponseEntity<Response> responseEntity = executeTextominadoRequest(input);
 
-        return getAnnotatedText(input, responseEntity);
-
+        return generateAnnotatedText(input, responseEntity);
     }
 
-    private AnnotatedText getAnnotatedText(String input, ResponseEntity<Response> responseEntity) {
-        Response matchesResponse;
+    private AnnotatedText generateAnnotatedText(String input, ResponseEntity<Response> responseEntity) {
         AnnotatedTextBuilder textBuilder = new AnnotatedTextBuilder(input);
 
-        matchesResponse = responseEntity.getBody();
+        Response matchesResponse = responseEntity.getBody();
         List<Match> matches = null;
         if (matchesResponse != null) {
             matches = Objects.requireNonNull(matchesResponse.getBody()).payload;
@@ -42,15 +43,18 @@ public class TextominadoTestRecognizer {
 
         String message = "Gerne erstatten wir Ihnen den Betrag.";
         if (matches != null) {
+            // find all matches of type money
             List<Match> moneyMatches = matches.stream()
                     .filter(match -> match.getTag().getType().equalsIgnoreCase("Geldbetrag"))
                     .collect(Collectors.toList());
+            // add matches to the annotated text
             moneyMatches.forEach(match -> {
                 List<TextPosition> positions = match.getPositions();
-                positions.stream().findAny().ifPresent(textPosition -> textBuilder.addEntity("money",
+                positions.forEach(textPosition -> textBuilder.addEntity("money",
                         textPosition.getStartPos(), textPosition.getEndPos()));
             });
 
+            // generate answer with one money value
             Optional<String> moneyValue = moneyMatches.stream()
                     .map(Match::getToken)
                     .findAny();
@@ -68,6 +72,7 @@ public class TextominadoTestRecognizer {
         TextominadoText text = new TextominadoText(input, "1", "de");
 
         HttpEntity<TextominadoText> request = new HttpEntity<>(text);
+        // add authentication token
         RestTemplate template = new RestTemplateBuilder()
                 .basicAuthentication("textominado", "TeamPass2018!")
                 .build();

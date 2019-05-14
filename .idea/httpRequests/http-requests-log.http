@@ -1,3 +1,27 @@
+POST http://localhost:8080/api/test/recognizer
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Die Buslinie 637 ist am 01.03.2019 an der Gartenheimstraße in Langenberg(Schule!) um 13:46 nicht gekommen."
+}
+
+<> 2019-05-14T035558.200.json
+
+###
+
+POST http://localhost:8080/api/test/recognizer
+Content-Type: application/json
+Accept: application/json
+
+{
+  "text": "Die Buslinie 637 ist am 01.03.2019 an der Gartenheimstraße in Langenberg(Schule!) um 13:46 nicht gekommen."
+}
+
+<> 2019-05-14T035458.200.json
+
+###
+
 POST http://localhost:8080/api/test/textominado
 Content-Type: application/json
 Accept: application/json

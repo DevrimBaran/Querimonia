@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.ner;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -31,6 +32,7 @@ public class AnnotatedTextBuilder {
     }
 
     public AnnotatedText createAnnotatedText() {
+        entities.sort(Comparator.comparingInt(NamedEntity::getStartIndex));
         return new AnnotatedText(text, answer, entities);
     }
 }
