@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 
 /**
  * Service for saving files in filesystem and retrieving them.
+ * Inpired by https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
  */
 @Service
 public class FileStorageService {

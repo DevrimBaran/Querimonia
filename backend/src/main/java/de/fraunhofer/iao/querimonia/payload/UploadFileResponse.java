@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.payload;
 
 /**
  * Returns response from /uploadfile.
+ * Inspired by https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
  */
 public class UploadFileResponse {
     private String fileName;
