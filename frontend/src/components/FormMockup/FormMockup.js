@@ -33,7 +33,7 @@ export class FormMockup extends Component {
         options.body = JSON.stringify(this.state.data);
       break;
       case 'multipart/form-data':
-        options.headers['Content-Type'] = undefined;
+        delete options.headers['Content-Type'];
         let formData = new FormData();
 
         for (const name in this.state.data) {
