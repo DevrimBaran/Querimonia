@@ -1,7 +1,7 @@
 const api = {
     "/api/test/recognizer": [{
         text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus, similique!",
-        answear: null,
+        answer: null,
         entities: [
             {
                 label: "test",
@@ -17,7 +17,7 @@ const api = {
     }],
     "/api/test/textominado": [{
         text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus, similique!",
-        answear: "Heute ist nicht alle Tage, ich komm wieder, keine Frage!",
+        answer: "Heute ist nicht alle Tage, ich komm wieder, keine Frage!",
         entities: [
             {
                 label: "test",
@@ -34,7 +34,7 @@ const api = {
     "/api/test/textominado-batch": [
         {
             text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus, similique!",
-            answear: null,
+            answer: null,
             entities: [
                 {
                     label: "test",
@@ -49,7 +49,7 @@ const api = {
             ]
         }, {
             text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus, similique!",
-            answear: null,
+            answer: null,
             entities: [
                 {
                     label: "test",
@@ -64,7 +64,7 @@ const api = {
             ]
         }, {
             text: "Lorem, ipsum dolor sit amet consectetur adipisicing elit. Accusamus, similique!",
-            answear: null,
+            answer: null,
             entities: [
                 {
                     label: "test",

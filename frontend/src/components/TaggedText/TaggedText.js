@@ -8,21 +8,21 @@ class TaggedText extends Component {
 
         this.state = {
             data: null,
-            answear: null
+            answer: null
         }
 
         props.promise.then((data) => {
             this.setState({
                 data: this.parseData(data),
-                answear: this.parseAnswear(data),
+                answer: this.parseAnswer(data),
             });
         });
     }
-    parseAnswear(response) {
+    parseAnswer(response) {
         let newData = [];
         if (!Array.isArray(response)) return null;
         for (let data of response) {
-            newData.push(<p key={newData.length}>{data.answear}</p>);
+            newData.push(<p key={newData.length}>{data.answer}</p>);
         }
         return newData;
     }
@@ -48,7 +48,7 @@ class TaggedText extends Component {
             <div className="tagged-text">
                 {this.state.data}
                 <br />
-                {this.state.answear}
+                {this.state.answer}
             </div>
         );
     }
