@@ -19,7 +19,7 @@ class TaggedText extends Component {
         });
     }
     parseAnswear(response) {
-        var newData = [];
+        let newData = [];
         if (!Array.isArray(response)) return null;
         for (let data of response) {
             newData.push(<p key={newData.length}>{data.answear}</p>);
@@ -27,13 +27,13 @@ class TaggedText extends Component {
         return newData;
     }
     parseData(response) {
-        var newData = [];
+        let newData = [];
         if (!Array.isArray(response)) return null;
         for (let data of response) {
             let p = [];
             let cpos = 0;
             if (!Array.isArray(data.entities)) continue;
-            for (let tag of data.entities) {
+            for (const tag of data.entities) {
                 p.push(<span key={p.length}>{data.text.substring(cpos, tag.start)}</span>);
                 p.push(<span key={p.length} className="tag" label={tag.label}>{data.text.substring(tag.start, tag.end)}</span>);
                 cpos = tag.end;

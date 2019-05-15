@@ -11,7 +11,7 @@ export class FormMockup extends Component {
   }
 
   handleChange = (e) => {
-    var target = e.target;
+    const target = e.target;
     this.setState(function(state, props) {
       state.data[target.name] = target.value;
       return state;
@@ -19,7 +19,7 @@ export class FormMockup extends Component {
   }
 
   handleClick = () => {
-    var options = {
+    let options = {
       method: this.props.method,
       credentials: 'include',
       mode: 'cors',
@@ -33,9 +33,10 @@ export class FormMockup extends Component {
         options.body = JSON.stringify(this.state.data);
       break;
       case 'multipart/form-data':
+        options.headers['Content-Type'] = undefined;
         let formData = new FormData();
 
-        for (let name in this.state.data) {
+        for (const name in this.state.data) {
           formData.append(name, this.state.data[name]);
         }
         
