@@ -6,14 +6,42 @@
 </head>
 <body>
     <script>
-        function doSubmit() {
-            sendContactForm(e);
-            return false;
+        function handleClick() {
+            let state = {
+                data: {
+                    file: document.getElementById('fileInput').value
+                }
+            };
+            let options = {
+                method: "post",
+                credentials: 'include',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': "multipart/form-data"
+                },
+                body: null
+            };
+
+            delete options.headers['Content-Type'];
+            let formData = new FormData();
+
+            for (const name in state.data) {
+                formData.append(name, state.data[name]);
+            }
+                
+            options.body = formData;
+
+            let p = fetch("http://localhost:8080/api/test/textominado-batch", options)
+            .then(response => {return response.json();})
+            .then((json) => {
+                console.log(json);
+            });
         }
     </script>
-    <form enctype="multipart/form-data" onsubmit="return doSubmit()" action="http://localhost:8080/api/test/textominado-batch" method="post">
-        <input type="file" name="file">
-        <input type="submit">
-    </form>
+    <div className="form-mockup">
+        <input id="fileInput" type="file" name="file">
+        <button className='button' onClick="handleClick();">Senden</button>
+        <div id="response"></div>
+    </div>
 </body>
 </html>
