@@ -8,7 +8,6 @@ import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,7 +19,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This is a rest controller for the integration tests. For example requests, see doc/rest-examples.http
@@ -48,26 +46,26 @@ public class RecognizerController {
      * This methods finds the money value in the given text and creates a simple answer. The extraction is done using
      * textominado.
      *
-     * @param input the complaint texts where answers should be generated.
+     * @param //input the complaint texts where answers should be generated.
      * @return // TODO documentation for return
-     */
+     *
     @PostMapping(value = "/api/test/textominado")
     public List<AnnotatedText> getAnswer(@RequestBody TextInput input) {
         List<AnnotatedText> results = new ArrayList<>();
         results.add(new TextominadoTestRecognizer().annotateText(input.getText()));
         return results;
     }
-
+    */
     @PostMapping(value = "/api/test/textominado-batch")
     public List<AnnotatedText> getAnswersWithTextominado(@RequestParam MultipartFile file) throws IOException {
         Logger logger = LoggerFactory.getLogger("Test");
         String fileName = fileStorageService.storeFile(file);
 
-        FileReader reader = new FileReader("backend/src/resources/uploads/" + fileName);
+        FileReader reader = new FileReader("src/main/resources/uploads/" + fileName);
         BufferedReader bufferedReader = new BufferedReader(reader);
 
         List<AnnotatedText> results = new ArrayList<>();
-        TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
+        SimpleTestRecognizer recognizer = new SimpleTestRecognizer();
         bufferedReader.lines()
                 .map(recognizer::annotateText)
                 .peek(annotatedText -> logger.info(annotatedText.getAnswer()))
