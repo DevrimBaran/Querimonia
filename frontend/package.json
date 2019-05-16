@@ -30,5 +30,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "husky": "^2.3.0"
+  },
+  "husky": {
+	"hooks": {
+		"pre-push": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src"
+	}
   }
 }
