@@ -10,6 +10,9 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# .mvn folders
+.mvn/*
+
 # Package Files #
 *.jar
 *.war
@@ -25,7 +28,6 @@ src/main/resources/uploads/*
 # idea files
 .idea/*
 .idea/httpRequests/*
-*.iml
 build/
 .gradle/
 
