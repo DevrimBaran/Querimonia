@@ -5,43 +5,42 @@
     <title>Title</title>
 </head>
 <body>
-    <script>
-        function handleClick() {
-            let state = {
-                data: {
-                    file: document.getElementById('fileInput').value
-                }
-            };
-            let options = {
-                method: "post",
-                credentials: 'include',
-                mode: 'cors',
-                headers: {
-                    'Content-Type': "multipart/form-data"
-                },
-                body: null
-            };
-
-            delete options.headers['Content-Type'];
-            let formData = new FormData();
-
-            for (const name in state.data) {
-                formData.append(name, state.data[name]);
+<script>
+    function handleClick() {
+        let state = {
+            data: {
+                file: document.getElementById('fileInput').value
             }
-                
-            options.body = formData;
+        };
+        let options = {
+            method: "post",
+            mode: 'cors',
+            headers: {
+                'Content-Type': "multipart/form-data"
+            },
+            body: null
+        };
 
-            let p = fetch("http://localhost:8080/api/test/textominado-batch", options)
-            .then(response => {return response.json();})
-            .then((json) => {
-                console.log(json);
-            });
+        delete options.headers['Content-Type'];
+        let formData = new FormData();
+
+        for (const name in state.data) {
+            formData.append(name, state.data[name]);
         }
-    </script>
-    <div className="form-mockup">
-        <input id="fileInput" type="file" name="file">
-        <button className='button' onClick="handleClick();">Senden</button>
-        <div id="response"></div>
-    </div>
+
+        options.body = formData;
+
+        let p = fetch("http://localhost:8080/api/test/textominado-batch", options)
+            .then(response => {return response.json();})
+    .then((json) => {
+            console.log(json);
+    });
+    }
+</script>
+<div className="form-mockup">
+    <input id="fileInput" type="file" name="file">
+    <button className='button' onClick="handleClick();">Senden</button>
+    <div id="response"></div>
+</div>
 </body>
 </html>
