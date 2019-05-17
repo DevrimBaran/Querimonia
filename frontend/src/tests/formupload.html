@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <form id="form" action="http://localhost:8080/api/test/textominado-batch" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="">
+        <input type="submit" value="senden">
+    </form>
+    <script>
+        function fake(e) {
+            console.log("fake")
+            var input = document.getElementById('file');
+            let formData = new FormData();
+            formData.append(input.attributes.name.value, input.files[0]);
+            let options = {
+                method: "post",
+                mode: 'cors',
+                body: formData
+            };
+            fetch("http://localhost:8080/api/test/textominado-batch", options)
+                .then(console.log);
+        }
+    </script>
+    <input type="file" name="file" id="file">
+    <button onclick="fake()" value="Fake">Fake</button>
+</body>
+</html>

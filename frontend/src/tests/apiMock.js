@@ -80,15 +80,18 @@ const api = {
         }
     ]
 }
+const _fetch = fetch;
+
 export const fetch = function(uri, options) {
     return new Promise(
         function (resolve, reject) {
-            window.setTimeout(
-                function () {
+            _fetch(uri, options)
+                .then(resolve)
+                .catch(() => {
                     resolve({
                         json: () => api[uri]
                     })
-                }, 1000);
+                });
         });
 }
 
