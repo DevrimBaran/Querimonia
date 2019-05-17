@@ -8,7 +8,10 @@ import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
@@ -20,7 +23,6 @@ import java.util.List;
 /**
  * This is a rest controller for the integration tests. For example requests, see doc/rest-examples.http
  */
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 public class RecognizerController {
 
@@ -55,7 +57,7 @@ public class RecognizerController {
     }
     */
     @PostMapping(value = "/api/test/textominado-batch")
-    public List<AnnotatedText> getAnswersWithTextominado(@RequestParam("file") MultipartFile file) throws IOException {
+    public List<AnnotatedText> getAnswersWithTextominado(@RequestParam MultipartFile file) throws IOException {
         Logger logger = LoggerFactory.getLogger("Test");
         String fileName = fileStorageService.storeFile(file);
 
