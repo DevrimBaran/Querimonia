@@ -8,13 +8,12 @@ import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,36 +44,42 @@ public class RecognizerController {
      * This methods finds the money value in the given text and creates a simple answer. The extraction is done using
      * textominado.
      *
-     * @param //input the complaint texts where answers should be generated.
+     * @param input the complaint texts where answers should be generated.
      * @return // TODO documentation for return
-     *
-     @PostMapping(value = "/api/test/textominado")
-     public List<AnnotatedText> getAnswer(@RequestBody TextInput input) {
-     List<AnnotatedText> results = new ArrayList<>();
-     results.add(new TextominadoTestRecognizer().annotateText(input.getText()));
-     return results;
-     }
      */
-    @PostMapping(value = "/api/test/textominado-batch")
-    public List<AnnotatedText> getAnswersWithTextominado(@RequestParam("file") MultipartFile file) throws IOException {
-        Logger logger = LoggerFactory.getLogger("Test");
-        String fileName = fileStorageService.storeFile(file);
-
-        FileReader reader = new FileReader("src/main/resources/uploads/" + fileName);
-        BufferedReader bufferedReader = new BufferedReader(reader);
-
+    @PostMapping(value = "/api/test/textominado")
+    public List<AnnotatedText> getAnswer(@RequestBody TextInput input) {
         List<AnnotatedText> results = new ArrayList<>();
-        SimpleTestRecognizer recognizer = new SimpleTestRecognizer();
-        bufferedReader.lines()
-                .map(recognizer::annotateText)
-                .peek(annotatedText -> logger.info(annotatedText.getAnswer()))
-                .forEach(results::add);
+        results.add(new TextominadoTestRecognizer().annotateText(input.getText()));
+        return results;
+    }
 
-        File uploadFile = new File("src/main/resources/uploads/" + fileName);
-        if (uploadFile.delete()) {
-            System.out.println("File deleted.");
-        } else {
-            System.out.println("File could not be deleted.");
+    @PostMapping(value = "/api/test/textominado-batch")
+    public List<AnnotatedText> getAnswersWithTextominado(@RequestParam("file") MultipartFile file) {
+        Logger logger = LoggerFactory.getLogger(RecognizerController.class);
+        String fileName = fileStorageService.storeFile(file);
+        String fullFilePath = "src/main/resources/uploads/" + fileName;
+
+        List<AnnotatedText> results;
+        // read out the file and recognize text
+        try(FileReader reader = new FileReader(fullFilePath)) {
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            results = new ArrayList<>();
+            SimpleTestRecognizer recognizer = new SimpleTestRecognizer();
+            bufferedReader.lines()
+                    .map(recognizer::annotateText)
+                    .forEach(results::add);
+
+            File uploadFile = new File(fullFilePath);
+            if (uploadFile.delete()) {
+                logger.debug("Temporary file deleted");
+            } else {
+                logger.warn("Temporary file " + fileName + " could not be deleted");
+            }
+        } catch (IOException e) {
+            logger.error("Fehler beim Datei-Upload");
+            throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Lesen der Datei.");
         }
 
         return results;
