@@ -66,22 +66,21 @@ public class RecognizerController {
             BufferedReader bufferedReader = new BufferedReader(reader);
 
             results = new ArrayList<>();
-            SimpleTestRecognizer recognizer = new SimpleTestRecognizer();
+            TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
             bufferedReader.lines()
                     .map(recognizer::annotateText)
                     .forEach(results::add);
-
-            File uploadFile = new File(fullFilePath);
-            if (uploadFile.delete()) {
-                logger.debug("Temporary file deleted");
-            } else {
-                logger.warn("Temporary file " + fileName + " could not be deleted");
-            }
         } catch (IOException e) {
             logger.error("Fehler beim Datei-Upload");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Lesen der Datei.");
         }
 
+        File uploadFile = new File(fullFilePath);
+        if (uploadFile.delete()) {
+            logger.debug("Temporary file deleted");
+        } else {
+            logger.warn("Temporary file " + fileName + " could not be deleted");
+        }
         return results;
     }
 }
