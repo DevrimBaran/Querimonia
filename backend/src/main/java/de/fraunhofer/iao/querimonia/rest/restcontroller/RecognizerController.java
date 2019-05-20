@@ -5,6 +5,8 @@ import de.fraunhofer.iao.querimonia.ner.SimpleTestRecognizer;
 import de.fraunhofer.iao.querimonia.ner.TextominadoTestRecognizer;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -59,17 +63,47 @@ public class RecognizerController {
         Logger logger = LoggerFactory.getLogger(RecognizerController.class);
         String fileName = fileStorageService.storeFile(file);
         String fullFilePath = "src/main/resources/uploads/" + fileName;
+        TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
 
-        List<AnnotatedText> results;
+
+        List<AnnotatedText> results = new ArrayList<>();
         // read out the file and recognize text
-        try(FileReader reader = new FileReader(fullFilePath)) {
-            BufferedReader bufferedReader = new BufferedReader(reader);
+        try (FileReader reader = new FileReader(fullFilePath)) {
+            //read a txt file
+            if (fullFilePath.endsWith(".txt")) {
+                BufferedReader bufferedReader = new BufferedReader(reader);
 
-            results = new ArrayList<>();
-            TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
-            bufferedReader.lines()
-                    .map(recognizer::annotateText)
-                    .forEach(results::add);
+                bufferedReader.lines()
+                        .map(recognizer::annotateText)
+                        .forEach(results::add);
+            //read a pdf file
+            } else if (fullFilePath.endsWith(".pdf")) {
+                PDDocument document = PDDocument.load(new File(fullFilePath));
+                if (!document.isEncrypted()) {
+                    PDFTextStripper stripper = new PDFTextStripper();
+                    String text = stripper.getText(document);
+                    AnnotatedText annotadedText = recognizer.annotateText(text);
+                    results.add(annotadedText);
+                }
+                document.close();
+            //read a word file
+            } else if (fullFilePath.endsWith(".doc") ||fullFilePath.endsWith(".docx") || fullFilePath.endsWith(".docm")) {
+                WordExtractor extractor;
+                try {
+                    FileInputStream fileInputStream = new FileInputStream(fullFilePath);
+                    HWPFDocument document = new HWPFDocument(fileInputStream);
+                    extractor = new WordExtractor(document);
+                    String[] fileDates = extractor.getParagraphText();
+                    for (String fileData : fileDates) {
+                        if (fileData != null) {
+                            AnnotatedText annotatedText = recognizer.annotateText(fileData);
+                            results.add(annotatedText);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         } catch (IOException e) {
             logger.error("Fehler beim Datei-Upload");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Lesen der Datei.");
