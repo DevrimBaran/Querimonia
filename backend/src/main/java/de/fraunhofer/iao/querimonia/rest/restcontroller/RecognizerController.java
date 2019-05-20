@@ -7,6 +7,8 @@ import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,10 +67,10 @@ public class RecognizerController {
         String fullFilePath = "src/main/resources/uploads/" + fileName;
         TextominadoTestRecognizer recognizer = new TextominadoTestRecognizer();
 
-
         List<AnnotatedText> results = new ArrayList<>();
         // read out the file and recognize text
         try (FileReader reader = new FileReader(fullFilePath)) {
+            FileInputStream fileInputStream = new FileInputStream(fullFilePath);
             //read a txt file
             if (fullFilePath.endsWith(".txt")) {
                 BufferedReader bufferedReader = new BufferedReader(reader);
@@ -76,7 +78,7 @@ public class RecognizerController {
                 bufferedReader.lines()
                         .map(recognizer::annotateText)
                         .forEach(results::add);
-            //read a pdf file
+                //read a pdf file
             } else if (fullFilePath.endsWith(".pdf")) {
                 PDDocument document = PDDocument.load(new File(fullFilePath));
                 if (!document.isEncrypted()) {
@@ -86,24 +88,22 @@ public class RecognizerController {
                     results.add(annotadedText);
                 }
                 document.close();
-            //read a word file
-            } else if (fullFilePath.endsWith(".doc") ||fullFilePath.endsWith(".docx") || fullFilePath.endsWith(".docm")) {
-                WordExtractor extractor;
-                try {
-                    FileInputStream fileInputStream = new FileInputStream(fullFilePath);
-                    HWPFDocument document = new HWPFDocument(fileInputStream);
-                    extractor = new WordExtractor(document);
-                    String[] fileDates = extractor.getParagraphText();
-                    for (String fileData : fileDates) {
-                        if (fileData != null) {
-                            AnnotatedText annotatedText = recognizer.annotateText(fileData);
-                            results.add(annotatedText);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                //read a word file (docx)
+            } else if (fullFilePath.endsWith(".docx")) {
+                XWPFDocument document = new XWPFDocument(fileInputStream);
+                XWPFWordExtractor extractor = new XWPFWordExtractor(document);
+                AnnotatedText annotatedText = recognizer.annotateText(extractor.getText());
+                results.add(annotatedText);
+                extractor.close();
+                //read word file (doc)
+            } else if (fullFilePath.endsWith(".doc")) {
+                HWPFDocument document = new HWPFDocument(fileInputStream);
+                WordExtractor extractor = new WordExtractor(document);
+                AnnotatedText annotatedText = recognizer.annotateText(extractor.getText());
+                results.add(annotatedText);
+                extractor.close();
             }
+            fileInputStream.close();
         } catch (IOException e) {
             logger.error("Fehler beim Datei-Upload");
             throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Lesen der Datei.");
