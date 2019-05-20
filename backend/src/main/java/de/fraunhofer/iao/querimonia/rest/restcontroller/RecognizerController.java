@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,6 +69,13 @@ public class RecognizerController {
                 .map(recognizer::annotateText)
                 .peek(annotatedText -> logger.info(annotatedText.getAnswer()))
                 .forEach(results::add);
+
+        File uploadFile = new File("src/main/resources/uploads/" + fileName);
+        if (uploadFile.delete()) {
+            System.out.println("File deleted.");
+        } else {
+            System.out.println("File could not be deleted.");
+        }
 
         return results;
     }
