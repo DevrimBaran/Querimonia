@@ -19,14 +19,16 @@ public class Complaint {
     private String text;
     private String preview;
     private String sentiment;
+    private String subject;
     private LocalDate receiveDate;
 
     @JsonCreator
     public Complaint(@JsonProperty String text, @JsonProperty String preview, @JsonProperty String sentiment,
-                     @JsonProperty LocalDate receiveDate) {
+                     @JsonProperty String subject, @JsonProperty LocalDate receiveDate) {
         this.text = text;
         this.preview = preview;
         this.sentiment = sentiment;
+        this.subject = subject;
         this.receiveDate = receiveDate;
     }
 
@@ -59,6 +61,7 @@ public class Complaint {
                 Objects.equals(text, complaint.text) &&
                 Objects.equals(preview, complaint.preview) &&
                 Objects.equals(sentiment, complaint.sentiment) &&
+                Objects.equals(subject, complaint.subject) &&
                 Objects.equals(receiveDate, complaint.receiveDate);
     }
 
