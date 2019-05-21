@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>CORS - Test</h1>
+    <p>
+        Die Datei sollte nicht vom selben Webserver ausgeliefert werden wie das backend!
+        Am besten per doppelklick vom desktop starten, nicht per intellij!
+        <strong>Ausgaben stehen in der Console</strong>
+    </p>
+    <input type="text" id="endpoint" placeholder="/api/...">
+    <input type="file" id="file" name="file">
+    <input type="button" value="Test" id="test">
+    <script>
+        document.getElementById('test').onclick = function() {
+            let endpoint = document.getElementById('endpoint').value;
+            if (endpoint) {
+                let input = document.getElementById('file');
+                let options = {
+                    method: "post",
+                    mode: 'cors'
+                };
+                if (input.files.length == 0) {
+                    options.headers = {
+                        'Content-Type': 'application/json'
+                    }
+                    options.body = { text: "test" };
+                } else {
+                    options.body = new FormData();
+                    options.body.append(input.attributes.name.value, input.files[0]);
+                }
+                fetch('http://127.0.0.1:8080' + endpoint, options)
+                .then((response, error) => {
+                    if (error) {
+                            return error;
+                        } else {
+                            return response;
+                        }
+                    })
+                    .then(response => response.json)
+                    .then(console.log)
+                    .catch(console.error);
+            } else {
+                console.error('no endpoint set!');
+            }
+        }
+    </script>
+</body>
+</html>

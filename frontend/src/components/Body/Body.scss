@@ -7,4 +7,9 @@
         flex-basis: 100%;
         flex-shrink: 1;
     }
+    .Block {
+        flex-grow: 1;
+        flex-shrink: 0;
+        flex-basis: 1px;
+    }
 }

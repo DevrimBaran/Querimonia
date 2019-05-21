@@ -1,54 +1,41 @@
 import React, { Component } from 'react'
-import Fa from '../Fa/Fa';
+
 import './TaggedText.scss';
 
 class TaggedText extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            data: null,
-            answer: null
-        }
 
-        props.promise.then((data) => {
-            this.setState({
-                data: this.parseData(data),
-                answer: this.parseAnswer(data),
-            });
-        });
-    }
-    parseAnswer(response) {
-        let newData = [];
-        if (!Array.isArray(response)) return null;
-        for (let data of response) {
-            newData.push(<p key={newData.length}>{data.answer}</p>);
+        console.log(props);
+        this.state = {
+            text: this.parseText(props.text)
         }
-        return newData;
     }
-    parseData(response) {
-        let newData = [];
-        if (!Array.isArray(response)) return null;
-        for (let data of response) {
-            let p = [];
-            let cpos = 0;
-            if (!Array.isArray(data.entities)) continue;
-            for (const tag of data.entities) {
-                p.push(<span key={p.length}>{data.text.substring(cpos, tag.start)}</span>);
-                p.push(<span key={p.length} className="tag" label={tag.label}>{data.text.substring(tag.start, tag.end)}</span>);
+    parseText(text) {
+        if (!text) return '';
+        let p = [];
+        let cpos = 0;
+        if (Array.isArray(text.entities)) {
+            for (const tag of text.entities) {
+                p.push(<span key={p.length}>{text.text.substring(cpos, tag.start)}</span>);
+                p.push(<span key={p.length} className="tag" label={tag.label}>{text.text.substring(tag.start, tag.end)}</span>);
                 cpos = tag.end;
             }
-            p.push(<span key={p.length}>{data.text.substring(cpos, data.text.length)}</span>);
-            newData.push(<p key={newData.length}>{p}</p>);
         }
-        return newData;
+        p.push(<span key={p.length}>{text.text.substring(cpos, text.text.length)}</span>);
+        return p;
+    }
+    componentDidUpdate = (props) => {
+        console.log(props);
+        /*this.setState({
+            text: this.parseText(props.text)
+        });*/
     }
     render() { 
         return (
             <div className="tagged-text">
-                {this.state.data}
-                <br />
-                {this.state.answer}
+                {this.state.text}
             </div>
         );
     }

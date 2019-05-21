@@ -1,21 +1,19 @@
 import React from 'react';
 import logo from './../../assets/img/logo.svg';
-import Collapsible from '../Collapsible/Collapsible';
+import Modal from '../Modal/Modal';
 import './Topbar.scss';
 
 function Topbar() {
     return (
-        <header className="Topbar">
+        <header className="Topbar dark">
             <img src={logo} className="Topbar-logo" alt="logo" />
-            <Collapsible collapse={false} side="bottom">
-                <ul>
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                    <li>5</li>
-                </ul>
-            </Collapsible>
+            <Modal label="Import">
+                <textbox placeholder="Meldung eingeben oder Datei per drag and drop ablegen." />
+                <input className="primary" type="button" value="importieren"/>
+            </Modal>
+            <Modal label="Export">
+                <p>Lorem Ipsum</p>
+            </Modal>
         </header>
     );
 }

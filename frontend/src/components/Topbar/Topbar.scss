@@ -1,5 +1,10 @@
 .Topbar {
     display: flex;
     height: 80px;
-    background-color: black;
+    align-items: center;
+    justify-content: left;
+    & > * {
+        margin-right: 20px;
+        max-height: 100%;
+    }
 }

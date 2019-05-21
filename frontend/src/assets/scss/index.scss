@@ -1,31 +1,82 @@
+@import '_variables';
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    --black: black;
-    --white: white;
-    --dark: #282c34;
-    --light: #ccc;
-    --primary: orange;
-    --secondary: darkorange;
-    --topbar-height: 60px;
+    $topbar-height: 60px;
 }
 html, body {
     width: 100%;
-    background-color: var(--black);
+    height: 100%;
+    background-color: $black;
 }
 .fixed {
     position: fixed;
 }
-
+.black {
+    background-color: $black;
+    color: $white;
+}
+.primary {
+    background-color: $primary;
+    color: #000;
+}
+.secondary {
+    background-color: $primary;
+    color: #000;
+}
+.light {
+    background-color: $light;
+    color: $black;
+    &.primary {
+        background-color: $primary-light;
+    }
+    &.secondary {
+        background-color: $secondary-light;
+    }
+}
+.dark {
+    background-color: $c9;
+    color: $white;
+    &.primary {
+        background-color: $primary-dark;
+    }
+    &.secondary {
+        background-color: $secondary-dark;
+    }
+    .dark {
+        background-color: $c8;
+        .dark {
+            background-color: $c7;
+            .dark {
+                background-color: $c6;
+                .dark {
+                    background-color: $c5;
+                }
+            }
+        }
+    }
+}
+.a {
+    cursor: pointer;
+}
 ul {
     list-style: none;
 }
 li {
     white-space: nowrap;
     padding: 15px 20px 5px;
-    border-bottom: 1px solid var(--light);
+    border-bottom: 1px solid $light;
 }
 h2 {
-    color: var(--light);
+    color: $light;
+}
+input {
+    padding: 10px 20px;
+    border: none;
+    box-shadow: black 5px 5px 0 0;
+    &[type=button] {
+        cursor: pointer;
+    }
 }

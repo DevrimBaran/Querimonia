@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 
-import './Body.scss';
-class Body extends Component {
+import './Block.scss';
+
+class Block extends Component {
     constructor(props) {
         super(props);
 
@@ -9,11 +10,11 @@ class Body extends Component {
     }
     render() {
         return (
-            <div className="Body">
+            <div className="Block dark">
                 {this.props.children}
             </div>
         );
     }
 }
 
-export default Body;
+export default Block;
