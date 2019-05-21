@@ -32,6 +32,10 @@ public class Complaint {
         this.receiveDate = receiveDate;
     }
 
+    public Complaint() {
+
+    }
+
     public int getID() {
         return ID;
     }

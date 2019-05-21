@@ -14,6 +14,7 @@ public class ComplaintFactory {
 
     private static String makePreview(String text) {
         return Arrays.stream(text.split("\n"))
+                .filter(line -> !line.trim().isEmpty())
                 .limit(2)
                 .collect(Collectors.joining("\n"));
     }

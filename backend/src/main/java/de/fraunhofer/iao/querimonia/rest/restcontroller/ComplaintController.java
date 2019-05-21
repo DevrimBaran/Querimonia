@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.complaints.Complaint;
 import static de.fraunhofer.iao.querimonia.complaints.ComplaintFactory.createComplaint;
 
+import de.fraunhofer.iao.querimonia.complaints.Complaint;
 import de.fraunhofer.iao.querimonia.complaints.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaints.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
@@ -16,13 +17,13 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -30,7 +31,8 @@ import java.util.ArrayList;
 /**
  * This controller manages complaint view, import and export.
  */
-@RestController("/api")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
+@RestController()
 public class ComplaintController {
 
     @Autowired
@@ -38,7 +40,7 @@ public class ComplaintController {
     @Autowired
     FileStorageService fileStorageService;
 
-    @PostMapping("/import/file")
+    @PostMapping("/api/import/file")
     public void uploadComplaint(@RequestParam("file") MultipartFile file) {
         Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -114,8 +116,18 @@ public class ComplaintController {
         return results;
     }
 
-    @PostMapping("/import/text")
-    public void uploadText(@RequestBody TextInput input) {
-        complaintRepository.save(createComplaint(input.getText()));
+    @PostMapping("/api/import/text")
+    public Complaint uploadText(@RequestBody TextInput input) {
+        Complaint complaint = ComplaintFactory.createComplaint(input.getText());
+        complaintRepository.save(complaint);
+        return complaint;
+    }
+
+    @GetMapping("/api/complaints")
+    public List<Complaint> getTexts() {
+        ArrayList<Complaint> result = new ArrayList<>();
+        complaintRepository.findAll().forEach(result::add);
+
+        return result;
     }
 }
