@@ -20,6 +20,7 @@ import React, { Component } from 'react'
 
 import './TextBuilder.scss';
 class TextBuilder extends Component {
+    //Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
     constructor(props) {
         super(props);
 

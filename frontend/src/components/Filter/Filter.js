@@ -22,7 +22,40 @@ import './Filter.scss';
 class Filter extends Component {
     constructor(props) {
         super(props);
-
+        this.filter = {
+            "data": {}, // or undefined
+            "query": {
+                "where": {
+                    "relation": "AND",
+                    "clauses": [
+                        {
+                            "key": "color",
+                            "value": ["red", "orange"],
+                            "compare": "IN"
+                        },
+                        {
+                            "relation": "OR",
+                            "clauses": [
+                                {
+                                    "key": "brightness",
+                                    "value": [3, 7],
+                                    "compare": "BETWEEN"
+                                },
+                                {
+                                    "key": "saturation",
+                                    "value": 100,
+                                    "compare": "="
+                                }
+                            ]
+                        },
+                    ]
+                },
+                "orderby": {
+                    "color": "ASC",
+                    "brightness": "DESC"
+                }
+            }
+        }
         this.state = {}
     }
     render() {

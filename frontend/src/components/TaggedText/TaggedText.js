@@ -6,8 +6,6 @@ class TaggedText extends Component {
     constructor(props) {
         super(props);
 
-
-        console.log(props);
         this.state = {
             text: this.parseText(props.text)
         }
@@ -26,11 +24,12 @@ class TaggedText extends Component {
         p.push(<span key={p.length}>{text.text.substring(cpos, text.text.length)}</span>);
         return p;
     }
-    componentDidUpdate = (props) => {
-        console.log(props);
-        /*this.setState({
-            text: this.parseText(props.text)
-        });*/
+    componentWillUpdate = (props) => {
+        if (props.text.text !== this.props.text.text) {
+            this.setState({
+                text: this.parseText(props.text)
+            });
+        }
     }
     render() { 
         return (
