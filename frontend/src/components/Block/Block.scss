@@ -1,5 +1,45 @@
+/// Slightly lighten a color
+/// @access public
+/// @param {Color} $color - color to tint
+/// @param {Number} $percentage - percentage of `$color` in returned color
+/// @return {Color}
+@function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+}
+
 .Block {
     min-height: calc(100% - var(--topbar-height) - 120px);
     margin: 60px 30px;
-    box-shadow: #0e0e0e 10px 10px;
+    $background-color: #000;
+    color: white;
+    box-shadow: tint($background-color, 0%) 10px 10px;
+    background-color: tint($background-color, 20%);
+    .Block {
+        box-shadow: tint($background-color, 10%) 10px 10px;
+        background-color: tint($background-color, 30%);
+        .Block {
+            box-shadow: tint($background-color, 20%) 10px 10px;
+            background-color: tint($background-color, 40%);
+            .Block {
+                box-shadow: tint($background-color, 30%) 10px 10px;
+                background-color: tint($background-color, 50%);
+                .Block {
+                    box-shadow: tint($background-color, 40%) 10px 10px;
+                    background-color: tint($background-color, 60%);
+                    .Block {
+                        box-shadow: tint($background-color, 50%) 10px 10px;
+                        background-color: tint($background-color, 70%);
+                        .Block {
+                            box-shadow: tint($background-color, 60%) 10px 10px;
+                            background-color: tint($background-color, 80%);
+                            .Block {
+                                box-shadow: tint($background-color, 70%) 10px 10px;
+                                background-color: tint($background-color, 90%);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

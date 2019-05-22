@@ -50,7 +50,7 @@ class Filter extends Component {
     parseQueryBlock = (block, index, parent) => {
         if (block.relation) {
             return (
-                <Block key={index}>
+                <Block className="relation" key={index}>
                     {parent && (<span key="remove" onClick={this.remove.bind(this, parent.clauses, index)}>remove</span>)}
                     <RadioButton key="relation" onChange={this.modifyObject.bind(this, block, 'relation')} name={'relation' + index} values={['AND', 'OR']} value={block.relation} />
                     {block.clauses.map((clause, index) => {
@@ -62,7 +62,7 @@ class Filter extends Component {
             );
         }
         return (
-            <Block key={index}>
+            <Block className="clause" key={index}>
                 <Select onChange={this.modifyObject.bind(this, block, 'key')} name="key" values={this.props.keys} value={block.key} />
                 <Select onChange={this.modifyObject.bind(this, block, 'compare')} name="compare" values={this.props.comparators} value={block.compare} />
                 <input onChange={this.modifyObject.bind(this, block, 'value')} name="value" type="text" value={block.value}/>
@@ -74,7 +74,7 @@ class Filter extends Component {
         let items = [];
         for (let order of block) {
             items.push(
-                <Block key={items.length}>
+                <Block className="sort-item" key={items.length}>
                     <Select onChange={this.modifyObject.bind(this, order, 'key')} name={order.key} values={this.props.keys} value={order.key} />
                     <RadioButton onChange={this.modifyObject.bind(this, order, 'order')} values={['ASC', 'DESC']} value={order.order} name={order.key} />
                     <span key="remove" onClick={this.remove.bind(this, block, items.length)}>remove</span>
@@ -82,7 +82,7 @@ class Filter extends Component {
             );
         }
         return (
-            <Block>
+            <Block className="sort">
                 {items}
                 <input type="button" onClick={this.add.bind(this, block, { key: this.props.keys[0], order: 'ASC'})} value="Add" />
             </Block>
@@ -93,7 +93,7 @@ class Filter extends Component {
     }
     render() {
         return (
-            <div className="Filter">
+            <Block className="Filter">
                 <strong>Anzuzeigende Elemente:</strong>
                 <input type="number" onChange={this.modifyObject.bind(this, this.data, 'limit')} value={this.data.limit} />
                 <strong>Filter:</strong>
@@ -101,7 +101,7 @@ class Filter extends Component {
                 <strong>Sortierung:</strong>
                 {this.parseSortBlock(this.data.orderby)}
                 <input type="button" value="Anwenden" onClick={this.submit} />
-            </div>
+            </Block>
         );
     }
 }

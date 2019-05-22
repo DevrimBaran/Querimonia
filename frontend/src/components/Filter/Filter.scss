@@ -1,0 +1,17 @@
+.Filter {
+    .Block {
+        display: flex;
+        margin: 5px 15px;
+    }
+    .relation {
+        flex-direction: column;
+        .RadioButton {
+            display: inline-block;
+            text-align: center;
+            padding: 20px;
+        }
+    }    
+    .clause {
+        flex-direction: row;
+    }
+}

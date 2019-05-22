@@ -1,5 +1,14 @@
 @import '_variables';
 
+/// Slightly lighten a color
+/// @access public
+/// @param {Color} $color - color to tint
+/// @param {Number} $percentage - percentage of `$color` in returned color
+/// @return {Color}
+@function tint($color, $percentage) {
+    @return mix(white, $color, $percentage);
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -25,38 +34,6 @@ html, body {
 .secondary {
     background-color: $primary;
     color: #000;
-}
-.light {
-    background-color: $light;
-    color: $black;
-    &.primary {
-        background-color: $primary-light;
-    }
-    &.secondary {
-        background-color: $secondary-light;
-    }
-}
-.dark {
-    background-color: $c9;
-    color: $white;
-    &.primary {
-        background-color: $primary-dark;
-    }
-    &.secondary {
-        background-color: $secondary-dark;
-    }
-    .dark {
-        background-color: $c8;
-        .dark {
-            background-color: $c7;
-            .dark {
-                background-color: $c6;
-                .dark {
-                    background-color: $c5;
-                }
-            }
-        }
-    }
 }
 .a {
     cursor: pointer;

@@ -10,7 +10,7 @@ class Block extends Component {
     }
     render() {
         return (
-            <div className="Block dark">
+            <div className={this.props.className + " Block"}>
                 {this.props.children}
             </div>
         );
