@@ -59,7 +59,7 @@ class Table extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.data.map((row, index) => {
+                    {this.props.data && this.props.data.map((row, index) => {
                         return (
                             <tr key={index} className={index % 2 == 1 ? 'dark' : ''} onClick={() => this.props.onClick(row)}>
                                 {this.map(row, (col, i) => {

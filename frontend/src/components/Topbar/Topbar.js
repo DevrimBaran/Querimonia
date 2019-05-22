@@ -8,7 +8,7 @@ function Topbar() {
         <header className="Topbar dark">
             <img src={logo} className="Topbar-logo" alt="logo" />
             <Modal label="Import">
-                <textarea class="textarea" placeholder="Meldung eingeben oder Datei per drag and drop ablegen." />
+                <textarea className="textarea" placeholder="Meldung eingeben oder Datei per drag and drop ablegen." />
                 <input className="primary" type="button" value="importieren"/>
             </Modal>
             <Modal label="Export">

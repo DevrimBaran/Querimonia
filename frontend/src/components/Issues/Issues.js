@@ -30,13 +30,13 @@ class Issues extends Component {
             issues: []
         }
     }
-    fetchData = () => {
+    fetchData = (data) => {
+        console.log(data);
         this.setState({active: null, loading: true});
-        Api.get('/api/issues')
+        Api.get('/api/issues', data)
             .then(this.setData);
     }
     setData = (data) => {
-        console.log("setData", data)
         this.setState({loading: false, issues: data});
     }
     activate = (issue) => {
@@ -44,53 +44,56 @@ class Issues extends Component {
         this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0]});
     }
     componentDidMount = () => {
-        this.fetchData();
+        this.fetchData({query: { limit: 20, offset: 0}});
     }
     render() {
         return (
             <React.Fragment>
                 <Topbar />
                 {
-                    this.state.loading ?
-                    (
-                        <i className="fa fa-spinner"></i>
-                    ) : (
-                        this.state.active ? (
-                            <Body>
-                                <Collapsible collapse="false" side="right">
-                                    <ul class="dark">
-                                        <li><strong class="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
-                                        {
-                                            this.state.issues.map((issue, index) => {
-                                                return <li key={index}><span className={issue.id === this.state.active.id ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>
-                                            })
-                                        }
-                                    </ul>
-                                </Collapsible>
-                                <Block>
-                                    <h2>???</h2>
-                                    <Tabbed>
-                                        <TextBuilder label="Antwort erstellen"></TextBuilder>
-                                        <div label="Details">
-                                            <Stats></Stats>
-                                            <Log></Log>
-                                        </div>
-                                    </Tabbed>
-                                </Block>
-                                <Block>
-                                    <h2>Meldetext</h2>
-                                    <Tabbed>
-                                        <TaggedText label="Überarbeitet" text={this.state.active.text}></TaggedText>
-                                        <Text label="Original"></Text>
-                                    </Tabbed>
-                                </Block>
-                            </Body>
-                        ) : ( 
-                            <Body>
-                                <Filter onChange={this.changeIssue}></Filter>
-                                <Table data={this.state.issues} onClick={this.activate} tags={['id', 'datum', ['text', 'text'], 'thema', 'dringlichkeit']} />
-                            </Body>
-                        )
+                    this.state.active ? (
+                        <Body>
+                            <Collapsible collapse="false" side="right">
+                                <ul class="dark">
+                                    <li><strong className="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
+                                    {
+                                        this.state.issues.map((issue, index) => {
+                                            return <li key={index}><span className={issue.id === this.state.active.id ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>
+                                        })
+                                    }
+                                </ul>
+                            </Collapsible>
+                            <Block>
+                                <h2>???</h2>
+                                <Tabbed>
+                                    <TextBuilder label="Antwort erstellen"></TextBuilder>
+                                    <div label="Details">
+                                        <Stats></Stats>
+                                        <Log></Log>
+                                    </div>
+                                </Tabbed>
+                            </Block>
+                            <Block>
+                                <h2>Meldetext</h2>
+                                <Tabbed>
+                                    <TaggedText label="Überarbeitet" text={this.state.active.text}></TaggedText>
+                                    <Text label="Original"></Text>
+                                </Tabbed>
+                            </Block>
+                        </Body>
+                    ) : ( 
+                        <Body>
+                            <Filter 
+                                    onSubmit={(query) => this.fetchData({ query: query })}
+                                keys={['id', 'date', 'thema', 'dringlichkeit']}
+                                comparators={['=', '!=', '<', '<=', '>', '>=', 'LIKE', 'IN', 'BETWEEN', 'REGEXP']} />
+                            {this.state.loading ?
+                                (
+                                    <i className="fa fa-spinner"></i>
+                                ) : (
+                                    <Table data={this.state.issues} onClick={this.activate} tags={['id', 'date', ['text', 'text'], 'thema', 'dringlichkeit']} />
+                                )}
+                        </Body>
                     )
                 }
             </React.Fragment>

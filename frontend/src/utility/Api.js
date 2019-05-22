@@ -1,12 +1,12 @@
-//TODO load from config
+//TODO webpack DEBUG variable
+//mocks fetch to simulate api response on fetch().catch
 import fetch from '../tests/apiMock';
 
 const fetchJson = function(action, options) {
-    console.log('fetch ' + action)
     return fetch(action, options)
         .then(response => { return response.json(); })
-        .catch(() => {
-            return {}
+        .catch((e) => {
+            return []
         });
 }
 
