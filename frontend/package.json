@@ -14,10 +14,20 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "mock": "node mock/basic.js"
+    "eslint": "node_modules/.bin/eslint src"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "standard",
+      "standard-react"
+    ],
+    "parser": "babel-eslint",
+    "rules": {
+      "semi": [
+        2,
+        "always"
+      ]
+    }
   },
   "browserslist": {
     "production": [
@@ -32,11 +42,18 @@
     ]
   },
   "devDependencies": {
+    "eslint-config-standard": "^12.0.0",
+    "eslint-config-standard-react": "^7.0.2",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-standard": "^4.0.0",
     "husky": "^2.3.0"
   },
   "husky": {
     "hooks": {
-      "pre-push": "node node_modules/eslint/bin/eslint.js --config node_modules/eslint-config-react-app/index.js src"
+      "pre-push": "node_modules/.bin/eslint src"
     }
   }
 }
