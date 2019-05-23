@@ -1,96 +1,150 @@
+image: docker:latest
+services:
+  - docker:dind
 stages:
   - build
   - test
-  - prod
-  - dev
-  - master
+  - deploy
 
-cache:
-  paths:
-  - ~/export
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
 
 #frontend
-base-frontend: &base-frontend
-  image: node:latest
-  cache:
-    paths:
-    - frontend/node_modules/
-  script:
-   - echo 'overwrite'
-  only: ["frontend-prod", "developement", "master"]
-
-build-frontend:
-  <<: *base-frontend
-  stage: build
-  script:
-   - cd frontend/
-   - npm install --no-progress
-  artifacts:
-   paths:
-   - node_modules/
-   expire_in: 1 week
-
-test-frontend:
-  <<: *base-frontend
+test-frontend-dev:
   stage: test
+  image: node:8.16.0-jessie
   script:
-   - cd frontend/
-   - npm install --no-progress
-   - npm run test
+    - cd frontend/
+    - npm install --no-progress
+    - npm run test
+  artifacts:
+    paths:
+      - frontend/build/
+  allow_failure: true
+  only:
+    - frontend-dev
 
-prod-frontend:
-  <<: *base-frontend
-  stage: prod
+test-frontend-prod:
+  stage: test
+  image: node:8.16.0-jessie
   script:
-   - cd frontend/
-   - npm install --no-progress
-   - npm run build
-   - cp build ~/export/backend-prod
+    - cd frontend/
+    - npm install --no-progress
+    - npm run test
+  artifacts:
+    paths:
+      - frontend/build/
+  only:
+      - frontend-prod
+
+deploy-frontend-dev:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - cp frontend/build/ /home/beschwerdemanagement/export/dev-frontend/
+  allow_failure: true
+  only:
+    - frontend-dev
+
+deploy-frontend-prod:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - cp frontend/build/ /home/beschwerdemanagement/export/prod-frontend/
+  only:
+    - frontend-prod
 
 # backend
-base-backend: &base-backend
-  image: maven:latest
-  cache:
-    paths:
-    - backend/target/
-  script:
-   - echo 'overwrite'
-  only: ['backend-prod', 'developement', 'master']
-
-build-backend:
-  <<: *base-backend
+build-backend-dev:
   stage: build
+  image: maven:3.6.1-jdk-11
   script:
-   - cd backend/
-   - mvn package
+    - cd backend/
+    - mvn package
   artifacts:
-   paths:
-    - backend/target/
-   expire_in: 1 week
+    paths:
+      - backend/target/*.jar
+  allow_failure: true
+  only:
+    - backend-dev
 
-prod-backend:
-  <<: *base-backend
-  stage: prod
+build-backend-prod:
+  stage: build
+  image: maven:3.6.1-jdk-11
   script:
-   - cd backend/
-   - mv target/*.jar ~/export/backend-prod
-   - fuser -k -n tcp 8082
-   - java -jar ~/export/backend-prod/*.jar --server.port=8082&
+    - cd backend/
+    - mvn package
+  artifacts:
+    paths:
+      - backend/target/*.jar
+  only:
+    - backend-prod
+
+deploy-backend-dev:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - chmod +x backend/target/*.jar
+    - cp backend/target/*.jar ~/
+    - echo 'start server in background'
+   #- set port
+    - sudo systemctl restart stuprojavaserver
+  allow_failure: true
+  only:
+    - backend-dev
+
+deploy-backend-prod:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - chmod +x backend/target/*.jar
+    - cp backend/target/*.jar ~/
+    - echo 'start server in background'
+   #- set port
+    - sudo systemctl restart stuprojavaserver
+  only:
+    - backend-prod
 
 # all
 dev:
-  stage: dev
-  only: ["development"]
+  stage: deploy
+  tags:
+    - shell
   script:
-   - cp ~/export/backend-prod/*.jar ~/export/development/backend
-   - cp -r ~/export/frontend-prod/* ~/export/development/frontend
-   - fuser -k -n tcp 8081
-   - java -jar ~/export/backend-prod/*.jar --server.port=8081&
+    # frontend
+    - cp frontend/build/ /home/beschwerdemanagement/export/development/frontend/
+    # backend
+    - chmod +x backend/target/*.jar
+    - cp backend/target/*.jar ~/
+    - echo 'start server in background'
+   #- set port
+    - sudo systemctl restart stuprojavaserver
+  dependencies:
+    - build-backend-prod
+    - test-frontend-prod
+  only:
+    - development
 
 master:
-  stage: master
-  only: ["master"]
+  stage: deploy
+  tags:
+    - shell
   script:
-   - cp -r ~/export/development/* ~/export/master/
-   - fuser -k -n tcp 8080
-   - java -jar ~/export/development/backend/*.jar --server.port=8080&
+    # frontend
+    - cp frontend/build/ /home/beschwerdemanagement/export/master/frontend/
+    # backend
+    - chmod +x backend/target/*.jar
+    - cp backend/target/*.jar ~/
+    - echo 'start server in background'
+   #- set port
+    - sudo systemctl restart stuprojavaserver
+  dependencies:
+    - build-backend-prod
+    - test-frontend-prod
+  only:
+    - master
