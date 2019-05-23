@@ -17,6 +17,7 @@ test-frontend-dev:
   script:
     - cd frontend/
     - npm install --no-progress
+    - npm run build
   artifacts:
     paths:
       - frontend/build/
@@ -30,6 +31,7 @@ test-frontend-prod:
   script:
     - cd frontend/
     - npm install --no-progress
+    - npm run build
   artifacts:
     paths:
       - frontend/build/
