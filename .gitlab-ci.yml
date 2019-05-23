@@ -43,11 +43,7 @@ deploy-frontend-dev:
   tags:
     - shell
   script:
-    - echo '~'
-    - ls -al 
-    - echo 'frontend-build'
-    - ls -al frontend/build/
-    - cp -r frontend/build/ /home/beschwerdemanagement/export/dev-frontend/
+    - cp -r frontend/build/ /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
     - frontend-dev
@@ -57,7 +53,7 @@ deploy-frontend-prod:
   tags:
     - shell
   script:
-    - cp -r frontend/build/ /home/beschwerdemanagement/export/prod-frontend/
+    - cp -r frontend/build/ /home/beschwerdemanagement/export/frontend-prod/
   only:
     - frontend-prod
 
