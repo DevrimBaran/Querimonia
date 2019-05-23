@@ -42,7 +42,7 @@ class Table extends Component {
                 }
                 return cb(temp, index);
             } else if (Array.isArray(tag)) {
-                return tag[tag.length];
+                return tag[tag.length - 1];
             }
             return tag;
         });
