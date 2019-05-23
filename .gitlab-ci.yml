@@ -43,7 +43,7 @@ deploy-frontend-dev:
   tags:
     - shell
   script:
-    - cp -r frontend/build /home/beschwerdemanagement/export/frontend-dev/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
     - frontend-dev
@@ -53,7 +53,7 @@ deploy-frontend-prod:
   tags:
     - shell
   script:
-    - cp -r frontend/build /home/beschwerdemanagement/export/frontend-prod/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-prod/
   only:
     - frontend-prod
 
@@ -117,7 +117,7 @@ dev:
     - shell
   script:
     # frontend
-    - cp -r frontend/build/ /home/beschwerdemanagement/export/development/frontend/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/development/frontend/
     # backend
     - chmod +x backend/target/*.jar
     - cp backend/target/*.jar /home/gitlab-runner/
@@ -136,7 +136,7 @@ master:
     - shell
   script:
     # frontend
-    - cp -r frontend/build/ /home/beschwerdemanagement/export/master/frontend/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/master/frontend/
     # backend
     - chmod +x backend/target/*.jar
     - cp -r backend/target/*.jar /home/gitlab-runner/ 
