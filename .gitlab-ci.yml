@@ -43,7 +43,7 @@ deploy-frontend-dev:
   tags:
     - shell
   script:
-    - cp -r frontend/build/ /home/beschwerdemanagement/export/frontend-dev/
+    - cp -r frontend/build /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
     - frontend-dev
@@ -53,7 +53,7 @@ deploy-frontend-prod:
   tags:
     - shell
   script:
-    - cp -r frontend/build/ /home/beschwerdemanagement/export/frontend-prod/
+    - cp -r frontend/build /home/beschwerdemanagement/export/frontend-prod/
   only:
     - frontend-prod
 
