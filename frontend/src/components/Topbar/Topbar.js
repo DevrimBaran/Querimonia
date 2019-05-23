@@ -8,34 +8,39 @@ class Topbar extends Component {
     constructor(props) {
         super(props);
             this.state = {
-                image: ''
+              
         }
     }
 
-    onChange(e){
-        let files = e.target.files;
+    onClick = () => {
+            if (this.refs.textInput.value) {
+                const url ="/api/import/text"
+                return api.post(url,{text: this.refs.textInput.value})
+                .then(response => console.warn("result",response))
 
-        let reader = new FileReader();
-        reader.readAsDataURL(files[0]);
-
-        reader.onload = (e) => {
-            const url ="https://localhost:3000/api/import/file"
-            const formData = {file:e.target.result}
-            return api.post(url,formData)
-            .then(response => console.warn("result",response))
-        }
+            } else {
+                const url ="/api/import/file"
+                const formData = new FormData();
+                formData.append("file",this.refs.fileInput.files[0]);
+                return api.post(url,formData)
+                .then(response => console.warn("result",response))
+            }
+        
     }
+
     render(){
     return (
         <header className="Topbar dark">
             <img src={logo} className="Topbar-logo" alt="logo" />
             <Modal label="Import">
-            <div className="upload" onSubmit={this.onFormSubmit}>
-            <h1>Upload</h1>
-            <input type="file" name="file" onChange={(e) => this.onChange(e)}/>
-
-            </div>
-               
+                <div className="upload" onSubmit={this.onFormSubmit}>
+                    <h1>Click to upload</h1>
+                    <form method="post" enctype="multipart/form-data">
+                    <input type="text" name="text" ref="textInput"/>
+                    <input type="file" name="file" ref="fileInput" />
+                    <input type="button" name="uploadButton" onClick={this.onClick}/>
+                    </form>
+                </div>
             </Modal>
             <Modal label="Export">
                 <p>Hier sollte man auswählen können was man exportieren möchte?</p>
