@@ -2,6 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://beschwerdemanagement-dev.iao.fraunhofer.de/frontend-dev",
   "dependencies": {
     "express": "^4.16.4",
     "node-sass": "^4.12.0",
