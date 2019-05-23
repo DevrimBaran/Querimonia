@@ -48,7 +48,6 @@ class Table extends Component {
         });
     }
     render() {
-        const tags = this.props.tags;
         return (
             <table className="dark">
                 <thead>
@@ -61,7 +60,7 @@ class Table extends Component {
                 <tbody>
                     {this.props.data && this.props.data.map((row, index) => {
                         return (
-                            <tr key={index} className={index % 2 == 1 ? 'dark' : ''} onClick={() => this.props.onClick(row)}>
+                            <tr key={index} className={index % 2 === 1 ? 'dark' : ''} onClick={() => this.props.onClick(row)}>
                                 {this.map(row, (col, i) => {
                                     return (<td key={index + '/' + i}>{col}</td>);
                                 })}
