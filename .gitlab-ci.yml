@@ -17,7 +17,6 @@ test-frontend-dev:
   script:
     - cd frontend/
     - npm install --no-progress
-    - npm run test
   artifacts:
     paths:
       - frontend/build/
@@ -31,7 +30,6 @@ test-frontend-prod:
   script:
     - cd frontend/
     - npm install --no-progress
-    - npm run test
   artifacts:
     paths:
       - frontend/build/
@@ -89,7 +87,7 @@ deploy-backend-dev:
     - shell
   script:
     - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar ~/
+    - cp backend/target/*.jar /home/gitlab-runner/
     - echo 'start server in background'
    #- set port
     - sudo systemctl restart stuprojavaserver
@@ -103,7 +101,7 @@ deploy-backend-prod:
     - shell
   script:
     - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar ~/
+    - cp backend/target/*.jar /home/gitlab-runner/
     - echo 'start server in background'
    #- set port
     - sudo systemctl restart stuprojavaserver
@@ -120,7 +118,7 @@ dev:
     - cp frontend/build/ /home/beschwerdemanagement/export/development/frontend/
     # backend
     - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar ~/
+    - cp backend/target/*.jar /home/gitlab-runner/
     - echo 'start server in background'
    #- set port
     - sudo systemctl restart stuprojavaserver
@@ -139,7 +137,7 @@ master:
     - cp frontend/build/ /home/beschwerdemanagement/export/master/frontend/
     # backend
     - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar ~/
+    - cp backend/target/*.jar /home/gitlab-runner/ 
     - echo 'start server in background'
    #- set port
     - sudo systemctl restart stuprojavaserver
