@@ -16,7 +16,7 @@ test-frontend-dev:
   image: node:8.16.0-jessie
   script:
     - cd frontend/
-    - npm install --no-progress
+    - npm ci --no-progress
     - npm run build
   artifacts:
     paths:
@@ -30,7 +30,7 @@ test-frontend-prod:
   image: node:8.16.0-jessie
   script:
     - cd frontend/
-    - npm install --no-progress
+    - npm ci --no-progress
     - npm run build
   artifacts:
     paths:
@@ -43,7 +43,7 @@ deploy-frontend-dev:
   tags:
     - shell
   script:
-    - cp frontend/build/ /home/beschwerdemanagement/export/dev-frontend/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
     - frontend-dev
@@ -53,7 +53,7 @@ deploy-frontend-prod:
   tags:
     - shell
   script:
-    - cp frontend/build/ /home/beschwerdemanagement/export/prod-frontend/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-prod/
   only:
     - frontend-prod
 
@@ -117,7 +117,7 @@ dev:
     - shell
   script:
     # frontend
-    - cp frontend/build/ /home/beschwerdemanagement/export/development/frontend/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/development/frontend/
     # backend
     - chmod +x backend/target/*.jar
     - cp backend/target/*.jar /home/gitlab-runner/
@@ -136,10 +136,10 @@ master:
     - shell
   script:
     # frontend
-    - cp frontend/build/ /home/beschwerdemanagement/export/master/frontend/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/master/frontend/
     # backend
     - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar /home/gitlab-runner/ 
+    - cp -r backend/target/*.jar /home/gitlab-runner/ 
     - echo 'start server in background'
    #- set port
     - sudo systemctl restart stuprojavaserver
