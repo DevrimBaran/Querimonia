@@ -30,21 +30,21 @@ class Issues extends Component {
             issues: []
         }
     }
-    fetchData = (data) => {
-        console.log(data);
+    fetchData = (query) => {
+        //console.log(query);
         this.setState({active: null, loading: true});
-        Api.get('/api/issues', data)
+        Api.get('/api/complaints', query)
             .then(this.setData);
     }
     setData = (data) => {
         this.setState({loading: false, issues: data});
     }
     activate = (issue) => {
-        console.log(issue)
+        //console.log(issue);
         this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0]});
     }
     componentDidMount = () => {
-        this.fetchData({query: { limit: 20, offset: 0}});
+        this.fetchData({limit: 20, offset: 0});
     }
     render() {
         return (
@@ -54,7 +54,7 @@ class Issues extends Component {
                     this.state.active ? (
                         <Body>
                             <Collapsible collapse="false" side="right">
-                                <ul class="dark">
+                                <ul className="dark">
                                     <li><strong className="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
                                     {
                                         this.state.issues.map((issue, index) => {
@@ -84,14 +84,14 @@ class Issues extends Component {
                     ) : ( 
                         <Body>
                             <Filter 
-                                    onSubmit={(query) => this.fetchData({ query: query })}
-                                keys={['id', 'date', 'thema', 'dringlichkeit']}
-                                comparators={['=', '!=', '<', '<=', '>', '>=', 'LIKE', 'IN', 'BETWEEN', 'REGEXP']} />
+                                onSubmit={(query) => this.fetchData({ query: query })}
+                                keys={['id', 'preview', 'receiveDate', 'sentiment']}
+                                comparators={['=', '!=', '<', '<=', '>', '>=']} />
                             {this.state.loading ?
                                 (
                                     <i className="fa fa-spinner"></i>
                                 ) : (
-                                    <Table data={this.state.issues} onClick={this.activate} tags={['id', 'date', ['text', 'text'], 'thema', 'dringlichkeit']} />
+                                    <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment']} />
                                 )}
                         </Body>
                     )

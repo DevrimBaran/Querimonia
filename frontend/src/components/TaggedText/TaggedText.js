@@ -12,6 +12,7 @@ class TaggedText extends Component {
     }
     parseText(text) {
         if (!text) return '';
+        if (!text.text) return text;
         let p = [];
         let cpos = 0;
         if (Array.isArray(text.entities)) {
@@ -25,7 +26,7 @@ class TaggedText extends Component {
         return p;
     }
     componentWillUpdate = (props) => {
-        if (props.text.text !== this.props.text.text) {
+        if (props.text !== this.props.text) {
             this.setState({
                 text: this.parseText(props.text)
             });
