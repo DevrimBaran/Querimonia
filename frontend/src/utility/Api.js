@@ -1,6 +1,6 @@
 //TODO webpack DEBUG variable
 //mocks fetch to simulate api response on fetch().catch
-//import fetch from '../tests/apiMock';
+import fetch from '../tests/apiMock';
 
 const fetchJson = function(action, options) {
     return fetch(action, options)
