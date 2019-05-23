@@ -16,7 +16,7 @@ test-frontend-dev:
   image: node:8.16.0-jessie
   script:
     - cd frontend/
-    - npm install --no-progress
+    - npm ci --no-progress
     - npm run build
   artifacts:
     paths:
@@ -30,7 +30,7 @@ test-frontend-prod:
   image: node:8.16.0-jessie
   script:
     - cd frontend/
-    - npm install --no-progress
+    - npm ci --no-progress
     - npm run build
   artifacts:
     paths:
