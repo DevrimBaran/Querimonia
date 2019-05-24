@@ -18,9 +18,6 @@ test-frontend-dev:
     - cd frontend/
     - npm ci --no-progress
     - npm run build
-  cache:
-    paths:
-      - frontend/node_modules/
   artifacts:
     paths:
       - frontend/build/
@@ -35,9 +32,6 @@ test-frontend-prod:
     - cd frontend/
     - npm ci --no-progress
     - npm run build
-  cache:
-    paths:
-      - frontend/node_modules/
   artifacts:
     paths:
       - frontend/build/
