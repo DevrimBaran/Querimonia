@@ -98,9 +98,9 @@ function filter(clause, e) {
     } else {
         switch(clause.compare) {
             case '=':
-                return e[clause.key] == clause.value;
+                return e[clause.key] === clause.value;
             case '!=':
-                return e[clause.key] != clause.value;
+                return e[clause.key] !== clause.value;
             case '<':
                 return e[clause.key] < clause.value;
             case '<=':
