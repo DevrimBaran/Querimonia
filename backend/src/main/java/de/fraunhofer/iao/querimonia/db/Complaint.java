@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.complaints;
+package de.fraunhofer.iao.querimonia.db;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,6 +54,10 @@ public class Complaint {
 
     public LocalDate getReceiveDate() {
         return receiveDate;
+    }
+
+    public String getSubject() {
+        return subject;
     }
 
     @Override

@@ -1,4 +1,6 @@
-package de.fraunhofer.iao.querimonia.complaints;
+package de.fraunhofer.iao.querimonia.db;
+
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseRepository;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -9,6 +11,7 @@ public class ComplaintFactory {
     public static Complaint createComplaint(String complaintText) {
         String preview = makePreview(complaintText);
         String subject = getSubject(complaintText);
+
         return new Complaint(complaintText, preview, "NORMAL", subject, LocalDate.now());
     }
 
