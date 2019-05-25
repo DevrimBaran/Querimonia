@@ -1,3 +1,4 @@
+/**
 let db = []
 let chars = "abcdefghijklmnopqrstuvwxyz".split('');
 
@@ -156,4 +157,4 @@ fetch = function(uri, options) {
     );
 }
 
-export default fetch;
+export default fetch;*/

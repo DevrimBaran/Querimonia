@@ -34,6 +34,7 @@ class Issues extends Component {
         //console.log(query);
         this.setState({active: null, loading: true});
         Api.get('/api/complaints', query)
+            .then((data) => {console.log(data); return data;})
             .then(this.setData);
     }
     setData = (data) => {
