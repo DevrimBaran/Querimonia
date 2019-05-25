@@ -6,7 +6,7 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/import/text
+POST http://localhost:8080/api/import/text
 Content-Type: application/json
 
 {
@@ -19,6 +19,8 @@ GET http://localhost:8080/api/complaints
 
 ###
 
-DELETE http://localhost:8080/api/complaints/1
+DELETE http://localhost:8080/api/complaints/9
 
 ###
+
+POST https://kikuko.iao.fraunhofer.de/apitext

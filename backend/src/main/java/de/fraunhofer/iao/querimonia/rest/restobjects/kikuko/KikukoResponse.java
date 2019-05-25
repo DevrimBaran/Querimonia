@@ -2,11 +2,11 @@ package de.fraunhofer.iao.querimonia.rest.restobjects.kikuko;
 
 import com.fasterxml.jackson.annotation.*;
 
-/*@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "pipelines",
         "content"
-})*/
+})
 public class KikukoResponse {
 
     private Pipelines pipelines;
@@ -35,4 +35,11 @@ public class KikukoResponse {
         this.content = content;
     }
 
+    @Override
+    public String toString() {
+        return "KikukoResponse{" +
+                "pipelines=" + pipelines +
+                ", content='" + content + '\'' +
+                '}';
+    }
 }
