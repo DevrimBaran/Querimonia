@@ -40,12 +40,12 @@ POST http://localhost:8080/api/import/text
 Content-Type: application/json
 
 {
-  "text": "Fahrer ist leider nicht erfolgt!"
+  "text": "Der Fahrer war sehr unfreundlich!"
 }
 
 ###
 
-POST http://localhost:8080/api/responses/new/11
+POST http://localhost:8080/api/responses/new/20
 
 ###
 
@@ -75,6 +75,27 @@ GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
 
 # delete a complaint
 DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
+GET http://localhost:8080/api/responses/24
+
+### Antwortgenerierungs-Beispiele
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/import/text
+Content-Type: application/json
+
+{
+  "text": "Hallo! Der Fahrer war heute sehr unfreundlich!"
+}
 
 ###
 
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/72
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
+
+###
+
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
+
+###
