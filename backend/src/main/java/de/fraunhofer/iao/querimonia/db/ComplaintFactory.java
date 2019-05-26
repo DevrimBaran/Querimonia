@@ -30,11 +30,7 @@ public class ComplaintFactory {
 
     private static String getSubject(String text) {
         HashMap<String, Double> typeMap = new HashMap<>();
-        Typ typ = new KIKuKoClassifier().executeKikukoRequest(text)
-                .getPipelines()
-                .getTempPipeline()
-                .get(0)
-                .getTyp();
+        Typ typ = new KIKuKoClassifier().getClassification(text);
 
         typeMap.put("Fahrt nicht erfolgt", typ.getFahrtNichtErfolgt());
         typeMap.put("Fahrer unfreundlich", typ.getFahrerUnfreundlich());

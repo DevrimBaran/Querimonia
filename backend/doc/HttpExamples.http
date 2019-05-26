@@ -15,11 +15,20 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/api/complaints
+GET http://localhost:8080/api/complaints/0
 
 ###
 
-DELETE http://localhost:8080/api/complaints/9
+DELETE http://localhost:8080/api/complaints/0
+
+###
+
+POST http://localhost:8080/api/import/text
+Content-Type: application/json
+
+{
+"text" : "ausfall abicbai unfreundlich"
+}
 
 ###
 
