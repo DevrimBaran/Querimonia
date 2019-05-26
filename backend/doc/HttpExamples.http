@@ -27,7 +27,7 @@ POST http://localhost:8080/api/import/text
 Content-Type: application/json
 
 {
-"text" : "ausfall abicbai unfreundlich"
+"text" : "ausfall und fahrer unfreundlich"
 }
 
 ###
@@ -45,7 +45,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8080/api/responses/new/17
+POST http://localhost:8080/api/responses/new/11
 
 ###
 
@@ -53,6 +53,28 @@ DELETE http://localhost:8080/api/templates/8
 
 ###
 
-GET http://localhost:8080/api/responses/16
+# Returns all complaints in the database
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints
 
 ###
+
+# Posts a new complaint text into the database
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/import/text
+Content-Type: application/json
+
+{
+  "text": "Fahrt ist leider nicht erfolgt!\nDas ist sehr schade!\nLiebe Grüße\nMax Mustermann"
+}
+
+###
+
+# get a single complaint
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
+
+###
+
+# delete a complaint
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
+
+###
+

@@ -10,16 +10,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @SpringBootApplication
 @EnableConfigurationProperties({
-        FileStorageProperties.class
+    FileStorageProperties.class
 })
 public class Launcher {
 
-    public static void main(String[] args) {
-        setupDatabase();
-        SpringApplication.run(Launcher.class, args);
-    }
-
-    private static void setupDatabase() {
-
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(Launcher.class, args);
+  }
 }
