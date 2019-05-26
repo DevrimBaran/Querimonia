@@ -1,9 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
-import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
-import de.fraunhofer.iao.querimonia.db.ResponseSuggestion;
-import de.fraunhofer.iao.querimonia.db.ResponseTemplate;
+import de.fraunhofer.iao.querimonia.db.*;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
@@ -117,19 +114,10 @@ public class ComplaintController {
         return ComplaintFactory.createComplaint(text);
     }
 
-    private void makeResponse(Complaint complaint) {
-
-        // save response TODO: create proper responses
-        ResponseTemplate sampleTemplate = new ResponseTemplate("Danke für ihre Nachricht",
-                complaint.getSubject(),
-                "COMPLETE_TEXT");
-
-        ResponseSuggestion suggestion = new ResponseSuggestion(complaint, sampleTemplate,
-                sampleTemplate.getTemplateText());
-
-        templateRepository.save(sampleTemplate);
-        responseRepository.save(suggestion);
-    }
+    /**
+     * This functionality has been moved to the ResponseController!
+     */
+    private void makeResponse(Complaint complaint) { }
 
     @PostMapping("/api/import/text")
     public Complaint uploadText(@RequestBody TextInput input) {

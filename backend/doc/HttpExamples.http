@@ -33,3 +33,26 @@ Content-Type: application/json
 ###
 
 POST https://kikuko.iao.fraunhofer.de/apitext
+
+###
+
+POST http://localhost:8080/api/import/text
+Content-Type: application/json
+
+{
+  "text": "Fahrer ist leider nicht erfolgt!"
+}
+
+###
+
+POST http://localhost:8080/api/responses/new/17
+
+###
+
+DELETE http://localhost:8080/api/templates/8
+
+###
+
+GET http://localhost:8080/api/responses/16
+
+###

@@ -20,6 +20,7 @@ public class ResponseSuggestion {
     @JoinColumn
     private ResponseTemplate template;
 
+    @Column(length = 1024)
     private String responseText;
 
     @JsonCreator
