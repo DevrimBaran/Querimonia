@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-//import Api from '../../utility/Api';
+import Api from '../../utility/Api';
 
 //import Block from '../Block/Block';
 //import Body from '../Body/Body';
@@ -34,38 +34,51 @@ class TextBuilder extends Component {
         }
     }
 
+    componentDidMount() {
+        Api.post('/api/response/new/' + this.props.complaintId)
+            .then((data) => { console.log(data); return data; })
+            .then(this.setData);
+    }
+
     render() {
         return (
-            <div className="TextBuilder">
-                <div id="TextBuilder" ref="TextBuilder">
-                <p>Hallo Mr.Bond,</p><br/> 
-                <p>vielen Dank für Ihre Anfrage.</p>
-                <br/> 
-                 <div className="antwortFeld1">
-                    <input id="button" type="button" name="antwort" 
-                    value = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"
-                    onClick={this.onClick}/>
-                 </div>
-                 <br/> 
-                 <div className="antwortFeld2">
-                    <input id="button" type="button" name="antwort" 
-                    value = "erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
-                    onClick={this.onClick}/>
-                 </div>
-                 <br/> 
-                 <div className="antwortFeld3">
-                    <input id="button" type="button" name="antwort" 
-                    value = "no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam"
-                    onClick={this.onClick}/>
-                 </div>
-                 <br/> 
-                 <br/> 
-                 <p>Mit freundlichen Grüßen</p>
-                 <p>Eure Spezialisten für Hardcoden!</p>
-            </div>
+            <div className="TextBuilder" ref="TextBuilder">
+                
             </div>
         );
     }
 }
 
 export default TextBuilder;
+/*
+
+<div className="TextBuilder">
+    <div id="TextBuilder" ref="TextBuilder">
+        <p>Hallo Mr.Bond,</p><br />
+        <p>vielen Dank für Ihre Anfrage.</p>
+        <br />
+        <div className="antwortFeld1">
+            <input id="button" type="button" name="antwort"
+                value="Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam"
+                onClick={this.onClick} />
+        </div>
+        <br />
+        <div className="antwortFeld2">
+            <input id="button" type="button" name="antwort"
+                value="erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
+                onClick={this.onClick} />
+        </div>
+        <br />
+        <div className="antwortFeld3">
+            <input id="button" type="button" name="antwort"
+                value="no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam"
+                onClick={this.onClick} />
+        </div>
+        <br />
+        <br />
+        <p>Mit freundlichen Grüßen</p>
+        <p>Eure Spezialisten für Hardcoden!</p>
+    </div>
+</div>
+
+*/

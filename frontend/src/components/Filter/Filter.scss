@@ -7,7 +7,7 @@
         flex-wrap: wrap;
         justify-content: center;
         align-content: center;
-        margin: 5px 15px;
+        margin: 10px 15px;
         
     }
     Select.relation {
@@ -18,15 +18,20 @@
         color: black;
     }
     .remove {
-        position: absolute;
-        top: 0;
-        right: 0;
         &::after {
             display: block;
             content: 'X';
         }
     }
+    .relation > .remove {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
     .clause {
         flex-wrap: nowrap;
+    }
+    .sort,.relation {
+        flex-direction: column;
     }
 }

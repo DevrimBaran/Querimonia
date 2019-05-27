@@ -56,8 +56,10 @@ h2 {
 input {
     padding: 10px 20px;
     border: none;
-    box-shadow: black 5px 5px 0 0;
+    //box-shadow: black 5px 5px 0 0;
     &[type=button] {
+        background-color: $primary;
+        color: #000;
         cursor: pointer;
     }
 }

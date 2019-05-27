@@ -65,9 +65,9 @@ class Issues extends Component {
                                 </ul>
                             </Collapsible>
                             <Block>
-                                <h2>???</h2>
+                                <h2>Antwort</h2>
                                 <Tabbed>
-                                    <TextBuilder label="Antwort erstellen"></TextBuilder>
+                                    <TextBuilder label="Antwort erstellen" complaintId={this.state.active.id}></TextBuilder>
                                     <div label="Details">
                                         <Stats></Stats>
                                         <Log></Log>
@@ -84,16 +84,18 @@ class Issues extends Component {
                         </Body>
                     ) : ( 
                         <Body>
-                            <Filter 
-                                onSubmit={(query) => this.fetchData({ query: query })}
-                                keys={['id', 'preview', 'receiveDate', 'sentiment']}
-                                comparators={['=', '!=', '<', '<=', '>', '>=']} />
-                            {this.state.loading ?
-                                (
-                                    <i className="fa fa-spinner"></i>
-                                ) : (
-                                    <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment']} />
-                                )}
+                            <div className="wrapper">
+                                <Filter 
+                                    onSubmit={(query) => this.fetchData({ query: query })}
+                                    keys={['id', 'preview', 'receiveDate', 'sentiment']}
+                                    comparators={['=', '!=', '<', '<=', '>', '>=']} />
+                                {this.state.loading ?
+                                    (
+                                        <i className="fa fa-spinner"></i>
+                                    ) : (
+                                        <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment']} />
+                                    )}
+                            </div>
                         </Body>
                     )
                 }

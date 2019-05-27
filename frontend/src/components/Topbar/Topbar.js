@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import logo from './../../assets/img/logo.svg';
 import Modal from '../Modal/Modal';
+import Block from '../Block/Block';
 import './Topbar.scss';
 import api from '../../utility/Api';
 
@@ -33,13 +34,12 @@ class Topbar extends Component {
         <header className="Topbar dark">
             <img src={logo} className="Topbar-logo" alt="logo" />
             <Modal label="Import">
-                <div className="upload" onSubmit={this.onFormSubmit}>
-                    <h1>Click to upload</h1>
-                    <form method="post" enctype="multipart/form-data">
+                <div>
+                    <h1>Import</h1>
+                    <p>Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.</p>
                     <input type="text" name="text" ref="textInput"/>
                     <input type="file" name="file" ref="fileInput" />
-                    <input type="button" name="uploadButton" onClick={this.onClick}/>
-                    </form>
+                    <input type="button" name="uploadButton" onClick={this.onClick} value="Importieren"/>
                 </div>
             </Modal>
             <Modal label="Export">
