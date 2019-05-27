@@ -47,10 +47,10 @@ class Stats extends Component {
                 ]
             }],
         
-            labels:  ['faher unfreundlich', 'bus verpasst', 'sonstiges']
+            labels:  ['Fahrer unfreundlich', 'Bus verpasst', 'Sonstiges']
         };
         var ctx = this.refs.canvas;
-        var myChart = new Chart(ctx, {
+        new Chart(ctx, {
             type: 'pie',
             data:data,
             options: {
@@ -65,7 +65,7 @@ class Stats extends Component {
     render() {
         return (
             <div className="Stats">
-                <canvas ref="canvas" id="myChart" width="400" height="400"></canvas>
+                <canvas ref="canvas" id="CategorieChart" width="400" height="400"></canvas>
             </div>
         );
     }
