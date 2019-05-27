@@ -1,17 +1,32 @@
+@import '../../assets/scss/variables';
+
 .Filter {
     .Block {
+        position: relative;
         display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
         margin: 5px 15px;
+        
     }
-    .relation {
-        flex-direction: column;
-        .RadioButton {
-            display: inline-block;
-            text-align: center;
-            padding: 20px;
+    Select.relation {
+        background-color: $primary;
+        color: white;
+    }
+    input, select, option {
+        color: black;
+    }
+    .remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        &::after {
+            display: block;
+            content: 'X';
         }
-    }    
+    }
     .clause {
-        flex-direction: row;
+        flex-wrap: nowrap;
     }
 }

@@ -21,6 +21,9 @@ html, body {
     height: 100%;
     background-color: $black;
 }
+#root {
+    height: 100vh;
+}
 .fixed {
     position: fixed;
 }

@@ -54,8 +54,8 @@ class Issues extends Component {
                     this.state.active ? (
                         <Body>
                             <Collapsible collapse="false" side="right">
-                                <ul className="dark">
-                                    <li><strong className="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
+                                <ul>
+                                    <li className="back"><strong className="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
                                     {
                                         this.state.issues.map((issue, index) => {
                                             return <li key={index}><span className={issue.id === this.state.active.id ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>

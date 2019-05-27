@@ -12,8 +12,9 @@ class Select extends Component {
         this.props.onChange && this.props.onChange(e);
     }
     render() {
+        let classes = this.props.className + " Select" || "Select";
         return (
-            <select className="Select" name={this.props.name} onChange={this.onChange}>
+            <select className={classes} name={this.props.name} onChange={this.onChange}>
                 {
                     this.props.values.map((value) => {
                         return (

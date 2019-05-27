@@ -51,8 +51,8 @@ class Filter extends Component {
         if (block.relation) {
             return (
                 <Block className="relation" key={index}>
-                    {parent && (<span key="remove" onClick={this.remove.bind(this, parent.clauses, index)}>remove</span>)}
-                    <RadioButton key="relation" onChange={this.modifyObject.bind(this, block, 'relation')} name={'relation' + index} values={['AND', 'OR']} value={block.relation} />
+                    {parent && (<span className="remove" key="remove" onClick={this.remove.bind(this, parent.clauses, index)}>remove</span>)}
+                    <Select className="relation" key="relation" onChange={this.modifyObject.bind(this, block, 'relation')} name={'relation' + index} values={['AND', 'OR']} value={block.relation} />
                     {block.clauses.map((clause, index) => {
                         return this.parseQueryBlock(clause, index, block);
                     })}
@@ -66,7 +66,7 @@ class Filter extends Component {
                 <Select onChange={this.modifyObject.bind(this, block, 'key')} name="key" values={this.props.keys} value={block.key} />
                 <Select onChange={this.modifyObject.bind(this, block, 'compare')} name="compare" values={this.props.comparators} value={block.compare} />
                 <input onChange={this.modifyObject.bind(this, block, 'value')} name="value" type="text" value={block.value}/>
-                {parent && <span key="remove" onClick={this.remove.bind(this, parent.clauses, index)}>remove</span>}
+                {parent && <span key="remove" className="remove" onClick={this.remove.bind(this, parent.clauses, index)}>remove</span>}
             </Block>
         );
     }

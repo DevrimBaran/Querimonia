@@ -49,26 +49,28 @@ class Table extends Component {
     }
     render() {
         return (
-            <table className="dark">
-                <thead>
-                    <tr>
-                        {this.map().map((key, index) => {
-                            return (<th key={index}>{key}</th>);
+            <div className="Table">
+                <table>
+                    <thead>
+                        <tr>
+                            {this.map().map((key, index) => {
+                                return (<th key={index}>{key}</th>);
+                            })}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {this.props.data && this.props.data.map((row, index) => {
+                            return (
+                                <tr key={index} className={index % 2 === 1 ? 'dark' : ''} onClick={() => this.props.onClick(row)}>
+                                    {this.map(row, (col, i) => {
+                                        return (<td key={index + '/' + i}>{col}</td>);
+                                    })}
+                                </tr>
+                            );
                         })}
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.props.data && this.props.data.map((row, index) => {
-                        return (
-                            <tr key={index} className={index % 2 === 1 ? 'dark' : ''} onClick={() => this.props.onClick(row)}>
-                                {this.map(row, (col, i) => {
-                                    return (<td key={index + '/' + i}>{col}</td>);
-                                })}
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }
