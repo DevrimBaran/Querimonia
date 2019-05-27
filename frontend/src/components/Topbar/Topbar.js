@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import logo from './../../assets/img/logo.svg';
 import Modal from '../Modal/Modal';
-import Block from '../Block/Block';
+//import Block from '../Block/Block';
 import './Topbar.scss';
 import api from '../../utility/Api';
 
