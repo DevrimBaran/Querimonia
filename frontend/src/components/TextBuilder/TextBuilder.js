@@ -24,26 +24,88 @@ class TextBuilder extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {}
+        this.state = {
+            text: '',
+            responses: []
+        }
+    }
+    add = (index) => {
+        this.setState((state, props) => {
+            return {
+                text: state.text += state.responses[index] + '\r\n',
+                responses: state.responses.filter((text, i) => {
+                    return index !== i;
+                })
+            }
+        });
+    }
+    remove = (index) => {
+        this.setState((state, props) => {
+            return {
+                responses: state.responses.filter((text, i) => {
+                    return index !== i;
+                })
+            }
+        });
+    }
+    setData = (data) => {
+        this.setState((state, props) => {
+            return {
+                responses: state.responses.concat(data)
+            }
+        });
+    }
+    random(min, max) {
+        return Math.floor((Math.random() * (max - min + 1)) + min);
+    }
+    fakeResponse = () => {
+        const words = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipisicing', 'elit', 'Dolore', 'consequuntur'];
+        let text = words[Math.floor(Math.random() * words.length)];
+        for (var i = Math.random() * 16; i > 0; i--) {
+            text += ' ' + words[Math.floor(Math.random() * words.length)];
+        }
+        return text;
     }
 
-    onClick = () =>{
-        var element = this.refs.TextBuilder;
-        while(element.firstChild){
-            element.removeChild(element.firstChild);
-        }
+    fetch = () => {
+        Api.post('/api/response/new/' + this.props.complaintId)
+        .catch((error) => {
+            return {status: 404};
+        })
+        .then((response) => {
+            if(response.status !== 200) {
+                return {
+                    json: () => { return [this.fakeResponse()]}
+                };
+            }
+        })
+        .then((response) => response.json())
+        .then(this.setData);
     }
 
     componentDidMount() {
-        Api.post('/api/response/new/' + this.props.complaintId)
-            .then((data) => { console.log(data); return data; })
-            .then(this.setData);
+        this.fetch();
+        this.fetch();
+        this.fetch();
     }
 
     render() {
         return (
             <div className="TextBuilder" ref="TextBuilder">
-                
+                <pre contentEditable>{this.state.text}</pre>
+                <br />
+                {
+                    this.state.responses.map((response, index) => {
+                        return (
+                            <div className="response Block" key={index}>
+                                <pre onClick={() => this.add(index)}>
+                                    {response}
+                                </pre>
+                                <span className="remove" onClick={() => { this.remove(index); this.fetch();}}></span>
+                            </div>
+                        );
+                    })
+                } 
             </div>
         );
     }

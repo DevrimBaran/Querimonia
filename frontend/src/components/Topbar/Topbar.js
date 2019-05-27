@@ -13,20 +13,20 @@ class Topbar extends Component {
         }
     }
 
-    onClick = () => {
-            if (this.refs.textInput.value) {
-                const url ="/api/import/text"
-                return api.post(url,{text: this.refs.textInput.value})
-                .then(response => console.warn("result",response))
+    onClick = (e) => {
+        e.target.disabled = true;
+        if (this.refs.textInput.value) {
+            const url ="/api/import/text"
+            return api.post(url,{text: this.refs.textInput.value})
+            .then(response => console.warn("result",response))
 
-            } else {
-                const url ="/api/import/file"
-                const formData = new FormData();
-                formData.append("file",this.refs.fileInput.files[0]);
-                return api.post(url,formData)
-                .then(response => console.warn("result",response))
-            }
-        
+        } else {
+            const url ="/api/import/file"
+            const formData = new FormData();
+            formData.append("file",this.refs.fileInput.files[0]);
+            return api.post(url,formData)
+            .then(response => console.warn("result",response))
+        }
     }
 
     render(){

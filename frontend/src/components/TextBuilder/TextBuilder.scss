@@ -1,7 +1,34 @@
-#button{
+@import '../../assets/scss/variables';
+#button {
     background-color: white;
     color: black;
     width:100%;
     white-space: normal;
     text-align: left;
+}
+pre {
+    padding: 20px;
+}
+.response {
+    position: relative;
+}
+.response {
+    pre, .remove {
+        cursor: pointer;
+    }
+}
+.remove {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: $primary;
+    text-align: center;
+    &::after {
+        display: block;
+        content: 'X';
+        cursor: pointer;
+    }
 }
