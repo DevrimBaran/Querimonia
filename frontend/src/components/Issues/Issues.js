@@ -87,13 +87,13 @@ class Issues extends Component {
                 <div className='wrapper'>
                   <Filter
                     onSubmit={(query) => this.fetchData({ query: query })}
-                    keys={['id', 'preview', 'receiveDate', 'sentiment','subject']}
+                    keys={['id', 'preview', 'receiveDate', 'sentiment', 'subject']}
                     comparators={['=', '!=', '<', '<=', '>', '>=']} />
                   {this.state.loading
                     ? (
                       <i className='fa fa-spinner' />
                     ) : (
-                      <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment','subject']} />
+                      <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment', 'subject']} />
                     )}
                 </div>
               </Body>
