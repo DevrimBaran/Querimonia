@@ -30,21 +30,22 @@ class Issues extends Component {
             issues: []
         }
     }
-    fetchData = (data) => {
-        console.log(data);
+    fetchData = (query) => {
+        //console.log(query);
         this.setState({active: null, loading: true});
-        Api.get('/api/issues', data)
+        Api.get('/api/complaints', query)
+            .then((data) => {console.log(data); return data;})
             .then(this.setData);
     }
     setData = (data) => {
         this.setState({loading: false, issues: data});
     }
     activate = (issue) => {
-        console.log(issue)
+        //console.log(issue);
         this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0]});
     }
     componentDidMount = () => {
-        this.fetchData({query: { limit: 20, offset: 0}});
+        this.fetchData({limit: 20, offset: 0});
     }
     render() {
         return (
@@ -54,8 +55,8 @@ class Issues extends Component {
                     this.state.active ? (
                         <Body>
                             <Collapsible collapse="false" side="right">
-                                <ul class="dark">
-                                    <li><strong className="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
+                                <ul>
+                                    <li className="back"><strong className="a" onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
                                     {
                                         this.state.issues.map((issue, index) => {
                                             return <li key={index}><span className={issue.id === this.state.active.id ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>
@@ -64,9 +65,9 @@ class Issues extends Component {
                                 </ul>
                             </Collapsible>
                             <Block>
-                                <h2>???</h2>
+                                <h2>Antwort</h2>
                                 <Tabbed>
-                                    <TextBuilder label="Antwort erstellen"></TextBuilder>
+                                    <TextBuilder label="Antwort erstellen" complaintId={this.state.active.id}></TextBuilder>
                                     <div label="Details">
                                         <Stats></Stats>
                                         <Log></Log>
@@ -83,16 +84,18 @@ class Issues extends Component {
                         </Body>
                     ) : ( 
                         <Body>
-                            <Filter 
+                            <div className="wrapper">
+                                <Filter 
                                     onSubmit={(query) => this.fetchData({ query: query })}
-                                keys={['id', 'date', 'thema', 'dringlichkeit']}
-                                comparators={['=', '!=', '<', '<=', '>', '>=', 'LIKE', 'IN', 'BETWEEN', 'REGEXP']} />
-                            {this.state.loading ?
-                                (
-                                    <i className="fa fa-spinner"></i>
-                                ) : (
-                                    <Table data={this.state.issues} onClick={this.activate} tags={['id', 'date', ['text', 'text'], 'thema', 'dringlichkeit']} />
-                                )}
+                                    keys={['id', 'preview', 'receiveDate', 'sentiment']}
+                                    comparators={['=', '!=', '<', '<=', '>', '>=']} />
+                                {this.state.loading ?
+                                    (
+                                        <i className="fa fa-spinner"></i>
+                                    ) : (
+                                        <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment']} />
+                                    )}
+                            </div>
                         </Body>
                     )
                 }

@@ -1,3 +1,4 @@
+/**
 let db = []
 let chars = "abcdefghijklmnopqrstuvwxyz".split('');
 
@@ -98,9 +99,9 @@ function filter(clause, e) {
     } else {
         switch(clause.compare) {
             case '=':
-                return e[clause.key] == clause.value;
+                return e[clause.key] === clause.value;
             case '!=':
-                return e[clause.key] != clause.value;
+                return e[clause.key] !== clause.value;
             case '<':
                 return e[clause.key] < clause.value;
             case '<=':
@@ -156,4 +157,4 @@ fetch = function(uri, options) {
     );
 }
 
-export default fetch;
+export default fetch;*/

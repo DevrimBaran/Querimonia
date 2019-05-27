@@ -1,11 +1,18 @@
-table {
-    width: 100%;
-    text-align: left;
-    border: none;
-    tr {
-        cursor: pointer;
-        td, th {
-            padding: 20px 10px;
+.Table {
+    overflow: auto;
+    table {
+        width: 100%;
+        text-align: left;
+        border: none;
+        tr {
+            cursor: pointer;
+            td, th {
+                padding: 20px 10px;
+            }
+            background-color: #555555;
+            &:nth-of-type(even) {
+                background-color: #333333;
+            }
         }
     }
 }

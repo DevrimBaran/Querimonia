@@ -35,9 +35,9 @@ class Modal extends Component {
         return (
             <div className={this.state.active ? 'Modal active' : 'Modal'}>
                 <input type="button" className="label primary" onClick={this.openModal} value={this.props.label} />
-                <div className="wrapper dark">
+                <div className="wrapper">
                     <div className="background" onClick={this.closeModal}></div>
-                    <div className="content dark">
+                    <div className="content Block">
                         {this.props.children}
                     </div>
                 </div>
