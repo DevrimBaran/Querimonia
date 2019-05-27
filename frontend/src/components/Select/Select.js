@@ -1,29 +1,29 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 import './Select.scss';
 class Select extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: this.props.value
-        }
-    }
+  constructor (props) {
+    super(props);
+    this.state = {
+      value: this.props.value
+    };
+  }
     onChange = (e) => {
-        this.props.onChange && this.props.onChange(e);
+      this.props.onChange && this.props.onChange(e);
     }
-    render() {
-        let classes = this.props.className + " Select" || "Select";
-        return (
-            <select className={classes} name={this.props.name} onChange={this.onChange}>
-                {
-                    this.props.values.map((value) => {
-                        return (
-                            <option key={value} value={value}>{value}</option>
-                        )
-                    })
-                }
-            </select>
-        );
+    render () {
+      let classes = this.props.className + ' Select' || 'Select';
+      return (
+        <select className={classes} name={this.props.name} onChange={this.onChange}>
+          {
+            this.props.values.map((value) => {
+              return (
+                <option key={value} value={value}>{value}</option>
+              );
+            })
+          }
+        </select>
+      );
     }
 }
 
