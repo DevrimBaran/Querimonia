@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import net.bytebuddy.dynamic.scaffold.MethodGraph;
+
+import java.util.LinkedHashMap;
 
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,7 +25,7 @@ public class TempPipeline {
                       @JsonProperty("ContextBefore") String contextBefore,
                       @JsonProperty("Endposition") int endposition,
                       @JsonProperty("Text") String text,
-                      @JsonProperty("Typ") Typ typ,
+                      @JsonProperty("Typ") LinkedHashMap<String, Double> typ,
                       @JsonProperty("ContextAfter") String contextAfter) {
     this.startposition = startposition;
     this.contextBefore = contextBefore;
@@ -38,7 +41,7 @@ public class TempPipeline {
   private String contextBefore;
   private int endposition;
   private String text;
-  private Typ typ;
+  private LinkedHashMap<String, Double> typ;
   private String contextAfter;
 
   public int getStartposition() {
@@ -73,11 +76,11 @@ public class TempPipeline {
     this.text = text;
   }
 
-  public Typ getTyp() {
+  public LinkedHashMap<String, Double> getTyp() {
     return typ;
   }
 
-  public void setTyp(Typ typ) {
+  public void setTyp(LinkedHashMap<String, Double> typ) {
     this.typ = typ;
   }
 

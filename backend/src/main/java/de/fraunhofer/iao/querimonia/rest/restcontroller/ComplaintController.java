@@ -14,8 +14,12 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -46,14 +50,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController()
 public class ComplaintController {
 
-  @Autowired
-  FileStorageService fileStorageService;
-  @Autowired
-  ResponseRepository responseRepository;
-  @Autowired
-  TemplateRepository templateRepository;
-  @Autowired
-  private ComplaintRepository complaintRepository;
+  private final FileStorageService fileStorageService;
+  private final ComplaintRepository complaintRepository;
+
+  public ComplaintController(FileStorageService fileStorageService, ResponseRepository responseRepository, TemplateRepository templateRepository, ComplaintRepository complaintRepository) {
+    this.fileStorageService = fileStorageService;
+    this.complaintRepository = complaintRepository;
+  }
 
   /**
    * This endpoint is used for uploading files with complaint texts. It accepts txt, word and pdf
@@ -71,12 +74,10 @@ public class ComplaintController {
 
     Complaint complaint;
 
-    try (FileReader reader = new FileReader(fullFilePath)) {
-      FileInputStream fileInputStream = new FileInputStream(fullFilePath);
+    try (FileInputStream fileInputStream = new FileInputStream(fullFilePath)) {
 
-      complaint = getComplaintFromData(reader, fullFilePath, fileInputStream);
+      complaint = getComplaintFromData(fullFilePath, fileInputStream);
 
-      fileInputStream.close();
     } catch (IOException e) {
       logger.error("Fehler beim Datei-Upload");
       throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Lesen der"
@@ -90,13 +91,12 @@ public class ComplaintController {
   /**
    * Extracts text out of a file.
    *
-   * @param reader          the fileReader that opened the file
    * @param fullFilePath    the file path
    * @param fileInputStream a input stream of that file
    * @return the extracted complaint.
    * @throws IOException on an io-error.
    */
-  private Complaint getComplaintFromData(FileReader reader, String fullFilePath,
+  private Complaint getComplaintFromData(String fullFilePath,
                                          InputStream fileInputStream)
       throws IOException {
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -104,9 +104,7 @@ public class ComplaintController {
     String text = null;
     switch (fullFilePath.substring(fullFilePath.lastIndexOf("."))) {
       case ".txt":
-        BufferedReader bufferedReader = new BufferedReader(reader);
-        text = bufferedReader.lines().collect(Collectors.joining("\n"));
-        //read a pdf file
+        text = new String(Files.readAllBytes(Paths.get(fullFilePath)), Charset.defaultCharset());
         break;
       case ".pdf":
         PDDocument document = PDDocument.load(new File(fullFilePath));
@@ -135,7 +133,10 @@ public class ComplaintController {
         throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "Not a supported file format");
     }
 
-    return ComplaintFactory.createComplaint(text);
+    if (text == null) {
+      throw new IllegalStateException();
+    }
+    return new ComplaintFactory().createComplaint(text);
   }
 
   /**
@@ -146,7 +147,7 @@ public class ComplaintController {
    */
   @PostMapping("/api/import/text")
   public Complaint uploadText(@RequestBody TextInput input) {
-    Complaint complaint = ComplaintFactory.createComplaint(input.getText());
+    Complaint complaint = new ComplaintFactory().createComplaint(input.getText());
     complaintRepository.save(complaint);
     return complaint;
   }

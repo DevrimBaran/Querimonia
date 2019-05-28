@@ -1,10 +1,10 @@
-package de.fraunhofer.iao.querimonia.ner;
+package de.fraunhofer.iao.querimonia.nlp.classifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
-import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.Typ;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */
-public class KIKuKoClassifier {
+public class KIKuKoClassifier implements Classifier {
 
   private static final String URL = "https://kikuko.iao.fraunhofer.de/apitext";
   private static final String DOMAIN_TYPE = "Beschwerde3Klassifikator";
@@ -31,7 +31,8 @@ public class KIKuKoClassifier {
    * @param input the text which should be classified.
    * @return the type of the text.
    */
-  public Typ getClassification(String input) {
+  @Override
+  public LinkedHashMap<String, Double> classifyText(String input) {
     KikukoResponse response = executeKikukoRequest(input);
 
     return response.getPipelines()
@@ -45,7 +46,7 @@ public class KIKuKoClassifier {
     HttpHeaders header = new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-    MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+    MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
     map.add("content", input);
     map.add("type", "tool");
     map.add("domainType", DOMAIN_TYPE);

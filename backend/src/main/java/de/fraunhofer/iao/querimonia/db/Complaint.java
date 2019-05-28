@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 import java.util.Objects;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
@@ -20,6 +17,7 @@ public class Complaint {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int id;
+  @Column(length = 5000)
   private String text;
   private String preview;
   private String sentiment;

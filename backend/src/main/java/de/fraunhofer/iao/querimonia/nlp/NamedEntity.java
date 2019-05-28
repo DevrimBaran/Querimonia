@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.ner;
+package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

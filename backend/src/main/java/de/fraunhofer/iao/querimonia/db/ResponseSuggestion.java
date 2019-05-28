@@ -26,7 +26,7 @@ public class ResponseSuggestion {
   @JoinColumn
   private ResponseTemplate template;
 
-  @Column(length = 1024)
+  @Column(length = 4048)
   private String responseText;
 
   /**
