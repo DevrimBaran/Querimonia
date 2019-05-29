@@ -1,13 +1,21 @@
 package de.fraunhofer.iao.querimonia.db;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -18,12 +26,23 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.Transient;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
- * subjects, the sentiments and the date of the complaint.
+ * subject, the sentiment and the date of the complaint.
  */
 @Entity
+@JsonPropertyOrder({
+    "complaintId",
+    "text",
+    "preview",
+    "receiveDate",
+    "receiveTime",
+    "subject",
+    "sentiment",
+    "entities"
+})
 public class Complaint {
 
   /**
@@ -46,24 +65,24 @@ public class Complaint {
   private String preview;
 
   /**
-   * This map contains the possible sentiments of the complaint message mapped to their
+   * This map contains the possible sentiment of the complaint message mapped to their
    * probabilities according to the machine learning algorithms.
    */
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "sentiment_table", joinColumns = @JoinColumn(name = "complaintId"))
   @MapKeyColumn(name = "sentiment")
   @Column(name = "probability")
-  private Map<String, Double> sentiments;
+  private Map<String, Double> sentiment;
 
   /**
-   * This map contains the possible subjects of the complaint message mapped to their
+   * This map contains the possible subject of the complaint message mapped to their
    * probabilities according to the machine learning algorithms.
    */
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "subject_table", joinColumns = @JoinColumn(name = "complaintId"))
   @MapKeyColumn(name = "subject")
   @Column(name = "probability")
-  private Map<String, Double> subjects;
+  private Map<String, Double> subject;
 
   /**
    * The list of all named entities in the complaint text.
@@ -75,26 +94,83 @@ public class Complaint {
   /**
    * The date when the complaint was received.
    */
-  private LocalDateTime receiveDate;
+  private LocalDate receiveDate;
+  private LocalTime receiveTime;
 
   /**
-   * Creates a new complaint. This constructor is for JSON deserialization.
+   * Creates a new complaint. This constructor is only used for JSON deserialization.
+   * Use a {@link ComplaintFactory} to create complaints instead.
    */
   @JsonCreator
   public Complaint(@JsonProperty String text,
                    @JsonProperty String preview,
-                   @JsonProperty Map<String, Double> sentiments,
-                   @JsonProperty Map<String, Double> subjects,
-                   @JsonProperty LocalDateTime receiveDate,
+                   @JsonProperty Map<String, Double> sentiment,
+                   @JsonProperty Map<String, Double> subject,
+                   @JsonProperty LocalDate receiveDate,
+                   @JsonProperty LocalTime receiveTime,
                    @JsonProperty List<NamedEntity> entities) {
     this.text = text;
     this.preview = preview;
-    this.sentiments = sentiments;
-    this.subjects = subjects;
+    this.sentiment = sentiment;
+    this.subject = subject;
     this.receiveDate = receiveDate;
+    this.receiveTime = receiveTime;
     this.entities = entities;
   }
 
+  /**
+   * This methods returns the value of a named entity that occurs in this complaint.
+   *
+   * @param entityLabel the label of the named entity, like "date".
+   * @return the value of the named entity or an empty optional if the entity is not present.
+   * If there are multiple occurrences, it will return the first one.
+   */
+  @Transient
+  @JsonIgnore
+  public Optional<String> getValueOfEntity(String entityLabel) {
+    return getAllValuesOfEntity(entityLabel).stream().findFirst();
+  }
+
+  /**
+   * Finds all entities with the given label in the complaint text and returns their value as a
+   * list.
+   *
+   * @param entityLabel the entity label to look for, like "date".
+   * @return a list of all values of the named entities with the given label.
+   */
+  @Transient
+  @JsonIgnore
+  public List<String> getAllValuesOfEntity(String entityLabel) {
+    return entities.stream()
+        // only use entities that label match the given one.
+        .filter(namedEntity -> namedEntity.getLabel().equalsIgnoreCase(entityLabel))
+        // find their value in the text
+        .map(namedEntity -> text.substring(namedEntity.getStartIndex(), namedEntity.getEndIndex()))
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Creates a map that maps all the entity labels to their values in the text.
+   */
+  @Transient
+  @JsonIgnore
+  public Map<String, String> getEntityValueMap() {
+    HashMap<String, String> result = new HashMap<>();
+    entities.stream()
+        .map(NamedEntity::getLabel)
+        .forEach(label -> result.put(label,
+            getValueOfEntity(label).orElseThrow(IllegalStateException::new)));
+
+    // add also upload time and date
+    // TODO date format
+    result.putIfAbsent("upload_date", receiveDate.toString());
+    result.putIfAbsent("upload_time", receiveTime.toString());
+    return result;
+  }
+
+  /**
+   * Empty default constructor (only used for hibernate).
+   */
   public Complaint() {
 
   }
@@ -111,16 +187,20 @@ public class Complaint {
     return preview;
   }
 
-  public Map<String, Double> getSentiments() {
-    return sentiments;
+  public Map<String, Double> getSentiment() {
+    return sentiment;
   }
 
-  public LocalDateTime getReceiveDate() {
+  public LocalDate getReceiveDate() {
     return receiveDate;
   }
 
-  public Map<String, Double> getSubjects() {
-    return subjects;
+  public LocalTime getReceiveTime() {
+    return receiveTime;
+  }
+
+  public Map<String, Double> getSubject() {
+    return subject;
   }
 
   public List<NamedEntity> getEntities() {
@@ -139,13 +219,13 @@ public class Complaint {
     return complaintId == complaint.complaintId
         && Objects.equals(text, complaint.text)
         && Objects.equals(preview, complaint.preview)
-        && Objects.equals(sentiments, complaint.sentiments)
-        && Objects.equals(subjects, complaint.subjects)
+        && Objects.equals(sentiment, complaint.sentiment)
+        && Objects.equals(subject, complaint.subject)
         && Objects.equals(receiveDate, complaint.receiveDate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(complaintId, text, preview, sentiments, receiveDate);
+    return Objects.hash(complaintId, text, preview, sentiment, receiveDate);
   }
 }

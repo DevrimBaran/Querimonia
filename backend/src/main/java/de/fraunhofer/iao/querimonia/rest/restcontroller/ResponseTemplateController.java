@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.ResponseTemplate;
-import de.fraunhofer.iao.querimonia.db.ResponseTemplateManager;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.response.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.ResponseTemplateManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,9 +40,9 @@ public class ResponseTemplateController {
    * @return the created template
    */
   @PostMapping("api/templates")
-  public ResponseTemplate addTemplate(@RequestParam TextInput templateText,
-                                      @RequestParam TextInput subject,
-                                      @RequestParam TextInput responsePart) {
+  public ResponseComponent addTemplate(@RequestParam TextInput templateText,
+                                       @RequestParam TextInput subject,
+                                       @RequestParam TextInput responsePart) {
     initialize();
     return responseTemplateManager.addTemplate(templateRepository, templateText.getText(),
         subject.getText(), responsePart.getText());
@@ -55,7 +55,7 @@ public class ResponseTemplateController {
    * @return a response template with the given subject
    */
   @GetMapping("api/templates/subjects/{subject}")
-  public ResponseTemplate getTemplateBySubject(@PathVariable String subject) {
+  public ResponseComponent getTemplateBySubject(@PathVariable String subject) {
     initialize();
     return responseTemplateManager.getTemplateBySubject(templateRepository, subject);
   }
@@ -67,7 +67,7 @@ public class ResponseTemplateController {
    * @return the response template with the given ID
    */
   @GetMapping("api/templates/{id}")
-  public ResponseTemplate getTemplateByID(@PathVariable int id) {
+  public ResponseComponent getTemplateByID(@PathVariable int id) {
     initialize();
     return responseTemplateManager.getTemplateByID(templateRepository, id);
   }

@@ -1,13 +1,13 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.db.Complaint;
-import de.fraunhofer.iao.querimonia.db.ResponseSuggestion;
-import de.fraunhofer.iao.querimonia.db.ResponseSuggestionFactory;
-import de.fraunhofer.iao.querimonia.db.ResponseTemplate;
-import de.fraunhofer.iao.querimonia.db.ResponseTemplateManager;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.response.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.response.ResponseSuggestionFactory;
+import de.fraunhofer.iao.querimonia.response.ResponseTemplateManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,8 +48,10 @@ public class ResponseController {
     }
 
     ResponseTemplateManager responseTemplateManager = ResponseTemplateManager.instantiate();
-    ResponseTemplate responseTemplate =
-        responseTemplateManager.getTemplateBySubject(templateRepository, complaint.getSubject());
+    // TODO fix
+    ResponseComponent responseTemplate =
+        responseTemplateManager.getTemplateBySubject(templateRepository, complaint.getSubject().keySet()
+        .stream().findAny().orElse("Sonstiges"));
     ResponseSuggestion responseSuggestion =
         ResponseSuggestionFactory.createResponseSuggestionWithDate(complaint, responseTemplate);
     responseRepository.save(responseSuggestion);

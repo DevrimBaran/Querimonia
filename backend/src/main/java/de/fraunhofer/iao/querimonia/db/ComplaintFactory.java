@@ -1,18 +1,39 @@
 package de.fraunhofer.iao.querimonia.db;
 
-import de.fraunhofer.iao.querimonia.nlp.classifier.KIKuKoClassifier;
+import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
+import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
+import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
  * This factory is used to create complaint objects.
  */
 public class ComplaintFactory {
+
+  private Classifier classifier;
+  private SentimentAnalyzer sentimentAnalyzer;
+  private EntityExtractor entityExtractor;
+
+  /**
+   * Creates a new complaint factory which is used to create complaint objects.
+   *
+   * @param classifier a {@link Classifier} that returns the subject of the given text.
+   * @param sentimentAnalyzer a {@link SentimentAnalyzer} that analyzes the sentiment of the text.
+   * @param entityExtractor a {@link EntityExtractor} to extract the named entities.
+   */
+  public ComplaintFactory(@NonNull Classifier classifier,
+                          @NonNull SentimentAnalyzer sentimentAnalyzer,
+                          @NonNull EntityExtractor entityExtractor) {
+    this.classifier = classifier;
+    this.sentimentAnalyzer = sentimentAnalyzer;
+    this.entityExtractor = entityExtractor;
+  }
 
   /**
    * This factory method creates a complaint out of the plain text, which contains information
@@ -23,9 +44,12 @@ public class ComplaintFactory {
    */
   public Complaint createComplaint(String complaintText) {
     String preview = makePreview(complaintText);
-    String subject = getSubject(complaintText);
 
-    return new Complaint(complaintText, preview, "NORMAL", subject, LocalDate.now());
+    return new Complaint(complaintText, preview,
+        sentimentAnalyzer.analyzeSentiment(complaintText),
+        classifier.classifyText(complaintText),
+        LocalDate.now(), LocalTime.now(),
+        entityExtractor.extractEntities(complaintText));
   }
 
   private String makePreview(String text) {
@@ -33,15 +57,5 @@ public class ComplaintFactory {
         .filter(line -> !line.trim().isEmpty())
         .limit(2)
         .collect(Collectors.joining("\n"));
-  }
-
-  private String getSubject(String text) {
-    HashMap<String, Double> typeMap = new KIKuKoClassifier().classifyText(text);
-
-    return typeMap.entrySet()
-        .stream()
-        .max(Comparator.comparingDouble(Map.Entry::getValue))
-        .map(Map.Entry::getKey)
-        .orElse("UNKNOWN");
   }
 }

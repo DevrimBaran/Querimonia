@@ -10,16 +10,16 @@ POST http://localhost:8080/api/import/text
 Content-Type: application/json
 
 {
-  "text": "Das ist ein Beispiel Text"
+  "text": "Der Fahrer hat mich beleidigt"
 }
 
 ###
 
-GET http://localhost:8080/api/complaints/0
+GET http://localhost:8080/api/responses/8
 
 ###
 
-DELETE http://localhost:8080/api/complaints/0
+DELETE http://localhost:8080/api/complaints/1
 
 ###
 
@@ -29,6 +29,8 @@ Content-Type: application/json
 {
 "text" : "ausfall und fahrer unfreundlich"
 }
+
+
 
 ###
 
@@ -45,7 +47,7 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:8080/api/responses/new/20
+POST http://localhost:8080/api/responses/new/1
 
 ###
 
@@ -88,11 +90,11 @@ Content-Type: application/json
 
 ###
 
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/72
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/4
 
 ###
 
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/75
 
 ###
 

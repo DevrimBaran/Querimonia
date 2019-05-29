@@ -3,11 +3,14 @@ package de.fraunhofer.iao.querimonia.nlp;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import javax.persistence.Embeddable;
+
 /**
  * This is a simple POJO that represents a named entity in a text. It has a label (for example
  * "Date", "Org")
  * and the indices where the entity starts and ends in the text.
  */
+@Embeddable
 public class NamedEntity {
 
   private String label;
@@ -41,5 +44,18 @@ public class NamedEntity {
   @JsonProperty("end")
   public int getEndIndex() {
     return end;
+  }
+
+  @Override
+  public String toString() {
+    return "NamedEntity{"
+        + "label='" + label + '\''
+        + ", start=" + start
+        + ", end=" + end
+        + '}';
+  }
+
+  public NamedEntity() {
+
   }
 }

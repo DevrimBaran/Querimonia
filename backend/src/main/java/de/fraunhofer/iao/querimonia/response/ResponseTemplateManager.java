@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.db;
+package de.fraunhofer.iao.querimonia.response;
 
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 
@@ -14,37 +14,42 @@ public class ResponseTemplateManager {
 
   private static final String FAHRT_NICHT_ERFOLGT_DEFAULT_TEMPLATE_TEXT =
       "Guten Tag,\n"
-      + "vielen Dank für Ihre Beschwerde, die am %s bei uns im System eingegangen ist.\n"
-      + "Darin haben sie sich über eine nicht erfolgte Fahrt beschwert.\n"
-      + "Leider konnte die genannte Fahrt aufgrund einer Störung nicht durchgeführt werden.\n"
-      + "Dass Sie von dieser Störung betroffen waren, bedauern wir und entschuldigen uns für die "
-      + "Unannehmlichkeiten, die Ihnen hieraus entstanden sind.\n"
-      + "Für die Zukunft wünschen wir Ihnen reibungslose Fahrten mit unseren Verkehrsmitteln.";
+          + "vielen Dank für Ihre Beschwerde, die am ${upload_date} bei uns "
+          + "im System eingegangen ist.\n"
+          + "Darin haben sie sich über eine nicht erfolgte Fahrt beschwert.\n"
+          + "Leider konnte die genannte Fahrt aufgrund einer Störung nicht durchgeführt werden.\n"
+          + "Dass Sie von dieser Störung betroffen waren, bedauern wir und entschuldigen uns für "
+          + "die "
+          + "Unannehmlichkeiten, die Ihnen hieraus entstanden sind.\n"
+          + "Für die Zukunft wünschen wir Ihnen reibungslose Fahrten mit unseren Verkehrsmitteln.";
 
   private static final String FAHRER_UNFREUNDLICH_DEFAULT_TEMPLATE_TEXT =
       "Guten Tag,\n"
-      + "vielen Dank für Ihre Beschwerde, die am %s bei uns im System eingegangen ist.\n"
-      + "Darin haben sie sich über das Fehlverhalten eines Fahrers beschwert.\n"
-      + "Dieser war Ihren Schilderungen nach unfreundlich und hat sich nicht angemessen verhalten"
-      + ".\n"
-      + "Diesen Vorfall bedauern wir und lassen den Fahrer durch den zuständigen Fachbereich "
-      + "ansprechen.\n"
-      + "Wir hoffen damit in Ihrem Sinn gehandelt zu haben.\n"
-      + "Für die Zukunft wünschen wir Ihnen reibungslose Fahrten.";
+          + "vielen Dank für Ihre Beschwerde, die am ${upload_date} bei uns im System "
+          + "eingegangen ist.\n"
+          + "Darin haben sie sich über das Fehlverhalten eines Fahrers beschwert.\n"
+          + "Dieser war Ihren Schilderungen nach unfreundlich und hat sich nicht angemessen"
+          + " verhalten"
+          + ".\n"
+          + "Diesen Vorfall bedauern wir und lassen den Fahrer durch den zuständigen Fachbereich "
+          + "ansprechen.\n"
+          + "Wir hoffen damit in Ihrem Sinn gehandelt zu haben.\n"
+          + "Für die Zukunft wünschen wir Ihnen reibungslose Fahrten.";
 
   private static final String SONSTIGES_DEFAULT_TEMPLATE_TEXT =
       "Guten Tag,\n"
-      + "vielen Dank für Ihre Beschwerde, die am %s bei uns im System eingegangen ist.\n"
-      + "Wir haben die zuständigen Fachbereiche über den Sachverhalt verständigt.\n"
-      + "Bitte haben Sie Verständnis dafür, dass wir, das Beschwerdemanagement, in die "
-      + "Problemlösung nicht immer eingebunden sind.\n"
-      + "Daher können wir Ihnen momentan keine zufriedenstellende Antwort geben. Das bedauern wir "
-      + "sehr.\n"
-      + "Für die Zukunft wünschen wir Ihnen allzeit gute Fahrt.";
+          + "vielen Dank für Ihre Beschwerde, die am ${upload_date} bei uns im System eingegangen"
+          + " ist.\n"
+          + "Wir haben die zuständigen Fachbereiche über den Sachverhalt verständigt.\n"
+          + "Bitte haben Sie Verständnis dafür, dass wir, das Beschwerdemanagement, in die "
+          + "Problemlösung nicht immer eingebunden sind.\n"
+          + "Daher können wir Ihnen momentan keine zufriedenstellende Antwort geben. "
+          + "Das bedauern wir sehr.\n"
+          + "Für die Zukunft wünschen wir Ihnen allzeit gute Fahrt.";
 
   private static final String MISSING_SUBJECT_DEFAULT_TEMPLATE_TEXT =
       "Danke für ihre Nachricht "
-      + "vom %s!";
+          + "vom ${upload_date}!";
 
   private static ResponseTemplateManager instance;
 
@@ -75,9 +80,9 @@ public class ResponseTemplateManager {
    * @param responsePart       the The role/position of this template in a response
    * @return the created template
    */
-  public ResponseTemplate addTemplate(TemplateRepository templateRepository, String templateText,
-                                      String subject, String responsePart) {
-    ResponseTemplate responseTemplate = ResponseTemplateFactory.createTemplate(templateText,
+  public ResponseComponent addTemplate(TemplateRepository templateRepository, String templateText,
+                                       String subject, String responsePart) {
+    ResponseComponent responseTemplate = ResponseTemplateFactory.createTemplate(templateText,
         subject, responsePart);
     templateRepository.save(responseTemplate);
     return responseTemplate;
@@ -90,7 +95,7 @@ public class ResponseTemplateManager {
    * @param id                 the ID to look for
    * @return the response template with the given ID
    */
-  public ResponseTemplate getTemplateByID(TemplateRepository templateRepository, int id) {
+  public ResponseComponent getTemplateByID(TemplateRepository templateRepository, int id) {
     return templateRepository.findById(id).orElse(null);
   }
 
@@ -101,13 +106,13 @@ public class ResponseTemplateManager {
    * @param subject            the subject to look for
    * @return a response template with the given subject
    */
-  public ResponseTemplate getTemplateBySubject(TemplateRepository templateRepository,
-                                               String subject) {
+  public ResponseComponent getTemplateBySubject(TemplateRepository templateRepository,
+                                                String subject) {
 
-    ArrayList<ResponseTemplate> possibleTemplates = new ArrayList<>();
+    ArrayList<ResponseComponent> possibleTemplates = new ArrayList<>();
 
     // Find all templates with the correct subject
-    for (ResponseTemplate template : templateRepository.findAll()) {
+    for (ResponseComponent template : templateRepository.findAll()) {
       if (template.getSubject().equals(subject)) {
         possibleTemplates.add(template);
       }
@@ -116,7 +121,7 @@ public class ResponseTemplateManager {
     // Use default templates if none are available
     if (possibleTemplates.isEmpty()) {
       String templateText = getDefaultTemplateText(subject);
-      ResponseTemplate responseTemplate = ResponseTemplateFactory.createTemplate(templateText,
+      ResponseComponent responseTemplate = ResponseTemplateFactory.createTemplate(templateText,
           subject, "COMPLETE_TEXT");
       templateRepository.save(responseTemplate);
       return responseTemplate;

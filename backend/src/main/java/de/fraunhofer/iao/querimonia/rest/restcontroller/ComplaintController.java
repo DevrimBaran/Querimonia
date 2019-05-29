@@ -5,6 +5,7 @@ import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.nlp.classifier.KIKuKoClassifier;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
 
@@ -18,6 +19,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -53,7 +56,8 @@ public class ComplaintController {
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
 
-  public ComplaintController(FileStorageService fileStorageService, ResponseRepository responseRepository, TemplateRepository templateRepository, ComplaintRepository complaintRepository) {
+  public ComplaintController(FileStorageService fileStorageService,
+                             ComplaintRepository complaintRepository) {
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
   }
@@ -136,7 +140,10 @@ public class ComplaintController {
     if (text == null) {
       throw new IllegalStateException();
     }
-    return new ComplaintFactory().createComplaint(text);
+    return new ComplaintFactory(
+        new KIKuKoClassifier(), (complaintText -> new LinkedHashMap<>()),
+        (complaintText -> new ArrayList<>())
+    ).createComplaint(text);
   }
 
   /**
@@ -147,7 +154,10 @@ public class ComplaintController {
    */
   @PostMapping("/api/import/text")
   public Complaint uploadText(@RequestBody TextInput input) {
-    Complaint complaint = new ComplaintFactory().createComplaint(input.getText());
+    Complaint complaint = new ComplaintFactory(
+        new KIKuKoClassifier(), (complaintText -> new LinkedHashMap<>()),
+        (complaintText -> new ArrayList<>())
+    ).createComplaint(input.getText());
     complaintRepository.save(complaint);
     return complaint;
   }

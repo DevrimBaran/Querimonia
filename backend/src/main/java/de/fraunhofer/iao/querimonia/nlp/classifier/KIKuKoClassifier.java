@@ -2,10 +2,8 @@ package de.fraunhofer.iao.querimonia.nlp.classifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
-
 import java.io.IOException;
 import java.util.LinkedHashMap;
-
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -16,6 +14,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
+
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */

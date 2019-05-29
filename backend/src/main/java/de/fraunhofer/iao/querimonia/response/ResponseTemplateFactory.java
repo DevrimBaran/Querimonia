@@ -1,4 +1,6 @@
-package de.fraunhofer.iao.querimonia.db;
+package de.fraunhofer.iao.querimonia.response;
+
+import java.util.ArrayList;
 
 /**
  * A factory class for creating new complaints from an input string.
@@ -15,8 +17,9 @@ public class ResponseTemplateFactory {
    * @param responsePart The role/position of this template in a response
    * @return the created template
    */
-  public static ResponseTemplate createTemplate(String templateText, String subject,
-                                                String responsePart) {
-    return new ResponseTemplate(templateText, subject, responsePart);
+  public static ResponseComponent createTemplate(String templateText, String subject,
+                                                 String responsePart) {
+    // TODO add successor parts
+    return new ResponseComponent(templateText, subject, responsePart, new ArrayList<>());
   }
 }
