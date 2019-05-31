@@ -3,13 +3,12 @@ package de.fraunhofer.iao.querimonia.db;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
-import org.springframework.lang.NonNull;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.springframework.lang.NonNull;
+
 
 /**
  * This factory is used to create complaint objects.

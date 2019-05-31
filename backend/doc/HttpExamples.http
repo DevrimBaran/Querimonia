@@ -6,13 +6,16 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 
-POST http://localhost:8080/api/import/text
+POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Der Fahrer hat mich beleidigt"
+  "text": "Das ist ein Lob an euch!"
 }
 
+###
+
+GET http://localhost:8080/api/complaints?sort_by=upload_date_desc&subject=sonstiges,fahrt nicht erfolgt&date_max=2019-05-29
 ###
 
 GET http://localhost:8080/api/responses/8
@@ -77,7 +80,6 @@ GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
 
 # delete a complaint
 DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
-GET http://localhost:8080/api/responses/24
 
 ### Antwortgenerierungs-Beispiele
 

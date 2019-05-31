@@ -7,9 +7,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,6 +165,28 @@ public class Complaint {
     result.putIfAbsent("upload_date", receiveDate.toString());
     result.putIfAbsent("upload_time", receiveTime.toString());
     return result;
+  }
+
+  @Transient
+  @JsonIgnore
+  public Optional<String> getBestSentiment() {
+    return getEntryWithHighestProbability(sentiment);
+  }
+
+  @Transient
+  @JsonIgnore
+  public Optional<String> getBestSubject() {
+    return getEntryWithHighestProbability(subject);
+  }
+
+  @Transient
+  @JsonIgnore
+  private Optional<String> getEntryWithHighestProbability(Map<String, Double> probabilityMap) {
+    return probabilityMap.entrySet()
+        .stream()
+        // find entry with highest probability
+        .max(Comparator.comparingDouble(Map.Entry::getValue))
+        .map(Map.Entry::getKey);
   }
 
   /**
