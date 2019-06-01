@@ -31,7 +31,7 @@ public class ResponseSuggestionFactory {
     String templateText = template.getTemplateText();
     ArrayList<CompletedResponseComponent> responseComponents = new ArrayList<>();
     responseComponents.add(fillResponseComponent(template, complaint.getEntityValueMap()));
-    return new ResponseSuggestion(complaint, responseComponents);
+    return new ResponseSuggestion(responseComponents);
   }
 
   /**

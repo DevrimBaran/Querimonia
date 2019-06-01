@@ -5,16 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -26,13 +18,21 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.Transient;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
  * subject, the sentiment and the date of the complaint.
  */
 @Entity
-@JsonPropertyOrder({
+@JsonPropertyOrder( {
     "complaintId",
     "text",
     "preview",
@@ -54,7 +54,7 @@ public class Complaint {
   /**
    * The complaint message, is limited to 5000 characters.
    */
-  @Column(length = 5000)
+  @Column(length = 10000)
   private String text;
 
   /**
@@ -91,6 +91,13 @@ public class Complaint {
   private List<NamedEntity> entities;
 
   /**
+   * The response for the complaint.
+   */
+  @JoinColumn(name = "complaint_id")
+  @JsonIgnore
+  private ResponseSuggestion responseSuggestion;
+
+  /**
    * The date when the complaint was received.
    */
   private LocalDate receiveDate;
@@ -115,6 +122,34 @@ public class Complaint {
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
     this.entities = entities;
+  }
+
+  /**
+   * Constructor for the complaint factory.
+   */
+  Complaint(String text,
+            String preview,
+            Map<String, Double> sentiment,
+            Map<String, Double> subject,
+            List<NamedEntity> entities,
+            LocalDate receiveDate,
+            LocalTime receiveTime,
+            ResponseSuggestion responseSuggestion) {
+    this.text = text;
+    this.preview = preview;
+    this.sentiment = sentiment;
+    this.subject = subject;
+    this.entities = entities;
+    this.responseSuggestion = responseSuggestion;
+    this.receiveDate = receiveDate;
+    this.receiveTime = receiveTime;
+  }
+
+  /**
+   * Empty default constructor (only used for hibernate).
+   */
+  public Complaint() {
+
   }
 
   /**
@@ -170,30 +205,13 @@ public class Complaint {
   @Transient
   @JsonIgnore
   public Optional<String> getBestSentiment() {
-    return getEntryWithHighestProbability(sentiment);
+    return ComplaintFilter.getEntryWithHighestProbability(sentiment);
   }
 
   @Transient
   @JsonIgnore
   public Optional<String> getBestSubject() {
-    return getEntryWithHighestProbability(subject);
-  }
-
-  @Transient
-  @JsonIgnore
-  private Optional<String> getEntryWithHighestProbability(Map<String, Double> probabilityMap) {
-    return probabilityMap.entrySet()
-        .stream()
-        // find entry with highest probability
-        .max(Comparator.comparingDouble(Map.Entry::getValue))
-        .map(Map.Entry::getKey);
-  }
-
-  /**
-   * Empty default constructor (only used for hibernate).
-   */
-  public Complaint() {
-
+    return ComplaintFilter.getEntryWithHighestProbability(subject);
   }
 
   public int getComplaintId() {
@@ -228,6 +246,11 @@ public class Complaint {
     return entities;
   }
 
+  @JsonIgnore
+  public ResponseSuggestion getResponseSuggestion() {
+    return responseSuggestion;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -249,4 +272,5 @@ public class Complaint {
   public int hashCode() {
     return Objects.hash(complaintId, text, preview, sentiment, receiveDate);
   }
+
 }

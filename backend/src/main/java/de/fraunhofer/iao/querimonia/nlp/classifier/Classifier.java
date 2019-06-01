@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.nlp.classifier;
 import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This interface is used to classify a text in a category.
@@ -16,5 +17,5 @@ public interface Classifier {
    * @return a linked hash map which maps a category to the probability that the text belongs to that
    * category, sorted by the probability.
    */
-  LinkedHashMap<String, Double> classifyText(String text);
+  Map<String, Double> classifyText(String text);
 }

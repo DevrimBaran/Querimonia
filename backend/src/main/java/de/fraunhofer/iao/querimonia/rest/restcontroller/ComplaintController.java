@@ -1,11 +1,13 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import com.sun.javafx.scene.control.behavior.OptionalBoolean;
 import de.fraunhofer.iao.querimonia.db.Complaint;
 import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.db.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KIKuKoClassifier;
+import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
+import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
 
@@ -16,12 +18,10 @@ import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -44,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
-import sun.plugin.com.event.COMEventHandler;
 
 /**
  * This controller manages complaint view, import and export.
@@ -141,9 +140,11 @@ public class ComplaintController {
     if (text == null) {
       throw new IllegalStateException();
     }
+    // TODO correct factory setup
     return new ComplaintFactory(
         new KIKuKoClassifier(), (complaintText -> new LinkedHashMap<>()),
-        (complaintText -> new ArrayList<>())
+        (complaintText -> new ArrayList<>()),
+        (ctext, subjectMap, sentimentMap, entities) -> new ResponseSuggestion(new ArrayList<>())
     ).createComplaint(text);
   }
 
@@ -156,9 +157,11 @@ public class ComplaintController {
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
       consumes = "application/json")
   public Complaint uploadText(@RequestBody TextInput input) {
+    // TODO correct factory setup
     Complaint complaint = new ComplaintFactory(
         new KIKuKoClassifier(), (complaintText -> new LinkedHashMap<>()),
-        (complaintText -> new ArrayList<>())
+        (complaintText -> new ArrayList<>()),
+        (text, subjectMap, sentimentMap, entities) -> new ResponseSuggestion(new ArrayList<>())
     ).createComplaint(input.getText());
     complaintRepository.save(complaint);
     return complaint;
