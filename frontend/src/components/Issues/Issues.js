@@ -45,7 +45,7 @@ class Issues extends Component {
       this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
     }
     componentDidMount = () => {
-      this.fetchData({ count: 20 });
+      this.fetchData('count=20');
     }
     render () {
       return (

@@ -36,7 +36,7 @@ const options = function (method, data) {
 
 export const api = {
   get: function (endpoint, query) {
-    return fetchJson(endpoint + '?query=' + encodeURIComponent(JSON.stringify(query)), options('get'));
+    return fetchJson(endpoint + '?' + encodeURIComponent(JSON.stringify(query)), options('get'));
   },
   post: function (endpoint, data) {
     return fetchJson(endpoint, options('post', data));
