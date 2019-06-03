@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.nlp.analyse;
+package de.fraunhofer.iao.querimonia.nlp.analyze;
 
 import java.util.Map;
 
