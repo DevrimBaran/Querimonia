@@ -9,13 +9,7 @@
 			2,
 			"always"
 		],
-		"jsx-no-bind": [
-			1
-		],
 		"react/jsx-no-bind": [
-			1
-		],
-		"prop-types": [
 			1
 		],
 		"react/prop-types": [
