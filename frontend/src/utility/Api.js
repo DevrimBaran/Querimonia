@@ -1,11 +1,15 @@
-// TODO webpack DEBUG variable
-// mocks fetch to simulate api response on fetch().catch
-// import fetch from '../tests/apiMock';
+import fakeFetch from '../tests/apiMock';
 
 const fetchJson = function (action, options) {
-  console.log('test');
-  return fetch('https://beschwerdemanagement-dev.iao.fraunhofer.de' + action, options)
-    .then(response => { return response.json(); });
+  console.log(process.env.NODE_ENV);
+  if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_BACKEND_PATH === 'mock') {
+    console.log('Application is using mock backend!');
+    return fakeFetch('https://beschwerdemanagement-dev.iao.fraunhofer.de' + action, options)
+      .then(response => { return response.json(); });
+  } else {
+    return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
+      .then(response => { return response.json(); });
+  }
 };
 
 const options = function (method, data) {
