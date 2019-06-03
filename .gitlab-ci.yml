@@ -11,13 +11,13 @@ variables:
   DOCKER_DRIVER: overlay2
 
 #frontend
-test-frontend-dev:
-  stage: test
+build-frontend-dev: &base-frontend
+  stage: build
   image: node:8.16.0-jessie
   script:
     - cd frontend/
-    - npm install --no-progress
-    - npm run test
+    - npm ci --no-progress
+    - npm run build-dev
   artifacts:
     paths:
       - frontend/build/
@@ -25,40 +25,63 @@ test-frontend-dev:
   only:
     - frontend-dev
 
-test-frontend-prod:
+build-frontend-mock:
+  <<: *base-frontend
+  script:
+    - cd frontend/
+    - npm ci --no-progress
+    - npm run build-mock
+    - mkdir mock
+    - cp -r build/* mock/
+  artifacts:
+    paths:
+      - frontend/mock/
+
+build-frontend-master:
+  <<: *base-frontend
+  script:
+    - cd frontend/
+    - npm ci --no-progress
+    - npm run build-prod
+  allow_failure: false
+  only:
+    - master
+
+test-frontend:
   stage: test
   image: node:8.16.0-jessie
   script:
-    - cd frontend/
-    - npm install --no-progress
-    - npm run test
+    - echo 'no tests'
   artifacts:
     paths:
       - frontend/build/
+      - frontend/mock/
+  allow_failure: false
+
+deploy-frontend-mock:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - chmod -R +rw frontend/mock/
+    - cp -r frontend/mock/* /home/beschwerdemanagement/export/frontend-mock/
+  allow_failure: true
   only:
-      - frontend-prod
+    - frontend-dev
 
 deploy-frontend-dev:
   stage: deploy
   tags:
     - shell
   script:
-    - cp frontend/build/ /home/beschwerdemanagement/export/dev-frontend/
+    - chmod -R +rw frontend/build/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
     - frontend-dev
 
-deploy-frontend-prod:
-  stage: deploy
-  tags:
-    - shell
-  script:
-    - cp frontend/build/ /home/beschwerdemanagement/export/prod-frontend/
-  only:
-    - frontend-prod
-
 # backend
-build-backend-dev:
+build-backend-dev: &base-backend
   stage: build
   image: maven:3.6.1-jdk-11
   script:
@@ -71,17 +94,11 @@ build-backend-dev:
   only:
     - backend-dev
 
-build-backend-prod:
-  stage: build
-  image: maven:3.6.1-jdk-11
+test-backend-dev:
+  <<: *base-backend
+  stage: test
   script:
-    - cd backend/
-    - mvn package
-  artifacts:
-    paths:
-      - backend/target/*.jar
-  only:
-    - backend-prod
+    - echo 'no tests'
 
 deploy-backend-dev:
   stage: deploy
@@ -92,59 +109,28 @@ deploy-backend-dev:
     - cp backend/target/*.jar /home/gitlab-runner/
     - echo 'start server in background'
    #- set port
-    - sudo systemctl restart stuprojavaserver
+    - sudo systemctl restart stuprojavaserver_dev
   allow_failure: true
   only:
     - backend-dev
 
-deploy-backend-prod:
-  stage: deploy
-  tags:
-    - shell
-  script:
-    - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar /home/gitlab-runner/
-    - echo 'start server in background'
-   #- set port
-    - sudo systemctl restart stuprojavaserver
-  only:
-    - backend-prod
-
 # all
-dev:
-  stage: deploy
-  tags:
-    - shell
-  script:
-    # frontend
-    - cp frontend/build/ /home/beschwerdemanagement/export/development/frontend/
-    # backend
-    - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar /home/gitlab-runner/
-    - echo 'start server in background'
-   #- set port
-    - sudo systemctl restart stuprojavaserver
-  dependencies:
-    - build-backend-prod
-    - test-frontend-prod
-  only:
-    - development
-
 master:
   stage: deploy
   tags:
     - shell
   script:
     # frontend
-    - cp frontend/build/ /home/beschwerdemanagement/export/master/frontend/
+    - chmod -R +rw frontend/build/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/master/frontend/
     # backend
     - chmod +x backend/target/*.jar
-    - cp backend/target/*.jar /home/gitlab-runner/
+    - cp -r backend/target/*.jar /home/gitlab-runner/ 
     - echo 'start server in background'
    #- set port
     - sudo systemctl restart stuprojavaserver
   dependencies:
-    - build-backend-prod
-    - test-frontend-prod
+    - build-backend-dev
+    - build-frontend-master
   only:
     - master
