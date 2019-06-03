@@ -93,7 +93,7 @@ class Issues extends Component {
                     ? (
                       <i className='fa fa-spinner' />
                     ) : (
-                      <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment']} />
+                      <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment']} sticky />
                     )}
                 </div>
               </Body>
