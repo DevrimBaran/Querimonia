@@ -54,7 +54,7 @@ class Table extends Component {
             <thead>
               <tr>
                 {this.map().map((key, index) => {
-                  return (<th key={index}>{key}</th>);
+                  return (<th className={(this.props.sticky ? 'Sticky' : '')} key={index}>{key}</th>);
                 })}
               </tr>
             </thead>
