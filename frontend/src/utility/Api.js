@@ -3,7 +3,7 @@ import fakeFetch from '../tests/apiMock';
 const fetchJson = function (action, options) {
   console.log(process.env.NODE_ENV);
   if (process.env.NODE_ENV === 'development' || process.env.REACT_APP_BACKEND_PATH === 'mock') {
-    console.log('Used mock api');
+    console.log('Application is using mock backend!');
     return fakeFetch('https://beschwerdemanagement-dev.iao.fraunhofer.de' + action, options)
       .then(response => { return response.json(); });
   } else {
