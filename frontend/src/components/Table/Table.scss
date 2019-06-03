@@ -4,6 +4,9 @@
         width: 100%;
         text-align: left;
         border: none;
+        thead tr {
+            background-color: #333333;
+        }
         tr {
             cursor: pointer;
             td, th {
