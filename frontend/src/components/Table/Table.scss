@@ -1,5 +1,9 @@
 .Table {
-    overflow: auto;
+    .Sticky{
+        position: sticky;
+        top : 0;
+        background-color: #22977A;
+    }
     table {
         width: 100%;
         text-align: left;
