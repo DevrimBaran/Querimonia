@@ -98,6 +98,16 @@ public class Complaint {
   private ResponseSuggestion responseSuggestion;
 
   /**
+   * A list of all words in the complaint text, which are not stop words, mapped to their
+   * absolute count.
+   */
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "word_list_table", joinColumns = @JoinColumn(name = "complaintId"))
+  @MapKeyColumn(name = "words")
+  @Column(name = "count")
+  private Map<String, Integer> wordList;
+
+  /**
    * The date when the complaint was received.
    */
   private LocalDate receiveDate;
@@ -134,7 +144,8 @@ public class Complaint {
             List<NamedEntity> entities,
             LocalDate receiveDate,
             LocalTime receiveTime,
-            ResponseSuggestion responseSuggestion) {
+            ResponseSuggestion responseSuggestion,
+            Map<String, Integer> wordList) {
     this.text = text;
     this.preview = preview;
     this.sentiment = sentiment;
@@ -143,6 +154,7 @@ public class Complaint {
     this.responseSuggestion = responseSuggestion;
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
+    this.wordList = wordList;
   }
 
   /**
@@ -251,26 +263,5 @@ public class Complaint {
     return responseSuggestion;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    Complaint complaint = (Complaint) o;
-    return complaintId == complaint.complaintId
-        && Objects.equals(text, complaint.text)
-        && Objects.equals(preview, complaint.preview)
-        && Objects.equals(sentiment, complaint.sentiment)
-        && Objects.equals(subject, complaint.subject)
-        && Objects.equals(receiveDate, complaint.receiveDate);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(complaintId, text, preview, sentiment, receiveDate);
-  }
 
 }

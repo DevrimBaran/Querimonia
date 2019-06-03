@@ -6,7 +6,7 @@ import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
 import java.util.List;
 
-public class KikukoExtractor extends KikukoConatct implements EntityExtractor{
+public class KikukoExtractor extends KikukoConatct implements EntityExtractor {
 
   public KikukoExtractor(String domainType, String domainName) {
       super("domain", "QuerimoniaExtract");

@@ -6,25 +6,11 @@ import de.fraunhofer.iao.querimonia.db.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KIKuKoClassifier;
+import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -45,6 +31,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 /**
  * This controller manages complaint view, import and export.
  */
@@ -55,10 +57,19 @@ public class ComplaintController {
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
 
+  private ComplaintFactory complaintFactory;
+
   public ComplaintController(FileStorageService fileStorageService,
                              ComplaintRepository complaintRepository) {
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
+
+    complaintFactory = new ComplaintFactory()
+        .setClassifier(new KIKuKoClassifier())
+        .setEntityExtractor(new KikukoExtractor(null, null))
+        .setResponseGenerator((text1, subjectMap, sentimentMap, entities) ->
+            new ResponseSuggestion(new ArrayList<>()))
+        .setSentimentAnalyzer((text1) -> new HashMap<>());
   }
 
   /**
@@ -141,11 +152,7 @@ public class ComplaintController {
       throw new IllegalStateException();
     }
     // TODO correct factory setup
-    return new ComplaintFactory(
-        new KIKuKoClassifier(), (complaintText -> new LinkedHashMap<>()),
-        (complaintText -> new ArrayList<>()),
-        (ctext, subjectMap, sentimentMap, entities) -> new ResponseSuggestion(new ArrayList<>())
-    ).createComplaint(text);
+    return complaintFactory.createComplaint(text);
   }
 
   /**
@@ -157,12 +164,7 @@ public class ComplaintController {
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
       consumes = "application/json")
   public Complaint uploadText(@RequestBody TextInput input) {
-    // TODO correct factory setup
-    Complaint complaint = new ComplaintFactory(
-        new KIKuKoClassifier(), (complaintText -> new LinkedHashMap<>()),
-        (complaintText -> new ArrayList<>()),
-        (text, subjectMap, sentimentMap, entities) -> new ResponseSuggestion(new ArrayList<>())
-    ).createComplaint(input.getText());
+    Complaint complaint = complaintFactory.createComplaint(input.getText());
     complaintRepository.save(complaint);
     return complaint;
   }
