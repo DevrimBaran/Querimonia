@@ -4,11 +4,9 @@ import de.fraunhofer.iao.querimonia.db.Complaint;
 import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.db.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KIKuKoClassifier;
-import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
-import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.nlp.response.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -20,6 +18,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,9 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,22 +52,29 @@ import java.util.stream.Stream;
 @RestController()
 public class ComplaintController {
 
+  private static final Logger logger = LoggerFactory.getLogger(ComplaintController.class);
+  private static final ResponseStatusException NOT_FOUNT_EXCEPTION
+      = new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint does not exist!");
+
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
-
   private ComplaintFactory complaintFactory;
 
+  /**
+   * Constructor gets only called by spring. Sets up the complaint factory.
+   */
   public ComplaintController(FileStorageService fileStorageService,
-                             ComplaintRepository complaintRepository) {
+                             ComplaintRepository complaintRepository,
+                             TemplateRepository templateRepository) {
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
 
     complaintFactory = new ComplaintFactory()
         .setClassifier(new KIKuKoClassifier())
-        .setEntityExtractor(new KikukoExtractor(null, null))
-        .setResponseGenerator((text1, subjectMap, sentimentMap, entities) ->
-            new ResponseSuggestion(new ArrayList<>()))
-        .setSentimentAnalyzer((text1) -> new HashMap<>());
+        .setEntityExtractor(text -> new ArrayList<>())
+        .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
+        .setSentimentAnalyzer((text1) -> new HashMap<>())
+        .setStopWordFilter((text1) -> new HashMap<>());
   }
 
   /**
@@ -82,8 +87,6 @@ public class ComplaintController {
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
       consumes = "multipart/form-data")
   public Complaint uploadComplaint(@RequestParam("file") MultipartFile file) {
-    Logger logger = LoggerFactory.getLogger(getClass());
-
     String fileName = fileStorageService.storeFile(file);
     String fullFilePath = "src/main/resources/uploads/" + fileName;
 
@@ -95,11 +98,12 @@ public class ComplaintController {
 
     } catch (IOException e) {
       logger.error("Fehler beim Datei-Upload");
-      throw new HttpServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Lesen der"
-          + " Datei.");
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Fehler beim Dateiupload\n" + e.getMessage());
     }
 
     complaintRepository.save(complaint);
+    logger.info("Added complaint with id {}", complaint.getComplaintId());
     return complaint;
   }
 
@@ -114,7 +118,6 @@ public class ComplaintController {
   private Complaint getComplaintFromData(String fullFilePath,
                                          InputStream fileInputStream)
       throws IOException {
-    Logger logger = LoggerFactory.getLogger(getClass());
 
     String text = null;
     switch (fullFilePath.substring(fullFilePath.lastIndexOf("."))) {
@@ -151,7 +154,6 @@ public class ComplaintController {
     if (text == null) {
       throw new IllegalStateException();
     }
-    // TODO correct factory setup
     return complaintFactory.createComplaint(text);
   }
 
@@ -166,13 +168,14 @@ public class ComplaintController {
   public Complaint uploadText(@RequestBody TextInput input) {
     Complaint complaint = complaintFactory.createComplaint(input.getText());
     complaintRepository.save(complaint);
+    logger.info("Added complaint with id {}", complaint.getComplaintId());
     return complaint;
   }
 
   /**
-   * Returns a list of all complaints that are stored in the database.
-   *
-   * @return a list of all complaints that are stored in the database.
+   * This method will return the complaints that match a certain filter, as given,
+   * will sort them in the specified way and limit their count.
+   * For more information, see openapi.yaml.
    */
   @GetMapping("/api/complaints")
   public List<Complaint> getTexts(
@@ -216,8 +219,10 @@ public class ComplaintController {
    * @return the complaint with the given complaintId if it exists.
    */
   @GetMapping("/api/complaints/{complaintId}")
-  public Complaint getComplaint(@PathVariable int complaintId) {
-    return complaintRepository.findById(complaintId).orElse(null);
+  public ResponseEntity<Complaint> getComplaint(@PathVariable int complaintId) {
+    return complaintRepository.findById(complaintId)
+        .map(complaint -> new ResponseEntity<>(complaint, HttpStatus.OK))
+        .orElseThrow(() -> NOT_FOUNT_EXCEPTION);
   }
 
   /**
@@ -226,7 +231,14 @@ public class ComplaintController {
    * @param complaintId the id of the complaint to delete.
    */
   @DeleteMapping("/api/complaints/{complaintId}")
-  public void deleteComplaint(@PathVariable int complaintId) {
-    complaintRepository.deleteById(complaintId);
+  public ResponseEntity<String> deleteComplaint(@PathVariable int complaintId) {
+    if (complaintRepository.existsById(complaintId)) {
+      complaintRepository.deleteById(complaintId);
+      logger.info("Deleted complaint with id {}", complaintId);
+      return new ResponseEntity<>("Delete successful", HttpStatus.OK);
+    } else {
+      throw NOT_FOUNT_EXCEPTION;
+    }
   }
+
 }

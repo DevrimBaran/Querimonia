@@ -1,15 +1,13 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
-import de.fraunhofer.iao.querimonia.response.ResponseComponent;
-import de.fraunhofer.iao.querimonia.response.ResponseTemplateManager;
-import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
-import org.springframework.beans.factory.annotation.Autowired;
+import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.ResponseTemplateManager;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -24,8 +22,11 @@ public class ResponseTemplateController {
 
   private ResponseTemplateManager responseTemplateManager;
 
-  @Autowired
-  TemplateRepository templateRepository;
+  private final TemplateRepository templateRepository;
+
+  public ResponseTemplateController(TemplateRepository templateRepository) {
+    this.templateRepository = templateRepository;
+  }
 
   private void initialize() {
     responseTemplateManager = ResponseTemplateManager.instantiate();
@@ -34,18 +35,12 @@ public class ResponseTemplateController {
   /**
    * Add a new template to the repository.
    *
-   * @param templateText The actual text of the template
-   * @param subject      The subject/category of the template
-   * @param responsePart the The role/position of this template in a response
    * @return the created template
    */
   @PostMapping("api/templates")
-  public ResponseComponent addTemplate(@RequestParam TextInput templateText,
-                                       @RequestParam TextInput subject,
-                                       @RequestParam TextInput responsePart) {
+  public ResponseComponent addTemplate(@RequestBody ResponseComponent responseComponent) {
     initialize();
-    return responseTemplateManager.addTemplate(templateRepository, templateText.getText(),
-        subject.getText(), responsePart.getText());
+    return responseTemplateManager.addTemplate(templateRepository, responseComponent);
   }
 
   /**
