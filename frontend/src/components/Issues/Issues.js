@@ -45,7 +45,7 @@ class Issues extends Component {
       this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
     }
     componentDidMount = () => {
-      this.fetchData({count: 20});
+      this.fetchData({ count: 20 });
     }
     render () {
       return (
@@ -93,7 +93,7 @@ class Issues extends Component {
                     ? (
                       <i className='fa fa-spinner' />
                     ) : (
-                        <Table data={this.state.issues} onClick={this.activate} tags={['complaintId', 'preview', 'receiveDate', 'receiveTime', 'sentiment', 'subject']} sticky />
+                      <Table data={this.state.issues} onClick={this.activate} tags={['complaintId', 'preview', 'receiveDate', 'receiveTime', 'sentiment', 'subject']} sticky />
                     )}
                 </div>
               </Body>
