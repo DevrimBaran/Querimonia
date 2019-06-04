@@ -1,24 +1,21 @@
 package de.fraunhofer.iao.querimonia.db;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.analyse.StopWordFilter;
+import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
+import de.fraunhofer.iao.querimonia.nlp.response.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
-import org.springframework.lang.NonNull;
 
 
 /**
@@ -31,28 +28,6 @@ public class ComplaintFactory {
   private EntityExtractor entityExtractor = null;
   private ResponseGenerator responseGenerator = null;
   private StopWordFilter stopWordFilter = null;
-
-  /**
-   * Creates a new complaint factory which is used to create complaint objects.
-   *
-   * @param classifier        a {@link Classifier} that returns the subject of the given text.
-   * @param sentimentAnalyzer a {@link SentimentAnalyzer} that analyzes the sentiment of the text.
-   * @param entityExtractor   a {@link EntityExtractor} to extract the named entities.
-   * @param responseGenerator a {@link ResponseGenerator} to generate a response to the complaint.
-   * @param stopWordFilter    a {@link StopWordFilter} that extracts all non stop-words from the
-   *                          text.
-   */
-  public ComplaintFactory(@NonNull Classifier classifier,
-                          @NonNull SentimentAnalyzer sentimentAnalyzer,
-                          @NonNull EntityExtractor entityExtractor,
-                          @NonNull ResponseGenerator responseGenerator,
-                          @NonNull StopWordFilter stopWordFilter) {
-    this.classifier = classifier;
-    this.sentimentAnalyzer = sentimentAnalyzer;
-    this.entityExtractor = entityExtractor;
-    this.responseGenerator = responseGenerator;
-    this.stopWordFilter = stopWordFilter;
-  }
 
   /**
    * Creates a new complaint factory which is used to create complaint objects.
@@ -74,14 +49,15 @@ public class ComplaintFactory {
     Objects.requireNonNull(sentimentAnalyzer, "sentiment analyzer not initialized");
     Objects.requireNonNull(entityExtractor, "entity extractor not initialized");
     Objects.requireNonNull(responseGenerator, "response generator not initialized");
+    Objects.requireNonNull(stopWordFilter, "stop word filter not initialized");
 
     String preview = makePreview(complaintText);
-
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(complaintText);
     Map<String, Double> subjectMap = classifier.classifyText(complaintText);
     List<NamedEntity> entities = entityExtractor.extractEntities(complaintText);
+
     ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(complaintText,
-        subjectMap, sentimentMap, entities);
+        subjectMap, sentimentMap, entities, LocalDateTime.now());
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
 
     return new Complaint(complaintText, preview, sentimentMap, subjectMap,
@@ -95,7 +71,7 @@ public class ComplaintFactory {
         .limit(2)
         .collect(Collectors.joining("\n"))
         // check for too long string
-        .substring(0, 500);
+        .substring(0, Math.min(500, text.length()));
   }
 
   public ComplaintFactory setClassifier(Classifier classifier) {

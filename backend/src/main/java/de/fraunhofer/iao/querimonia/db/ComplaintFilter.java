@@ -1,14 +1,10 @@
 package de.fraunhofer.iao.querimonia.db;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.persistence.Transient;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -101,7 +97,7 @@ public class ComplaintFilter {
       // no filter is applied, then return true
       return true;
     }
-    return getEntryWithHighestProbability(probabilityMap)
+    return ComplaintUtility.getEntryWithHighestProbability(probabilityMap)
         .map(sentiment ->
             // check if the sentiment/subject of the complaint matches
             Arrays.asList(optionalParameters.get()).contains(sentiment.toLowerCase()))
@@ -164,24 +160,14 @@ public class ComplaintFilter {
         // all sorting aspects where checked
         return compareValue;
       } else {
-        // sort by date per default
+        // sort by date *descending* per default
         int compareValue = c1.getReceiveDate().compareTo(c2.getReceiveDate());
         if (compareValue == 0) {
           compareValue = c1.getReceiveTime().compareTo(c2.getReceiveTime());
         }
-        return compareValue;
+        return -compareValue;
       }
     };
   }
 
-  /**
-   * Helper function to get the value with the highest probability out a probability map.
-   */
-  static Optional<String> getEntryWithHighestProbability(Map<String, Double> probabilityMap) {
-    return probabilityMap.entrySet()
-        .stream()
-        // find entry with highest probability
-        .max(Comparator.comparingDouble(Map.Entry::getValue))
-        .map(Map.Entry::getKey);
-  }
 }

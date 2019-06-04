@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.response.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.nlp.response.ResponseSuggestion;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -20,19 +20,16 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
  * subject, the sentiment and the date of the complaint.
  */
 @Entity
-@JsonPropertyOrder( {
+@JsonPropertyOrder({
     "complaintId",
     "text",
     "preview",
@@ -105,6 +102,7 @@ public class Complaint {
   @CollectionTable(name = "word_list_table", joinColumns = @JoinColumn(name = "complaintId"))
   @MapKeyColumn(name = "words")
   @Column(name = "count")
+  @JsonIgnore
   private Map<String, Integer> wordList;
 
   /**
@@ -118,6 +116,7 @@ public class Complaint {
    * Use a {@link ComplaintFactory} to create complaints instead.
    */
   @JsonCreator
+  @SuppressWarnings("unused")
   public Complaint(@JsonProperty String text,
                    @JsonProperty String preview,
                    @JsonProperty Map<String, Double> sentiment,
@@ -160,70 +159,27 @@ public class Complaint {
   /**
    * Empty default constructor (only used for hibernate).
    */
+  @SuppressWarnings("unused")
   public Complaint() {
 
   }
 
   /**
-   * This methods returns the value of a named entity that occurs in this complaint.
+   * Returns the sentiment with the highest probability.
    *
-   * @param entityLabel the label of the named entity, like "date".
-   * @return the value of the named entity or an empty optional if the entity is not present.
-   * If there are multiple occurrences, it will return the first one.
+   * @return the sentiment with the highest probability or an empty optional, if
+   * no sentiment is given.
    */
   @Transient
-  @JsonIgnore
-  public Optional<String> getValueOfEntity(String entityLabel) {
-    return getAllValuesOfEntity(entityLabel).stream().findFirst();
-  }
-
-  /**
-   * Finds all entities with the given label in the complaint text and returns their value as a
-   * list.
-   *
-   * @param entityLabel the entity label to look for, like "date".
-   * @return a list of all values of the named entities with the given label.
-   */
-  @Transient
-  @JsonIgnore
-  public List<String> getAllValuesOfEntity(String entityLabel) {
-    return entities.stream()
-        // only use entities that label match the given one.
-        .filter(namedEntity -> namedEntity.getLabel().equalsIgnoreCase(entityLabel))
-        // find their value in the text
-        .map(namedEntity -> text.substring(namedEntity.getStartIndex(), namedEntity.getEndIndex()))
-        .collect(Collectors.toList());
-  }
-
-  /**
-   * Creates a map that maps all the entity labels to their values in the text.
-   */
-  @Transient
-  @JsonIgnore
-  public Map<String, String> getEntityValueMap() {
-    HashMap<String, String> result = new HashMap<>();
-    entities.stream()
-        .map(NamedEntity::getLabel)
-        .forEach(label -> result.put(label,
-            getValueOfEntity(label).orElseThrow(IllegalStateException::new)));
-
-    // add also upload time and date
-    // TODO date format
-    result.putIfAbsent("upload_date", receiveDate.toString());
-    result.putIfAbsent("upload_time", receiveTime.toString());
-    return result;
-  }
-
-  @Transient
-  @JsonIgnore
+  @JsonProperty("probableSentiment")
   public Optional<String> getBestSentiment() {
-    return ComplaintFilter.getEntryWithHighestProbability(sentiment);
+    return ComplaintUtility.getEntryWithHighestProbability(sentiment);
   }
 
   @Transient
-  @JsonIgnore
+  @JsonProperty("probableSubject")
   public Optional<String> getBestSubject() {
-    return ComplaintFilter.getEntryWithHighestProbability(subject);
+    return ComplaintUtility.getEntryWithHighestProbability(subject);
   }
 
   public int getComplaintId() {
@@ -256,6 +212,11 @@ public class Complaint {
 
   public List<NamedEntity> getEntities() {
     return entities;
+  }
+
+  @JsonIgnore
+  public Map<String, Integer> getWordList() {
+    return wordList;
   }
 
   @JsonIgnore
