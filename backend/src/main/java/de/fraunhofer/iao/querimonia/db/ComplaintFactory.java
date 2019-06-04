@@ -65,13 +65,14 @@ public class ComplaintFactory {
   }
 
   private String makePreview(String text) {
-    return Arrays.stream(text.split("\n", 8))
+    String preview = Arrays.stream(text.split("\n", 8))
         // don't use empty lines for the preview
         .filter(line -> !line.trim().isEmpty())
         .limit(2)
-        .collect(Collectors.joining("\n"))
-        // check for too long string
-        .substring(0, Math.min(500, text.length()));
+        .collect(Collectors.joining("\n"));
+
+    // check for too long string
+    return preview.substring(0, Math.min(500, preview.length()));
   }
 
   public ComplaintFactory setClassifier(Classifier classifier) {
