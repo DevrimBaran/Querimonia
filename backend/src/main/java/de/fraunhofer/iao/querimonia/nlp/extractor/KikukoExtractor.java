@@ -8,7 +8,7 @@ import java.util.List;
 
 public class KikukoExtractor extends KikukoConatct implements EntityExtractor {
 
-  public KikukoExtractor(String domainType, String domainName) {
+  public KikukoExtractor() {
       super("domain", "QuerimoniaExtract");
   }
 
