@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.Transient;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
@@ -116,7 +118,7 @@ public class ComplaintFilter {
   public static Comparator<Complaint> createComplaintComparator(Optional<String[]> sortBy) {
     return (c1, c2) -> {
       if (sortBy.isPresent()) {
-        int returnValue = 0;
+        int compareValue = 0;
 
         for (String sortAspect : sortBy.get()) {
           // get index where prefix starts
@@ -126,41 +128,48 @@ public class ComplaintFilter {
 
           switch (rawSortAspect) {
             case "upload_date":
-              returnValue = c1.getReceiveDate().compareTo(c2.getReceiveDate());
+              compareValue = c1.getReceiveDate().compareTo(c2.getReceiveDate());
+              if (compareValue == 0) {
+                compareValue = c1.getReceiveTime().compareTo(c2.getReceiveTime());
+              }
               break;
             case "sentiment":
               // TODO better sorting for sentiments
-              returnValue = c1.getBestSentiment()
+              compareValue = c1.getBestSentiment()
                   .orElse("")
                   .compareTo(c2.getBestSentiment().orElse(""));
               break;
             case "subject":
-              returnValue = c1.getBestSubject().orElse("")
+              compareValue = c1.getBestSubject().orElse("")
                   .compareTo(c2.getBestSubject().orElse(""));
               break;
             default:
-              throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+              throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                   "Illegal sorting paramter: " + rawSortAspect);
           }
 
           // invert sorting if desc
           if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {
-            returnValue *= -1;
+            compareValue *= -1;
           }
 
-          if (returnValue != 0) {
+          if (compareValue != 0) {
             // if difference is already found, don't continue comparing
             // (the later the aspects are in the array, the less priority they have, so
             // only continue on equal complaints)
-            return returnValue;
+            return compareValue;
           }
 
         }
         // all sorting aspects where checked
-        return returnValue;
+        return compareValue;
       } else {
         // sort by date per default
-        return c1.getReceiveDate().compareTo(c2.getReceiveDate());
+        int compareValue = c1.getReceiveDate().compareTo(c2.getReceiveDate());
+        if (compareValue == 0) {
+          compareValue = c1.getReceiveTime().compareTo(c2.getReceiveTime());
+        }
+        return compareValue;
       }
     };
   }
