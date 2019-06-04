@@ -1,15 +1,13 @@
-package de.fraunhofer.iao.querimonia.response;
+package de.fraunhofer.iao.querimonia.nlp.response;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
-import java.util.List;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,8 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import java.util.List;
 
 /**
  * This class represents a response component that was already filled out using the entities of a
@@ -62,6 +59,11 @@ public class CompletedResponseComponent {
     this.entities = entities;
   }
 
+  @SuppressWarnings("unused")
+  public CompletedResponseComponent() {
+
+  }
+
   public String getCompletedText() {
     return completedText;
   }
@@ -78,7 +80,4 @@ public class CompletedResponseComponent {
     return completedComponentId;
   }
 
-  public CompletedResponseComponent() {
-
-  }
 }

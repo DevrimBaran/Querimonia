@@ -1,4 +1,6 @@
-package de.fraunhofer.iao.querimonia.response;
+package de.fraunhofer.iao.querimonia.nlp.response;
+
+import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
 
 import java.util.ArrayList;
 

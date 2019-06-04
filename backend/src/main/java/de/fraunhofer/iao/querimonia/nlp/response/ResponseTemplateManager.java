@@ -1,6 +1,8 @@
-package de.fraunhofer.iao.querimonia.response;
+package de.fraunhofer.iao.querimonia.nlp.response;
 
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -11,6 +13,9 @@ import java.util.Random;
  * @author Simon Weiler
  */
 public class ResponseTemplateManager {
+
+  private static final ResponseStatusException NOT_FOUND_EXCEPTION
+      = new ResponseStatusException(HttpStatus.NOT_FOUND, "Component does not exists!");
 
   private static final String FAHRT_NICHT_ERFOLGT_DEFAULT_TEMPLATE_TEXT =
       "Guten Tag,\n"
@@ -75,17 +80,12 @@ public class ResponseTemplateManager {
    * Add a new template to the repository.
    *
    * @param templateRepository the template repository to use
-   * @param templateText       The actual text of the template
-   * @param subject            The subject/category of the template
-   * @param responsePart       the The role/position of this template in a response
    * @return the created template
    */
-  public ResponseComponent addTemplate(TemplateRepository templateRepository, String templateText,
-                                       String subject, String responsePart) {
-    ResponseComponent responseTemplate = ResponseTemplateFactory.createTemplate(templateText,
-        subject, responsePart);
-    templateRepository.save(responseTemplate);
-    return responseTemplate;
+  public ResponseComponent addTemplate(TemplateRepository templateRepository,
+                                       ResponseComponent responseComponent) {
+    templateRepository.save(responseComponent);
+    return responseComponent;
   }
 
   /**
@@ -96,7 +96,8 @@ public class ResponseTemplateManager {
    * @return the response template with the given ID
    */
   public ResponseComponent getTemplateByID(TemplateRepository templateRepository, int id) {
-    return templateRepository.findById(id).orElse(null);
+    return templateRepository.findById(id)
+        .orElseThrow(() -> NOT_FOUND_EXCEPTION);
   }
 
   /**
@@ -113,7 +114,8 @@ public class ResponseTemplateManager {
 
     // Find all templates with the correct subject
     for (ResponseComponent template : templateRepository.findAll()) {
-      if (template.getSubject().equals(subject)) {
+      boolean templateFits = template.getSubject().map(s -> s.equals(subject)).orElse(true);
+      if (templateFits) {
         possibleTemplates.add(template);
       }
     }
