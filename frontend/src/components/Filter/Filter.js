@@ -21,92 +21,65 @@ import Select from '../Select/Select';
 // import Topbar from '../Topbar/Topbar';
 
 import './Filter.scss';
+
+var filterTemplate = {
+    count: 'number',
+    page: 'number',
+    order_by: ['upload_date', 'subject', 'sentiment'],
+    desc: 'checkbox',
+    date_min: 'date',
+    date_max: 'date',
+    sentiment: ['foo', 'faa'],
+    subject: ['foo', 'faa'],
+    text_contains: 'text'
+};
+
 class Filter extends Component {
   constructor (props) {
     super(props);
-    this.data = {
-      'where': {
-        'relation': 'AND',
-        'clauses': []
-      },
-      'orderby': [],
-      'offset': 0,
-      'limit': 20
-    };
-  }
-  remove (array, index) {
-    array.splice(index, 1);
-    this.forceUpdate();
-  }
-  add (array, data) {
-    array.push(data);
-    this.forceUpdate();
-  }
-  modifyObject (obj, key, value) {
-    if (value.target) value = value.target.value;
-    obj[key] = value;
-    this.forceUpdate();
-  }
-    parseQueryBlock = (block, index, parent) => {
-      if (block.relation) {
-        return (
-          <Block className='relation' key={index}>
-            {parent && (<span className='remove' key='remove' onClick={this.remove.bind(this, parent.clauses, index)} />)}
-            <Select className='relation' key='relation' onChange={this.modifyObject.bind(this, block, 'relation')} name={'relation' + index} values={['AND', 'OR']} value={block.relation} />
-            <br />
-            {block.clauses.map((clause, index) => {
-              return this.parseQueryBlock(clause, index, block);
-            })}
-            <input type='button' onClick={this.add.bind(this, block.clauses, { 'relation': 'AND', 'clauses': [] })} value='Add Relation' />
-            <input type='button' onClick={this.add.bind(this, block.clauses, { 'key': this.props.keys[0], 'value': '', 'compare': this.props.comparators[0] })} value='Add' />
-          </Block>
-        );
-      }
-      return (
-        <Block className='clause' key={index}>
-          <Select onChange={this.modifyObject.bind(this, block, 'key')} name='key' values={this.props.keys} value={block.key} />
-          <Select onChange={this.modifyObject.bind(this, block, 'compare')} name='compare' values={this.props.comparators} value={block.compare} />
-          <input onChange={this.modifyObject.bind(this, block, 'value')} name='value' type='text' value={block.value} />
-          {parent && <span key='remove' className='remove' onClick={this.remove.bind(this, parent.clauses, index)} />}
-        </Block>
-      );
+    this.state = {};
+    this.handleChange = {};
+    for (let name in filterTemplate) {
+        this.handleChange[name] = this.onChange.bind(this, name);
+        this.state[name] = '';
     }
-    parseSortBlock = (block) => {
-      let items = [];
-      for (let order of block) {
-        items.push(
-          <Block className='sort-item' key={items.length}>
-            <Select onChange={this.modifyObject.bind(this, order, 'key')} name={order.key} values={this.props.keys} value={order.key} />
-            <Select onChange={this.modifyObject.bind(this, order, 'order')} values={['ASC', 'DESC']} value={order.order} name={order.key} />
-            <span key='remove' onClick={this.remove.bind(this, block, items.length)} />
-          </Block>
-        );
-      }
-      return (
-        <Block className='sort'>
-          {items}
-          <input type='button' onClick={this.add.bind(this, block, { key: this.props.keys[0], order: 'ASC' })} value='Add' />
-        </Block>
-      );
+  }
+  onChange(name, e) {
+    let c = {};
+    c[name] = e.target.value;
+    this.setState(c);
+  }
+    submit = (e) => {
+        this.props.onSubmit && this.props.onSubmit(this.state);
     }
-    submit = () => {
-      this.props.onSubmit && this.props.onSubmit(this.data);
-    }
-    render () {
-      return (
-        <Block className='Filter'>
-          <strong>Anzuzeigende Elemente:</strong>
-          <br />
-          <input type='number' onChange={this.modifyObject.bind(this, this.data, 'limit')} value={this.data.limit} />
-          <br />
-          <strong>Filter:</strong>
-          {this.parseQueryBlock(this.data.where)}
-          <strong>Sortierung:</strong>
-          {this.parseSortBlock(this.data.orderby)}
-          <input type='button' value='Anwenden' onClick={this.submit} />
-        </Block>
-      );
-    }
+  render () {
+    return (
+      <Block className='Filter'>
+        <label htmlFor="count"><strong>Anzuzeigende Elemente:</strong></label>
+        <input name="count" type='number' onChange={this.handleChange.count} value={this.state.count} />
+        
+        <label htmlFor="page"><strong>Seite:</strong></label>
+        <input name="page" type='number' onChange={this.handleChange.page} value={this.state.page} />
+       
+        <label htmlFor="order_by"><strong>Sortieren:</strong></label>
+        <Select name="order_by" values={filterTemplate.order_by} onChange={this.handleChange.order_by} value={this.state.order_by} />
+       
+        <label htmlFor="desc"><strong>Absteigend:</strong></label>
+        <input name="desc" type='checkbox' onChange={this.handleChange.desc} value={this.state.desc} />
+        
+        <label htmlFor="sentiment"><strong>Sortieren:</strong></label>
+        <Select name="sentiment" values={filterTemplate.sentiment} onChange={this.handleChange.sentiment} value={this.state.sentiment} />
+
+        <label htmlFor="subject"><strong>Sortieren:</strong></label>
+        <Select name="subject" values={filterTemplate.subject} onChange={this.handleChange.subject} value={this.state.subject} />
+
+        <label htmlFor="text_contains"><strong>Anzuzeigende Elemente:</strong></label>
+        <input name="text_contains" type='text' onChange={this.handleChange.text_contains} value={this.state.text_contains} />
+        
+        <input type='button' value='Anwenden' onClick={this.submit} />
+      </Block>
+    );
+  }
 }
 
 export default Filter;

@@ -45,6 +45,7 @@ class Topbar extends Component {
             <p>Hier sollte man auswählen können was man exportieren möchte?</p>
             <input className='primary' type='button' value='exportieren' />
           </Modal>
+              {(process.env.NODE_ENV === 'development') && <input type="checkbox" defaultChecked id="mockApi"/>}
         </header>
       );
     }

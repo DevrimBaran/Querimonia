@@ -32,15 +32,15 @@ class Table extends Component {
         let temp;
         index++;
         if (cb) {
-          if (Array.isArray(tag)) {
-            temp = row[tag[0]];
-            for (let i = 1; i < tag.length; i++) {
-              temp = temp[tag[i]];
+            if (Array.isArray(tag)) {
+                temp = row[tag[0]];
+                for (let i = 1; i < tag.length; i++) {
+                    temp = temp[tag[i]];
+                }
+            } else {
+                temp = typeof row[tag] === 'object' ? '' : row[tag];
             }
-          } else {
-            temp = row[tag];
-          }
-          return cb(temp, index);
+            return cb(temp, index);
         } else if (Array.isArray(tag)) {
           return tag[tag.length - 1];
         }

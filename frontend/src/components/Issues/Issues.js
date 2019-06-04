@@ -45,7 +45,7 @@ class Issues extends Component {
       this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
     }
     componentDidMount = () => {
-      this.fetchData('count=20');
+      this.fetchData({count: 20});
     }
     render () {
       return (
@@ -86,14 +86,14 @@ class Issues extends Component {
               <Body>
                 <div className='wrapper'>
                   <Filter
-                    onSubmit={(query) => this.fetchData({ query: query })}
+                    onSubmit={this.fetchData}
                     keys={['id', 'preview', 'receiveDate', 'sentiment', 'subject']}
                     comparators={['=', '!=', '<', '<=', '>', '>=']} />
                   {this.state.loading
                     ? (
                       <i className='fa fa-spinner' />
                     ) : (
-                      <Table data={this.state.issues} onClick={this.activate} tags={['id', 'preview', 'receiveDate', 'sentiment', 'subject']} sticky />
+                        <Table data={this.state.issues} onClick={this.activate} tags={['complaintId', 'preview', 'receiveDate', 'receiveTime', 'sentiment', 'subject']} sticky />
                     )}
                 </div>
               </Body>
