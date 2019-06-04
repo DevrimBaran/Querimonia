@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.db;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.analyse.StopWordFilter;
+import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
@@ -89,13 +89,14 @@ public class ComplaintFactory {
   }
 
   private String makePreview(String text) {
-    return Arrays.stream(text.split("\n", 8))
+    String subtext =  Arrays.stream(text.split("\n", 8))
         // don't use empty lines for the preview
         .filter(line -> !line.trim().isEmpty())
         .limit(2)
-        .collect(Collectors.joining("\n"))
-        // check for too long string
-        .substring(0, 500);
+        .collect(Collectors.joining("\n"));
+
+    // check for too long string
+    return subtext.length() > 500 ? subtext.substring(0,500):subtext;
   }
 
   public ComplaintFactory setClassifier(Classifier classifier) {
