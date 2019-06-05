@@ -10,8 +10,9 @@ public interface SentimentAnalyzer {
   /**
    * Analyzes the sentiment of a given text.
    *
-   * @param text the text that should be analyzed.
+   * @param nonStopWords a map that contains all non stop words mapped to the count
+   *                     how often their occur in the complaints
    * @return a linked hash map that maps the possible sentiments to their probability.
    */
-  Map<String, Double> analyzeSentiment(String text);
+  Map<String, Double> analyzeSentiment(Map<String, Integer> nonStopWords);
 }

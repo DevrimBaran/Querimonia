@@ -52,13 +52,13 @@ public class ComplaintFactory {
     Objects.requireNonNull(stopWordFilter, "stop word filter not initialized");
 
     String preview = makePreview(complaintText);
-    Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(complaintText);
     Map<String, Double> subjectMap = classifier.classifyText(complaintText);
     List<NamedEntity> entities = entityExtractor.extractEntities(complaintText);
+    Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
+    Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
 
     ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(complaintText,
         subjectMap, sentimentMap, entities, LocalDateTime.now());
-    Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
 
     return new Complaint(complaintText, preview, sentimentMap, subjectMap,
         entities, LocalDate.now(), LocalTime.now(), responseSuggestion, words);
