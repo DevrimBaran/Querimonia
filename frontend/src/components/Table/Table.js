@@ -40,7 +40,7 @@ class Table extends Component {
           } else {
             temp = row[tag];
           }
-          return cb(temp, index);
+          return cb(typeof row[tag] === 'object' ? '' : temp, index);
         } else if (Array.isArray(tag)) {
           return tag[tag.length - 1];
         }

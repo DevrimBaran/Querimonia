@@ -9,6 +9,10 @@ function createDate () {
   return random(1, 28) + '.' + random(1, 12) + '.' + random(1970, 2018);
 }
 
+function createTime () {
+  return '' + random(0, 23) + ':' + random(0, 59) + ':' + random(0, 59);
+}
+
 function createWord () {
   let word = '';
   for (let i = random(3, 7); i > 0; i--) {
@@ -60,6 +64,7 @@ function createEntry (n) {
     db.push({
       complaintId: db.length,
       receiveDate: createDate(),
+      receiveTime: createTime(),
       probableSubject: random(0, 1) === 0 ? 'bus verpasst' : 'fahrer unfreundlich',
       probableSentiment: ['Wütend', 'Fröhlich', 'Depressiv'][random(0, 2)],
       text: createText(10, 20, true),

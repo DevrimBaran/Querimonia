@@ -15,6 +15,7 @@ class Select extends Component {
       let classes = this.props.className + ' Select' || 'Select';
       return (
         <select className={classes} name={this.props.name} onChange={this.onChange}>
+          <option key='null' value={null}>-</option>
           {
             this.props.values.map((value) => {
               return (

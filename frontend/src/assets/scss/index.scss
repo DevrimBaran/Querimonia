@@ -1,65 +1,254 @@
 @import '_variables';
 
-/// Slightly lighten a color
-/// @access public
-/// @param {Color} $color - color to tint
-/// @param {Number} $percentage - percentage of `$color` in returned color
-/// @return {Color}
-@function tint($color, $percentage) {
-    @return mix(white, $color, $percentage);
-}
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    color: white;
-    $topbar-height: 60px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-html, body {
-    width: 100%;
-    height: 100%;
-    background-color: $black;
+/** Die dem Body zugewiesene Klasse (light oder dark) entscheidet über das
+*   Aussehen der Website, light oder dark mode. Er sollte standardmaessig
+*   die Klasse colorPalette zugewiesen haben.
+*/
+/* Diese Farben werden im "Dark-Theme" verwendet */
+.dark {
+    --primaryTextColor: white;
+    --secondaryTextColor: #B3B3B3;
+    --inverseTextColor: black;
+    /* Die Primaere Akzentfarbe ist das Fraunhofer-Gruen */
+    --primaryAccentColor: #179c7d;
+    --primaryAccentColorActive: rgb(66, 194, 164);
+    /* Die Sekundaere Akzentfarbe stammt von der Fraunhofer-Website, ein gedecktes Blau */
+    --secondaryAccentColor: rgb(31, 130, 191);
+    --secondaryAccentColorActive: rgb(63, 167, 231);
+    --buttonColor: #1A1A1A;
+    --buttonColorHover: rgb(38, 38, 38);
+    --primaryBackgroundColor: rgb(38, 38, 38);
+    --secondaryBackgroundColor: #1A1A1A;
+    --tertiaryBackgroundColor: #0D0D0D;
 }
-#root {
-    height: 100vh;
+/* Diese Farben werden im "Light-Theme" verwendet */
+.light {
+    --primaryTextColor: black;
+    --secondaryTextColor: #272727;
+    --inverseTextColor: white;
+    /* Die Primaere Akzentfarbe ist das Fraunhofer-Gruen */
+    --primaryAccentColor: #179c7d;
+    --primaryAccentColorActive: rgb(66, 194, 164);
+    /* Die Sekundaere Akzentfarbe stammt von der Fraunhofer-Website, ein gedecktes Blau */
+    --secondaryAccentColor: rgb(31, 130, 191);
+    --secondaryAccentColorActive: rgb(9, 101, 158);
+    --buttonColor: #F3F3F3;
+    --buttonColorHover: #E5E5E5;
+    --primaryBackgroundColor: #FFFFFF;
+    --secondaryBackgroundColor: #F3F3F3;
+    --tertiaryBackgroundColor: #E5E5E5;
 }
-.fixed {
-    position: fixed;
+/** Diese Farben stammen aus dem Fraunhofer CI-Guide und
+*   finden vielleicht bei der Textmarkierung verwendung.
+*/
+.colorPalette{
+    --lighterBlue: rgb(212, 230, 244);
+    --lightBlue: rgb(136, 188, 226);
+    --mediumBlue: rgb(31, 130, 192);
+    --darkBlue: rgb(0, 90, 148);
+    --darkerBlue: rgb(0, 52, 107);
+    
+    --lighterViolet: rgb(199, 193, 222);
+    --lightViolet: rgb(144, 133, 186);
+    --mediumViolet: rgb(57, 55, 139);
+    --darkViolet: rgb(41, 40, 106);
+    --mediumRed: rgb(226, 0, 26);
+    --darkRed: rgb(158, 28, 34);
+    --darkerRed: rgb(119, 28, 44);
+    --lighterOrange: rgb(254, 234, 201);
+    --lightOrange: rgb(251, 203, 140);
+    --mediumOrange: rgb(242, 148, 0);
+    --darkOrange: rgb(235, 106, 10);
+    --lighterYellow: rgb(255, 250, 209);
+    --lightYellow: rgb(255, 243, 129);
+    --mediumYellow: rgb(255, 220, 0);
+    --darkYellow: rgb(216, 166, 1);
+    --lighterGreen: rgb(238, 239, 177);
+    --lightGreen: rgb(209, 221, 130);
+    --mediumGreen: rgb(177, 200, 0);
+    --darkGreen: rgb(143, 164, 2);
+    --darkerGreen: rgb(106, 115, 65);
+    --lighterTurquoise: rgb(180, 220, 211);
+    --lightTurquoise: rgb(109, 191, 169);
+    --mediumTurquoise: rgb(0, 148, 117);
+    --Frostee: rgb(215, 225, 201);
+    --Putty: rgb(203, 175, 115);
+    --brownBramble: rgb(70, 41, 21);
+    --eastBay: rgb(76, 99, 111);
+    --Scooter: rgb(51, 184, 202);
+    --summerSky: rgb(37, 186, 226);
+    --Cerulean: rgb(0, 110, 146);
+    --hitGrey: rgb(168, 175, 175);
 }
-.black {
-    background-color: $black;
-    color: $white;
+body {
+    background-color: var(--tertiaryBackgroundColor);
+    --contentMargin: 1em;
 }
-.primary {
-    background-color: $primary;
-    color: #000;
+/**
+*   Text allgemein sollte in einer div.content stehen, damit die Lesbarkeit garantiert wird. 
+*   Ausnahme dabei sind Labels (h6) und ggf. Tab-Titel (h5). Tatsaechlich als Ueberschrift
+*   verwendet koennen also nur h1 - h3.
+*/
+div.content{
+    background-color: var(--primaryBackgroundColor);
+    padding:  1.3em var(--contentMargin) 0em var(--contentMargin);
+    overflow: auto;
 }
-.secondary {
-    background-color: $primary;
-    color: #000;
+/* Groesste Ueberschrift */
+h1 {
+    font-size: 2em;
+    padding: 0em;
+    margin: 0.5em 0em 0.5em 0em;
+    color: var(--primaryTextColor);
 }
-.a {
-    cursor: pointer;
-}
-ul {
-    list-style: none;
-}
-li {
-    white-space: nowrap;
-    padding: 15px 20px 5px;
-    border-bottom: 1px solid $light;
-}
+/* Mittlere Ueberschrift */
 h2 {
-    color: $light;
+    font-size: 1.3em;
+    padding: 0em;
+    margin: 0.5em 0em 0.5em 0em;
+    color: var(--primaryTextColor);
 }
-input {
-    padding: 10px 20px;
+/* Kleine Ueberschrift */
+h3 {
+    font-size: 1.1em;
+    color: var(--primaryTextColor);
+    margin-bottom: 0.5em;
+}
+/* Menuepunkte */
+h4 {
+    color: var(--secondaryTextColor);
+    font-size: 1.2em;
+    margin: 0px;
+}
+h4:hover {
+    color: var(--primaryAccentColor);
+}
+/* Titel für die Tabs */
+h5 {
+    color: var(--secondaryTextColor);
+    font-size: 1.3em;
+    font-weight: normal;
+    text-align: center;
+    margin: auto;
+    padding: 0.2em 0em 0em 0em;
+}
+h5:hover{
+    color: var(--primaryTextColor);
+}
+/* Label, die zwar sichtbar sind aber keine Aufmerksamkeit erregen müssen */
+h6 {
+    text-transform: uppercase;
+    font-size: 1em;
+    color: var(--secondaryTextColor);
+    padding: 0.5em 0em 0.5em 0em;
+    margin: 0em;
+}
+p {
+    color: var(--primaryTextColor);
+    margin: 0.3em 0em 0.3em 0em;
+}
+.small {
+    font-size: 0.85em
+}
+.tiny {
+    font-size: 0.7em
+}
+/* 'normale' Buttons, ohne besondere Prioritaet */
+button {
+    width: 10em;
+    height: 2em;
+    font-size: 1em;
+    background-color: var(--buttonColor);
+    color: var(--primaryTextColor);
+    outline: none;
+}
+button:hover {
+    background-color: var(--buttonColorHover);
+}
+/* Buttons, die fuer den Programmablauf unablaesslich sind*/
+button.important {
+    background-color: var(--secondaryAccentColor);
+    border-color: var(--primaryTextColor);
+    color: var(--inverseTextColor);
+    font-weight: bold;
+}
+button.important:hover {
+    background-color: var(--secondaryAccentColorActive);
+}
+/* Auf diese Art koennen erkannte Daten im Text markiert werden */
+span.highlight {
+    background-color: var(--mediumYellow);
+    padding: .05em .2em .05em .2em;
+    border-radius: .3em;
+}
+/* Die Textarea ermoeglicht das direkte bearbeiten von Text */
+textarea {
+    width: 100%;
+    padding: 0em;
+    font-size: 1em;
+    margin: 8px 0;
     border: none;
-    //box-shadow: black 5px 5px 0 0;
-    &[type=button] {
-        background-color: $primary;
-        color: #000;
-        cursor: pointer;
-    }
+    box-sizing: border-box;
+    color: var(--primaryTextColor);
+    background-color: var(--primaryBackgroundColor);
+}
+textarea:focus {
+    outline: none;
+}
+.complaintSummary {
+    background-color: var(--primaryBackgroundColor);
+    padding:  0.5em var(--contentMargin) 1em var(--contentMargin);
+}
+.complaintSummary:hover {
+    background-color: var(--secondaryBackgroundColor);
+}
+.complaintSummary p {
+    height: 2.3em;
+    overflow: hidden;
+    clear: both;
+    padding-top: 0.3em;
+    text-align: justify;
+}
+.complaintSummary .title{
+    margin: 0em;
+    width: 80%;
+    float: left;
+}
+.complaintSummary h3 {
+    margin: 0px;
+}
+.complaintSummary .date {
+    float: left;
+    width: 20%;
+    margin: 0em;
+}
+.complaintSummary .date p {
+    height: 1em;
+    text-align: right;
+    padding-top: 0.15em;
+    margin: 0em;
+}
+.menu ul{
+    list-style-type: none;
+    padding: 0px;
+}
+.menu li {
+    width: 90%;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); 
+    background-color: var(--primaryBackgroundColor);
+    padding: 0.3em 0em 0.3em 5%;
+    margin: auto;
+    margin-top: 0.6em;
+}
+/* Dieser Schatten umgibt groessere Fenster */
+.shadow{
+    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
+    background-color: var(--secondaryBackgroundColor);
+    height: 100%;
+    position: absolute;
+    overflow: hidden;
 }
