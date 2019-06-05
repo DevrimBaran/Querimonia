@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './../../assets/img/logo.svg';
+import logo from './../../assets/img/logo.png';
 import Modal from '../Modal/Modal';
 // import Block from '../Block/Block';
 import './Topbar.scss';
