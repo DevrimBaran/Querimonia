@@ -17,10 +17,10 @@ function createWord () {
   return word;
 }
 
-function createText () {
+function createText (min, max, withEntities) {
   let text = createWord();
   let entities = [];
-  for (let i = random(10, 20); i > 0; i--) {
+  for (let i = random(min, max); i > 0; i--) {
     text += ' ';
     switch (random(0, 10)) {
       case 0:
@@ -46,19 +46,24 @@ function createText () {
         break;
     }
   }
-  return {
-    text: text,
-    entities: entities
-  };
+  if (withEntities) {
+    return {
+      text: text,
+      entities: entities
+    };
+  } else {
+    return text;
+  }
 }
 function createEntry (n) {
   for (let i = 0; i < n; i++) {
     db.push({
-      id: db.length,
-      date: createDate(),
-      thema: random(0, 1) === 0 ? 'bus verpasst' : 'fahrer unfreundlich',
-      dringlichkeit: ['low', 'normal', 'high', 'urgend', 'immediate'][random(0, 4)],
-      text: createText()
+      complaintId: db.length,
+      receiveDate: createDate(),
+      probableSubject: random(0, 1) === 0 ? 'bus verpasst' : 'fahrer unfreundlich',
+      probableSentiment: ['Wütend', 'Fröhlich', 'Depressiv'][random(0, 2)],
+      text: createText(10, 20, true),
+      preview: createText(5, 10, false)
     });
   }
 }
