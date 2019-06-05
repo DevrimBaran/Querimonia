@@ -1,4 +1,5 @@
 @import '_variables';
+@import '_structure';
 
 
 * {
@@ -45,7 +46,7 @@
 /** Diese Farben stammen aus dem Fraunhofer CI-Guide und
 *   finden vielleicht bei der Textmarkierung verwendung.
 */
-.colorPalette{
+.colorPalette {
     --lighterBlue: rgb(212, 230, 244);
     --lightBlue: rgb(136, 188, 226);
     --mediumBlue: rgb(31, 130, 192);
@@ -245,10 +246,7 @@ textarea:focus {
     margin-top: 0.6em;
 }
 /* Dieser Schatten umgibt groessere Fenster */
-.shadow{
+.shadow {
     box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
     background-color: var(--secondaryBackgroundColor);
-    height: 100%;
-    position: absolute;
-    overflow: hidden;
 }
