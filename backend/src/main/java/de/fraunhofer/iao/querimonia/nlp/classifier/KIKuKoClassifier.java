@@ -20,7 +20,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */
-public class KIKuKoClassifier extends KikukoConatct implements Classifier {
+public class KIKuKoClassifier extends KikukoConatct<KikukoResponse> implements Classifier {
 
 
   public KIKuKoClassifier() {
@@ -36,7 +36,7 @@ public class KIKuKoClassifier extends KikukoConatct implements Classifier {
    */
   @Override
   public LinkedHashMap<String, Double> classifyText(String input) {
-    KikukoResponse response = executeKikukoRequest(input);
+    KikukoResponse response = executeKikukoRequest(input, KikukoResponse[].class);
 
     return response.getPipelines()
             .getTempPipeline()

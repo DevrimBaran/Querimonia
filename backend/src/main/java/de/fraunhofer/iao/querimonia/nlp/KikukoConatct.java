@@ -16,7 +16,7 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 
-public class KikukoConatct {
+public class KikukoConatct<T> {
 
   private static final String URL = "https://kikuko.iao.fraunhofer.de/apitext";
   private final String DOMAIN_TYPE;
@@ -35,7 +35,7 @@ public class KikukoConatct {
   * @param input text that will be analysed
   * @return a Response Object
   */
-  protected KikukoResponse executeKikukoRequest(final String input) {
+  protected T executeKikukoRequest(final String input, final Class<T[]> type) {
 
       HttpHeaders header = new HttpHeaders();
       header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -57,13 +57,14 @@ public class KikukoConatct {
               request, String.class).getBody();
       // map string to json
       ObjectMapper mapper = new ObjectMapper();
-      KikukoResponse[] responses;
+      T[] responses;
       // exception for illegal answers
       HttpServerErrorException kikukoException =
         new HttpServerErrorException(HttpStatus.CONFLICT,
                       "No response from KiKUKO available");
+
       try {
-          responses = mapper.readValue(returnValue, KikukoResponse[].class);
+          responses = mapper.readValue(returnValue, type);
           // check for available response
           if (responses == null || responses.length == 0) {
               throw kikukoException;
