@@ -1066,9 +1066,7 @@ Content-Type: application/json
 {
   "templateText": "Wir hoffen, damit in Ihrem Sinne gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen alles Gute.\n",
   "responsePart": "Schluss",
-  "successorParts": [
-    null
-  ],
+  "successorParts": [],
   "subject": null
 }
 
@@ -1080,9 +1078,7 @@ Content-Type: application/json
 {
   "templateText": "Wir hoffen Ihnen damit behilflich gewesen sein zu können.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten.\n",
   "responsePart": "Schluss",
-  "successorParts": [
-    null
-  ],
+  "successorParts": [],
   "subject": null
 }
 
@@ -1094,9 +1090,7 @@ Content-Type: application/json
 {
   "templateText": "Wir hoffen in Ihrem Interesse gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten mit unseren Verkehrsmitteln.\n",
   "responsePart": "Schluss",
-  "successorParts": [
-    null
-  ],
+  "successorParts": [],
   "subject": null
 }
 
