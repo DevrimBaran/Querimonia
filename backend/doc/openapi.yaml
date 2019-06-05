@@ -2,10 +2,12 @@ openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.0.3
+  version: 0.3.2
 servers:
   - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/
+  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
+  - url: http://localhost:8080/
 tags:
   - name: complaints
     description: Hier können die gespeicherten Beschwerden verwaltet werden.
@@ -218,7 +220,7 @@ paths:
           description: Das Template ist richtig formatiert und wurde in der Datenbank gespeichert.
         400:
           description: Der Textbaustein enthält ungültige Formatierungen oder überschreitet das Zeichenlimit von 5000 Zeichen.
-          
+
   /api/stats/tagcloud:
     get:
       tags:
@@ -444,7 +446,7 @@ components:
           - subject_desc
           - sentiment_asc
           - sentiment_desc
-          
+
     MostCommonWords:
       description: Enthält die häufigsten Wörter aus den Beschwerden
       type: object
@@ -455,7 +457,7 @@ components:
         "Fahrer": 32
         "Bus": 29
         "fahren": 24
-        
+
   securitySchemes:
     basicAuth:
       type: http

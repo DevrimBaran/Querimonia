@@ -15,10 +15,11 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/api/complaints?sort_by=name_asc
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints
+
 ###
 
-GET http://localhost:8080/api/responses/8
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/1
 
 ###
 
@@ -30,7 +31,7 @@ POST http://localhost:8080/api/import/text
 Content-Type: application/json
 
 {
-"text" : "ausfall und fahrer unfreundlich"
+  "text": "ausfall und fahrer unfreundlich"
 }
 
 
@@ -41,7 +42,7 @@ POST https://kikuko.iao.fraunhofer.de/apitext
 
 ###
 
-POST http://localhost:8080/api/import/text
+POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
@@ -50,11 +51,56 @@ Content-Type: application/json
 
 ###
 
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Guten Tag!\n\nEs tut uns sehr leid, dass Sie mit uns unzufrieden sind.",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Datumsangabe"
+  ],
+  "subject": null
+}
+
+###
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Ihre Beschwerde ist am ${upload_date} um ${upload_time} bei uns eingegangen.",
+  "responsePart": "Datumsangabe",
+  "successorParts": [
+    "Verabschiedung"
+  ],
+  "subject": null
+}
+
+###
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "\n\nit freundlichen Grüßen\n\nIhr Beschwerdebot",
+  "responsePart": "Verabschiedung",
+  "successorParts": [
+  ],
+  "subject": null
+}
+
+###
+
+DELETE http://localhost:8080/api/templates/10
+
+###
+
 POST http://localhost:8080/api/responses/new/1
 
 ###
 
-DELETE http://localhost:8080/api/templates/8
+DELETE http://localhost:8080/api/templates/9
 
 ###
 
@@ -64,7 +110,7 @@ GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints
 ###
 
 # Posts a new complaint text into the database
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/import/text
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/import
 Content-Type: application/json
 
 {
@@ -96,7 +142,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/4
 
 ###
 
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/75
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/5
 
 ###
 
