@@ -7,6 +7,8 @@ import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -72,7 +74,11 @@ public class ComplaintFactory {
         .collect(Collectors.joining("\n"));
 
     // check for too long string
-    return preview.substring(0, Math.min(500, preview.length()));
+    try {
+      return preview.substring(0, Math.min(500, preview.length()));
+    } catch (IndexOutOfBoundsException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Preview generation error");
+    }
   }
 
   public ComplaintFactory setClassifier(Classifier classifier) {
