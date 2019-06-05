@@ -32,3 +32,13 @@ pre {
         cursor: pointer;
     }
 }
+
+.part {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    padding: 5px;
+    background-color: $secondary;
+    border-radius: 20px;
+    pointer-events: none;
+}

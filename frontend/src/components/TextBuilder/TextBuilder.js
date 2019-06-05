@@ -100,6 +100,7 @@ class TextBuilder extends Component {
                   {response.completedText}
                 </pre>
                 <span className='remove' onClick={() => { this.remove(index); this.fetch(); }} />
+                <p className='part'>{response.component.responsePart}</p>
               </div>
             );
           })
