@@ -5,7 +5,7 @@ class Tabbed extends Component {
   constructor (props) {
     super(props);
     this.style = this.props.style || {};
-    this.style["--tabCount"] = this.props.children ? this.props.children.length + 1 : 1;
+    this.style['--tabCount'] = this.props.children ? this.props.children.length + 1 : 1;
     this.state = {
       index: 0
     };

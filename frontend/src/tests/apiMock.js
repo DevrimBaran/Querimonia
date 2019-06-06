@@ -66,19 +66,19 @@ function createEntry (n) {
       complaintId: db.length,
       receiveDate: createDate(),
       receiveTime: createTime(),
-        probableSubject: {
-            "Fahrt nicht erfolgt": random(0, 100),
-            "Sonstiges": random(0, 100),
-            "Fahrer unfreundlich": random(0, 100)
-        },
-        probableSentiment: {
-            'Wütend': random(0, 100),
-            'Fröhlich': random(0, 100),
-            'Depressiv': random(0, 100)
-        },
+      probableSubject: {
+        'Fahrt nicht erfolgt': random(0, 100),
+        'Sonstiges': random(0, 100),
+        'Fahrer unfreundlich': random(0, 100)
+      },
+      probableSentiment: {
+        'Wütend': random(0, 100),
+        'Fröhlich': random(0, 100),
+        'Depressiv': random(0, 100)
+      },
       text: text.text,
       entities: text.entities,
-      preview: text.text.split(" ").slice(0, 10).join(" ")
+      preview: text.text.split(' ').slice(0, 10).join(' ')
     });
   }
 }

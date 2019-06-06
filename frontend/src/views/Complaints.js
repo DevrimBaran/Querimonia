@@ -4,20 +4,14 @@ import Api from 'utility/Api';
 
 import Block from 'components/Block/Block';
 import Complaint from 'components/Complaint/Complaint';
-import Body from 'components/Body/Body';
-import Collapsible from 'components/Collapsible/Collapsible';
-// import Fa from 'components/Fa/Fa';
 import Filter from 'components/Filter/Filter';
 // import Complaints from 'components/Complaints/Complaints';
 import Log from 'components/Log/Log.js';
 // import Modal from 'components/Modal/Modal';
 import Stats from 'components/Stats/Stats';
 import Tabbed from 'components/Tabbed/Tabbed';
-import Table from 'components/Table/Table';
 import TaggedText from 'components/TaggedText/TaggedText';
-import Text from 'components/Text/Text';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
-import Topbar from 'components/Topbar/Topbar';
 
 class Complaints extends Component {
   constructor (props) {
@@ -49,53 +43,53 @@ class Complaints extends Component {
     render () {
       let active = false;
       if (this.props.match.params.id) {
-        active = this.state.issues.filter((a) => "" + a.complaintId === this.props.match.params.id)[0];
+        active = this.state.issues.filter((a) => '' + a.complaintId === this.props.match.params.id)[0];
       }
       return (
         <React.Fragment>
           { active ? (
             <React.Fragment>
               <Block style={{
-                display: "flex",
-                flexDirection: "column"
+                display: 'flex',
+                flexDirection: 'column'
               }}>
                 <h6 className='center'>Antwort</h6>
                 <Tabbed style={{ flexGrow: 1 }}>
                   <div label='Erstellen'>
                     <TextBuilder complaintId={active.complaintId} />
                   </div>
-                  <div label="Details">
-                    <Stats label="Subject" data={active.probableSubject}/>
-                    <Stats label="Sentiment" data={active.probableSentiment}/>
+                  <div label='Details'>
+                    <Stats label='Subject' data={active.probableSubject} />
+                    <Stats label='Sentiment' data={active.probableSentiment} />
                     <Log />
                   </div>
-                  <div label="Datenbank">BUH!</div>
+                  <div label='Datenbank'>BUH!</div>
                 </Tabbed>
               </Block>
-              <Block style={{ display: "flex", flexDirection: "column" }}>
+              <Block style={{ display: 'flex', flexDirection: 'column' }}>
                 <h6 className='center'>Meldetext</h6>
                 <Tabbed style={{ flexGrow: 1 }}>
-                  <div label="Überarbeitet">
-                    <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities}} />
+                  <div label='Überarbeitet'>
+                    <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
                   </div>
-                  <div label="Original">
+                  <div label='Original'>
                     {active.text}
                   </div>
                 </Tabbed>
               </Block>
             </React.Fragment>
           ) : (
-              <Block style={{
-                display: "flex",
-                flexDirection: "column"
-              }}>
-                <Filter />
-                <div style={{ overflow: "auto" }}>
-                  {this.state.issues.map(Complaint)}
-                </div>
+            <Block style={{
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              <Filter />
+              <div style={{ overflow: 'auto' }}>
+                {this.state.issues.map(Complaint)}
+              </div>
             </Block>
           ) }
-            
+
         </React.Fragment>
       );
     }

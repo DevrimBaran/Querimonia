@@ -11,9 +11,9 @@ export function Menu () {
         <li>
           <Link to='/'>Start</Link>
         </li>
-        {/*<li>
+        {/* <li>
           <Link to='/complaints'>Beschwerden</Link>
-        </li>*/}
+        </li> */}
         <li>
           <Link to='/statistics'>Statistiken</Link>
         </li>

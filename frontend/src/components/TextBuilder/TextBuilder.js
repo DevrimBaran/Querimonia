@@ -93,13 +93,13 @@ class TextBuilder extends Component {
     render () {
       return (
         <div className='TextBuilder' ref='TextBuilder'>
-              <textarea defaultValue={this.state.text}></textarea>
+          <textarea defaultValue={this.state.text} />
           <br />
           {
             this.state.responses.map((response, index) => {
               return (
                 <div className='response Block' key={index}>
-                      <p className='content' onClick={() => this.add(index)}>
+                  <p className='content' onClick={() => this.add(index)}>
                     {response}
                   </p>
                   <span className='remove' onClick={() => { this.remove(index); this.fetch(); }} />
