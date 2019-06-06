@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './../../assets/img/logo.png';
+import logo from './../../assets/img/StuproLogo2.svg';
 import Modal from '../Modal/Modal';
 // import Block from '../Block/Block';
 import './Topbar.scss';
@@ -31,7 +31,7 @@ class Topbar extends Component {
     render () {
       return (
         <header className='Topbar dark'>
-          <img src={logo} className='Topbar-logo' alt='logo' />
+          <img src={logo} className='Topbar-logo' alt='logo' width='100%' />
           <Modal label='Import'>
             <div>
               <h1>Import</h1>
