@@ -50,9 +50,19 @@ class TextBuilder extends Component {
         })
       };
     });
+    this.fetch();
   };
 
   setData = (data) => {
+    if (this.state.responses.length !== 0) {
+      data = data.filter((response, i) => {
+        let isDuplicate = false;
+        this.state.responses.forEach((element) => {
+          isDuplicate = isDuplicate || element.component.responsePart === response.component.responsePart;
+        });
+        return !isDuplicate;
+      });
+    }
     this.setState((state, props) => {
       return {
         responses: state.responses.concat(data)
@@ -62,7 +72,7 @@ class TextBuilder extends Component {
 
   fetch = () => {
     Api.get('/api/responses/' + this.props.complaintId, '')
-      .catch((e) => {
+      .catch(() => {
         return { status: 404 };
       })
       .then((response) => this.setData(response));
@@ -84,7 +94,7 @@ class TextBuilder extends Component {
                 <p className='content' onClick={() => this.add(index)}>
                   {response.completedText} <span className='part'>{response.component.responsePart}</span>
                 </p>
-                <p className='remove' onClick={() => { this.remove(index); this.fetch(); }} />
+                <p className='remove' onClick={() => { this.remove(index); }} />
               </div>
             );
           })
