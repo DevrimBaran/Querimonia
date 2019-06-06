@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.response;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.lang.Nullable;
 
@@ -11,9 +12,11 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class represents a template for a part of the response.
@@ -55,6 +58,13 @@ public class ResponseComponent {
   private List<String> successorParts;
 
   /**
+   * The template text gets sliced into text parts and placeholder parts.
+   */
+  @JsonIgnore
+  @Transient
+  private List<ResponseSlice> slices;
+
+  /**
    * Basic constructor for JSON deserialization.
    */
   @JsonCreator
@@ -68,9 +78,49 @@ public class ResponseComponent {
     this.successorParts = successorParts;
   }
 
+  @SuppressWarnings("unused")
   public ResponseComponent() {
 
   }
+
+  /**
+   * Slices the template text into text and placeholder parts.
+   */
+  private void createSlices() {
+    slices = new ArrayList<>();
+    // the current position in the text
+    int templatePosition = 0;
+
+    // split on every placeholder
+    String[] parts = templateText.split("\\$\\{\\w*}");
+
+    for (String currentPart : parts) {
+      templatePosition += currentPart.length();
+      // add raw text slice
+      slices.add(new ResponseSlice(false, currentPart));
+
+      String remainingText = templateText.substring(templatePosition);
+      if (remainingText.length() >= 2) {
+        // find closing bracket
+        int endPosition = remainingText.indexOf('}');
+        // check if closing bracket is there
+        if (endPosition == -1) {
+          throw new IllegalArgumentException("Illegal template format");
+        }
+        // find entity for placeholder
+        String entityLabel = remainingText.substring(2, endPosition);
+        // add label slice
+        slices.add(new ResponseSlice(true, entityLabel));
+
+        templatePosition = templatePosition + 3 + entityLabel.length();
+
+      } else {
+        break;
+      }
+    }
+  }
+
+  // getters and setters
 
   public List<String> getSuccessorParts() {
     return successorParts;
@@ -90,5 +140,48 @@ public class ResponseComponent {
 
   public String getResponsePart() {
     return responsePart;
+  }
+
+  @JsonIgnore
+  @Transient
+  List<ResponseSlice> getSlices() {
+    if (slices == null) {
+      createSlices();
+    }
+    return slices;
+  }
+
+  @Transient
+  @JsonProperty("requiredEntities")
+  public List<String> getRequiredEntities() {
+    return getSlices()
+        .stream()
+        .filter(ResponseSlice::isPlaceholder)
+        .map(ResponseSlice::getContent)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Represents a slice of the response component that is either raw text or
+   * a placeholder. The complaint text gets sliced in text and placeholders.
+   */
+  static class ResponseSlice {
+
+    ResponseSlice(boolean isPlaceholder, String content) {
+      this.isPlaceholder = isPlaceholder;
+      this.content = content;
+    }
+
+    private boolean isPlaceholder;
+    // this is either the placeholder name or the raw text when the slice is no placeholder.
+    private String content;
+
+    boolean isPlaceholder() {
+      return isPlaceholder;
+    }
+
+    String getContent() {
+      return content;
+    }
   }
 }

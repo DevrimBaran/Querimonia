@@ -10,8 +10,12 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Das ist ein Lob an euch!"
+  "text": "Guten Tag, mein Name ist Maria Bauer. Der Bus der Linie 263 ist am 28.01.2019 leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€"
 }
+
+###
+
+GET http://localhost:8080/api/responses/118
 
 ###
 
@@ -27,11 +31,11 @@ DELETE http://localhost:8080/api/complaints/1
 
 ###
 
-POST http://localhost:8080/api/import/text
+POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "ausfall und fahrer unfreundlich"
+  "text": "Fahrt ist leider nicht erfolgt!\nDas ist sehr schade!\nLiebe Grüße\nMax Mustermann"
 }
 
 
@@ -96,14 +100,6 @@ DELETE http://localhost:8080/api/templates/10
 
 ###
 
-POST http://localhost:8080/api/responses/new/1
-
-###
-
-DELETE http://localhost:8080/api/templates/9
-
-###
-
 # Returns all complaints in the database
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints
 
@@ -114,13 +110,13 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/impor
 Content-Type: application/json
 
 {
-  "text": "Fahrt ist leider nicht erfolgt!\nDas ist sehr schade!\nLiebe Grüße\nMax Mustermann"
+  "text": "Fahrt ist leider nicht erfolgt!"
 }
 
 ###
 
 # get a single complaint
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
 
 ###
 

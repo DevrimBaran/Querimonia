@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
     Optional<String> optionalSubject = ComplaintUtility.getEntryWithHighestProbability(subjectMap);
 
-    generateComponentOrder(responseComponents, optionalSubject, BEGIN_RESPONSE_PART)
+    generateComponentOrder(responseComponents, entityValueMap, optionalSubject, BEGIN_RESPONSE_PART)
         .stream()
         .map(component -> fillResponseComponent(component, entityValueMap))
         .forEach(result::add);
@@ -75,65 +76,55 @@ public class DefaultResponseGenerator implements ResponseGenerator {
    */
   private static CompletedResponseComponent fillResponseComponent(ResponseComponent component,
                                                                   Map<String, String> entities) {
-    String templateText = component.getTemplateText();
+    List<ResponseComponent.ResponseSlice> slices = component.getSlices();
     StringBuilder resultText = new StringBuilder();
     List<NamedEntity> entityList = new ArrayList<>();
     // the current position in the text
-    int templatePosition = 0;
     int resultPosition = 0;
 
-    // split on every placeholder
-    String[] parts = templateText.split("\\$\\{\\w*}");
+    for (ResponseComponent.ResponseSlice slice : slices) {
+      String textToAppend;
 
-    for (String currentPart : parts) {
-      templatePosition += currentPart.length();
-      resultPosition += currentPart.length();
-      resultText.append(currentPart);
-
-      String remainingText = templateText.substring(templatePosition);
-      if (remainingText.length() >= 2) {
-        // find closing bracket
-        int endPosition = remainingText.indexOf('}');
-        // check if closing bracket is there
-        if (endPosition == -1) {
-          throw new IllegalArgumentException("Illegal template format");
+      if (slice.isPlaceholder()) {
+        String placeholderName = slice.getContent();
+        textToAppend = entities.get(placeholderName);
+        if (textToAppend == null) {
+          throw new IllegalArgumentException("Entity " + placeholderName + " not present");
         }
-        // find entity for placeholder
-        String entityLabel = remainingText.substring(2, endPosition);
-        String entityValue = entities.get(entityLabel);
-        if (entityValue == null) {
-          throw new IllegalArgumentException("Missing entity " + entityLabel);
-        }
-        resultText.append(entityValue);
-
-        templatePosition = templatePosition + 3 + entityLabel.length();
-        int endOfEntity = resultPosition + entityValue.length();
-        entityList.add(new NamedEntity(entityLabel, resultPosition, endOfEntity));
-        resultPosition = endOfEntity;
-
+        // create entity with label
+        entityList.add(new NamedEntity(placeholderName, resultPosition,
+            resultPosition + textToAppend.length()));
       } else {
-        break;
+        // raw text that does not need to be replaced
+        textToAppend = slice.getContent();
       }
+
+      resultPosition += textToAppend.length();
+      resultText.append(textToAppend);
     }
     return new CompletedResponseComponent(resultText.toString(), component, entityList);
   }
 
   private List<ResponseComponent> generateComponentOrder(
       List<ResponseComponent> responseComponents,
+      Map<String, String> entities,
       Optional<String> optionalSubject,
       String nextResponsePart) {
 
     Optional<ResponseComponent> currentComponent = responseComponents.stream()
-        .filter(responseComponent -> subjectMatches(optionalSubject, responseComponent))
         .filter(responseComponent ->
             responseComponent.getResponsePart().equalsIgnoreCase(nextResponsePart))
-        .findAny();
+        .filter(responseComponent -> subjectMatches(optionalSubject, responseComponent))
+        .filter(responseComponent -> entities.keySet()
+            .containsAll(responseComponent.getRequiredEntities()))
+        .min(Comparator.comparingInt(rc -> -rc.getRequiredEntities().size()));
     if (currentComponent.isPresent()) {
       List<ResponseComponent> result = new ArrayList<>();
-      if (!currentComponent.get().getSuccessorParts().isEmpty()) {
+      List<String> successorParts = currentComponent.get().getSuccessorParts();
+      if (!successorParts.isEmpty()) {
         // TODO optimize successors
-        result = generateComponentOrder(responseComponents, optionalSubject,
-            currentComponent.get().getSuccessorParts().get(0));
+        result = generateComponentOrder(responseComponents, entities, optionalSubject,
+            successorParts.get(successorParts.size() - 1));
       }
       result.add(0, currentComponent.get());
       return result;
