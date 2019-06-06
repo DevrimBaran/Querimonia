@@ -93,7 +93,7 @@ class TextBuilder extends Component {
     render () {
       return (
         <div className='TextBuilder' ref='TextBuilder'>
-          <textarea defaultValue={this.state.text} />
+          <textarea className='responseText' defaultValue={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :) ' />
           <br />
           {
             this.state.responses.map((response, index) => {
