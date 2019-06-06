@@ -93,15 +93,15 @@ class TextBuilder extends Component {
     render () {
       return (
         <div className='TextBuilder' ref='TextBuilder'>
-          <pre contentEditable>{this.state.text}</pre>
+          <textarea defaultValue={this.state.text} />
           <br />
           {
             this.state.responses.map((response, index) => {
               return (
                 <div className='response Block' key={index}>
-                  <pre onClick={() => this.add(index)}>
+                  <p className='content' onClick={() => this.add(index)}>
                     {response}
-                  </pre>
+                  </p>
                   <span className='remove' onClick={() => { this.remove(index); this.fetch(); }} />
                 </div>
               );

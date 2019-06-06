@@ -1,4 +1,6 @@
 @import '_variables';
+@import '_helpers';
+@import '_structure';
 
 
 * {
@@ -45,7 +47,7 @@
 /** Diese Farben stammen aus dem Fraunhofer CI-Guide und
 *   finden vielleicht bei der Textmarkierung verwendung.
 */
-.colorPalette{
+.colorPalette {
     --lighterBlue: rgb(212, 230, 244);
     --lightBlue: rgb(136, 188, 226);
     --mediumBlue: rgb(31, 130, 192);
@@ -84,7 +86,7 @@
     --Cerulean: rgb(0, 110, 146);
     --hitGrey: rgb(168, 175, 175);
 }
-body {
+#root {
     background-color: var(--tertiaryBackgroundColor);
     --contentMargin: 1em;
 }
@@ -233,22 +235,21 @@ textarea:focus {
     margin: 0em;
 }
 .menu ul{
+    display: inline-block;
+    width: auto;
     list-style-type: none;
     padding: 0px;
 }
 .menu li {
-    width: 90%;
+    box-sizing: border-box;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); 
     background-color: var(--primaryBackgroundColor);
-    padding: 0.3em 0em 0.3em 5%;
+    padding: 0.3em 1em;
     margin: auto;
     margin-top: 0.6em;
 }
 /* Dieser Schatten umgibt groessere Fenster */
-.shadow{
+.shadow {
     box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
     background-color: var(--secondaryBackgroundColor);
-    height: 100%;
-    position: absolute;
-    overflow: hidden;
 }

@@ -61,14 +61,24 @@ function createText (min, max, withEntities) {
 }
 function createEntry (n) {
   for (let i = 0; i < n; i++) {
+    let text = createText(10, 50, true);
     db.push({
       complaintId: db.length,
       receiveDate: createDate(),
       receiveTime: createTime(),
-      probableSubject: random(0, 1) === 0 ? 'bus verpasst' : 'fahrer unfreundlich',
-      probableSentiment: ['Wütend', 'Fröhlich', 'Depressiv'][random(0, 2)],
-      text: createText(10, 20, true),
-      preview: createText(5, 10, false)
+      probableSubject: {
+        'Fahrt nicht erfolgt': random(0, 100),
+        'Sonstiges': random(0, 100),
+        'Fahrer unfreundlich': random(0, 100)
+      },
+      probableSentiment: {
+        'Wütend': random(0, 100),
+        'Fröhlich': random(0, 100),
+        'Depressiv': random(0, 100)
+      },
+      text: text.text,
+      entities: text.entities,
+      preview: text.text.split(' ').slice(0, 10).join(' ')
     });
   }
 }
