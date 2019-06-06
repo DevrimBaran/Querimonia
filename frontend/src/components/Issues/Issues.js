@@ -81,8 +81,8 @@ class Issues extends Component {
                 <Block>
                   <h2>Meldetext</h2>
                   <Tabbed>
-                    <TaggedText label='Überarbeitet' text={this.state.active.text} />
-                    <Text label='Original' />
+                    <TaggedText label='Überarbeitet' text={this.state.active} />
+                    <Text label='Original' issue={this.state.active.text} />
                   </Tabbed>
                 </Block>
               </Body>
