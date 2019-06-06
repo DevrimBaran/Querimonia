@@ -54,7 +54,7 @@ class TextBuilder extends Component {
   };
 
   setData = (data) => {
-    if (this.state.responses.length !== 0) {
+    if (this.state.responses) {
       data = data.filter((response, i) => {
         let isDuplicate = false;
         this.state.responses.forEach((element) => {
