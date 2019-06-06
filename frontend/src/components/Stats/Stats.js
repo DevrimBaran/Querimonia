@@ -31,7 +31,7 @@ class Stats extends Component {
     this.state = {};
   }
 
-    componentDidMount = () => {      
+    componentDidMount = () => {
       var ctx = this.refs.canvas;
       new Chart(ctx, {
         type: 'horizontalBar',
