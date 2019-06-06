@@ -20,10 +20,10 @@ import org.springframework.web.client.RestTemplate;
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */
-public class KIKuKoClassifier extends KikukoConatct<KikukoResponse> implements Classifier {
+public class KiKuKoClassifier extends KikukoConatct<KikukoResponse> implements Classifier {
 
 
-  public KIKuKoClassifier() {
+  public KiKuKoClassifier() {
     super("tool", "Beschwerde3Klassifikator2");
   }
 

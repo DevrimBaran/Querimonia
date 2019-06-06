@@ -9,7 +9,7 @@ import java.util.List;
 
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder( {
+@JsonPropertyOrder({
     "TempPipeline"
 })
 public class Pipelines {

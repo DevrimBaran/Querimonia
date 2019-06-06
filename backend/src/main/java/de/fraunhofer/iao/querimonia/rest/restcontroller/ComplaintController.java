@@ -5,7 +5,7 @@ import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.db.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
-import de.fraunhofer.iao.querimonia.nlp.classifier.KIKuKoClassifier;
+import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
@@ -71,7 +71,7 @@ public class ComplaintController {
     this.complaintRepository = complaintRepository;
 
     complaintFactory = new ComplaintFactory()
-        .setClassifier(new KIKuKoClassifier())
+        .setClassifier(new KiKuKoClassifier())
         .setEntityExtractor(new KikukoExtractor())
         .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
         .setSentimentAnalyzer((text1) -> new HashMap<>())

@@ -20,6 +20,15 @@ import java.util.LinkedHashMap;
 })
 public class TempPipeline {
 
+  /**
+   * Temporary Pipeline.
+   * @param startposition Gets the startsposition of the entity.
+   * @param contextBefore Gets the information which is before the entity.
+   * @param endposition Gets the endposition of the entity.
+   * @param text Gets he entity text.
+   * @param typ Gets the entity type.
+   * @param contextAfter Gets the text after the entity.
+   */
   @JsonCreator
   public TempPipeline(@JsonProperty("Startposition") int startposition,
                       @JsonProperty("ContextBefore") String contextBefore,

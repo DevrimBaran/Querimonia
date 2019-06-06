@@ -8,35 +8,35 @@ import java.text.MessageFormat;
 public class ExtractorResponse {
 
 
-    private ExtractorPipelines pipelines;
-    private String content;
+  private ExtractorPipelines pipelines;
+  private String content;
 
-    @JsonCreator
-    public ExtractorResponse(@JsonProperty("pipelines") ExtractorPipelines pipelines,
-                          @JsonProperty("content") String content) {
-        this.pipelines = pipelines;
-        this.content = content;
-    }
+  @JsonCreator
+  public ExtractorResponse(@JsonProperty("pipelines") ExtractorPipelines pipelines,
+                           @JsonProperty("content") String content) {
+    this.pipelines = pipelines;
+    this.content = content;
+  }
 
-    public ExtractorPipelines getPipelines() {
-        return pipelines;
-    }
+  public ExtractorPipelines getPipelines() {
+    return pipelines;
+  }
 
-    public void setPipelines(ExtractorPipelines pipelines) {
-        this.pipelines = pipelines;
-    }
+  public void setPipelines(ExtractorPipelines pipelines) {
+    this.pipelines = pipelines;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    @Override
-    public String toString() {
-        return MessageFormat.format("KikukoResponse'{'pipelines={0}, content=''{1}'''}'",
-                pipelines, content);
-    }
+  @Override
+  public String toString() {
+    return MessageFormat.format("KikukoResponse'{'pipelines={0}, content=''{1}'''}'",
+        pipelines, content);
+  }
 }
