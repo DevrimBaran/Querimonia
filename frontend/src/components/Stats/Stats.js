@@ -31,15 +31,15 @@ class Stats extends Component {
     this.state = {};
   }
 
-    componentDidMount = () => {
+    componentDidMount = () => {      
       var ctx = this.refs.canvas;
       new Chart(ctx, {
         type: 'horizontalBar',
         data: {
           labels: this.labels,
           datasets: [{
-            label: this.props.label || '',
             data: this.data,
+            label: '',
             backgroundColor: [
               'rgba(255, 99, 132, 0.2)',
               'rgba(54, 162, 235, 0.2)',
@@ -56,12 +56,24 @@ class Stats extends Component {
               'rgba(153, 102, 255, 1)',
               'rgba(255, 159, 64, 1)'
             ],
+            hoverBackgroundColor: [
+              'rgba(255, 99, 132, 0.5)',
+              'rgba(54, 162, 235, 0.5)',
+              'rgba(255, 206, 86, 0.5)',
+              'rgba(75, 192, 192, 0.5)',
+              'rgba(153, 102, 255, 0.5)',
+              'rgba(255, 159, 64, 0.5)'],
             borderWidth: 1
           }]
         },
         options: {
           scales: {
             yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }],
+            xAxes: [{
               ticks: {
                 beginAtZero: true
               }
