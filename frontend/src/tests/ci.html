@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <META HTTP-EQUIV="content-type" CONTENT="text/html; charset=utf-8">
+    </head>
+
+    <body class="light colorPalette">
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>   
+        <script language="javascript" type="text/javascript">
+            
+        </script>
+        
+        <style type="text/css">
+        
+        * {
+            font-family: FrutigerLTW02,"Helvetica Neue",Helvetica,Arial,sans-serif;
+            
+        }
+        .dark {
+            --primaryTextColor: white;
+            --secondaryTextColor: #B3B3B3;
+            --inverseTextColor: black;
+
+            --primaryAccentColor: #179c7d;
+            --primaryAccentColorActive: rgb(66, 194, 164);
+            --secondaryAccentColor: rgb(31, 130, 191);
+            --secondaryAccentColorActive: rgb(63, 167, 231);
+
+            --buttonColor: #1A1A1A;
+            --buttonColorHover: rgb(38, 38, 38);
+
+            --primaryBackgroundColor: rgb(38, 38, 38);
+            --secondaryBackgroundColor: #1A1A1A;
+            --tertiaryBackgroundColor: #0D0D0D;
+
+            --Yellow: var(--darkYellow);
+            --Blue: var(--darkBlue);
+            --Violet: var(--darkViolet);
+        }
+        .light {
+            --primaryTextColor: black;
+            --secondaryTextColor: #272727;
+            --inverseTextColor: white;
+
+            --primaryAccentColor: #179c7d;
+            --primaryAccentColorActive: rgb(66, 194, 164);
+            --secondaryAccentColor: rgb(31, 130, 191);
+            --secondaryAccentColorActive: rgb(9, 101, 158);
+
+            --buttonColor: #F3F3F3;
+            --buttonColorHover: #E5E5E5;
+
+            --primaryBackgroundColor: #FFFFFF;
+            --secondaryBackgroundColor: #F3F3F3;
+            --tertiaryBackgroundColor: #E5E5E5;
+        }
+
+        .colorPalette{
+            --lighterBlue: rgb(212, 230, 244);
+            --lightBlue: rgb(136, 188, 226);
+            --mediumBlue: rgb(31, 130, 192);
+            --darkBlue: rgb(0, 90, 148);
+            --darkerBlue: rgb(0, 52, 107);
+            
+            --lighterViolet: rgb(199, 193, 222);
+            --lightViolet: rgb(144, 133, 186);
+            --mediumViolet: rgb(57, 55, 139);
+            --darkViolet: rgb(41, 40, 106);
+
+            --mediumRed: rgb(226, 0, 26);
+            --darkRed: rgb(158, 28, 34);
+            --darkerRed: rgb(119, 28, 44);
+
+            --lighterOrange: rgb(254, 234, 201);
+            --lightOrange: rgb(251, 203, 140);
+            --mediumOrange: rgb(242, 148, 0);
+            --darkOrange: rgb(235, 106, 10);
+
+            --lighterYellow: rgb(255, 250, 209);
+            --lightYellow: rgb(255, 243, 129);
+            --mediumYellow: rgb(255, 220, 0);
+            --darkYellow: rgb(216, 166, 1);
+
+            --lighterGreen: rgb(238, 239, 177);
+            --lightGreen: rgb(209, 221, 130);
+            --mediumGreen: rgb(177, 200, 0);
+            --darkGreen: rgb(143, 164, 2);
+            --darkerGreen: rgb(106, 115, 65);
+
+            --lighterTurquoise: rgb(180, 220, 211);
+            --lightTurquoise: rgb(109, 191, 169);
+            --mediumTurquoise: rgb(0, 148, 117);
+
+            --Frostee: rgb(215, 225, 201);
+            --Putty: rgb(203, 175, 115);
+            --brownBramble: rgb(70, 41, 21);
+            --eastBay: rgb(76, 99, 111);
+            --Scooter: rgb(51, 184, 202);
+            --summerSky: rgb(37, 186, 226);
+            --Cerulean: rgb(0, 110, 146);
+            --hitGrey: rgb(168, 175, 175);
+
+        }
+
+        body {
+            background-color: var(--tertiaryBackgroundColor);
+            --contentMargin: 1em;
+        }
+
+/**
+*   Text allgemein sollte in einer div.content stehen, damit die Lesbarkeit garantiert wird. 
+*   Ausnahme dabei sind Labels (h6) und ggf. Tab-Titel (h5). Tatsaechlich als Ueberschrift
+*   verwendet können also nur h1 - h3.
+*/
+
+
+    /* Groesste Ueberschrift */
+        h1 {
+            font-size: 2em;
+            padding: 0em;
+            margin: 0.5em 0em 0.5em 0em;
+            color: var(--primaryTextColor);
+        }
+    
+    /* Mittlere Ueberschrift */
+        h2 {
+            font-size: 1.3em;
+            padding: 0em;
+            margin: 0.5em 0em 0.5em 0em;
+            color: var(--primaryTextColor);
+        }
+
+    /* Kleine Ueberschrift */
+        h3 {
+            font-size: 1.1em;
+            color: var(--primaryTextColor);
+            margin-bottom: 0.5em;
+        }
+
+    /* Menuepunkte */
+        h4 {
+            color: var(--secondaryTextColor);
+            font-size: 1.2em;
+            margin: 0px;
+        }
+
+        h4:hover {
+            color: var(--primaryAccentColor);
+        }
+
+    /* Titel für die Tabs */
+        h5 {
+            color: var(--secondaryTextColor);
+            font-size: 1.3em;
+            font-weight: normal;
+            text-align: center;
+            margin: auto;
+            padding: 0.2em 0em 0em 0em;
+        }
+
+        h5:hover{
+            color: var(--primaryTextColor);
+        }
+
+        div.tab.active h5{
+            color: var(--primaryTextColor);
+        }
+
+    /* Label, die zwar sichtbar sind aber keine Aufmerksamkeit erregen müssen */
+        h6 {
+            text-transform: uppercase;
+            font-size: 1em;
+            color: var(--secondaryTextColor);
+            padding: 0.5em 0em 0.5em 0em;
+            margin: 0em;
+        }
+
+        p {
+            color: var(--primaryTextColor);
+            margin: 0.3em 0em 0.3em 0em;
+        }
+
+        .small {
+            font-size: 0.85em
+        }
+
+        .tiny {
+            font-size: 0.7em
+        }
+
+    /* 'normale' Buttons, ohne besondere Prioritaet */
+        button {
+            width: 10em;
+            height: 2em;
+            font-size: 1em;
+            background-color: var(--buttonColor);
+            color: var(--primaryTextColor);
+            outline: none;
+        }
+
+        button:hover {
+            background-color: var(--buttonColorHover);
+        }
+
+    /* Buttons, die fuer den Programmablauf unablaesslich sind*/
+        button.important {
+            background-color: var(--secondaryAccentColor);
+            border-color: var(--primaryTextColor);
+            color: var(--inverseTextColor);
+            font-weight: bold;
+        }
+
+        button.important:hover {
+            background-color: var(--secondaryAccentColorActive);
+        }
+
+        div.menu div {
+            width: 90%;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); 
+            background-color: var(--primaryBackgroundColor);
+
+            padding: 0.3em 0em 0.3em 5%;
+            margin: auto;
+            margin-top: 0.6em;
+        }
+
+    /* Die Tabs am oberen Rand der Unterfenster */
+        div.tab {
+            height: 2em;
+            margin: 0em;
+            float: left;
+            background-color: var(--secondaryBackgroundColor);
+        }
+
+        #response{
+            width: 33.3333%;
+        }
+
+        #complaint {
+            width: 50%;
+        }
+
+        div.tab:hover{
+            background-color: var(--primaryBackgroundColor);
+        }
+
+        div.tab.active {
+            background-color: var(--primaryBackgroundColor);
+        }
+
+    /* Auf diese Art koennen erkannte Daten im Text markiert werden */
+        span.highlight {
+            background-color: var(--mediumYellow);
+            padding: .05em .2em .05em .2em;
+            border-radius: .3em;
+        }
+
+    /* Die Textarea ermoeglicht das direkte bearbeiten von Text */
+        textarea {
+            width: 100%;
+            padding: 0em;
+            font-size: 1em;
+            margin: 8px 0;
+            border: none;
+            box-sizing: border-box;
+            color: var(--primaryTextColor);
+            background-color: var(--primaryBackgroundColor);
+        }
+
+        textarea:focus {
+            outline: none;
+        }
+        
+        .complaintSummary {
+            background-color: var(--primaryBackgroundColor);
+            padding:  0.5em var(--contentMargin) 1em var(--contentMargin);
+        }
+
+        .complaintSummary:hover {
+            background-color: var(--secondaryBackgroundColor);
+        }
+
+        .complaintSummary p {
+            height: 2.3em;
+            overflow: hidden;
+            clear: both;
+            padding-top: 0.3em;
+            text-align: justify;
+        }
+
+        .complaintSummary .title{
+            margin: 0em;
+            width: 80%;
+            float: left;
+        }
+
+        .complaintSummary h3 {
+            margin: 0px;
+        }
+
+        .complaintSummary .date {
+            float: left;
+            width: 20%;
+            margin: 0em;
+        }
+
+        .complaintSummary .date p {
+            height: 1em;
+            text-align: right;
+            padding-top: 0.15em;
+            margin: 0em;
+        }
+
+        .menu ul{
+            list-style-type: none;
+            padding: 0px;
+        }
+
+        .menu li {
+            width: 90%;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); 
+            background-color: var(--primaryBackgroundColor);
+
+            padding: 0.3em 0em 0.3em 5%;
+            margin: auto;
+            margin-top: 0.6em;
+        }
+
+        .shadow{
+            box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
+            background-color: var(--secondaryBackgroundColor);
+            height: 100%;
+            position: absolute;
+            overflow: hidden;
+        }
+
+        .workspace{
+            position: absolute;
+            height: 100%;
+            right: 0.5%;
+            width: 83.5%;
+        }
+
+        .menu{
+            left: 0px;
+            width: 15%;
+        }
+
+        .complaint{
+            right: 0px;
+            width: 49.5%;
+        }
+
+        .response{
+            left: 0px;
+            width: 49.5%;
+        }
+
+        .content{
+            background-color: var(--primaryBackgroundColor);
+            padding:  1.3em var(--contentMargin) 0em var(--contentMargin);
+            overflow: auto;
+        }
+
+        .center{
+            margin: auto;
+            text-align: center;
+        }
+
+        </style>
+
+        <div class="shadow menu"> 
+            <h6 class="center">Menü</h6>
+            <ul>
+                <li><h4>Beschwerden</h4></li>
+                <li><h4>Import</h4></li>
+                <li><h4>Export</h4></li>
+                <li><h4>Statistik</h4></li>
+                <li><h4>Wortvektoren</h4></li>
+            </ul>
+        </div>
+
+        <div class="workspace"> 
+            <div class="shadow response"> 
+                <h6 class="center">Antwort</h6>
+                <div class="tab active" id="response">
+                    <h5>Erstellen</h5>
+                </div>
+                <div class="tab" id="response">
+                    <h5>Details</h5>
+                </div>
+                <div class="tab" id="response">
+                    <h5>Datenbank</h5>
+                </div>
+                <div class="content">
+                    <h1>Filter</h1>
+                    <p>Lorem ipsum dolor sit <span class="highlight">lorem ipsum dolor sit amet</span> amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</p>
+                    <p class="small">Ich bin ein kleiner Text. Ich könnte ein Datum darstellen, zum Beispiel.</p>
+                    <p class="tiny">Ich bin winziger Text. Vielleicht habe ich auch eine Daseinsberechtigung?</p>
+
+                    <h2>So sehen Knöpfe aus</h2>
+                    <p>Buttons, wie der Neufundländer sagen würde.</p>
+                    <h3>Normale Knöpfe</h3>
+                    <button >Knopf</button>
+                    <h3>Wichtige Knöpfe</h3>
+                    <button class="important">Knopf</button>
+                    <h2>In diesem Feld kannst du schreiben</h2>
+                    <form>
+                        <textarea name="message" rows="10" cols="30"> Korrigriere mich!</textarea>
+                    </form>
+                </div>
+            </div>
+            <div class="shadow complaint">
+                <h6 class="center">Meldetext</h6>
+                <div class="tab active" id="complaint">
+                    <h5>Überarbeitet</h5>
+                </div>
+                <div class="tab" id="complaint">
+                    <h5>Original</h5>
+                </div>
+                <div class="content">
+                    <h2>Skalierbare Einträge für die Übersichtsanzeige</h2>
+                </div>
+                <div class="complaintSummary">
+                        <div class="title"><h3>Anliegen 26381 1 -<span class="sentiment" style="color: rgb( 200, 0, 0)"> 78%&nbsp;Wut</span> <span class="small" style="font-weight: normal">Fahrt&nbsp;ausgefallen&nbsp;(89%)</span></h3></div>
+                        <div class="date"><p >18. Mai 2013</p></div>
+                    <p>Wie in den letzten Wochen bereits schon einmal, ist die Linie 163 ausgefallen, ich bin ja so sauer, das ist ja kein Zustand! Ich erwarte dass in Zukunft die Linie zuverlässiger fährt und wenigstens eine Benachrichtigung der Fahrgäste gewährleistet wird!</p>
+                </div>
+                
+            </div>
+        </div>
+    </body>
+</html>

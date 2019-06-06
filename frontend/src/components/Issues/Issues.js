@@ -36,21 +36,17 @@ class Issues extends Component {
       Api.get('/api/complaints', query)
         .then((data) => { console.log(data); return data; })
         .then(this.setData);
-    };
-
+    }
     setData = (data) => {
       this.setState({ loading: false, issues: data });
-    };
-
+    }
     activate = (issue) => {
       // console.log(issue);
-      this.setState({ active: this.state.issues.filter((a) => a.complaintId === issue.complaintId)[0] });
-    };
-
+      this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
+    }
     componentDidMount = () => {
       this.fetchData('count=20');
-    };
-
+    }
     render () {
       return (
         <React.Fragment>
@@ -60,10 +56,10 @@ class Issues extends Component {
               <Body>
                 <Collapsible collapse='false' side='right'>
                   <ul>
-                    <li className='back'><strong className='a' onClick={() => this.activate({ complaintId: -1 })}>Zurück</strong></li>
+                    <li className='back'><strong className='a' onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
                     {
                       this.state.issues.map((issue, index) => {
-                        return <li key={index}><span className={issue.complaintId === this.state.active.complaintId ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>;
+                        return <li key={index}><span className={issue.id === this.state.active.id ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>;
                       })
                     }
                   </ul>
@@ -71,7 +67,7 @@ class Issues extends Component {
                 <Block>
                   <h2>Antwort</h2>
                   <Tabbed>
-                    <TextBuilder label='Antwort erstellen' complaintId={this.state.active.complaintId} />
+                    <TextBuilder label='Erstellen' complaintId={this.state.active.id} />
                     <div label='Details'>
                       <Stats />
                       <Log />
@@ -81,8 +77,8 @@ class Issues extends Component {
                 <Block>
                   <h2>Meldetext</h2>
                   <Tabbed>
-                    <TaggedText label='Überarbeitet' text={this.state.active} />
-                    <Text label='Original' issue={this.state.active.text} />
+                    <TaggedText label='Überarbeitet' text={this.state.active.text} />
+                    <Text label='Original' />
                   </Tabbed>
                 </Block>
               </Body>
