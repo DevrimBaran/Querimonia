@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Chart from 'chart.js';
-//import Api from '../../utility/Api';
+// import Api from '../../utility/Api';
 
 // import Block from '../Block/Block';
 // import Body from '../Body/Body';
@@ -23,9 +23,9 @@ class Stats extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      //loading: true,
-      //active: null,
-      //issues: []
+      // loading: true,
+      // active: null,
+      // issues: []
     };
   }
 
@@ -48,8 +48,8 @@ class Stats extends Component {
         ]
       };
 
-      //var labels = [jsonexample.subject[0].object, jsonexample.subject[1].object, jsonexample.subject[2].object];
-      //console.log(labels);
+      // var labels = [jsonexample.subject[0].object, jsonexample.subject[1].object, jsonexample.subject[2].object];
+      // console.log(labels);
       var data = {
         datasets: [{
           data: [jsonexample.subject[0].number, jsonexample.subject[1].number, jsonexample.subject[2].number],

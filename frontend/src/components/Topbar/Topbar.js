@@ -16,11 +16,11 @@ class Topbar extends Component {
     onClick = (e) => {
       e.target.disabled = true;
       if (this.refs.textInput.value) {
-        const url = '/api/import/text';
+        const url = '/api/complaints/import';
         return api.post(url, { text: this.refs.textInput.value })
           .then(response => console.warn('result', response));
       } else {
-        const url = '/api/import/file';
+        const url = '/api/complaints/import';
         const formData = new FormData();
         formData.append('file', this.refs.fileInput.files[0]);
         return api.post(url, formData)
