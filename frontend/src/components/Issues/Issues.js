@@ -67,7 +67,7 @@ class Issues extends Component {
                 <Block>
                   <h2>Antwort</h2>
                   <Tabbed>
-                    <TextBuilder label='Antwort erstellen' complaintId={this.state.active.id} />
+                    <TextBuilder label='Erstellen' complaintId={this.state.active.id} />
                     <div label='Details'>
                       <Stats />
                       <Log />
