@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 /**
  * The default response generator.
@@ -41,8 +42,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         .format(uploadTime.toLocalDate());
     String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
         .format(uploadTime.toLocalTime());
-    entityValueMap.put("upload_date", formattedDate);
-    entityValueMap.put("upload_time", formattedTime);
+    entityValueMap.put("Upload_Datum", formattedDate);
+    entityValueMap.put("Upload_Zeit", formattedTime);
 
     Optional<String> optionalSubject = ComplaintUtility.getEntryWithHighestProbability(subjectMap);
 
@@ -123,8 +124,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       List<String> successorParts = currentComponent.get().getSuccessorParts();
       if (!successorParts.isEmpty()) {
         // TODO optimize successors
+        int next = new Random().nextInt(successorParts.size());
         result = generateComponentOrder(responseComponents, entities, optionalSubject,
-            successorParts.get(successorParts.size() - 1));
+            successorParts.get(next));
       }
       result.add(0, currentComponent.get());
       return result;

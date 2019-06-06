@@ -10,16 +10,16 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Guten Tag, mein Name ist Maria Bauer. Der Bus der Linie 263 ist am 28.01.2019 leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€"
+  "text": "hallo, mein Name ist Maria Bauer. Der Bus der Linie 263 ist leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€."
 }
 
 ###
 
-GET http://localhost:8080/api/responses/118
+GET http://localhost:8080/api/responses/plain/122
 
 ###
 
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/94
 
 ###
 

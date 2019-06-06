@@ -242,4 +242,12 @@ public class ComplaintController {
     }
   }
 
+  /**
+   * Deletes all complaints in the database.
+   */
+  @DeleteMapping("/api/complaints/all")
+  public void deleteAll() {
+    complaintRepository.deleteAll();
+  }
+
 }

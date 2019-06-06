@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 
 /**
  * REST Controller for creating, viewing and deleting Response Templates.
@@ -41,6 +45,12 @@ public class ResponseTemplateController {
   public ResponseComponent addTemplate(@RequestBody ResponseComponent responseComponent) {
     initialize();
     return responseTemplateManager.addTemplate(templateRepository, responseComponent);
+  }
+
+  @GetMapping("api/templates")
+  public List<ResponseComponent> getAllTemplates() {
+    return StreamSupport.stream(templateRepository.findAll().spliterator(), false)
+        .collect(Collectors.toList());
   }
 
   /**
@@ -76,5 +86,13 @@ public class ResponseTemplateController {
   public void deleteTemplate(@PathVariable int id) {
     initialize();
     responseTemplateManager.deleteTemplateByID(templateRepository, id);
+  }
+
+  /**
+   * Deletes all templates from the database.
+   */
+  @DeleteMapping("api/templates/all")
+  public void deleteAllTemplates() {
+    templateRepository.deleteAll();
   }
 }

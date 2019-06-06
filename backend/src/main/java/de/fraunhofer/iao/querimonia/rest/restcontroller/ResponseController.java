@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * REST Controller for generating, receiving and deleting responses.
@@ -29,13 +30,13 @@ public class ResponseController {
   }
 
   /**
-   * Generate a new response for the complaint with the given complaintId.
+   * Returns the response of the complaint with the given id.
    *
    * @param complaintId the Id of the complaint to respond to
    * @return the new response
    */
   @GetMapping("api/responses/{complaintId}")
-  public List<CompletedResponseComponent> generateResponse(@PathVariable int complaintId) {
+  public List<CompletedResponseComponent> getResponse(@PathVariable int complaintId) {
     Optional<Complaint> complaint = complaintRepository.findById(complaintId);
 
     // Only respond to existing complaints
@@ -44,6 +45,20 @@ public class ResponseController {
     }
 
     return complaint.get().getResponseSuggestion().getResponseComponents();
+  }
+
+  /**
+   * Returns the response as plain text of the complaint with the given id.
+   *
+   * @param complaintId the Id of the complaint to respond to
+   * @return the response as plain string
+   */
+  @GetMapping(("api/responses/plain/{complaintId}"))
+  public String getPlainResponse(@PathVariable int complaintId) {
+    return getResponse(complaintId)
+        .stream()
+        .map(CompletedResponseComponent::getCompletedText)
+        .collect(Collectors.joining());
   }
 
 }

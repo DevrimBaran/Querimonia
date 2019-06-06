@@ -177,6 +177,15 @@ paths:
                 $ref: '#/components/schemas/Complaint'
         400:
           description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
+  /api/complaints/all:
+    delete:
+      tags:
+        - complaints
+      summary: Löscht alle Beschwerden aus der Datenbank
+      description: Löscht alle Beschwerden aus der Datenbank.
+      responses:
+        200:
+          description: Löschen erfolgreich.
 
   /api/responses/{complaintId}:
     get:
@@ -202,6 +211,30 @@ paths:
         404:
           description: Es gibt keine Beschwerde mit der gegebenen ID.
 
+  /api/responses/plain/{complaintId}:
+    get:
+      tags:
+        - responses
+      summary: Gibt die generierte Antwort als String zurück.
+      description: Gibt den vollen Text einer generierten Antwort als String zurück.
+      parameters:
+        - name: complaintId
+          in: path
+          description: Die Id der Beschwerde, zu der die Antwort zurückgegeben werden soll.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Die Antwort der Beschwerde als Gesamttext wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                type: string
+        404:
+            description: Es gibt keine Beschwerde mit der gegebenen ID.
+
   /api/templates:
     post:
       tags:
@@ -220,6 +253,13 @@ paths:
           description: Das Template ist richtig formatiert und wurde in der Datenbank gespeichert.
         400:
           description: Der Textbaustein enthält ungültige Formatierungen oder überschreitet das Zeichenlimit von 5000 Zeichen.
+
+  /api/templates/all:
+    delete:
+      summary: Löscht alle Antwortbausteine aus der Datenbank.
+      responses:
+        200:
+          description: Löschen erfolgreich.
 
   /api/stats/tagcloud:
     get:

@@ -95,7 +95,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "templateText": "vielen Dank für Ihre Beschwerde, die am ${Datum} bei uns im System eingegangen ist.\n",
+  "templateText": "vielen Dank für Ihre Beschwerde, die am ${Upload_Datum} bei uns im System eingegangen ist.\n",
   "responsePart": "Eingangsdatum",
   "successorParts": [
     "Problembeschreibung"
@@ -109,7 +109,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "templateText": "vielen Dank für Ihre Beschwerde, die wir am ${Datum} erhalten haben.\n",
+  "templateText": "vielen Dank für Ihre Beschwerde, die wir am ${Upload_Datum} erhalten haben.\n",
   "responsePart": "Eingangsdatum",
   "successorParts": [
     "Problembeschreibung"
@@ -123,7 +123,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "templateText": "vielen Dank für Ihre Beschwerde, die Sie am ${Datum} bei uns eingereicht haben.\n",
+  "templateText": "vielen Dank für Ihre Beschwerde, die Sie am ${Upload_Datum} bei uns eingereicht haben.\n",
   "responsePart": "Eingangsdatum",
   "successorParts": [
     "Problembeschreibung"
@@ -980,7 +980,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "templateText": "Die enstandenen Kosten in Höhe von ${Geldbetrag}€ werden Ihnen baldmöglichst zurückerstattet.\n",
+  "templateText": "Die enstandenen Kosten in Höhe von ${Geldbetrag} werden Ihnen baldmöglichst zurückerstattet.\n",
   "responsePart": "Erstattung",
   "successorParts": [
     "Schluss"
@@ -994,7 +994,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "templateText": "Der Betrag von ${Geldbetrag}€ wird Ihrem Konto schnellstmöglich gutgeschrieben.\n",
+  "templateText": "Der Betrag von ${Geldbetrag} wird Ihrem Konto schnellstmöglich gutgeschrieben.\n",
   "responsePart": "Erstattung",
   "successorParts": [
     "Schluss"

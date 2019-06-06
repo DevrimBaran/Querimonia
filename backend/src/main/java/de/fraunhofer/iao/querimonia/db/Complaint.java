@@ -36,7 +36,9 @@ import java.util.Optional;
     "receiveDate",
     "receiveTime",
     "subject",
+    "probableSubject",
     "sentiment",
+    "probableSentiment",
     "entities"
 })
 public class Complaint {
