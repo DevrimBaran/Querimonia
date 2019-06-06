@@ -87,7 +87,7 @@ class Stats extends Component {
     render () {
       return (
         <div className='Stats'>
-          <h2>{this.props.label}</h2> 
+          <h2>{this.props.label}</h2>
           <canvas ref='canvas' id='CategorieChart' />
         </div>
       );
