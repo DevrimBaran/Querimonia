@@ -1,15 +1,14 @@
 import React from 'react';
 
 import Block from 'components/Block/Block';
+import Complaint from 'components/Complaint/Complaint';
+import Tabbed from 'components/Tabbed/Tabbed';
 
 function Home () {
   return (
     <React.Fragment>
       <Block>
-        <h6 className='center'>Antwort</h6>
-      </Block>
-      <Block>
-        <h6 className='center'>Meldetext</h6>
+        <h6 className='center'>Hallo :)</h6>
       </Block>
     </React.Fragment>
   );

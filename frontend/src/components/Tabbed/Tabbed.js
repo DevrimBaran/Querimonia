@@ -4,6 +4,8 @@ import './Tabbed.scss';
 class Tabbed extends Component {
   constructor (props) {
     super(props);
+    this.style = this.props.style || {};
+    this.style["--tabCount"] = this.props.children ? this.props.children.length + 1 : 1;
     this.state = {
       index: 0
     };
@@ -13,11 +15,11 @@ class Tabbed extends Component {
     }
     render () {
       return (
-        <div className='tabbed'>
-          {this.props.children.map((tab, i) => {
+        <div className='tabbed' style={this.style}>
+          {this.props.children && this.props.children.map((tab, i) => {
             return (
               [
-                <span key={i} className={i === this.state.index ? 'tab active' : 'tab'} onClick={() => this.handleClick(i)}>{tab.props.label}</span>,
+                <h5 key={i} className={i === this.state.index ? 'tab active' : 'tab'} onClick={() => this.handleClick(i)}>{tab.props.label}</h5>,
                 tab
               ]
             );

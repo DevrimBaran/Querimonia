@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 import Block from 'components/Block/Block';
 
@@ -11,9 +11,9 @@ export function Menu () {
         <li>
           <Link to='/'>Start</Link>
         </li>
-        <li>
+        {/*<li>
           <Link to='/complaints'>Beschwerden</Link>
-        </li>
+        </li>*/}
         <li>
           <Link to='/statistics'>Statistiken</Link>
         </li>

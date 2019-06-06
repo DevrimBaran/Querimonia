@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import Api from 'utility/Api';
 
 import Block from 'components/Block/Block';
+import Complaint from 'components/Complaint/Complaint';
 import Body from 'components/Body/Body';
 import Collapsible from 'components/Collapsible/Collapsible';
 // import Fa from 'components/Fa/Fa';
 import Filter from 'components/Filter/Filter';
-// import Home from 'components/Home/Home';
+// import Complaints from 'components/Complaints/Complaints';
 import Log from 'components/Log/Log.js';
 // import Modal from 'components/Modal/Modal';
 import Stats from 'components/Stats/Stats';
@@ -18,7 +19,7 @@ import Text from 'components/Text/Text';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
 import Topbar from 'components/Topbar/Topbar';
 
-class Home extends Component {
+class Complaints extends Component {
   constructor (props) {
     super(props);
 
@@ -46,60 +47,58 @@ class Home extends Component {
       this.fetchData('count=20');
     }
     render () {
+      let active = false;
+      if (this.props.match.params.id) {
+        active = this.state.issues.filter((a) => "" + a.complaintId === this.props.match.params.id)[0];
+      }
       return (
         <React.Fragment>
-          <Topbar />
-          {
-            this.state.active ? (
-              <Body>
-                <Collapsible collapse='false' side='right'>
-                  <ul>
-                    <li className='back'><strong className='a' onClick={() => this.activate({ id: -1 })}>Zurück</strong></li>
-                    {
-                      this.state.issues.map((issue, index) => {
-                        return <li key={index}><span className={issue.id === this.state.active.id ? 'a active' : 'a'} onClick={() => this.activate(issue)}>#{index} Anliegen {issue.id}</span></li>;
-                      })
-                    }
-                  </ul>
-                </Collapsible>
-                <Block>
-                  <h2>Antwort</h2>
-                  <Tabbed>
-                    <TextBuilder label='Antwort erstellen' complaintId={this.state.active.id} />
-                    <div label='Details'>
-                      <Stats />
-                      <Log />
-                    </div>
-                  </Tabbed>
-                </Block>
-                <Block>
-                  <h2>Meldetext</h2>
-                  <Tabbed>
-                    <TaggedText label='Überarbeitet' text={this.state.active.text} />
-                    <Text label='Original' />
-                  </Tabbed>
-                </Block>
-              </Body>
-            ) : (
-              <Body>
-                <div className='wrapper'>
-                  <Filter
-                    onSubmit={(query) => this.fetchData({ query: query })}
-                    keys={['id', 'preview', 'receiveDate', 'sentiment', 'subject']}
-                    comparators={['=', '!=', '<', '<=', '>', '>=']} />
-                  {this.state.loading
-                    ? (
-                      <i className='fa fa-spinner' />
-                    ) : (
-                      <Table data={this.state.issues} onClick={this.activate} tags={['complaintId', 'preview', 'receiveDate', 'receiveTime', 'probableSentiment', 'probableSubject']} sticky />
-                    )}
+          { active ? (
+            <React.Fragment>
+              <Block style={{
+                display: "flex",
+                flexDirection: "column"
+              }}>
+                <h6 className='center'>Antwort</h6>
+                <Tabbed style={{ flexGrow: 1 }}>
+                  <div label='Erstellen'>
+                    <TextBuilder complaintId={active.complaintId} />
+                  </div>
+                  <div label="Details">
+                    <Stats label="Subject" data={active.probableSubject}/>
+                    <Stats label="Sentiment" data={active.probableSentiment}/>
+                    <Log />
+                  </div>
+                  <div label="Datenbank">BUH!</div>
+                </Tabbed>
+              </Block>
+              <Block style={{ display: "flex", flexDirection: "column" }}>
+                <h6 className='center'>Meldetext</h6>
+                <Tabbed style={{ flexGrow: 1 }}>
+                  <div label="Überarbeitet">
+                    <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities}} />
+                  </div>
+                  <div label="Original">
+                    {active.text}
+                  </div>
+                </Tabbed>
+              </Block>
+            </React.Fragment>
+          ) : (
+              <Block style={{
+                display: "flex",
+                flexDirection: "column"
+              }}>
+                <Filter />
+                <div style={{ overflow: "auto" }}>
+                  {this.state.issues.map(Complaint)}
                 </div>
-              </Body>
-            )
-          }
+            </Block>
+          ) }
+            
         </React.Fragment>
       );
     }
 }
 
-export default Home;
+export default Complaints;

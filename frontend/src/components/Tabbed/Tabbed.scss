@@ -1,51 +1,34 @@
 @import '../../assets/scss/variables';
 
 .tabbed {
+    position: relative;
     display: grid;
     grid-row-gap: -1px;
     grid-template-columns: auto;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 2em 1fr;
     grid-auto-columns: auto;
     grid-auto-flow: column;
-    width: 100%;
-    height: 100%;
     background-color: inherit;
-    & > span.tab {
+    & > .tab {
         grid-row: 1 / 2;
-        padding: 10px 20px;
-        border-left: 1px solid $black;
-        border-bottom: 1px solid $primary;
-        margin-bottom: -1px;
-        z-index: 0;
+        margin: 0em;
         cursor: pointer;
         white-space: nowrap;
         text-align: center;
     }
-    & > span.tab.active+:not(.tab)+span.tab, span.tab:first-of-type {
-        border-left: none;
+    & > .tab.active, & > .tab:hover {
+        background-color: var(--primaryBackgroundColor);
     }
-    & > span.tab.active {
-        border: 1px solid $primary;
-        border-bottom: none;
-        background-color: inherit;
-        color: $primary;
-        z-index: 2;
-
-        & + :not(.tab) {
-            display: block;
-        }
-
+    & > .tab.active + [label] {
+        display: block;
     }
-    & > :not(.tab) {
-        grid-column: 1 / 3;
+    & > [label] {
+        grid-column-start: 1;
+        grid-column-end: var(--tabCount);
         grid-row: 2 / 3;
-        padding: 10px 20px;
-        border: 1px solid $primary;
-        border-bottom: none;
-        border-right: none;
-        background-color: inherit;
-        color: $light;
+        background-color: var(--primaryBackgroundColor);
+        padding: 1.3em var(--contentMargin) 0em var(--contentMargin);
+        overflow: auto;
         display: none;
-        z-index: 1;
     }
 }
