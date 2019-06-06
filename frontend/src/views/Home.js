@@ -16,23 +16,23 @@ function Home () {
           <img src={logo} className='Topbar-logo' alt='logo' width='60%' />
         </div>
         <div className='body'>
-          <br></br>
+          <br />
           <p>
           Im Rahmen des Studienprojektes der Universität Stuttgart im Sommersemester 2019
           wurde am IAT der Universität Stuttgart und dem Fraunhofer IAO die webbasierte
           Plattform Querimonia für die Erprobung und Anwendung von Verfahren zur Analyse
           und Aufbereitung von Texten am Beispiel des Beschwerdemanagements entwickelt.
           </p>
-          <br></br>
+          <br />
           <p>
           Ein typisches Anwendungsbeispiel ist die automatische Generierung einer Antwort
           auf eine Beschwerdenachricht mit Hilfe von Mensch-Maschine-Kollaboration mit
           selbstlernenden Textminingverfahren.
           </p>
-          <br></br>
+          <br />
           <h1>Unser Team</h1>
           <img src={team} className='Topbar-logo' alt='logo' width='50%' />
-          <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>        
+          <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
         </div>
         <div className='footer'>
           <h1>Unsere Partner</h1>
