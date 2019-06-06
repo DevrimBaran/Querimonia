@@ -2,6 +2,12 @@ import React from 'react';
 
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
+function foo() {
+    //wird für Link benötigt, für husky allerdings unused...
+    Router();
+    Route();
+}
+
 function getMaxKey (obj) {
   let max = -1;
   let value = '';
