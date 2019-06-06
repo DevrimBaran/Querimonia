@@ -8,8 +8,10 @@
 }
 pre {
     padding: 20px;
+
 }
 .response {
+    cursor: pointer;
     position: relative;
 }
 .response {
@@ -36,4 +38,11 @@ pre {
 .responseText{
     border: 1px solid grey;
     min-height: 150px;
+}
+
+.part {
+    padding: 3px;
+    background-color: $secondary;
+    border-radius: 20px;
+    pointer-events: none;
 }
