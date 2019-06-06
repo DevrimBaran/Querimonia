@@ -31,7 +31,7 @@ class Stats extends Component {
     this.state = {};
   }
 
-    componentDidMount = () => {      
+    componentDidMount = () => {
       var ctx = this.refs.canvas;
       new Chart(ctx, {
         type: 'horizontalBar',
@@ -87,6 +87,7 @@ class Stats extends Component {
     render () {
       return (
         <div className='Stats'>
+          <h2>{this.props.label}</h2>
           <canvas ref='canvas' id='CategorieChart' />
         </div>
       );

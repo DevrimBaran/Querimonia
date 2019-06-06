@@ -13,7 +13,6 @@ class Log extends Component {
   render () {
     return (
       <div className='Log'>
-        <h3>Log</h3>
         <pre>
           {this.state.lines.map(line => {
             return line + '\r\n';

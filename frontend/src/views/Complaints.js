@@ -59,8 +59,8 @@ class Complaints extends Component {
                     <TextBuilder complaintId={active.complaintId} />
                   </div>
                   <div label='Details'>
-                    <Stats label='Subject' data={active.subject} />
-                    <Stats label='Sentiment' data={active.sentiment} />
+                    <Stats label='Kategorisierung' data={active.subject} />
+                    <Stats label='Sentiments' data={active.sentiment} />
                     <Log />
                   </div>
                   <div label='Datenbank'>BUH!</div>
