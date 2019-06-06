@@ -8,8 +8,10 @@
 }
 pre {
     padding: 20px;
+
 }
 .response {
+    cursor: pointer;
     position: relative;
 }
 .response {
@@ -31,4 +33,10 @@ pre {
         content: 'X';
         cursor: pointer;
     }
+}
+.part {
+    padding: 3px;
+    background-color: $secondary;
+    border-radius: 20px;
+    pointer-events: none;
 }
