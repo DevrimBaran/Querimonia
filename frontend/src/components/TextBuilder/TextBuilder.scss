@@ -8,8 +8,10 @@
 }
 pre {
     padding: 20px;
+
 }
 .response {
+    cursor: pointer;
     position: relative;
 }
 .response {
@@ -32,11 +34,8 @@ pre {
         cursor: pointer;
     }
 }
-
 .part {
-    bottom: 0;
-    right: 0;
-    padding: 5px;
+    padding: 3px;
     background-color: $secondary;
     border-radius: 20px;
     pointer-events: none;

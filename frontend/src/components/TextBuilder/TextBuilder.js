@@ -29,87 +29,69 @@ class TextBuilder extends Component {
       responses: []
     };
   }
-    add = (index) => {
-      this.setState((state, props) => {
-        const text = state.text += state.responses[index] + '\r\n';
-        return {
-          text: text,
-          responses: state.responses.filter((text, i) => {
-            return index !== i;
-          })
-        };
-      });
-    }
-    remove = (index) => {
-      this.setState((state, props) => {
-        return {
-          responses: state.responses.filter((text, i) => {
-            return index !== i;
-          })
-        };
-      });
-    }
-    setData = (data) => {
-      this.setState((state, props) => {
-        return {
-          responses: state.responses.concat(data)
-        };
-      });
-    }
-    random (min, max) {
-      return Math.floor((Math.random() * (max - min + 1)) + min);
-    }
-    fakeResponse = () => {
-      const words = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipisicing', 'elit', 'Dolore', 'consequuntur'];
-      let text = words[Math.floor(Math.random() * words.length)];
-      for (var i = Math.random() * 16; i > 0; i--) {
-        text += ' ' + words[Math.floor(Math.random() * words.length)];
-      }
-      return text;
-    }
 
-    fetch = () => {
-      Api.post('/api/response/new/' + this.props.complaintId)
-        .catch((error) => {
-          return { status: 404 };
+  add = (index) => {
+    this.setState((state, props) => {
+      const text = state.text += state.responses[index].completedText + '\r\n';
+      return {
+        text: text,
+        responses: state.responses.filter((text, i) => {
+          return index !== i;
         })
-        .then((response) => {
-          if (response.status !== 200) {
-            return {
-              json: () => { return [this.fakeResponse()]; }
-            };
-          }
+      };
+    });
+  };
+
+  remove = (index) => {
+    this.setState((state, props) => {
+      return {
+        responses: state.responses.filter((text, i) => {
+          return index !== i;
         })
-        .then((response) => response.json())
-        .then(this.setData);
-    }
+      };
+    });
+  };
 
-    componentDidMount () {
-      this.fetch();
-      this.fetch();
-      this.fetch();
-    }
+  setData = (data) => {
+    this.setState((state, props) => {
+      return {
+        responses: state.responses.concat(data)
+      };
+    });
+  };
 
-    render () {
-      return (
-        <div className='TextBuilder' ref='TextBuilder'>
-          <textarea defaultValue={this.state.text} />
-          <br />
-          {
-            this.state.responses.map((response, index) => {
-              return (
-                <div className='response Block' key={index}>
-                  <p className='content' onClick={() => this.add(index)}>
-                    {response}
-                  </p>
-                  <span className='remove' onClick={() => { this.remove(index); this.fetch(); }} />
-                </div>
-              );
-            })
-          }
-        </div>
-      );
-    }
+  fetch = () => {
+    Api.get('/api/responses/' + this.props.complaintId, '')
+      .catch((e) => {
+        return { status: 404 };
+      })
+      .then((response) => this.setData(response));
+  };
+
+  componentDidMount () {
+    this.fetch();
+  }
+
+  render () {
+    return (
+      <div className='TextBuilder' ref='TextBuilder'>
+        <textarea value={this.state.text} />
+        <br />
+        {
+          this.state.responses.map((response, index) => {
+            return (
+              <div className='response Block' key={index}>
+                <p className='content' onClick={() => this.add(index)}>
+                  {response.completedText} <span className='part'>{response.component.responsePart}</span>
+                </p>
+                <p className='remove' onClick={() => { this.remove(index); this.fetch(); }} />
+              </div>
+            );
+          })
+        }
+      </div>
+    );
+  }
 }
 
 export default TextBuilder;
