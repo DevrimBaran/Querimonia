@@ -32,13 +32,6 @@ class Stats extends Component {
   }
 
     componentDidMount = () => {
-      var data = {
-        datasets: [{
-          data: this.data
-        }],
-
-        labels: this.labels
-      };
       var ctx = this.refs.canvas;
       new Chart(ctx, {
         type: 'horizontalBar',
