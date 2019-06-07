@@ -1,6 +1,8 @@
 package de.fraunhofer.iao.querimonia.db;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -56,7 +58,15 @@ public class ComplaintUtility {
         // only use entities that label match the given one.
         .filter(namedEntity -> namedEntity.getLabel().equalsIgnoreCase(entityLabel))
         // find their value in the text
-        .map(namedEntity -> text.substring(namedEntity.getStartIndex(), namedEntity.getEndIndex()))
+        .map(namedEntity -> {
+          try {
+            return text.substring(namedEntity.getStartIndex(), namedEntity.getEndIndex());
+          } catch (IndexOutOfBoundsException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+                "Entity error: " + namedEntity.getLabel() + " in:\n " + text
+                    + "\n " + e.getMessage());
+          }
+        })
         .collect(Collectors.toList());
   }
 
