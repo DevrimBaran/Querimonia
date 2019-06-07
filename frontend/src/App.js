@@ -35,9 +35,9 @@ function App () {
           <li>
             <Link to='/wordvectors'>Wordvektoren</Link>
           </li>
-            <li>
-                <Link to='/tagcloud'>Tag-Cloud-Demo</Link>
-            </li>
+          <li>
+            <Link to='/tagcloud'>Tag-Cloud-Demo</Link>
+          </li>
           {(process.env.NODE_ENV === 'development') && <li><label htmlFor='mockApi'>no mock: </label> <input type='checkbox' defaultChecked id='mockApi' /></li>}
         </ul>
       </Block>
