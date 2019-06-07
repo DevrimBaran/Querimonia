@@ -83,7 +83,7 @@ deploy-frontend-dev:
 # backend
 build-backend-dev: &base-backend
   stage: build
-  image: maven:3.6.1-jdk-11
+  image: maven
   script:
     - cd backend/
     - mvn -B -ntp package
