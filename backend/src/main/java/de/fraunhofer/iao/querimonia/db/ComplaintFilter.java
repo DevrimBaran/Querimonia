@@ -100,7 +100,7 @@ public class ComplaintFilter {
     return ComplaintUtility.getEntryWithHighestProbability(probabilityMap)
         .map(sentiment ->
             // check if the sentiment/subject of the complaint matches
-            Arrays.asList(optionalParameters.get()).contains(sentiment.toLowerCase()))
+            Arrays.asList(optionalParameters.get()).contains(sentiment))
         // if not present, complaint has no subject/sentiment
         .orElse(false);
   }

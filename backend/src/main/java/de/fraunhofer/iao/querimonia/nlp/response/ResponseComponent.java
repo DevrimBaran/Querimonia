@@ -184,4 +184,26 @@ public class ResponseComponent {
       return content;
     }
   }
+
+  public ResponseComponent setTemplateText(String templateText) {
+    this.templateText = templateText;
+    // update slices
+    createSlices();
+    return this;
+  }
+
+  public ResponseComponent setSubject(@Nullable String subject) {
+    this.subject = subject;
+    return this;
+  }
+
+  public ResponseComponent setResponsePart(String responsePart) {
+    this.responsePart = responsePart;
+    return this;
+  }
+
+  public ResponseComponent setSuccessorParts(List<String> successorParts) {
+    this.successorParts = successorParts;
+    return this;
+  }
 }
