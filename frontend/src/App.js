@@ -9,6 +9,7 @@ import Import from 'views/Import';
 import Export from 'views/Export';
 import Statistics from 'views/Statistics';
 import WordVectors from 'views/WordVectors';
+import TagCloudTest from 'views/TagCloudTest';
 
 function App () {
   return (
@@ -34,6 +35,9 @@ function App () {
           <li>
             <Link to='/wordvectors'>Wordvektoren</Link>
           </li>
+            <li>
+                <Link to='/tagcloud'>Tag-Cloud-Demo</Link>
+            </li>
           {(process.env.NODE_ENV === 'development') && <li><label htmlFor='mockApi'>no mock: </label> <input type='checkbox' defaultChecked id='mockApi' /></li>}
         </ul>
       </Block>
@@ -44,6 +48,7 @@ function App () {
       <Route path='/import' component={Import} />
       <Route path='/export' component={Export} />
       <Route path='/wordvectors' component={WordVectors} />
+      <Route path='/tagcloud' component={TagCloudTest} />
     </Router>
   );
 }
