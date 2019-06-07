@@ -86,7 +86,7 @@ build-backend-dev: &base-backend
   image: maven:3.6.1-jdk-11
   script:
     - cd backend/
-    - mvn package
+    - mvn -B -ntp package
   artifacts:
     paths:
       - backend/target/*.jar
