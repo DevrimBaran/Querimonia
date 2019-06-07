@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import randomColor from 'randomcolor';
 import TagCloud from 'react-tag-cloud';
-//import CloudItem from './CloudItem';
+// import CloudItem from './CloudItem';
 import './style.css';
 
 const styles = {
@@ -48,14 +48,6 @@ class TagCloudTest extends Component {
             <div style={{ fontStyle: 'italic' }}>Avengers</div>
             <div style={{ fontWeight: 200 }}>Family Guy</div>
             <div style={{ color: 'green' }}>American Dad</div>
-            <div className='tag-item-wrapper'>
-              <div>
-                                Hover Me Please!
-              </div>
-              <div className='tag-item-tooltip'>
-                                HOVERED!
-              </div>
-            </div>
             <div>Gobots</div>
             <div>Thundercats</div>
             <div>M.A.S.K.</div>
