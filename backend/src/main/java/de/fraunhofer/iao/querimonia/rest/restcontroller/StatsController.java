@@ -81,7 +81,7 @@ public class StatsController {
         .stream()
         // filter out numbers of wordsOnly is true
         .filter(entry -> !wordsOnly.orElse(false)
-            || entry.getKey().matches(".*\\w.*"))
+            || entry.getKey().matches(".*[a-zA-Z].*"))
         // sort by count descending
         .sorted((entry1, entry2) -> -Integer.compare(entry1.getValue(), entry2.getValue()))
         // only take the most common words when count is given
