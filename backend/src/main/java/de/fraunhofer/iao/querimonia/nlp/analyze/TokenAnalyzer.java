@@ -4,7 +4,6 @@ package de.fraunhofer.iao.querimonia.nlp.analyze;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
-import edu.stanford.nlp.util.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -66,12 +65,11 @@ public class TokenAnalyzer implements StopWordFilter {
 
 
     Annotation germanAnnotation = new Annotation(complaintText);
-    Properties germanProperties
-        = StringUtils.argsToProperties("-props", "StanfordCoreNLP-german.properties");
+    Properties properties = new Properties();
 
     //Selection of the analysis steps (here Tokenization and Sentence-Splitting)
-    germanProperties.setProperty("annotators", "tokenize,ssplit");
-    StanfordCoreNLP pipeline = new StanfordCoreNLP(germanProperties);
+    properties.setProperty("annotators", "tokenize,ssplit");
+    StanfordCoreNLP pipeline = new StanfordCoreNLP(properties);
     pipeline.annotate(germanAnnotation);
 
     //Unwanted signs
