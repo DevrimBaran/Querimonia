@@ -93,11 +93,12 @@ if __name__ == '__main__':
 
     test_pos = "Ich mag es mit der Bahn zu fahren und liebe Zugausfälle "
     test_neg = "Ich hasse Zerstörung und Gewalt"
+    print("Call main(param) to get senti value for param \n Or use examples in comments")
 
     #sentiment_value = positive_sentiment(test_neg) + negative_sentiment(test_neg)
     #print(sentiment_value)
 
-    #command line print
+    #In cmd " python sentiment_analyse.py *query* "
     #print("Sentiment Value is: " + (str)(parse_arg()))
 
 
