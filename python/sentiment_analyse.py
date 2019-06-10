@@ -1,7 +1,7 @@
 import string
 import sys
 import nltk
-import argparse
+#import argparse
 
 
 # Sarcasm, Irony not detected. For example: 'Ich hasse dich und liebe dich nicht' has value > 0
