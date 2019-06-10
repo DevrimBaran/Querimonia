@@ -72,8 +72,10 @@ class Complaints extends Component {
                   <div label='Überarbeitet'>
                     <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
                     <div>
-                      <br/>
-                      <b>Artikulationsdatum: </b> {active.receiveDate}
+                      <br />
+                      <b>Artikulationsdatum: </b>
+                      <TaggedText text={{ text: active.receiveDate,
+                        entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }] }} />
                     </div>
                   </div>
                   <div label='Original'>

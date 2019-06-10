@@ -15,7 +15,6 @@ pre {
   border: 1px solid grey;
   margin-bottom: 1px;
   margin-top: 1px;
-  min-height: 30px;
   position: relative;
 }
 .response {
@@ -27,8 +26,8 @@ pre {
   position: absolute;
   top: 0;
   right: 0;
-  width: 20px;
-  height: 20px;
+  width: 19px;
+  height: 19px;
   border-radius: 50%;
   background-color: $primary;
   text-align: center;
@@ -45,8 +44,12 @@ pre {
 }
 
 .part {
-  padding: 3px;
+  padding: 0px;
   background-color: $secondary;
   border-radius: 20px;
   pointer-events: none;
+}
+
+.content {
+  width: calc(100% - 25px);
 }
