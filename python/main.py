@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 
 # TODO better directory structutre
-import matplotlib_generator
-import sentiment
+import matplotlib_gererator
+import sentiment_analyse
+
 
 app = Flask(__name__)
 @app.route('/sentiment_analyse', methods=['POST'])
@@ -13,8 +14,8 @@ def return_sentiment():
     content = request.get_json()
     query = content['text']
     # TODO add SentiWS_v2.0_Negative.txt then uncomment this
-    sentiment_value = main(query)
-
+    #sentiment_value = sentiment_analyse.main(query)
+    sentiment_value = 0.5
     return jsonify({"sentiment": sentiment_value})
 
 if __name__ == '__main__':
