@@ -1,6 +1,8 @@
 @import '../../assets/scss/variables';
 
 .Filter {
+    min-height: fit-content;
+
     .Block {
         position: relative;
         display: flex;
@@ -8,7 +10,7 @@
         justify-content: center;
         align-content: center;
         margin: 10px 15px;
-        
+
     }
     Select.relation {
         background-color: $primary;

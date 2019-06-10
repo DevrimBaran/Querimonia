@@ -30,10 +30,10 @@ function Home () {
           selbstlernenden Textminingverfahren.
           </p>
           <br />
+          <h3>Beispiel:</h3>
+          <br />
+          <h6>Beschwerdenachricht</h6>
           <p>
-            <h3>Beispiel:</h3>
-            <br />
-            <h6>Beschwerdenachricht</h6>
           Die Buslinie 637 ist am 01.03.2019 an der
           Gartenheimstr. in Langenberg(Schule!) um 13.46 Uhr
           nicht gekommen. Meine Tochter Anita hat eine
@@ -42,27 +42,29 @@ function Home () {
           gekostet. Warum kaufe ich ein Schokoticket? Ich
           bitte um Erstattung meiner zusätzlichen Kosten.
           Viele Grüße Maria Seifert
-            <br />
-            <h6>Automatisch generierte Antwort</h6>
-            Sehr geehrte Frau Seifert,
-            wir bedauern sehr die Ihnen
-            entstandenen
-            Unannehmlichkeiten.
-            Ihren Antrag auf Erstattung von
-            Taxikosten in Höhe von 14,60 Euro
-            haben wir erhalten.
-            Demnach konnten Sie am 1.3.2019,
-            einen Bus der Linie 637, ab der
-            Haltestelle „Gartenheimstraße“
-            nicht nehmen.
-            Der Grund hierfür war ein
-            krankheitsbedingter Ausfall.
-            Damit der Betrag zeitnah Ihrem
-            Konto gutgeschrieben werden
-            kann, senden Sie uns bitte Ihre
-            Bankverbindung zu.
-            Freundliche Grüße
-            Ihr Schokorobo
+          </p>
+          <br />
+          <h6>Automatisch generierte Antwort</h6>
+          <p>
+          Sehr geehrte Frau Seifert,
+          wir bedauern sehr die Ihnen
+          entstandenen
+          Unannehmlichkeiten.
+          Ihren Antrag auf Erstattung von
+          Taxikosten in Höhe von 14,60 Euro
+          haben wir erhalten.
+          Demnach konnten Sie am 1.3.2019,
+          einen Bus der Linie 637, ab der
+          Haltestelle „Gartenheimstraße“
+          nicht nehmen.
+          Der Grund hierfür war ein
+          krankheitsbedingter Ausfall.
+          Damit der Betrag zeitnah Ihrem
+          Konto gutgeschrieben werden
+          kann, senden Sie uns bitte Ihre
+          Bankverbindung zu.
+          Freundliche Grüße
+          Ihr Schokorobo
           </p>
           <br />
           <h1>Unser Team</h1>

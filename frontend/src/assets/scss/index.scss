@@ -53,7 +53,7 @@
     --mediumBlue: rgb(31, 130, 192);
     --darkBlue: rgb(0, 90, 148);
     --darkerBlue: rgb(0, 52, 107);
-    
+
     --lighterViolet: rgb(199, 193, 222);
     --lightViolet: rgb(144, 133, 186);
     --mediumViolet: rgb(57, 55, 139);
@@ -91,7 +91,7 @@
     --contentMargin: 1em;
 }
 /**
-*   Text allgemein sollte in einer div.content stehen, damit die Lesbarkeit garantiert wird. 
+*   Text allgemein sollte in einer div.content stehen, damit die Lesbarkeit garantiert wird.
 *   Ausnahme dabei sind Labels (h6) und ggf. Tab-Titel (h5). Tatsaechlich als Ueberschrift
 *   verwendet koennen also nur h1 - h3.
 */
@@ -212,7 +212,7 @@ textarea:focus {
     height: 2.3em;
     overflow: hidden;
     clear: both;
-    padding-top: 0.3em;
+    padding-top: 0;
     text-align: justify;
 }
 .complaintSummary .title{
@@ -231,8 +231,8 @@ textarea:focus {
 .complaintSummary .date p {
     height: 1em;
     text-align: right;
-    padding-top: 0.15em;
-    margin: 0em;
+    padding-top: 0;
+    margin: 0;
 }
 .menu ul{
     display: inline-block;
@@ -242,7 +242,7 @@ textarea:focus {
 }
 .menu li {
     box-sizing: border-box;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1); 
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
     background-color: var(--primaryBackgroundColor);
     padding: 0.3em 1em;
     margin: auto;

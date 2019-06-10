@@ -71,6 +71,10 @@ class Complaints extends Component {
                 <Tabbed style={{ flexGrow: 1 }}>
                   <div label='Überarbeitet'>
                     <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
+                    <div>
+                      <br/>
+                      <b>Artikulationsdatum: </b> {active.receiveDate}
+                    </div>
                   </div>
                   <div label='Original'>
                     {active.text}

@@ -19,6 +19,7 @@ import Api from '../../utility/Api';
 // import Topbar from '../Topbar/Topbar';
 
 import './TextBuilder.scss';
+import TaggedText from '../TaggedText/TaggedText';
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
   constructor (props) {
@@ -85,14 +86,16 @@ class TextBuilder extends Component {
   render () {
     return (
       <div className='TextBuilder' ref='TextBuilder'>
-        <textarea className='responseText' value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :) ' />
+        <textarea className='responseText' defaultValue={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
+          onChange={() => {}} />
         <br />
         {
           this.state.responses.map((response, index) => {
             return (
               <div className='response Block' key={index}>
                 <p className='content' onClick={() => this.add(index)}>
-                  {response.completedText} <span className='part'>{response.component.responsePart}</span>
+                  <TaggedText text={{ text: response.completedText, entities: response.entities }} />
+                  <span className='part'>{response.component.responsePart}</span>
                 </p>
                 <p className='remove' onClick={() => { this.remove(index); }} />
               </div>

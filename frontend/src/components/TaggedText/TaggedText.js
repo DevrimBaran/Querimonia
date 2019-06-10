@@ -34,9 +34,9 @@ class TaggedText extends Component {
     }
     render () {
       return (
-        <div className='tagged-text'>
+        <span className='tagged-text'>
           {this.state.text}
-        </div>
+        </span>
       );
     }
 }
