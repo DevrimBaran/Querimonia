@@ -12,8 +12,10 @@ import WordVectors from 'views/WordVectors';
 import TagCloudTest from 'views/TagCloudTest';
 
 function App () {
+  const slash = process.env.REACT_APP_BACKEND_PATH && process.env.REACT_APP_BACKEND_PATH.indexOf('/');
+  let basepath = slash ? process.env.REACT_APP_BACKEND_PATH.substring(slash) : '/';
   return (
-    <Router>
+    <Router basename={basepath}>
       <Block className='menu'>
         <h6 className='center'>Menü</h6>
         <ul>
