@@ -71,11 +71,15 @@ public class ComplaintController {
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
 
+    //mock sentiment for tests
+    HashMap<String, Double> sentimentMock = new HashMap<>();
+    sentimentMock.put("Traurig", 11.5);
+
     complaintFactory = new ComplaintFactory()
         .setClassifier(new KiKuKoClassifier())
         .setEntityExtractor(new KikukoExtractor())
         .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
-        .setSentimentAnalyzer((text1) -> new HashMap<>())
+        .setSentimentAnalyzer((text1) -> sentimentMock)
         .setStopWordFilter(new TokenAnalyzer());
   }
 
