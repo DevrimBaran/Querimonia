@@ -9,15 +9,15 @@ function WordVectors () {
         <h6 className='center'>Wortvektoren</h6>
         <br />
         <h6>Nearest Neighbor</h6>
-        <form action="wordVectors">
+        <form action='wordVectors'>
           <label>Befehl:
-            <select name="commands">
+            <select name='commands'>
               <option>nn</option>
               <option>analogy</option>
             </select>
           </label>
           <label>Textkorpora:
-            <select name="textkorpora">
+            <select name='textkorpora'>
               <option>beschwerden3kPolished.bin</option>
               <option>cc.de.300.bin</option>
               <option>ngram_ger.bin</option>
@@ -33,14 +33,14 @@ function WordVectors () {
           <h6>Analogie</h6>
           <input type='text' id='text' />
           <label>
-            <select name="berechnung">
+            <select name='berechnung'>
               <option>+</option>
               <option>-</option>
             </select>
           </label>
           <input type='text' id='text' />
           <label>
-            <select name="berechnung">
+            <select name='berechnung'>
               <option>+</option>
               <option>-</option>
             </select>
