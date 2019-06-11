@@ -14,8 +14,9 @@ import TagCloudTest from 'views/TagCloudTest';
 function App () {
   const slash = process.env.REACT_APP_BACKEND_PATH && process.env.REACT_APP_BACKEND_PATH.indexOf('/');
   let basepath = slash ? process.env.REACT_APP_BACKEND_PATH.substring(slash) : '/';
+  console.log("basepath", basepath);
   return (
-    <Router basename={basepath}>
+    <Router basename="/dev">
       <Block className='menu'>
         <h6 className='center'>Menü</h6>
         <ul>
