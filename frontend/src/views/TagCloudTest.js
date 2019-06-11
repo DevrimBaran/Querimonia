@@ -13,8 +13,8 @@ class TagCloudTest extends Component {
     this.state = {
       words: {},
       color: '#179c7d',
-      factor: 10,
-      size: 5
+      size: 200,
+      max:0
     };
   }
   fetchData = () => {
@@ -28,7 +28,9 @@ class TagCloudTest extends Component {
       .then(this.setData);
   }
   setData = (data) => {
+    var maxVal = Math.max.apply(Math, Object.values(data));
     this.setState({ words: data });
+    this.setState({max: maxVal});
   }
   onChange = (e) => {
     let s = {};
@@ -39,7 +41,7 @@ class TagCloudTest extends Component {
     this.fetchData();
   }
   renderWord = (word, index) => {
-    return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: this.state.size - 2 + this.state.words[word] * this.state.factor }}>{word}</abbr>);
+    return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: (this.state.words[word]/this.state.max) * this.state.size  }}>{word}</abbr>);
   }
   render () {
     return (
@@ -94,11 +96,6 @@ class TagCloudTest extends Component {
                 <div>
                   <label htmlFor='factor'>Schriftgröße:</label><br />
                   <input type='number' id='size' onChange={this.onChange} value={this.state.size} />
-                </div>
-                <div style={{ width: '2em' }} />
-                <div>
-                  <label htmlFor='factor'>Faktor:</label><br />
-                  <input type='number' id='factor' onChange={this.onChange} value={this.state.factor} />
                 </div>
               </Row>
             </div>
