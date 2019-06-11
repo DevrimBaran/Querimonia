@@ -28,20 +28,27 @@ h1 {
     position: absolute;
     right: 0;
     top: 0;
-    margin-left: 17%;
-    
+    margin-left: 20%;
+    margin-right: 5%;
 }
 
 .app-inner {
     display: flex;
     flex-direction: column;
     height: 100%;
-    max-width: 1000px;
     width: 100%;
-}
 
+}
+.button input[type="button"] {
+    padding:8px;
+    background-color:rgba(255,204,0,1);
+    border-radius:10px;
+    cursor:pointer;
+    width:260px;
+}
 .tag-cloud {
     flex: 1;
+
 }
 
 .tag-cloud > div {

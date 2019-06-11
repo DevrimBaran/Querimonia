@@ -45,15 +45,23 @@ class TagCloudTest extends Component {
       <div className='app-outer'>
         <div className='app-inner'>
           <h1>Wortliste</h1>
-          <label htmlFor="minDate">Von:</label>
-          <input type="date" id="minDate" ref="minDate" />
-          <label htmlFor="maxDate">Bis:</label>
-          <input type="date" id="maxDate" ref="maxDate" />
-          <label htmlFor="onlyWords">Nur Wörter anzeigen:</label>
-          <input type="checkbox" id="onlyWords" ref="onlyWords" />
-          <label htmlFor="count">Anzahl der Tags:</label>
-          <input type="number" id="count" ref="count" />
-          <input type="button" onClick={this.fetchData} value="aktualisieren" />
+          <div className="date">
+            <label htmlFor="minDate">Von: </label>
+            <input type="date" id="minDate" ref="minDate" />
+            <label htmlFor="maxDate">  Bis: </label>
+            <input type="date" id="maxDate" ref="maxDate" />
+          </div>
+          <div className="onlyWords">
+            <label htmlFor="onlyWords">Nur Wörter anzeigen:</label>
+            <input type="checkbox" id="onlyWords" ref="onlyWords" />
+          </div>
+          <div className="count">
+            <label htmlFor="count">Anzahl der Tags: </label>
+            <input type="number" id="count" ref="count" />
+          </div>
+          <div className="button">
+            <input type="button" onClick={this.fetchData} value="aktualisieren"/>
+          </div>
           <TagCloud
             className='tag-cloud'
             style={{
