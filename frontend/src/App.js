@@ -35,7 +35,7 @@ function App () {
             <Link to='/statistics'>Statistik</Link>
           </li>
           <li>
-            <Link to='/wordvectors'>Wordvektoren</Link>
+            <Link to='/wordvectors'>Wortvektoren</Link>
           </li>
           <li>
             <Link to='/tagcloud'>Tag-Cloud-Demo</Link>
