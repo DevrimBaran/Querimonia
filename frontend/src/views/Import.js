@@ -5,6 +5,7 @@ import Block from 'components/Block/Block';
 import api from 'utility/Api';
 import Complaint from 'components/Complaint/Complaint';
 import Content from 'components/Content/Content';
+import Row from 'components/Row/Row';
 
 class ImportBlock extends Component {
   constructor (props) {
@@ -47,13 +48,15 @@ class ImportBlock extends Component {
   }
 
   onChange = (e) => {
-    this.setState({ type: e.target.type });
+    if (e.target.value === '') {
+      this.setState({ type: null });
+    } else {
+      this.setState({ type: e.target.type });
+    }
   }
   onDrop = (e) => {
     e.preventDefault();
-    if (this.state.type === 'text') {
-
-    } else {
+    if (this.state.type !== 'text') {
       this.setState({ type: 'file' });
       this.refs.fileInput.files = e.dataTransfer.files;
     }
@@ -67,15 +70,21 @@ class ImportBlock extends Component {
   render () {
     return (
       <Block>
-        <h6 className='center'>Import</h6>
-        <div id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}>
-          {this.state.type !== 'file' && <textarea onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
-          {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref='fileInput' />}
-          <input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
-        </div>
-        <div id='response'>
-          {this.state.loading ? (<i className='spinner' />) : (this.state.response)}
-        </div>
+        <Row vertical={true}>
+          <h6 className='center'>Import</h6>
+          <div id='Import' style={{margin: '1em'}} onDrop={this.onDrop} onDragOver={this.onDragOver}>
+            {this.state.type !== 'file' && <textarea style={{resize: 'none', height: '200px'}} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
+            <div className="center">
+              {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref='fileInput' />}
+              <input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
+            </div>
+          </div>
+          <Content>
+            <div style={{height: '100%'}} id='response'>
+              {this.state.loading ? (<div className="center"><i style={{ color: 'var(--primaryAccentColor)'}} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.response)}
+            </div>
+          </Content>
+        </Row>
       </Block>
     );
   }
