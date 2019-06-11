@@ -129,6 +129,18 @@ h4 {
 h4:hover {
     color: var(--primaryAccentColor);
 }
+
+.menu a{
+    color: var(--secondaryTextColor);
+    font-size: 1.2em;
+    margin: 0px;
+    text-decoration: none;
+    font-weight: bold;
+}
+.menu a:hover {
+    color: var(--primaryAccentColor);
+}
+
 /* Titel für die Tabs */
 h5 {
     color: var(--secondaryTextColor);
