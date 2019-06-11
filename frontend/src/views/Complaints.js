@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import Api from 'utility/Api';
 
 import Block from 'components/Block/Block';
+import Row from 'components/Row/Row';
+import Content from 'components/Content/Content';
 import Complaint from 'components/Complaint/Complaint';
 import Filter from 'components/Filter/Filter';
 // import Complaints from 'components/Complaints/Complaints';
@@ -38,7 +40,62 @@ class Complaints extends Component {
       this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
     }
     componentDidMount = () => {
-      this.fetchData('count=20');
+      this.fetchData({ count: 20 });
+    }
+    renderSingle = (active) => {
+      return (<React.Fragment>
+        <Block>
+          <Row vertical={true}>
+            <h6 className='center'>Antwort</h6>
+            <Content>
+              <Tabbed style={{ height: '100%' }}>
+                <div label='Erstellen'>
+                  <TextBuilder complaintId={active.complaintId} />
+                </div>
+                <div label='Details'>
+                  <Stats label='Kategorisierung' data={active.subject} />
+                  <Stats label='Sentiments' data={active.sentiment} />
+                  <Log />
+                </div>
+                <div label='Datenbank'>BUH!</div>
+              </Tabbed>
+            </Content>
+          </Row>
+        </Block>
+        <Block>
+          <Row vertical={true}>
+            <h6 className='center'>Meldetext</h6>
+            <Content>
+              <Tabbed style={{height: '100%'}}>
+                <div label='Überarbeitet'>
+                  <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
+                  <div>
+                    <br />
+                    <b>Artikulationsdatum: </b>
+                    <TaggedText text={{
+                      text: active.receiveDate,
+                      entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+                    }} />
+                  </div>
+                </div>
+                <div label='Original'>
+                  {active.text}
+                </div>
+              </Tabbed>
+            </Content>
+          </Row>
+        </Block>
+      </React.Fragment>)
+    }
+    renderList = () => {
+      return (<Block>
+        <Row vertical>
+          <Filter onSubmit={this.fetchData} />
+          <Content>
+            {this.state.issues.map(Complaint)}
+          </Content>
+        </Row>
+      </Block>)
     }
     render () {
       let active = false;
@@ -48,52 +105,9 @@ class Complaints extends Component {
       return (
         <React.Fragment>
           { active ? (
-            <React.Fragment>
-              <Block style={{
-                display: 'flex',
-                flexDirection: 'column'
-              }}>
-                <h6 className='center'>Antwort</h6>
-                <Tabbed style={{ flexGrow: 1 }}>
-                  <div label='Erstellen'>
-                    <TextBuilder complaintId={active.complaintId} />
-                  </div>
-                  <div label='Details'>
-                    <Stats label='Kategorisierung' data={active.subject} />
-                    <Stats label='Sentiments' data={active.sentiment} />
-                    <Log />
-                  </div>
-                  <div label='Datenbank'>BUH!</div>
-                </Tabbed>
-              </Block>
-              <Block style={{ display: 'flex', flexDirection: 'column' }}>
-                <h6 className='center'>Meldetext</h6>
-                <Tabbed style={{ flexGrow: 1 }}>
-                  <div label='Überarbeitet'>
-                    <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
-                    <div>
-                      <br />
-                      <b>Artikulationsdatum: </b>
-                      <TaggedText text={{ text: active.receiveDate,
-                        entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }] }} />
-                    </div>
-                  </div>
-                  <div label='Original'>
-                    {active.text}
-                  </div>
-                </Tabbed>
-              </Block>
-            </React.Fragment>
+            this.renderSingle(active)
           ) : (
-            <Block style={{
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <Filter />
-              <div style={{ overflow: 'auto' }}>
-                {this.state.issues.map(Complaint)}
-              </div>
-            </Block>
+            this.renderList()
           ) }
 
         </React.Fragment>

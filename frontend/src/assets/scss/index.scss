@@ -1,7 +1,9 @@
 @import '_variables';
 @import '_helpers';
 @import '_structure';
-
+@import 'font-awesome/fontawesome';
+@import "font-awesome/solid";
+@import "_style";
 
 * {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -265,3 +267,4 @@ textarea:focus {
     box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
     background-color: var(--secondaryBackgroundColor);
 }
+@import "Home";

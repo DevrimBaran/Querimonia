@@ -14,9 +14,9 @@ import TagCloudTest from 'views/TagCloudTest';
 function App () {
   const slash = process.env.REACT_APP_BACKEND_PATH && process.env.REACT_APP_BACKEND_PATH.indexOf('/');
   let basepath = slash ? process.env.REACT_APP_BACKEND_PATH.substring(slash) : '/';
-  console.log("basepath", basepath);
+  console.log('basepath', basepath, slash);
   return (
-    <Router basename="/dev">
+    <Router basename='/dev'>
       <Block className='menu'>
         <h6 className='center'>Menü</h6>
         <ul>
@@ -29,17 +29,19 @@ function App () {
           <li>
             <Link to='/import'>Import</Link>
           </li>
+          {/*
           <li>
             <Link to='/export'>Export</Link>
           </li>
           <li>
             <Link to='/statistics'>Statistik</Link>
           </li>
+          */}
           <li>
             <Link to='/wordvectors'>Wortvektoren</Link>
           </li>
           <li>
-            <Link to='/tagcloud'>Tag-Cloud-Demo</Link>
+            <Link to='/tagcloud'>Tag-Cloud</Link>
           </li>
           {(process.env.NODE_ENV === 'development') && <li><label htmlFor='mockApi'>no mock: </label> <input type='checkbox' defaultChecked id='mockApi' /></li>}
         </ul>
@@ -47,9 +49,11 @@ function App () {
 
       <Route exact path='/' component={Home} />
       <Route path='/complaints/:id?' component={Complaints} />
-      <Route path='/statistics' component={Statistics} />
       <Route path='/import' component={Import} />
+      {/*
       <Route path='/export' component={Export} />
+      <Route path='/statistics' component={Statistics} />
+      */}
       <Route path='/wordvectors' component={WordVectors} />
       <Route path='/tagcloud' component={TagCloudTest} />
     </Router>

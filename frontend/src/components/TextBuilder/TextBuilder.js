@@ -19,7 +19,9 @@ import Api from '../../utility/Api';
 // import Topbar from '../Topbar/Topbar';
 
 import './TextBuilder.scss';
-import TaggedText from '../TaggedText/TaggedText';
+import TaggedText from 'components/TaggedText/TaggedText';
+import Row from 'components/Row/Row';
+import Content from 'components/Content/Content';
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
   constructor (props) {
@@ -34,6 +36,7 @@ class TextBuilder extends Component {
   add = (index) => {
     this.setState((state, props) => {
       const text = state.text += state.responses[index].completedText + '\r\n';
+      console.log("text", state.responses[index], text);
       return {
         text: text,
         responses: state.responses.filter((text, i) => {
@@ -42,7 +45,9 @@ class TextBuilder extends Component {
       };
     });
   };
-
+  onChange = () => {
+    this.setState({ text: this.refs.responseText.value});
+  }
   remove = (index) => {
     this.setState((state, props) => {
       return {
@@ -85,24 +90,27 @@ class TextBuilder extends Component {
 
   render () {
     return (
-      <div className='TextBuilder' ref='TextBuilder'>
-        <textarea className='responseText' defaultValue={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
-          onChange={() => {}} />
-        <br />
-        {
-          this.state.responses.map((response, index) => {
-            return (
-              <div className='response Block' key={index}>
-                <p className='content' onClick={() => this.add(index)}>
-                  <TaggedText text={{ text: response.completedText, entities: response.entities }} />
-                  <span className='part'>{response.component.responsePart}</span>
-                </p>
-                <p className='remove' onClick={() => { this.remove(index); }} />
-              </div>
-            );
-          })
-        }
+      <Row vertical={true}>
+        <Content>
+          <textarea id='responseText' ref="responseText" value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
+            onChange={this.onChange} />
+        </Content>
+        <div id="responses">
+          {
+            this.state.responses.map((response, index) => {
+              return (
+                <div className='response Block' key={index}>
+                  <p className='content' onClick={() => this.add(index)}>
+                    <TaggedText text={{ text: response.completedText, entities: response.entities }} />
+                    <div className='part'>{response.component.responsePart}</div>
+                  </p>
+                  <i className='fa fa-sync remove' onClick={() => { this.remove(index); }} />
+                </div>
+              );
+            })
+          }
       </div>
+      </Row>
     );
   }
 }

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 
 // import Api from '../../utility/Api';
 
-import Block from '../Block/Block';
-import Select from '../Select/Select';
+import Block from 'components/Block/Block';
+import Select from 'components/Select/Select';
+import Row from 'components/Row/Row';
+
 // import RadioButton from '../RadioButton/RadioButton';
 // import Body from '../Body/Body';
 // import Collapsible from '../Collapsible/Collapsible';
@@ -55,28 +57,41 @@ class Filter extends Component {
     render () {
       return (
         <Block className='Filter'>
-          <label htmlFor='count'><strong>Anzuzeigende Elemente:</strong></label>
-          <input name='count' type='number' onChange={this.handleChange.count} value={this.state.count} />
+          <div>
+            <h3>Filtere:</h3>
+            <Row>
+              <div>
+                <label htmlFor='sentiment'><strong>Stimmung:</strong></label><br />
+                <Select name='sentiment' values={filterTemplate.sentiment} onChange={this.handleChange.sentiment} value={this.state.sentiment} />
+              </div>
+              <div>
+                <label htmlFor='subject'><strong>Kategorie:</strong></label><br />
+                <Select name='subject' values={filterTemplate.subject} onChange={this.handleChange.subject} value={this.state.subject} />
+              </div>
+              <div>
+                <label htmlFor='text_contains'><strong>Text:</strong></label><br />
+                <input name='text_contains' type='text' onChange={this.handleChange.text_contains} value={this.state.text_contains} />
+              </div>
+            </Row>
+          </div>
+          <div>
+            <h3>Sortiere nach:</h3>
+            <label htmlFor='order_by'><strong>Sortieren:</strong></label>
+            <Select name='order_by' values={filterTemplate.order_by} onChange={this.handleChange.order_by} value={this.state.order_by} />
 
-          <label htmlFor='page'><strong>Seite:</strong></label>
-          <input name='page' type='number' onChange={this.handleChange.page} value={this.state.page} />
+            <label htmlFor='desc'><strong>Absteigend:</strong></label>
+            <input name='desc' type='checkbox' onChange={this.handleChange.desc} value={this.state.desc} />
+          </div>
+          <div>
+            <label htmlFor='count'><strong>Anzuzeigende Elemente:</strong></label>
+            <input name='count' type='number' onChange={this.handleChange.count} value={this.state.count} />
 
-          <label htmlFor='order_by'><strong>Sortieren:</strong></label>
-          <Select name='order_by' values={filterTemplate.order_by} onChange={this.handleChange.order_by} value={this.state.order_by} />
-
-          <label htmlFor='desc'><strong>Absteigend:</strong></label>
-          <input name='desc' type='checkbox' onChange={this.handleChange.desc} value={this.state.desc} />
-
-          <label htmlFor='sentiment'><strong>Sortieren:</strong></label>
-          <Select name='sentiment' values={filterTemplate.sentiment} onChange={this.handleChange.sentiment} value={this.state.sentiment} />
-
-          <label htmlFor='subject'><strong>Sortieren:</strong></label>
-          <Select name='subject' values={filterTemplate.subject} onChange={this.handleChange.subject} value={this.state.subject} />
-
-          <label htmlFor='text_contains'><strong>Anzuzeigende Elemente:</strong></label>
-          <input name='text_contains' type='text' onChange={this.handleChange.text_contains} value={this.state.text_contains} />
-
-          <input type='button' value='Anwenden' onClick={this.submit} />
+            <label htmlFor='page'><strong>Seite:</strong></label>
+            <input name='page' type='number' onChange={this.handleChange.page} value={this.state.page} />
+          </div>
+          <div>
+            <input type='submit' value='Anwenden' onClick={this.submit} />
+          </div>
         </Block>
       );
     }

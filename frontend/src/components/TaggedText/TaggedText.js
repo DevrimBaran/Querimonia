@@ -16,6 +16,7 @@ class TaggedText extends Component {
     let p = [];
     let cpos = 0;
     if (Array.isArray(text.entities)) {
+      text.entities.sort((a, b) => a.start - b.start);
       for (const tag of text.entities) {
         p.push(<span key={p.length}>{text.text.substring(cpos, tag.start)}</span>);
         p.push(<span key={p.length} className='tag' label={tag.label}>{text.text.substring(tag.start, tag.end)}</span>);

@@ -24,3 +24,12 @@ html, body {
         margin: 10px 20px 0 0;
     }
 }
+
+#Import {
+    &.file textarea {
+        display: none;
+    }
+    &.text input[type=file] {
+        display: none;
+    }
+}

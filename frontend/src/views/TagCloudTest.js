@@ -7,8 +7,6 @@ import Content from 'components/Content/Content';
 
 import Api from 'utility/Api';
 
-import './style.css';
-
 class TagCloudTest extends Component {
   constructor(props) {
     super(props);
@@ -80,7 +78,8 @@ class TagCloudTest extends Component {
                   fontFamily: 'sans-serif',
                   color: () => randomColor({
                     hue: this.state.color
-                  })
+                  }),
+                  height: '100%'
                 }}>
                 {Object.keys(this.state.words).map(this.renderWord, this)}
               </TagCloud>

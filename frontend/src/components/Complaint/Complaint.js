@@ -1,13 +1,7 @@
 import React from 'react';
 
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
-
-function foo () {
-  // wird für Link benötigt, für husky allerdings unused...
-  Router();
-  Route();
-}
-false && foo();
+// eslint-disable-next-line
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 function getMaxKey (obj) {
   let max = -1;
@@ -23,10 +17,11 @@ function getMaxKey (obj) {
 
 function Complaint (data, index) {
   return (
-    <div key={index} className='complaintSummary'>
-      {
-        data && (
+    <React.Fragment key={index}>
+    {
+      data && (
           <Link to={'/complaints/' + data.complaintId}>
+          <div className='complaintSummary'>
             <div className='title'>
               <h3><span>Anliegen {data.complaintId} -</span>
                 <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
@@ -39,10 +34,11 @@ function Complaint (data, index) {
             </div>
             <div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div>
             <p>{data.preview}</p>
+            </div>
           </Link>
         )
       }
-    </div>
+      </React.Fragment>
   );
 }
 
