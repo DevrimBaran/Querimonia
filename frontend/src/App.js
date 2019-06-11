@@ -16,12 +16,12 @@ function App () {
   try {
     basepath = new URL(process.env.REACT_APP_BACKEND_PATH).pathname;
     console.log('basepath', new URL(process.env.REACT_APP_BACKEND_PATH));
-  } catch(e) {
+  } catch (e) {
     basepath = '/';
   }
   console.log('basepath', basepath);
   return (
-    <Router basename='/dev'>
+    <Router basename={basepath}>
       <Block className='menu'>
         <h6 className='center'>Menü</h6>
         <ul>
