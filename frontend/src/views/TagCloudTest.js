@@ -8,13 +8,13 @@ import Content from 'components/Content/Content';
 import Api from 'utility/Api';
 
 class TagCloudTest extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
     this.state = {
       words: {},
       color: '#179c7d',
       factor: 10,
-      size: 5,
+      size: 5
     };
   }
   fetchData = () => {
@@ -35,17 +35,17 @@ class TagCloudTest extends Component {
     s[e.target.id] = e.target.value;
     this.setState(s);
   }
-  componentDidMount() {
+  componentDidMount () {
     this.fetchData();
   }
   renderWord = (word, index) => {
     return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: this.state.size - 2 + this.state.words[word] * this.state.factor }}>{word}</abbr>);
   }
-  render() {
+  render () {
     return (
       <React.Fragment>
         <Block>
-          <Row vertical={true}>
+          <Row vertical>
             <h6 className='center'>Wortliste</h6>
             <br />
             <div>
@@ -59,16 +59,16 @@ class TagCloudTest extends Component {
                   <input type='date' id='maxDate' ref='maxDate' />
                 </div>
                 <div>
-                  <label htmlFor="onlyWords">Nur Wörter anzeigen:</label><br />
-                  <input type="checkbox" id="onlyWords" ref="onlyWords" />
+                  <label htmlFor='onlyWords'>Nur Wörter anzeigen:</label><br />
+                  <input type='checkbox' id='onlyWords' ref='onlyWords' />
                 </div>
                 <div>
-                  <label htmlFor="count">Wortanzahl:</label><br />
-                  <input type="number" id="count" ref="count" defaultValue="0" min="0" />
+                  <label htmlFor='count'>Wortanzahl:</label><br />
+                  <input type='number' id='count' ref='count' defaultValue='0' min='0' />
                 </div>
               </Row>
             </div>
-            <div className="center">
+            <div className='center'>
               <input type='button' onClick={this.fetchData} value='aktualisieren' />
             </div>
             <Content>
@@ -88,17 +88,17 @@ class TagCloudTest extends Component {
               <Row vertical={false} style={{ justifyContent: 'center' }}>
                 <div>
                   <label htmlFor='color'>Farbe:</label><br />
-                  <input type='color' id="color" onChange={this.onChange} value={this.state.color} />
+                  <input type='color' id='color' onChange={this.onChange} value={this.state.color} />
                 </div>
-                <div style={{ width: '2em' }}></div>
+                <div style={{ width: '2em' }} />
                 <div>
                   <label htmlFor='factor'>Schriftgröße:</label><br />
-                  <input type='number' id="size" onChange={this.onChange} value={this.state.size} />
+                  <input type='number' id='size' onChange={this.onChange} value={this.state.size} />
                 </div>
-                <div style={{ width: '2em' }}></div>
+                <div style={{ width: '2em' }} />
                 <div>
                   <label htmlFor='factor'>Faktor:</label><br />
-                  <input type='number' id="factor" onChange={this.onChange} value={this.state.factor} />
+                  <input type='number' id='factor' onChange={this.onChange} value={this.state.factor} />
                 </div>
               </Row>
             </div>

@@ -36,7 +36,7 @@ class TextBuilder extends Component {
   add = (index) => {
     this.setState((state, props) => {
       const text = state.text += state.responses[index].completedText + '\r\n';
-      console.log("text", state.responses[index], text);
+      console.log('text', state.responses[index], text);
       return {
         text: text,
         responses: state.responses.filter((text, i) => {
@@ -46,7 +46,7 @@ class TextBuilder extends Component {
     });
   };
   onChange = () => {
-    this.setState({ text: this.refs.responseText.value});
+    this.setState({ text: this.refs.responseText.value });
   }
   remove = (index) => {
     this.setState((state, props) => {
@@ -90,12 +90,12 @@ class TextBuilder extends Component {
 
   render () {
     return (
-      <Row vertical={true}>
+      <Row vertical>
         <Content>
-          <textarea id='responseText' ref="responseText" value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
+          <textarea id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
             onChange={this.onChange} />
         </Content>
-        <div id="responses">
+        <div id='responses'>
           {
             this.state.responses.map((response, index) => {
               return (
@@ -109,7 +109,7 @@ class TextBuilder extends Component {
               );
             })
           }
-      </div>
+        </div>
       </Row>
     );
   }

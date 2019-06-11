@@ -18,27 +18,27 @@ function getMaxKey (obj) {
 function Complaint (data, index) {
   return (
     <React.Fragment key={index}>
-    {
-      data && (
+      {
+        data && (
           <Link to={'/complaints/' + data.complaintId}>
-          <div className='complaintSummary'>
-            <div className='title'>
-              <h3><span>Anliegen {data.complaintId} -</span>
-                <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
-                  {getMaxKey(data.probableSentiment)}
-                </span>
-                <span className='small' style={{ fontWeight: 'normal' }}>
-                  {getMaxKey(data.probableSubject)}
-                </span>
-              </h3>
-            </div>
-            <div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div>
-            <p>{data.preview}</p>
+            <div className='complaintSummary'>
+              <div className='title'>
+                <h3><span>Anliegen {data.complaintId} -</span>
+                  <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
+                    {getMaxKey(data.probableSentiment)}
+                  </span>
+                  <span className='small' style={{ fontWeight: 'normal' }}>
+                    {getMaxKey(data.probableSubject)}
+                  </span>
+                </h3>
+              </div>
+              <div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div>
+              <p>{data.preview}</p>
             </div>
           </Link>
         )
       }
-      </React.Fragment>
+    </React.Fragment>
   );
 }
 

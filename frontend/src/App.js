@@ -6,8 +6,8 @@ import Block from 'components/Block/Block';
 import Home from 'views/Home';
 import Complaints from 'views/Complaints';
 import Import from 'views/Import';
-import Export from 'views/Export';
-import Statistics from 'views/Statistics';
+//import Export from 'views/Export';
+//import Statistics from 'views/Statistics';
 import WordVectors from 'views/WordVectors';
 import TagCloudTest from 'views/TagCloudTest';
 

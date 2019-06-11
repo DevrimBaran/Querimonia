@@ -70,18 +70,18 @@ class ImportBlock extends Component {
   render () {
     return (
       <Block>
-        <Row vertical={true}>
+        <Row vertical>
           <h6 className='center'>Import</h6>
-          <div id='Import' style={{margin: '1em'}} onDrop={this.onDrop} onDragOver={this.onDragOver}>
-            {this.state.type !== 'file' && <textarea style={{resize: 'none', height: '200px'}} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
-            <div className="center">
+          <div id='Import' style={{ margin: '1em' }} onDrop={this.onDrop} onDragOver={this.onDragOver}>
+            {this.state.type !== 'file' && <textarea style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
+            <div className='center'>
               {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref='fileInput' />}
               <input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
             </div>
           </div>
           <Content>
-            <div style={{height: '100%'}} id='response'>
-              {this.state.loading ? (<div className="center"><i style={{ color: 'var(--primaryAccentColor)'}} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.response)}
+            <div style={{ height: '100%' }} id='response'>
+              {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.response)}
             </div>
           </Content>
         </Row>

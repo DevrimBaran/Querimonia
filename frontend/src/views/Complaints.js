@@ -45,7 +45,7 @@ class Complaints extends Component {
     renderSingle = (active) => {
       return (<React.Fragment>
         <Block>
-          <Row vertical={true}>
+          <Row vertical>
             <h6 className='center'>Antwort</h6>
             <Content>
               <Tabbed style={{ height: '100%' }}>
@@ -63,10 +63,10 @@ class Complaints extends Component {
           </Row>
         </Block>
         <Block>
-          <Row vertical={true}>
+          <Row vertical>
             <h6 className='center'>Meldetext</h6>
             <Content>
-              <Tabbed style={{height: '100%'}}>
+              <Tabbed style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
                   <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
                   <div>
@@ -85,7 +85,7 @@ class Complaints extends Component {
             </Content>
           </Row>
         </Block>
-      </React.Fragment>)
+      </React.Fragment>);
     }
     renderList = () => {
       return (<Block>
@@ -95,7 +95,7 @@ class Complaints extends Component {
             {this.state.issues.map(Complaint)}
           </Content>
         </Row>
-      </Block>)
+      </Block>);
     }
     render () {
       let active = false;

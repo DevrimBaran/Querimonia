@@ -12,7 +12,7 @@ function Home () {
   return (
     <React.Fragment>
       <Block>
-        <Row vertical={true}>
+        <Row vertical>
           <Content>
             <div className='header'>
               <img src={logo} className='Topbar-logo' alt='logo' width='60%' />
