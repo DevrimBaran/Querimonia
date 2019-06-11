@@ -6,15 +6,20 @@ import Block from 'components/Block/Block';
 import Home from 'views/Home';
 import Complaints from 'views/Complaints';
 import Import from 'views/Import';
-//import Export from 'views/Export';
-//import Statistics from 'views/Statistics';
+// import Export from 'views/Export';
+// import Statistics from 'views/Statistics';
 import WordVectors from 'views/WordVectors';
 import TagCloudTest from 'views/TagCloudTest';
 
 function App () {
-  const slash = process.env.REACT_APP_BACKEND_PATH && process.env.REACT_APP_BACKEND_PATH.indexOf('/');
-  let basepath = slash ? process.env.REACT_APP_BACKEND_PATH.substring(slash) : '/';
-  console.log('basepath', basepath, slash);
+  let basepath;
+  try {
+    basepath = new URL(process.env.REACT_APP_BACKEND_PATH).pathname;
+    console.log('basepath', new URL(process.env.REACT_APP_BACKEND_PATH));
+  } catch(e) {
+    basepath = '/';
+  }
+  console.log('basepath', basepath);
   return (
     <Router basename='/dev'>
       <Block className='menu'>
