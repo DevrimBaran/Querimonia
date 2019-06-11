@@ -2,31 +2,45 @@ import React, { Component } from 'react';
 import randomColor from 'randomcolor';
 import TagCloud from 'react-tag-cloud';
 // import CloudItem from './CloudItem';
+
+import Api from 'utility/Api';
+
 import './style.css';
 
-const styles = {
-  large: {
-    fontSize: 60,
-    fontWeight: 'bold'
-  },
-  small: {
-    opacity: 0.7,
-    fontSize: 16
-  }
-};
 
 class TagCloudTest extends Component {
-  componentDidMount () {
-    setInterval(() => {
-      // this.forceUpdate();
-    }, 3000);
+  constructor(props) {
+    super(props);
+    this.state = {
+      words: {}
+    };
   }
-
+  fetchData = () => {
+    let query = {};
+    this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
+    this.refs.maxDate.value && (query.date_max = this.refs.maxDate.value);
+    Api.get('/api/stats/tagcloud', query)
+      .then(this.setData);
+  }
+  setData = (data) => {
+    this.setState({words: data});
+  }
+  componentDidMount () {
+    this.fetchData();
+  }
+  renderWord = (word, index) => {
+    return (<div key={index} style={{ fontSize: this.state.words[word] * 10 }}>{word}</div>);
+  }
   render () {
     return (
       <div className='app-outer'>
         <div className='app-inner'>
-          <h1>react-tag-cloud demo</h1>
+          <h1>Wortliste</h1>
+          <label htmlFor="minDate">Von:</label>
+          <input type="date" id="minDate" ref="minDate" />
+          <label htmlFor="maxDate">Bis:</label>
+          <input type="date" id="maxDate" ref="maxDate" />
+          <input type="button" onClick={this.fetchData} value="aktualisieren" />
           <TagCloud
             className='tag-cloud'
             style={{
@@ -38,41 +52,7 @@ class TagCloudTest extends Component {
               }),
               padding: 5
             }}>
-
-            <div style={{ fontSize: 60 }}>Transformers</div>
-            <div style={{ fontSize: 120 }}>Simpsons</div>
-            <div style={{ fontSize: 120 }}>Dragon Ball</div>
-            <div style={{ fontSize: 120 }}>Rick & Morty</div>
-            <div style={{ fontFamily: 'courier' }}>He man</div>
-            <div style={{ fontSize: 30 }}>World trigger</div>
-            <div style={{ fontStyle: 'italic' }}>Avengers</div>
-            <div style={{ fontWeight: 200 }}>Family Guy</div>
-            <div style={{ color: 'green' }}>American Dad</div>
-            <div>Gobots</div>
-            <div>Thundercats</div>
-            <div>M.A.S.K.</div>
-            <div>GI Joe</div>
-            <div>Inspector Gadget</div>
-            <div>Bugs Bunny</div>
-            <div>Tom & Jerry</div>
-            <div>Cowboy Bebop</div>
-            <div>Evangelion</div>
-            <div style={{ fontSize: 120 }}>Bleach</div>
-            <div>GITS</div>
-            <div>Pokemon</div>
-            <div>She Ra</div>
-            <div>Fullmetal Alchemist</div>
-            <div>Gundam</div>
-            <div>Uni Taisen</div>
-            <div>Pinky and the Brain</div>
-            <div>Bobs Burgers</div>
-            <div style={styles.small}>Dino Riders</div>
-            <div style={styles.small}>Silverhawks</div>
-            <div style={styles.small}>Bravestar</div>
-            <div style={styles.small}>Starcom</div>
-            <div style={styles.small}>Cops</div>
-            <div style={styles.small}>Alfred J. Kwak</div>
-            <div style={styles.small}>Dr Snuggles</div>
+            {Object.keys(this.state.words).map(this.renderWord)}
           </TagCloud>
         </div>
       </div>
