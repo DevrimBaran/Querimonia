@@ -4,6 +4,7 @@ package de.fraunhofer.iao.querimonia.nlp.analyze;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.*;
+import org.languagetool.tagging.de.GermanTagger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -74,9 +75,15 @@ public class TokenAnalyzer implements StopWordFilter {
     String punctuations = ".,:;!?";
 
     Map<String, Integer> countByWords = new HashMap<>();
+    GermanTagger gt=new GermanTagger();
 
     for (CoreLabel token : germanAnnotation.get(CoreAnnotations.TokensAnnotation.class)) {
-      String tokenString = token.word().toLowerCase();
+      String tokenString ="";
+      //Lemma available?
+      if(gt.tag(token.word()).size()<=0)
+        tokenString=token.word().toLowerCase();
+      else
+       tokenString = gt.tag(token.word()).get(0).getLemma().toLowerCase();
       if (stopwords.contains(tokenString) || punctuations.contains(tokenString)) {
         continue;
       }
