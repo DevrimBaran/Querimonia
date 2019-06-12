@@ -14,6 +14,7 @@ import Stats from 'components/Stats/Stats';
 import Tabbed from 'components/Tabbed/Tabbed';
 import TaggedText from 'components/TaggedText/TaggedText';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
+import Pagination from 'components/Pagination/Pagination';
 
 class Complaints extends Component {
   constructor (props) {
@@ -26,10 +27,8 @@ class Complaints extends Component {
     };
   }
     fetchData = (query) => {
-      // console.log(query);
       this.setState({ active: null, loading: true });
       Api.get('/api/complaints', query)
-        .then((data) => { console.log(data); return data; })
         .then(this.setData);
     }
     setData = (data) => {
@@ -40,7 +39,12 @@ class Complaints extends Component {
       this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
     }
     componentDidMount = () => {
-      this.fetchData({ count: 20 });
+      let searchParams = new URLSearchParams(document.location.search);
+      let query = {};
+      for (var key of searchParams.keys()) {
+        query[key] = searchParams.get(key);
+      }
+      this.fetchData(query);
     }
     renderSingle = (active) => {
       return (<React.Fragment>
@@ -87,13 +91,20 @@ class Complaints extends Component {
         </Block>
       </React.Fragment>);
     }
+    update = () => {
+      this.setState({loading: true});
+      setTimeout(() => {
+        this.componentDidMount();
+      }, 10);
+    }
     renderList = () => {
       return (<Block>
         <Row vertical>
           <Filter onSubmit={this.fetchData} />
           <Content>
-            {this.state.issues.map(Complaint)}
+            {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.issues.map(Complaint))}
           </Content>
+          <Pagination onClick={this.update}/>
         </Row>
       </Block>);
     }

@@ -35,6 +35,7 @@ class ImportBlock extends Component {
         response = api.post('/api/complaints/import', { text: this.refs.textInput.value });
         break;
       case 'file':
+        // eslint-disable-next-line
         const formData = new FormData();
         formData.append('file', this.refs.fileInput.files[0]);
         response = api.post('/api/complaints/import', formData);

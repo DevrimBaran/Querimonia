@@ -14,7 +14,7 @@ class TagCloudTest extends Component {
       words: {},
       color: '#179c7d',
       size: 200,
-      max:0
+      max: 0
     };
   }
   fetchData = () => {
@@ -30,7 +30,7 @@ class TagCloudTest extends Component {
   setData = (data) => {
     var maxVal = Math.max.apply(Math, Object.values(data));
     this.setState({ words: data });
-    this.setState({max: maxVal});
+    this.setState({ max: maxVal });
   }
   onChange = (e) => {
     let s = {};
@@ -41,7 +41,7 @@ class TagCloudTest extends Component {
     this.fetchData();
   }
   renderWord = (word, index) => {
-    return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: (this.state.words[word]/this.state.max) * this.state.size  }}>{word}</abbr>);
+    return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: (this.state.words[word] / this.state.max) * this.state.size }}>{word}</abbr>);
   }
   render () {
     return (

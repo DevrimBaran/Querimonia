@@ -100,10 +100,10 @@ class TextBuilder extends Component {
             this.state.responses.map((response, index) => {
               return (
                 <div className='response Block' key={index}>
-                  <p className='content' onClick={() => this.add(index)}>
+                  <span className='content' onClick={() => this.add(index)}>
                     <TaggedText text={{ text: response.completedText, entities: response.entities }} />
                     <div className='part'>{response.component.responsePart}</div>
-                  </p>
+                  </span>
                   <i className='fa fa-sync remove' onClick={() => { this.remove(index); }} />
                 </div>
               );

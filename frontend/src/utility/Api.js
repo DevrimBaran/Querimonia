@@ -45,7 +45,8 @@ export const api = {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
-    console.log(query);
+    console.log(query, !((document.location.search !== query) || (document.location.search !== '?' + query)));
+    //!((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
     return fetchJson(endpoint + '?' + query, options('get'));
   },
   post: function (endpoint, data) {
