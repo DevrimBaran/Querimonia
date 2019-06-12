@@ -22,37 +22,37 @@ class Pagination extends Component {
     return (
       <div className='pagination center'>
         {page > 0 &&
-          <QueryLink onClick={this.props.onClick} name="page" value={page - 1}>
+          <QueryLink onClick={this.props.onClick} name='page' value={page - 1}>
             &lt;
           </QueryLink>
         }
-        {page >= 2 && <QueryLink onClick={this.props.onClick} name="page" value={page - 2}>
+        {page >= 2 && <QueryLink onClick={this.props.onClick} name='page' value={page - 2}>
           {page - 2}
-          </QueryLink>
+        </QueryLink>
         }
-        {page >= 1 && <QueryLink onClick={this.props.onClick} name="page" value={page - 1}>
+        {page >= 1 && <QueryLink onClick={this.props.onClick} name='page' value={page - 1}>
           {page - 1}
-          </QueryLink>
+        </QueryLink>
         }
-        {page >= 0 && <QueryLink onClick={this.props.onClick} name="page" value={page}>
+        {page >= 0 && <QueryLink onClick={this.props.onClick} name='page' value={page}>
           {page}
-          </QueryLink>
+        </QueryLink>
         }
-        {<QueryLink onClick={this.props.onClick} name="page" value={page + 1}>
+        {<QueryLink onClick={this.props.onClick} name='page' value={page + 1}>
           {page + 1}
-          </QueryLink>
+        </QueryLink>
         }
-        {<QueryLink onClick={this.props.onClick} name="page" value={page + 2}>
+        {<QueryLink onClick={this.props.onClick} name='page' value={page + 2}>
           {page + 2}
-          </QueryLink>
+        </QueryLink>
         }
-        {<QueryLink onClick={this.props.onClick} name="page" value={page + 1}>
+        {<QueryLink onClick={this.props.onClick} name='page' value={page + 1}>
             &gt;
-          </QueryLink>
+        </QueryLink>
         }
-        {<QueryLink onClick={this.props.onClick} name="count" value="10">10</QueryLink>}
-        {<QueryLink onClick={this.props.onClick} name="count" value="25">25</QueryLink>}
-        {<QueryLink onClick={this.props.onClick} name="count" value="50">50</QueryLink>}
+        {<QueryLink onClick={this.props.onClick} name='count' value='10'>10</QueryLink>}
+        {<QueryLink onClick={this.props.onClick} name='count' value='25'>25</QueryLink>}
+        {<QueryLink onClick={this.props.onClick} name='count' value='50'>50</QueryLink>}
       </div>
     );
   }

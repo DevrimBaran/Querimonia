@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-function Query(WrappedComponent) {
+function Query (WrappedComponent) {
   return class extends Component {
     constructor (props) {
       super(props);
@@ -20,19 +20,19 @@ function Query(WrappedComponent) {
       });
       this.props.onChange && this.props.onChange(e);
     }
-    render() {
+    render () {
       // Filter out extra props that are specific to this HOC and shouldn't be
       // passed through
       const { name, value, onChange, type, ...passThroughProps } = this.props;
 
       const search = new URLSearchParams(document.location.search);
       const pathname = document.location.pathname;
-      
+
       // Inject props into the wrapped component. These are usually state values or
       // instance methods.
       let injectedProp = {};
       if (WrappedComponent.name === 'Link') {
-        search.set(name, value)
+        search.set(name, value);
         injectedProp.to = pathname + '?' + search;
       } else if (type === 'hidden') {
         injectedProp.defaultValue = this.state.value;
@@ -45,7 +45,7 @@ function Query(WrappedComponent) {
         injectedProp.name = this.state.name;
         injectedProp.type = type;
       }
-      
+
       // Pass props to wrapped component
       return (
         <WrappedComponent
@@ -54,7 +54,7 @@ function Query(WrappedComponent) {
         />
       );
     }
-  }
-} 
+  };
+}
 
 export default Query;

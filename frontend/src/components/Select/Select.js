@@ -16,7 +16,7 @@ class Select extends Component {
       };
       return (
         <select {...injectedProp} {...passThroughProps}>
-          <option key='null' value="">-</option>
+          <option key='null' value=''>-</option>
           {
             this.props.values.map((value) => {
               return (

@@ -41,58 +41,55 @@ var filterTemplate = {
 const QuerySelect = Query(Select);
 const QueryInput = Query(Input);
 class Filter extends Component {
-  constructor(props) {
-    super(props);
-  }
   submit = (e) => {
     console.dir(e.target);
-    //e.preventDefault();
-    /*let query = {};
+    // e.preventDefault();
+    /* let query = {};
     for (let i = 0; i < e.target.elements.length; i++) {
       query[e.target.elements[i].name] = e.target.elements[i].value;
     }
     this.props.onSubmit && this.props.onSubmit(query);
    */
   }
-  render() {
-    //const QueryText = Query(input);
+  render () {
+    // const QueryText = Query(input);
     const pathname = document.location.pathname;
     return (
       <Block className='Filter'>
         <form action={pathname} onSubmit={this.submit}>
-          <QueryInput type="hidden" name="page" />
-          <QueryInput type="hidden" name="count" />
-          <Row vertical={true} style={{ alignItems: 'center' }}>
-              <h3 className="center">Filter:</h3>
-              <Row style={{ justifyContent: 'center' }}>
-                <div>
-                  <label htmlFor='sentiment'><strong>Stimmung:</strong></label><br />
-                  <QuerySelect name='sentiment' values={filterTemplate.sentiment} />
-                </div>
-                <div style={{width: '2em'}}/>
-                <div>
-                  <label htmlFor='subject'><strong>Kategorie:</strong></label><br />
-                  <QuerySelect name='subject' values={filterTemplate.subject} />
-                </div>
-                <div style={{ width: '2em' }} />
-                <div>
-                  <label htmlFor='text_contains'><strong>Text:</strong></label><br />
-                  <QueryInput name='text_contains' type='text' />
-                </div>
-                <div style={{ width: '2em' }} />
-                <div>
-                  <label htmlFor='order_by'><strong>Sortieren nach:</strong></label><br />
-                  <QuerySelect name='order_by' values={filterTemplate.order_by} />
-                </div>
-                <div style={{ width: '2em' }} />
-                <div>
-                  <label htmlFor='desc'><strong>Absteigend:</strong></label><br />
-                  <QueryInput name='desc' type='checkbox' />
-                </div>
-              </Row>
-              <br />
-              <input type="submit" defaultValue="Anwenden" />
-              <br />
+          <QueryInput type='hidden' name='page' />
+          <QueryInput type='hidden' name='count' />
+          <Row vertical style={{ alignItems: 'center' }}>
+            <h3 className='center'>Filter:</h3>
+            <Row style={{ justifyContent: 'center' }}>
+              <div>
+                <label htmlFor='sentiment'><strong>Stimmung:</strong></label><br />
+                <QuerySelect name='sentiment' values={filterTemplate.sentiment} />
+              </div>
+              <div style={{ width: '2em' }} />
+              <div>
+                <label htmlFor='subject'><strong>Kategorie:</strong></label><br />
+                <QuerySelect name='subject' values={filterTemplate.subject} />
+              </div>
+              <div style={{ width: '2em' }} />
+              <div>
+                <label htmlFor='text_contains'><strong>Text:</strong></label><br />
+                <QueryInput name='text_contains' type='text' />
+              </div>
+              <div style={{ width: '2em' }} />
+              <div>
+                <label htmlFor='order_by'><strong>Sortieren nach:</strong></label><br />
+                <QuerySelect name='order_by' values={filterTemplate.order_by} />
+              </div>
+              <div style={{ width: '2em' }} />
+              <div>
+                <label htmlFor='desc'><strong>Absteigend:</strong></label><br />
+                <QueryInput name='desc' type='checkbox' />
+              </div>
+            </Row>
+            <br />
+            <input type='submit' defaultValue='Anwenden' />
+            <br />
           </Row>
         </form>
       </Block>

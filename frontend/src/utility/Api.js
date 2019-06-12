@@ -46,7 +46,7 @@ export const api = {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
     console.log(query, !((document.location.search !== query) || (document.location.search !== '?' + query)));
-    //!((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
+    //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
     return fetchJson(endpoint + '?' + query, options('get'));
   },
   post: function (endpoint, data) {

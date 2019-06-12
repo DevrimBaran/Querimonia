@@ -92,7 +92,7 @@ class Complaints extends Component {
       </React.Fragment>);
     }
     update = () => {
-      this.setState({loading: true});
+      this.setState({ loading: true });
       setTimeout(() => {
         this.componentDidMount();
       }, 10);
@@ -104,7 +104,7 @@ class Complaints extends Component {
           <Content>
             {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.issues.map(Complaint))}
           </Content>
-          <Pagination onClick={this.update}/>
+          <Pagination onClick={this.update} />
         </Row>
       </Block>);
     }
