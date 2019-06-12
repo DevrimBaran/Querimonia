@@ -1,0 +1,24 @@
+.Table {
+    .Sticky{
+        position: sticky;
+        top : 0;
+    }
+    table {
+        width: 100%;
+        text-align: left;
+        border: none;
+        thead tr {
+            background-color: #22977A;;
+        }
+        tr {
+            cursor: pointer;
+            td, th {
+                padding: 20px 10px;
+            }
+            background-color: #555555;
+            &:nth-of-type(even) {
+                background-color: #333333;
+            }
+        }
+    }
+}

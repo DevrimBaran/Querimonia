@@ -1,0 +1,38 @@
+.Modal {
+    .wrapper {
+        display: none;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr 1fr;
+    }
+    &.active .wrapper {
+        display: grid;
+    }
+    .label {
+
+    }
+    .wrapper {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        z-index: 9999;
+    }
+    .content {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        justify-self: stretch;
+        align-self: stretch;
+        vertical-align: middle;
+        text-align: center;
+        z-index: 1;
+        padding: 30px 20px;
+    }
+    .background {
+        grid-column: 1 / 4;
+        grid-row: 1 / 4;
+        background-color: #000;
+        opacity: 0.8;
+        cursor: pointer;
+    }
+}
