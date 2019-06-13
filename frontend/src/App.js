@@ -10,6 +10,7 @@ import Import from 'views/Import';
 // import Statistics from 'views/Statistics';
 import WordVectors from 'views/WordVectors';
 import TagCloudTest from 'views/TagCloudTest';
+import logo from './assets/img/StuproLogo2.svg';
 
 function App () {
   let basepath;
@@ -23,7 +24,7 @@ function App () {
   return (
     <Router basename={basepath}>
       <Block className='menu'>
-        <h6 className='center'>Menü</h6>
+        <img src={logo} className='Topbar-logo' alt='logo' width='100%' />
         <ul>
           <li>
             <Link to='/'>Start</Link>
