@@ -40,6 +40,16 @@ pre {
   width: 19px;
   height: 19px;
   border-radius: 50%;
+  color: (#1F82BF); //hab es mit der Sekundärfarbe laut CI-Finalisierung ausgetauscht 
+  text-align: center;
+}
+.add {
+  position: absolute;
+  bottom: 0px;
+  right: 2px;
+  width: 19px;
+  height: 19px;
+  border-radius: 50%;
   color: $primary;
   text-align: center;
 }
