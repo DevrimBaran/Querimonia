@@ -27,9 +27,8 @@ public class KikukoExtractor extends KikukoConatct<ExtractorResponse> implements
         e.getStartposition(), e.getEndposition())));
     allPipes.getExtdatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
         e.getStartposition(), e.getEndposition())));
-    // for some reason we have to subtract 1 from the end position here
     allPipes.getExtgeldbetrag().forEach(e -> entities.add(new NamedEntity("Geldbetrag",
-        e.getStartposition(), e.getEndposition() - 1)));/*
+        e.getStartposition(), e.getEndposition())));/*
     allPipes.getExtpersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
         e.getStartposition(), e.getEndposition())));*/
     allPipes.getPersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
