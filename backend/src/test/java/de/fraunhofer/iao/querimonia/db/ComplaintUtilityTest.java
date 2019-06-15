@@ -10,6 +10,8 @@ import static org.junit.Assert.*;
 
 /**
  * Unit test class for ComplaintUtility
+ *
+ * @author Simon Weiler
  */
 public class ComplaintUtilityTest {
 
@@ -183,25 +185,6 @@ public class ComplaintUtilityTest {
 
         List<NamedEntity> entities = new ArrayList<>();
         entities.add(new NamedEntity("TooLarge", 30, 35));
-
-        ComplaintUtility.getEntityValueMap(text, entities);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetEntityValueMapNullString() {
-        String text = null;
-
-        List<NamedEntity> entities = new ArrayList<>();
-        entities.add(new NamedEntity("Nothing", 0, 0));
-
-        ComplaintUtility.getEntityValueMap(text, entities);
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void testGetEntityValueMapNullEntities() {
-        String text = "No, Luke, I am your father!";
-
-        List<NamedEntity> entities = null;
 
         ComplaintUtility.getEntityValueMap(text, entities);
     }

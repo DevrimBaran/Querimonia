@@ -136,6 +136,7 @@ public class ComplaintFilter {
                   .compareTo(c2.getBestSentiment().orElse(""));
               break;
             case "subject":
+              // TODO better sorting for subjects
               compareValue = c1.getBestSubject().orElse("")
                   .compareTo(c2.getBestSubject().orElse(""));
               break;
