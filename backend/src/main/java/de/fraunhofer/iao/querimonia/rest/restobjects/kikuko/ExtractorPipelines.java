@@ -13,7 +13,7 @@ import java.util.List;
     "[Extern] Personen Extraktor",
     "[Extern] Datum Extraktor",
     "Personen NEU",
-    "Money amount",
+    "[Extern] Geldbetrag",
     "Personen Extraktor"
 })
 public class ExtractorPipelines {
@@ -25,7 +25,7 @@ public class ExtractorPipelines {
    * @param extpersonExtraktor Results from ext person extractor pipeline.
    * @param extdatumExtraktor Resulots from ext datum extractor pipeline.
    * @param personNeu Person extractor.
-   * @param moneyAmount Results from  money amount pipeline.
+   * @param extgeldbetrag Results from  money amount pipeline.
    * @param personExtraktor Results from person extractor pipeline.
    */
   public ExtractorPipelines(@JsonProperty("Businformationen") List<TempPipeline> busInformationen,
@@ -35,7 +35,7 @@ public class ExtractorPipelines {
                             @JsonProperty("[Extern] Datum Extraktor") List<TempPipeline>
                                 extdatumExtraktor,
                             @JsonProperty("Personen NEU") List<TempPipeline> personNeu,
-                            @JsonProperty("Money amount") List<TempPipeline> moneyAmount,
+                            @JsonProperty("[Extern] Geldbetrag") List<TempPipeline> extgeldbetrag,
                             @JsonProperty("Personen Extraktor") List<TempPipeline>
                                 personExtraktor) {
     this.busInformationen = busInformationen;
@@ -43,7 +43,7 @@ public class ExtractorPipelines {
     this.extpersonExtraktor = extpersonExtraktor;
     this.extdatumExtraktor = extdatumExtraktor;
     this.personNeu = personNeu;
-    this.moneyAmount = moneyAmount;
+    this.extgeldbetrag = extgeldbetrag;
     this.personExtraktor = personExtraktor;
   }
 
@@ -52,7 +52,7 @@ public class ExtractorPipelines {
   private List<TempPipeline> extpersonExtraktor;
   private List<TempPipeline> extdatumExtraktor;
   private List<TempPipeline> personNeu;
-  private List<TempPipeline> moneyAmount;
+  private List<TempPipeline> extgeldbetrag;
   private List<TempPipeline> personExtraktor;
 
   public List<TempPipeline> getBusInformationen() {
@@ -96,12 +96,12 @@ public class ExtractorPipelines {
     this.personNeu = personNeu;
   }
 
-  public List<TempPipeline> getMoneyAmount() {
-    return moneyAmount;
+  public List<TempPipeline> getExtgeldbetrag() {
+    return extgeldbetrag;
   }
 
-  public void setMoneyAmount(List<TempPipeline> moneyAmount) {
-    this.moneyAmount = moneyAmount;
+  public void setExtgeldbetrag(List<TempPipeline> extgeldbetrag) {
+    this.extgeldbetrag = extgeldbetrag;
   }
 
   public List<TempPipeline> getPersonExtraktor() {
