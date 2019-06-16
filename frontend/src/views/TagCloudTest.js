@@ -18,19 +18,19 @@ class TagCloudTest extends Component {
     };
   }
   getCSV = () => {
-    //sort by value
-    function Comparator(a, b) {
+    // sort by value
+    function Comparator (a, b) {
       if (a[1] < b[1]) return 1;
       if (a[1] > b[1]) return -1;
       return 0;
     }
 
-    var w=this.state.words;
-    var ar=[["Token","Anzahl"]];
+    var w = this.state.words;
+    var ar = [['Token', 'Anzahl']];
     for (var i = 0; i < Object.keys(w).length; i++) {
-      ar.push([Object.keys(w)[i],Object.values(w)[i]]);
+      ar.push([Object.keys(w)[i], Object.values(w)[i]]);
     }
-    exportToCsv("tagcloudCSV",ar.sort(Comparator));
+    exportToCsv('tagcloudCSV', ar.sort(Comparator));
   }
   fetchData = () => {
     let query = {};
@@ -113,8 +113,7 @@ class TagCloudTest extends Component {
                   <input type='number' id='size' onChange={this.onChange} value={this.state.size} />
                 </div>
                 <div style={{ width: '2em' }} />
-                <div className="fa fa-file-csv fa-3x export-button" onClick={this.getCSV}>
-                </div>
+                <div className='fa fa-file-csv fa-3x export-button' onClick={this.getCSV} />
               </Row>
             </div>
             <br />
@@ -130,16 +129,15 @@ class TagCloudTest extends Component {
  * @param filename name of the file
  * @param rows Array (Rows) of Arrays (Columns) include the data of the CSV
  */
-function exportToCsv(filename, rows) {
+function exportToCsv (filename, rows) {
   var processRow = function (row) {
     var finalVal = '';
     for (var j = 0; j < row.length; j++) {
       var result = row[j].toString();
-      if (j > 0)
-        finalVal += ';';
+      if (j > 0) { finalVal += ';'; }
       finalVal += result;
     }
-    return finalVal + "\r\n";
+    return finalVal + '\r\n';
   };
 
   var csvFile = '';
@@ -151,12 +149,12 @@ function exportToCsv(filename, rows) {
   if (navigator.msSaveBlob) { // IE 10+
     navigator.msSaveBlob(blob, filename);
   } else {
-    var link = document.createElement("a");
+    var link = document.createElement('a');
     if (link.download !== undefined) { // feature detection
       // Browsers that support HTML5 download attribute
       var url = URL.createObjectURL(blob);
-      link.setAttribute("href", url);
-      link.setAttribute("download", filename);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
       link.style.visibility = 'hidden';
       document.body.appendChild(link);
       link.click();
