@@ -105,6 +105,7 @@ class TextBuilder extends Component {
                     <div className='part'>{response.component.responsePart}</div>
                   </span>
                   <i className='fa fa-sync remove' onClick={() => { this.remove(index); }} />
+                  <i className='fas fa-plus add' onClick={() => { this.add(index); }} />
                 </div>
               );
             })
