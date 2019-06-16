@@ -5,8 +5,8 @@ import Row from 'components/Row/Row';
 import Content from 'components/Content/Content';
 import logo from './../assets/img/StuproLogo2.svg';
 import team from './../assets/img/Gruppenfoto.jpg';
-import iaoPartner from './../assets/img/iao.svg';
-import iatPartner from './../assets/img/iat.svg';
+import iaoPartner from './../assets/img/iao.png';
+import iatPartner from './../assets/img/iat.png';
 
 function Home () {
   return (
@@ -15,7 +15,7 @@ function Home () {
         <Row vertical>
           <Content>
             <div className='header'>
-              <img src={logo} className='Topbar-logo' alt='logo' width='60%' />
+              <img src={logo} className='logo' alt='logo' width='60%' />
             </div>
             <div className='body'>
               <br />
@@ -70,13 +70,13 @@ function Home () {
               </p>
               <br />
               <h1>Unser Team</h1>
-              <img src={team} className='Topbar-logo' alt='logo' width='50%' />
+              <img src={team} className='team' alt='logo' width='60%' />
               <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
             </div>
             <div className='footer'>
               <h1>Unsere Partner</h1>
-              <img src={iaoPartner} className='iaoPartner' alt='logo' width='40%' />
-              <img src={iatPartner} className='iatPartner' alt='logo' width='40%' />
+              <img src={iaoPartner} className='iaoPartner' alt='logo' width='50%' />
+              <img src={iatPartner} className='iatPartner' alt='logo' width='50%' />
             </div>
           </Content>
         </Row>

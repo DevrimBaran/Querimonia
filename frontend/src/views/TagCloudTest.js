@@ -17,6 +17,21 @@ class TagCloudTest extends Component {
       max: 0
     };
   }
+  getCSV = () => {
+    //sort by value
+    function Comparator(a, b) {
+      if (a[1] < b[1]) return 1;
+      if (a[1] > b[1]) return -1;
+      return 0;
+    }
+
+    var w=this.state.words;
+    var ar=[["Token","Anzahl"]];
+    for (var i = 0; i < Object.keys(w).length; i++) {
+      ar.push([Object.keys(w)[i],Object.values(w)[i]]);
+    }
+    exportToCsv("tagcloudCSV",ar.sort(Comparator));
+  }
   fetchData = () => {
     let query = {};
     this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
@@ -97,6 +112,9 @@ class TagCloudTest extends Component {
                   <label htmlFor='factor'>Schriftgröße:</label><br />
                   <input type='number' id='size' onChange={this.onChange} value={this.state.size} />
                 </div>
+                <div style={{ width: '2em' }} />
+                <div className="fa fa-file-csv fa-3x export-button" onClick={this.getCSV}>
+                </div>
               </Row>
             </div>
             <br />
@@ -106,5 +124,46 @@ class TagCloudTest extends Component {
     );
   }
 }
+
+/**
+ * Opens a dialog to download the CSV
+ * @param filename name of the file
+ * @param rows Array (Rows) of Arrays (Columns) include the data of the CSV
+ */
+function exportToCsv(filename, rows) {
+  var processRow = function (row) {
+    var finalVal = '';
+    for (var j = 0; j < row.length; j++) {
+      var result = row[j].toString();
+      if (j > 0)
+        finalVal += ';';
+      finalVal += result;
+    }
+    return finalVal + "\r\n";
+  };
+
+  var csvFile = '';
+  for (var i = 0; i < rows.length; i++) {
+    csvFile += processRow(rows[i]);
+  }
+
+  var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+  if (navigator.msSaveBlob) { // IE 10+
+    navigator.msSaveBlob(blob, filename);
+  } else {
+    var link = document.createElement("a");
+    if (link.download !== undefined) { // feature detection
+      // Browsers that support HTML5 download attribute
+      var url = URL.createObjectURL(blob);
+      link.setAttribute("href", url);
+      link.setAttribute("download", filename);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+}
+
 // ReactDOM.render(<TagCloudTest />, document.getElementById('root'));
 export default TagCloudTest;
