@@ -1,0 +1,20 @@
+package de.fraunhofer.iao.querimonia.nlp.sentiment;
+
+/**
+ * This class POST a query to sentimen script on flask server and get a sentiment value for the query
+ */
+
+public class MainSentiment implements SentimentAnalyzer {
+
+    public Map<String, Double> analyzeSentiment(Map<String, Integer> nonStopWords){
+
+        /**
+         * TODO:
+         *      - POST request with nonStopWords to https://querimonia-dev.iao.fraunhofer.de/sentiment_analyse
+         *      - receive sentiment value
+         *      - return value as a Map, for example <"Sentiment", 0.5>
+         */
+
+    }
+
+}
