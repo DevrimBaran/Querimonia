@@ -16,6 +16,8 @@ import TaggedText from 'components/TaggedText/TaggedText';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
 import Pagination from 'components/Pagination/Pagination';
 
+import 'assets/scss/Complaints.scss';
+
 class Complaints extends Component {
   constructor (props) {
     super(props);
@@ -56,11 +58,6 @@ class Complaints extends Component {
                 <div label='Erstellen'>
                   <TextBuilder complaintId={active.complaintId} />
                 </div>
-                <div label='Details'>
-                  <Stats label='Kategorisierung' data={active.subject} />
-                  <Stats label='Sentiments' data={active.sentiment} />
-                  <Log />
-                </div>
                 <div label='Datenbank'>BUH!</div>
               </Tabbed>
             </Content>
@@ -73,17 +70,31 @@ class Complaints extends Component {
               <Tabbed style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
                   <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
-                  <div>
+                  <div className='meldetextDetails'>
                     <br />
                     <b>Artikulationsdatum: </b>
                     <TaggedText text={{
                       text: active.receiveDate,
                       entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
                     }} />
+                    <br />
+                    <b>ID: </b>
+                    {active.complaintId}
+                    <br />
+                    <b>Kategorie: </b>
+                    {active.probableSubject}
+                    <br />
+                    <b>Sentiment: </b>
+                    {active.probableSentiment}
                   </div>
                 </div>
                 <div label='Original'>
                   {active.text}
+                </div>
+                <div label='Details'>
+                  <Stats label='Kategorisierung' data={active.subject} />
+                  <Stats label='Sentiments' data={active.sentiment} />
+                  <Log />
                 </div>
               </Tabbed>
             </Content>
