@@ -30,7 +30,7 @@ class TagCloudTest extends Component {
     for (var i = 0; i < Object.keys(w).length; i++) {
       ar.push([Object.keys(w)[i], Object.values(w)[i]]);
     }
-    exportToCsv('tagcloudCSV', ar.sort(Comparator));
+    exportToCsv('tagcloudCSV.csv', ar.sort(Comparator));
   }
   fetchData = () => {
     let query = {};

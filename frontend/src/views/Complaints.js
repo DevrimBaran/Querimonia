@@ -15,7 +15,7 @@ import Tabbed from 'components/Tabbed/Tabbed';
 import TaggedText from 'components/TaggedText/TaggedText';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
 import Pagination from 'components/Pagination/Pagination';
-
+import ReactTooltip from 'react-tooltip'
 import 'assets/scss/Complaints.scss';
 
 class Complaints extends Component {
@@ -48,6 +48,10 @@ class Complaints extends Component {
       }
       this.fetchData(query);
     }
+    // Creates an enumeration of words in an array
+    renderEnumeration = (word) => {
+      return (<li>{word}</li>);
+    }
     renderSingle = (active) => {
       return (<React.Fragment>
         <Block>
@@ -70,33 +74,41 @@ class Complaints extends Component {
               <Tabbed style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
                   <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
-                  <div className='meldetextDetails'>
-                    <br />
-                    <b>Artikulationsdatum: </b>
-                    <TaggedText text={{
-                      text: active.receiveDate,
-                      entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
-                    }} />
-                    <br />
-                    <b>ID: </b>
-                    {active.complaintId}
-                    <br />
-                    <b>Kategorie: </b>
-                    {active.probableSubject}
-                    <br />
-                    <b>Sentiment: </b>
-                    {active.probableSentiment}
-                  </div>
                 </div>
                 <div label='Original'>
                   {active.text}
                 </div>
-                <div label='Details'>
-                  <Stats label='Kategorisierung' data={active.subject} />
-                  <Stats label='Sentiments' data={active.sentiment} />
-                  <Log />
-                </div>
               </Tabbed>
+            </Content>
+            <h6 className='center'>Details</h6>
+            <Content>
+              <div label='Details'>
+                <b>Artikulationsdatum: </b>
+                <TaggedText text={{
+                  text: active.receiveDate,
+                  entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+                }} />
+                <br />
+                <b>ID: </b>
+                {active.complaintId}
+                <br />
+                <b>Kategorie: </b>
+                <a data-tip data-for='subjects'>{active.probableSubject}</a>
+                <br />
+                <b>Sentiment: </b>
+                <a data-tip data-for='sentiments'>{active.probableSentiment}</a>
+                <br />
+                <b>Entitäten: </b>
+                <ul>
+                  {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
+                </ul>
+                <ReactTooltip id='subjects' aria-haspopup='true' role='example'>
+                  {createCategoriesArray(active.subject).map(this.renderEnumeration, this)}
+                </ReactTooltip>
+                <ReactTooltip id='sentiments' aria-haspopup='true' role='example'>
+                  {createCategoriesArray(active.sentiment).map(this.renderEnumeration, this)}
+                </ReactTooltip>
+              </div>
             </Content>
           </Row>
         </Block>
@@ -136,5 +148,30 @@ class Complaints extends Component {
       );
     }
 }
+// creates an Array of Entitity-Strings
+function createEntityArray (txt, ar) {
+  var a = [];
+  a = ar;
+  var text = '';
+  text = txt;
 
+  var st = [];
+  for (var i = 0; i < a.length; i++) {
+    var m = new Map();
+    m = a[i];
+    st.push(m['label'] + ': ' + text.substring(m['start'], m['end']));
+  }
+
+  return st;
+}
+// creates an Array of Categories-Strings
+function createCategoriesArray (map) {
+  var m = new Map();
+  m = map;
+  var ar = [];
+  for (var i = 0; i < Object.keys(m).length; i++) {
+    ar.push(Object.keys(m)[i] + ' : ' + Object.values(m)[i]);
+  }
+  return ar;
+}
 export default Complaints;
