@@ -37,7 +37,7 @@ public class ComplaintUtility {
    * @return the value of the named entity or an empty optional if the entity is not present. If
    * there are multiple occurrences, it will return the first one.
    */
-  private static Optional<String> getValueOfEntity(String text,
+  public static Optional<String> getValueOfEntity(String text,
                                                    List<NamedEntity> entities,
                                                    String entityLabel) {
     return getAllValuesOfEntity(text, entities, entityLabel).stream().findFirst();
