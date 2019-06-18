@@ -13,7 +13,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * This class analysed the specified text for their tokens
+ * This class analysed the specified text for their tokens.
  */
 public class TokenAnalyzer implements StopWordFilter {
 
@@ -73,18 +73,20 @@ public class TokenAnalyzer implements StopWordFilter {
 
     //Unwanted signs
     String punctuations = ".,:;!?";
+    String brackets = "-lrb- -rrb- -lsb- -rsb- -lcb- -rcb-";
 
     Map<String, Integer> countByWords = new HashMap<>();
-    GermanTagger gt=new GermanTagger();
+    GermanTagger gt = new GermanTagger();
 
     for (CoreLabel token : germanAnnotation.get(CoreAnnotations.TokensAnnotation.class)) {
-      String tokenString ="";
+      String tokenString;
       //Lemma available?
-      if(gt.tag(token.word()).size()<=0)
-        tokenString=token.word().toLowerCase();
-      else
-       tokenString = gt.tag(token.word()).get(0).getLemma().toLowerCase();
-      if (stopwords.contains(tokenString) || punctuations.contains(tokenString)) {
+      if (gt.tag(token.word()).size() <= 0) {
+        tokenString = token.word().toLowerCase();
+      } else {
+        tokenString = gt.tag(token.word()).get(0).getLemma().toLowerCase();
+      }
+      if (stopwords.contains(tokenString) || punctuations.contains(tokenString) || brackets.contains(tokenString)) {
         continue;
       }
       countByWords.merge(tokenString, 1, Integer::sum);
