@@ -8,6 +8,8 @@ import team from './../assets/img/Gruppenfoto.jpg';
 import iaoPartner from './../assets/img/iao.png';
 import iatPartner from './../assets/img/iat.png';
 
+import 'assets/scss/Home.scss';
+
 function Home () {
   return (
     <React.Fragment>
@@ -75,8 +77,8 @@ function Home () {
             </div>
             <div className='footer'>
               <h1>Unsere Partner</h1>
-              <img src={iaoPartner} className='iaoPartner' alt='logo' width='50%' />
-              <img src={iatPartner} className='iatPartner' alt='logo' width='50%' />
+              <img src={iaoPartner} className='iaoPartner' alt='logo' width='30%' />
+              <img src={iatPartner} className='iatPartner' alt='logo' width='30%' />
             </div>
           </Content>
         </Row>
