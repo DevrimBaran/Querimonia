@@ -4,30 +4,36 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import net.bytebuddy.dynamic.scaffold.MethodGraph;
 
 import java.util.LinkedHashMap;
 
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "Startposition",
-    "ContextBefore",
-    "Endposition",
-    "Text",
-    "Typ",
-    "ContextAfter"
-})
+@JsonPropertyOrder( {
+                        "Startposition",
+                        "ContextBefore",
+                        "Endposition",
+                        "Text",
+                        "Typ",
+                        "ContextAfter"
+                    })
 public class TempPipeline {
 
+  private int startposition;
+  private String contextBefore;
+  private int endposition;
+  private String text;
+  private LinkedHashMap<String, Double> typ;
+  private String contextAfter;
   /**
    * Temporary Pipeline.
+   *
    * @param startposition Gets the startsposition of the entity.
    * @param contextBefore Gets the information which is before the entity.
-   * @param endposition Gets the endposition of the entity.
-   * @param text Gets he entity text.
-   * @param typ Gets the entity type.
-   * @param contextAfter Gets the text after the entity.
+   * @param endposition   Gets the endposition of the entity.
+   * @param text          Gets he entity text.
+   * @param typ           Gets the entity type.
+   * @param contextAfter  Gets the text after the entity.
    */
   @JsonCreator
   public TempPipeline(@JsonProperty("Startposition") int startposition,
@@ -44,14 +50,6 @@ public class TempPipeline {
     this.contextAfter = contextAfter;
 
   }
-
-
-  private int startposition;
-  private String contextBefore;
-  private int endposition;
-  private String text;
-  private LinkedHashMap<String, Double> typ;
-  private String contextAfter;
 
   public int getStartposition() {
     return startposition;

@@ -30,16 +30,16 @@ public class ComplaintFactory {
   private StopWordFilter stopWordFilter = null;
 
   /**
-   * Creates a new complaint factory which is used to create complaint objects.
-   * With this constructor the complaint factory is not configured, classifier,
-   * sentiment analyzer, entity extractor and response generator must be set.
+   * Creates a new complaint factory which is used to create complaint objects. With this
+   * constructor the complaint factory is not configured, classifier, sentiment analyzer, entity
+   * extractor and response generator must be set.
    */
   public ComplaintFactory() {
   }
 
   /**
-   * This factory method creates a complaint out of the plain text, which contains information
-   * about the date, sentiment and subject.
+   * This factory method creates a complaint out of the plain text, which contains information about
+   * the date, sentiment and subject.
    *
    * @param complaintText the text of the complaint.
    * @return the generated complaint object.
@@ -58,10 +58,13 @@ public class ComplaintFactory {
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
 
     ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(complaintText,
-        subjectMap, sentimentMap, entities, LocalDateTime.now());
+                                                                               subjectMap,
+                                                                               sentimentMap,
+                                                                               entities,
+                                                                               LocalDateTime.now());
 
     return new Complaint(complaintText, preview, sentimentMap, subjectMap,
-        entities, LocalDate.now(), LocalTime.now(), responseSuggestion, words);
+                         entities, LocalDate.now(), LocalTime.now(), responseSuggestion, words);
   }
 
   private String makePreview(String text) {

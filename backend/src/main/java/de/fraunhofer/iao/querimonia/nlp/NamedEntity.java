@@ -7,8 +7,7 @@ import javax.persistence.Embeddable;
 
 /**
  * This is a simple POJO that represents a named entity in a text. It has a label (for example
- * "Date", "Org")
- * and the indices where the entity starts and ends in the text.
+ * "Date", "Org") and the indices where the entity starts and ends in the text.
  */
 @Embeddable
 public class NamedEntity {
@@ -32,6 +31,10 @@ public class NamedEntity {
     this.end = end;
   }
 
+  public NamedEntity() {
+
+  }
+
   public String getLabel() {
     return label;
   }
@@ -53,9 +56,5 @@ public class NamedEntity {
         + ", start=" + start
         + ", end=" + end
         + '}';
-  }
-
-  public NamedEntity() {
-
   }
 }

@@ -9,18 +9,18 @@ import java.util.List;
 
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "TempPipeline"
-})
+@JsonPropertyOrder( {
+                        "TempPipeline"
+                    })
 public class Pipelines {
+
+  private List<TempPipeline> tempPipeline = null;
+
 
   @JsonCreator
   public Pipelines(@JsonProperty("TempPipeline") List<TempPipeline> tempPipeline) {
     this.tempPipeline = tempPipeline;
   }
-
-
-  private List<TempPipeline> tempPipeline = null;
 
   public List<TempPipeline> getTempPipeline() {
     return tempPipeline;

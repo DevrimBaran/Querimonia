@@ -1,20 +1,9 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.nlp.KikukoConatct;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
-import java.io.IOException;
+
 import java.util.LinkedHashMap;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 
 /**
@@ -28,8 +17,8 @@ public class KiKuKoClassifier extends KikukoConatct<KikukoResponse> implements C
   }
 
   /**
-   * Returns the classification if the given text using the KIKuKo classifier into the three
-   * given categories.
+   * Returns the classification if the given text using the KIKuKo classifier into the three given
+   * categories.
    *
    * @param input the text which should be classified.
    * @return the type of the text.
@@ -39,9 +28,9 @@ public class KiKuKoClassifier extends KikukoConatct<KikukoResponse> implements C
     KikukoResponse response = executeKikukoRequest(input, KikukoResponse[].class);
 
     return response.getPipelines()
-            .getTempPipeline()
-            .get(0)
-            .getTyp();
+        .getTempPipeline()
+        .get(0)
+        .getTyp();
   }
 
 }

@@ -1,9 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
-
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +11,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 
 
 public class KikukoConatct<T> {
@@ -55,14 +54,14 @@ public class KikukoConatct<T> {
 
     // get response
     String returnValue = template.exchange(URL, HttpMethod.POST,
-        request, String.class).getBody();
+                                           request, String.class).getBody();
     // map string to json
     ObjectMapper mapper = new ObjectMapper();
     T[] responses;
     // exception for illegal answers
     HttpServerErrorException kikukoException =
         new HttpServerErrorException(HttpStatus.CONFLICT,
-            "No response from KiKUKO available");
+                                     "No response from KiKUKO available");
 
     try {
       responses = mapper.readValue(returnValue, type);

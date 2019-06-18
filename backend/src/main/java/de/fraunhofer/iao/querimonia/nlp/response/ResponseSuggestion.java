@@ -21,11 +21,12 @@ public class ResponseSuggestion {
     this.responseComponents = responseComponents;
   }
 
-  public List<CompletedResponseComponent> getResponseComponents() {
-    return responseComponents;
+  @SuppressWarnings("unused")
+  public ResponseSuggestion() {
   }
 
-  public ResponseSuggestion() {
+  public List<CompletedResponseComponent> getResponseComponents() {
+    return responseComponents;
   }
 
 }

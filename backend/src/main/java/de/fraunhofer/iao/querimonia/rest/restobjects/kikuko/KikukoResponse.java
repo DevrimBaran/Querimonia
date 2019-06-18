@@ -9,9 +9,9 @@ import java.text.MessageFormat;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "pipelines",
-    "content"
-})
+                        "pipelines",
+                        "content"
+                    })
 public class KikukoResponse {
 
   private Pipelines pipelines;
@@ -43,6 +43,6 @@ public class KikukoResponse {
   @Override
   public String toString() {
     return MessageFormat.format("KikukoResponse'{'pipelines={0}, content=''{1}'''}'",
-        pipelines, content);
+                                pipelines, content);
   }
 }

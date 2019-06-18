@@ -19,8 +19,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * This class represents a template for a part of the response.
- * A response consists of a list of these response components.
+ * This class represents a template for a part of the response. A response consists of a list of
+ * these response components.
  */
 @Entity
 public class ResponseComponent {
@@ -45,14 +45,14 @@ public class ResponseComponent {
   private String subject;
 
   /**
-   * A unique identifier that represents where to component should be set in the full response,
-   * for example "begin", "introduction", "end"...
+   * A unique identifier that represents where to component should be set in the full response, for
+   * example "begin", "introduction", "end"...
    */
   private String responsePart;
 
   /**
-   * This list contains all the possible response parts that may follow up this component. This
-   * is used for response generation.
+   * This list contains all the possible response parts that may follow up this component. This is
+   * used for response generation.
    */
   @ElementCollection(fetch = FetchType.LAZY)
   private List<String> successorParts;
@@ -126,6 +126,11 @@ public class ResponseComponent {
     return successorParts;
   }
 
+  public ResponseComponent setSuccessorParts(List<String> successorParts) {
+    this.successorParts = successorParts;
+    return this;
+  }
+
   public int getComponentId() {
     return componentId;
   }
@@ -134,12 +139,32 @@ public class ResponseComponent {
     return templateText;
   }
 
+  /**
+   * Sets the template text of the response component.
+   */
+  public ResponseComponent setTemplateText(String templateText) {
+    this.templateText = templateText;
+    // update slices
+    createSlices();
+    return this;
+  }
+
   public Optional<String> getSubject() {
     return Optional.ofNullable(subject);
   }
 
+  public ResponseComponent setSubject(@Nullable String subject) {
+    this.subject = subject;
+    return this;
+  }
+
   public String getResponsePart() {
     return responsePart;
+  }
+
+  public ResponseComponent setResponsePart(String responsePart) {
+    this.responsePart = responsePart;
+    return this;
   }
 
   @JsonIgnore
@@ -162,19 +187,19 @@ public class ResponseComponent {
   }
 
   /**
-   * Represents a slice of the response component that is either raw text or
-   * a placeholder. The complaint text gets sliced in text and placeholders.
+   * Represents a slice of the response component that is either raw text or a placeholder. The
+   * complaint text gets sliced in text and placeholders.
    */
   static class ResponseSlice {
+
+    private boolean isPlaceholder;
+    // this is either the placeholder name or the raw text when the slice is no placeholder.
+    private String content;
 
     ResponseSlice(boolean isPlaceholder, String content) {
       this.isPlaceholder = isPlaceholder;
       this.content = content;
     }
-
-    private boolean isPlaceholder;
-    // this is either the placeholder name or the raw text when the slice is no placeholder.
-    private String content;
 
     boolean isPlaceholder() {
       return isPlaceholder;
@@ -183,27 +208,5 @@ public class ResponseComponent {
     String getContent() {
       return content;
     }
-  }
-
-  public ResponseComponent setTemplateText(String templateText) {
-    this.templateText = templateText;
-    // update slices
-    createSlices();
-    return this;
-  }
-
-  public ResponseComponent setSubject(@Nullable String subject) {
-    this.subject = subject;
-    return this;
-  }
-
-  public ResponseComponent setResponsePart(String responsePart) {
-    this.responsePart = responsePart;
-    return this;
-  }
-
-  public ResponseComponent setSuccessorParts(List<String> successorParts) {
-    this.successorParts = successorParts;
-    return this;
   }
 }

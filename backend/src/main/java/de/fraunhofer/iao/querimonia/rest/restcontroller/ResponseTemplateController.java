@@ -21,8 +21,8 @@ import java.util.stream.StreamSupport;
 
 
 /**
- * REST Controller for creating, viewing and deleting Response Templates.
- * Serves as the REST API for the ResponseTemplateManager.
+ * REST Controller for creating, viewing and deleting Response Templates. Serves as the REST API for
+ * the ResponseTemplateManager.
  *
  * @author Simon Weiler
  */
@@ -30,10 +30,10 @@ import java.util.stream.StreamSupport;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ResponseTemplateController {
 
-  private final TemplateRepository templateRepository;
-  private ResponseTemplateManager responseTemplateManager;
   private static final ResponseStatusException NOT_FOUNT_EXCEPTION
       = new ResponseStatusException(HttpStatus.NOT_FOUND, "Template does not exist!");
+  private final TemplateRepository templateRepository;
+  private ResponseTemplateManager responseTemplateManager;
 
   public ResponseTemplateController(TemplateRepository templateRepository) {
     this.templateRepository = templateRepository;
@@ -103,6 +103,13 @@ public class ResponseTemplateController {
     templateRepository.deleteAll();
   }
 
+  /**
+   * Updates a component in the database.
+   *
+   * @param templateId the id of the template that should be updated as path variable.
+   * @param request    the update request.
+   * @return the updated response component.
+   */
   @PatchMapping("api/templates/{templateId}")
   public ResponseComponent updateComponent(@PathVariable int templateId,
                                            @RequestBody ResponseComponentUpdateRequest request) {

@@ -22,17 +22,22 @@ public class KikukoExtractor extends KikukoConatct<ExtractorResponse> implements
     List<NamedEntity> entities = new LinkedList<>();
 
     allPipes.getBusInformationen().forEach(e -> entities.add(new NamedEntity("Bushaltestelle",
-        e.getStartposition(), e.getEndposition())));
+                                                                             e.getStartposition(),
+                                                                             e.getEndposition())));
     allPipes.getDatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
-        e.getStartposition(), e.getEndposition())));
+                                                                           e.getStartposition(),
+                                                                           e.getEndposition())));
     allPipes.getExtdatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
-        e.getStartposition(), e.getEndposition())));
+                                                                              e.getStartposition(),
+                                                                              e.getEndposition())));
     allPipes.getExtgeldbetrag().forEach(e -> entities.add(new NamedEntity("Geldbetrag",
-        e.getStartposition(), e.getEndposition())));/*
+                                                                          e.getStartposition(),
+                                                                          e.getEndposition())));/*
     allPipes.getExtpersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
         e.getStartposition(), e.getEndposition())));*/
     allPipes.getPersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
-        e.getStartposition(), e.getEndposition())));/*
+                                                                            e.getStartposition(),
+                                                                            e.getEndposition())));/*
     allPipes.getPersonNeu().forEach(e -> entities.add(new NamedEntity("Name",
         e.getStartposition(), e.getEndposition() - 1)));*/
 

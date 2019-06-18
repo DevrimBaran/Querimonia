@@ -28,8 +28,8 @@ public class StatsController {
   }
 
   /**
-   * Combines two maps that contains some kind of values mapped to their count.
-   * In the result the count of equal values will be added.
+   * Combines two maps that contains some kind of values mapped to their count. In the result the
+   * count of equal values will be added.
    */
   private static Map<String, Integer> combineCountMaps(Map<String, Integer> map1,
                                                        Map<String, Integer> map2) {
@@ -42,8 +42,8 @@ public class StatsController {
   }
 
   /**
-   * Returns a map which contains the most common words (no stop words)
-   * and their absolute frequency.
+   * Returns a map which contains the most common words (no stop words) and their absolute
+   * frequency.
    *
    * @param count     how many words should be returned. The count most common words will be
    *                  returned in the map.
@@ -68,7 +68,7 @@ public class StatsController {
 
     // create stream of all complaints
     StreamSupport.stream(complaintRepository.findAll().spliterator(),
-        false)
+                         false)
         // filter complaints
         .filter(compl -> ComplaintFilter.filterByDate(compl, dateMin, dateMax))
         .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))

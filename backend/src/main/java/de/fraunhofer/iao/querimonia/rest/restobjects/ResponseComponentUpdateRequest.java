@@ -18,6 +18,9 @@ public class ResponseComponentUpdateRequest {
   @Nullable
   private List<String> successorParts;
 
+  /**
+   * Rest object for accepting an update request for a response component.
+   */
   @JsonCreator
   public ResponseComponentUpdateRequest(@Nullable @JsonProperty String subject,
                                         @Nullable @JsonProperty String templateText,

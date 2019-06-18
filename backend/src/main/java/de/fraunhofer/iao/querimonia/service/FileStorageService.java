@@ -3,6 +3,12 @@ package de.fraunhofer.iao.querimonia.service;
 import de.fraunhofer.iao.querimonia.exception.FileStorageException;
 import de.fraunhofer.iao.querimonia.exception.MyFileNotFoundException;
 import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -11,17 +17,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 
 /**
- * Service for saving files in filesystem and retrieving them.
- * Inpired by https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
+ * Service for saving files in filesystem and retrieving them. Inpired by
+ * https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
  */
 @Service
 public class FileStorageService {
@@ -49,7 +48,7 @@ public class FileStorageService {
       Files.createDirectories(this.fileStorageLocation);
     } catch (Exception ex) {
       throw new FileStorageException("Could not create the directory where the uploaded files "
-                                     + "will be stored.", ex);
+                                         + "will be stored.", ex);
     }
   }
 

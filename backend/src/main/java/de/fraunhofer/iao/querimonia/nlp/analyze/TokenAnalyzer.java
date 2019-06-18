@@ -3,14 +3,18 @@ package de.fraunhofer.iao.querimonia.nlp.analyze;
 
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.*;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.languagetool.tagging.de.GermanTagger;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * This class analysed the specified text for their tokens.
@@ -18,7 +22,7 @@ import java.util.Map.Entry;
 public class TokenAnalyzer implements StopWordFilter {
 
   /**
-   * Sorts a map in ascending order of the values
+   * Sorts a map in ascending order of the values.
    *
    * @return sorted map
    */
@@ -35,32 +39,42 @@ public class TokenAnalyzer implements StopWordFilter {
   }
 
   /**
-   * Extracts the tokens from a string.
-   * Stopwords are removed and the frequencies of the tokens are calculated and output together with the tokens.
+   * Extracts the tokens from a string. Stopwords are removed and the frequencies of the tokens are
+   * calculated and output together with the tokens.
    *
    * @param complaintText the text from which the tokens are to be evaluated.
-   * @return a sorted map which contains all non stop-words as keys mapped to the count they occur in the text.
+   * @return a sorted map which contains all non stop-words as keys mapped to the count they occur
+   * in the text.
    */
   @Override
   public Map<String, Integer> filterStopWords(String complaintText) {
 
     //String of german NLTK-Stopwords
-    String stopwordsString = "aber, alle, allem, allen, aller, alles, als, also, am, an, ander, andere, anderem, anderen, anderer, anderes, anderm, andern, "
-            + "anderr, anders, auch, auf, aus, bei, bin, bis, bist, da, damit, dann, der, den, des, dem, die, das, daß, derselbe, derselben,"
-            + "denselben, desselben, demselben, dieselbe, dieselben, dasselbe, dazu, dein, deine, deinem, deinen, deiner, deines, denn, derer, "
-            + "dessen, dich, dir, du, dies, diese, diesem, diesen, dieser, dieses, doch, dort, durch, ein, eine, einem, einen, einer, eines, "
-            + "einig, einige, einigem, einigen, einiger, einiges, einmal, er, ihn, ihm, es, etwas, euer, eure, eurem, euren, eurer, eures, für, "
-            + "gegen, gewesen, hab, habe, haben, hat, hatte, hatten, hier, hin, hinter, ich, mich, mir, ihr, ihre, ihrem, ihren, ihrer, ihres, "
-            + "euch, im, in, indem, ins, ist, jede, jedem, jeden, jeder, jedes, jene, jenem, jenen, jener, jenes, jetzt, kann, kein, keine, keinem, "
-            + "keinen, keiner, keines, können, könnte, machen, man, manche, manchem, manchen, mancher, manches, mein, meine, meinem, meinen, meiner, "
-            + "meines, mit, muss, musste, nach, nicht, nichts, noch, nun, nur, ob, oder, ohne, sehr, sein, seine, seinem, seinen, seiner, seines, "
-            + "selbst, sich, sie, ihnen, sind, so, solche, solchem, solchen, solcher, solches, soll, sollte, sondern, sonst, über, um, und, uns, "
-            + "unsere, unserem, unseren, unser, unseres, unter, viel, vom, von, vor, während, war, waren, warst, was, weg, weil, weiter, welche, "
-            + "welchem, welchen, welcher, welches, wenn, werde, werden, wie, wieder, will, wir, wird, wirst, wo, wollen, wollte, würde, würden, zu, "
-            + "zum, zur, zwar, zwischen";
+    String stopwordsString =
+        "aber, alle, allem, allen, aller, alles, als, also, am, an, ander, andere, anderem, "
+            + "anderen, anderer, anderes, anderm, andern, anderr, anders, auch, auf, aus, bei, bin"
+            + ", bis, bist, da, damit, dann, der, den, des, dem, die, das, daß, derselbe, "
+            + "derselben, denselben, desselben, demselben, dieselbe, dieselben, dasselbe, dazu, "
+            + "dein, deine, deinem, deinen, deiner, deines, denn, derer, dessen, dich, dir, du, "
+            + "dies, diese, diesem, diesen, dieser, dieses, doch, dort, durch, ein, eine, einem, "
+            + "einen, einer, eines, einig, einige, einigem, einigen, einiger, einiges, einmal, er,"
+            + " ihn, ihm, es, etwas, euer, eure, eurem, euren, eurer, eures, für, gegen, gewesen, "
+            + "hab, habe, haben, hat, hatte, hatten, hier, hin, hinter, ich, mich, mir, ihr, ihre,"
+            + " ihrem, ihren, ihrer, ihres, euch, im, in, indem, ins, ist, jede, jedem, jeden, "
+            + "jeder, jedes, jene, jenem, jenen, jener, jenes, jetzt, kann, kein, keine, keinem, "
+            + "keinen, keiner, keines, können, könnte, machen, man, manche, manchem, manchen, "
+            + "mancher, manches, mein, meine, meinem, meinen, meiner, meines, mit, muss, musste, "
+            + "nach, nicht, nichts, noch, nun, nur, ob, oder, ohne, sehr, sein, seine, seinem, "
+            + "seinen, seiner, seines, selbst, sich, sie, ihnen, sind, so, solche, solchem, "
+            + "solchen, solcher, solches, soll, sollte, sondern, sonst, über, um, und, uns, "
+            + "unsere, unserem, unseren, unser, unseres, unter, viel, vom, von, vor, während, "
+            + "war, waren, warst, was, weg, weil, weiter, welche, welchem, welchen, welcher, "
+            + "welches, wenn, werde, werden, wie, wieder, will, wir, wird, wirst, wo, wollen, "
+            + "wollte, würde, würden, zu, zum, zur, zwar, zwischen";
 
     //List of Stopwords
-    List<String> stopwords = Arrays.asList(stopwordsString.replaceAll("\\s+", "").split(","));
+    List<String> stopwords = Arrays.asList(stopwordsString.replaceAll("\\s+", "")
+                                               .split(","));
 
 
     Annotation germanAnnotation = new Annotation(complaintText);
@@ -94,7 +108,6 @@ public class TokenAnalyzer implements StopWordFilter {
 
     return sortByValue(countByWords);
   }
-
 
 
 }

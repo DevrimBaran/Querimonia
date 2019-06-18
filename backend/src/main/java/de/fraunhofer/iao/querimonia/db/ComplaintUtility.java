@@ -34,8 +34,8 @@ public class ComplaintUtility {
    * @param text        the complaint text
    * @param entities    the named entities in the complaint text.
    * @param entityLabel the label of the named entity, like "date".
-   * @return the value of the named entity or an empty optional if the entity is not present.
-   * If there are multiple occurrences, it will return the first one.
+   * @return the value of the named entity or an empty optional if the entity is not present. If
+   * there are multiple occurrences, it will return the first one.
    */
   private static Optional<String> getValueOfEntity(String text,
                                                    List<NamedEntity> entities,
@@ -60,11 +60,13 @@ public class ComplaintUtility {
         // find their value in the text
         .map(namedEntity -> {
           try {
-            return text.substring(namedEntity.getStartIndex(), namedEntity.getEndIndex());
+            return text.substring(namedEntity.getStartIndex(),
+                                  namedEntity.getEndIndex());
           } catch (IndexOutOfBoundsException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                "Entity error: " + namedEntity.getLabel() + " in:\n " + text
-                    + "\n " + e.getMessage());
+                                              "Entity error: " + namedEntity.getLabel()
+                                                  + " in:\n " + text
+                                                  + "\n " + e.getMessage());
           }
         })
         .collect(Collectors.toList());
@@ -82,7 +84,8 @@ public class ComplaintUtility {
     entities.stream()
         .map(NamedEntity::getLabel)
         .forEach(label -> result.put(label,
-            getValueOfEntity(text, entities, label).orElseThrow(IllegalStateException::new)));
+                                     getValueOfEntity(text, entities, label)
+                                         .orElseThrow(IllegalStateException::new)));
 
     return result;
   }

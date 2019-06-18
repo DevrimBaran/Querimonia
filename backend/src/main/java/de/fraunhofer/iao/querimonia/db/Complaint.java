@@ -30,17 +30,17 @@ import java.util.Optional;
  */
 @Entity
 @JsonPropertyOrder({
-    "complaintId",
-    "text",
-    "preview",
-    "receiveDate",
-    "receiveTime",
-    "subject",
-    "probableSubject",
-    "sentiment",
-    "probableSentiment",
-    "entities"
-})
+                        "complaintId",
+                        "text",
+                        "preview",
+                        "receiveDate",
+                        "receiveTime",
+                        "subject",
+                        "probableSubject",
+                        "sentiment",
+                        "probableSentiment",
+                        "entities"
+                    })
 public class Complaint {
 
   /**
@@ -63,8 +63,8 @@ public class Complaint {
   private String preview;
 
   /**
-   * This map contains the possible sentiment of the complaint message mapped to their
-   * probabilities according to the machine learning algorithms.
+   * This map contains the possible sentiment of the complaint message mapped to their probabilities
+   * according to the machine learning algorithms.
    */
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "sentiment_table", joinColumns = @JoinColumn(name = "complaintId"))
@@ -73,8 +73,8 @@ public class Complaint {
   private Map<String, Double> sentiment;
 
   /**
-   * This map contains the possible subject of the complaint message mapped to their
-   * probabilities according to the machine learning algorithms.
+   * This map contains the possible subject of the complaint message mapped to their probabilities
+   * according to the machine learning algorithms.
    */
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "subject_table", joinColumns = @JoinColumn(name = "complaintId"))
@@ -97,8 +97,8 @@ public class Complaint {
   private ResponseSuggestion responseSuggestion;
 
   /**
-   * A list of all words in the complaint text, which are not stop words, mapped to their
-   * absolute count.
+   * A list of all words in the complaint text, which are not stop words, mapped to their absolute
+   * count.
    */
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "word_list_table", joinColumns = @JoinColumn(name = "complaintId"))
@@ -114,11 +114,10 @@ public class Complaint {
   private LocalTime receiveTime;
 
   /**
-   * Creates a new complaint. This constructor is only used for JSON deserialization.
-   * Use a {@link ComplaintFactory} to create complaints instead.
+   * Creates a new complaint. This constructor is only used for JSON deserialization. Use a {@link
+   * ComplaintFactory} to create complaints instead.
    */
   @JsonCreator
-  @SuppressWarnings("unused")
   public Complaint(@JsonProperty String text,
                    @JsonProperty String preview,
                    @JsonProperty Map<String, Double> sentiment,
@@ -169,8 +168,8 @@ public class Complaint {
   /**
    * Returns the sentiment with the highest probability.
    *
-   * @return the sentiment with the highest probability or an empty optional, if
-   * no sentiment is given.
+   * @return the sentiment with the highest probability or an empty optional, if no sentiment is
+   * given.
    */
   @Transient
   @JsonProperty("probableSentiment")

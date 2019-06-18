@@ -8,26 +8,35 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "Businformationen",
-    "Datum Extraktor",
-    "[Extern] Personen Extraktor",
-    "[Extern] Datum Extraktor",
-    "Personen NEU",
-    "[Extern] Geldbetrag",
-    "Personen Extraktor"
-})
+                        "Businformationen",
+                        "Datum Extraktor",
+                        "[Extern] Personen Extraktor",
+                        "[Extern] Datum Extraktor",
+                        "Personen NEU",
+                        "[Extern] Geldbetrag",
+                        "Personen Extraktor"
+                    })
 public class ExtractorPipelines {
 
+  private List<TempPipeline> busInformationen;
+  private List<TempPipeline> datumExtraktor;
+  private List<TempPipeline> extpersonExtraktor;
+  private List<TempPipeline> extdatumExtraktor;
+  private List<TempPipeline> personNeu;
+  private List<TempPipeline> extgeldbetrag;
+  private List<TempPipeline> personExtraktor;
   /**
    * Extractorpipelines from Kikuko.
-   * @param busInformationen Results from bus information pipeline.
-   * @param datumExtraktor Resulots from datum extractor pipeline.
+   *
+   * @param busInformationen   Results from bus information pipeline.
+   * @param datumExtraktor     Resulots from datum extractor pipeline.
    * @param extpersonExtraktor Results from ext person extractor pipeline.
-   * @param extdatumExtraktor Resulots from ext datum extractor pipeline.
-   * @param personNeu Person extractor.
-   * @param extgeldbetrag Results from  money amount pipeline.
-   * @param personExtraktor Results from person extractor pipeline.
+   * @param extdatumExtraktor  Resulots from ext datum extractor pipeline.
+   * @param personNeu          Person extractor.
+   * @param extgeldbetrag      Results from  money amount pipeline.
+   * @param personExtraktor    Results from person extractor pipeline.
    */
+  @SuppressWarnings("CheckStyle")
   public ExtractorPipelines(@JsonProperty("Businformationen") List<TempPipeline> busInformationen,
                             @JsonProperty("Datum Extraktor") List<TempPipeline> datumExtraktor,
                             @JsonProperty("[Extern] Personen Extraktor") List<TempPipeline>
@@ -46,14 +55,6 @@ public class ExtractorPipelines {
     this.extgeldbetrag = extgeldbetrag;
     this.personExtraktor = personExtraktor;
   }
-
-  private List<TempPipeline> busInformationen;
-  private List<TempPipeline> datumExtraktor;
-  private List<TempPipeline> extpersonExtraktor;
-  private List<TempPipeline> extdatumExtraktor;
-  private List<TempPipeline> personNeu;
-  private List<TempPipeline> extgeldbetrag;
-  private List<TempPipeline> personExtraktor;
 
   public List<TempPipeline> getBusInformationen() {
     return busInformationen;

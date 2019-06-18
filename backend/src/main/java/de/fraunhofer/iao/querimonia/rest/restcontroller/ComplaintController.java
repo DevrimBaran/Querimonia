@@ -91,7 +91,7 @@ public class ComplaintController {
    * @return the generated complaint object.
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
-      consumes = "multipart/form-data")
+               consumes = "multipart/form-data")
   public Complaint uploadComplaint(@RequestParam("file") MultipartFile file) {
     String fileName = fileStorageService.storeFile(file);
     String fullFilePath = "src/main/resources/uploads/" + fileName;
@@ -105,7 +105,7 @@ public class ComplaintController {
     } catch (IOException e) {
       logger.error("Fehler beim Datei-Upload");
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload\n" + e.getMessage());
+                                        "Fehler beim Dateiupload\n" + e.getMessage());
     }
 
     complaintRepository.save(complaint);
@@ -170,7 +170,7 @@ public class ComplaintController {
    * @return the generated complaint of the text.
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
-      consumes = "application/json")
+               consumes = "application/json")
   public Complaint uploadText(@RequestBody TextInput input) {
     Complaint complaint = complaintFactory.createComplaint(input.getText());
     complaintRepository.save(complaint);
@@ -179,9 +179,8 @@ public class ComplaintController {
   }
 
   /**
-   * This method will return the complaints that match a certain filter, as given,
-   * will sort them in the specified way and limit their count.
-   * For more information, see openapi.yaml.
+   * This method will return the complaints that match a certain filter, as given, will sort them in
+   * the specified way and limit their count. For more information, see openapi.yaml.
    */
   @GetMapping("/api/complaints")
   public List<Complaint> getTexts(

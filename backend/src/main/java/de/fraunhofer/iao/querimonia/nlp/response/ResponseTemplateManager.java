@@ -59,6 +59,12 @@ public class ResponseTemplateManager {
   private static ResponseTemplateManager instance;
 
   /**
+   * Private constructor for the manager.
+   */
+  private ResponseTemplateManager() {
+  }
+
+  /**
    * Return the ResponseTemplateManager instance or create it.
    *
    * @return the current ResponseTemplateManager instance
@@ -68,12 +74,6 @@ public class ResponseTemplateManager {
       instance = new ResponseTemplateManager();
     }
     return instance;
-  }
-
-  /**
-   * Private constructor for the manager.
-   */
-  private ResponseTemplateManager() {
   }
 
   /**
@@ -124,7 +124,8 @@ public class ResponseTemplateManager {
     if (possibleTemplates.isEmpty()) {
       String templateText = getDefaultTemplateText(subject);
       ResponseComponent responseTemplate = ResponseTemplateFactory.createTemplate(templateText,
-          subject, "COMPLETE_TEXT");
+                                                                                  subject,
+                                                                                  "COMPLETE_TEXT");
       templateRepository.save(responseTemplate);
       return responseTemplate;
     }

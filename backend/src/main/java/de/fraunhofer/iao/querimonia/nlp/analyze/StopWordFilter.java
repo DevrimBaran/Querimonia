@@ -11,8 +11,8 @@ public interface StopWordFilter {
    * Tokenizes the given text into the words and removes all stop words.
    *
    * @param complaintText the text of the complaint.
-   * @return a map which contains all non stop-words as keys mapped to the count
-   * they occur in the text.
+   * @return a map which contains all non stop-words as keys mapped to the count they occur in the
+   * text.
    */
   Map<String, Integer> filterStopWords(String complaintText);
 }

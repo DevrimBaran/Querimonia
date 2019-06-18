@@ -37,6 +37,6 @@ public class ExtractorResponse {
   @Override
   public String toString() {
     return MessageFormat.format("KikukoResponse'{'pipelines={0}, content=''{1}'''}'",
-        pipelines, content);
+                                pipelines, content);
   }
 }

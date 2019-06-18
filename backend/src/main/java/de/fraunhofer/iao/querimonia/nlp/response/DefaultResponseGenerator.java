@@ -26,6 +26,44 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     this.templateRepository = templateRepository;
   }
 
+  /**
+   * Fills a response component with the information given in the entities.
+   *
+   * @param component the response component that gets filled out.
+   * @param entities  the named entities of the complaint.
+   * @return a filled out response component.
+   */
+  private static CompletedResponseComponent fillResponseComponent(ResponseComponent component,
+                                                                  Map<String, String> entities) {
+    List<ResponseComponent.ResponseSlice> slices = component.getSlices();
+    StringBuilder resultText = new StringBuilder();
+    List<NamedEntity> entityList = new ArrayList<>();
+    // the current position in the text
+    int resultPosition = 0;
+
+    for (ResponseComponent.ResponseSlice slice : slices) {
+      String textToAppend;
+
+      if (slice.isPlaceholder()) {
+        String placeholderName = slice.getContent();
+        textToAppend = entities.get(placeholderName);
+        if (textToAppend == null) {
+          throw new IllegalArgumentException("Entity " + placeholderName + " not present");
+        }
+        // create entity with label
+        entityList.add(new NamedEntity(placeholderName, resultPosition,
+                                       resultPosition + textToAppend.length()));
+      } else {
+        // raw text that does not need to be replaced
+        textToAppend = slice.getContent();
+      }
+
+      resultPosition += textToAppend.length();
+      resultText.append(textToAppend);
+    }
+    return new CompletedResponseComponent(resultText.toString(), component, entityList);
+  }
+
   @Override
   public ResponseSuggestion generateResponse(String text,
                                              Map<String, Double> subjectMap,
@@ -56,8 +94,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   }
 
   /**
-   * Checks if the subject of the response component matches the subject of the
-   * complaint.
+   * Checks if the subject of the response component matches the subject of the complaint.
    */
   private boolean subjectMatches(Optional<String> optionalSubject,
                                  ResponseComponent responseComponent) {
@@ -68,44 +105,6 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         .orElse(true);
   }
 
-  /**
-   * Fills a response component with the information given in the entities.
-   *
-   * @param component the response component that gets filled out.
-   * @param entities  the named entities of the complaint.
-   * @return a filled out response component.
-   */
-  private static CompletedResponseComponent fillResponseComponent(ResponseComponent component,
-                                                                  Map<String, String> entities) {
-    List<ResponseComponent.ResponseSlice> slices = component.getSlices();
-    StringBuilder resultText = new StringBuilder();
-    List<NamedEntity> entityList = new ArrayList<>();
-    // the current position in the text
-    int resultPosition = 0;
-
-    for (ResponseComponent.ResponseSlice slice : slices) {
-      String textToAppend;
-
-      if (slice.isPlaceholder()) {
-        String placeholderName = slice.getContent();
-        textToAppend = entities.get(placeholderName);
-        if (textToAppend == null) {
-          throw new IllegalArgumentException("Entity " + placeholderName + " not present");
-        }
-        // create entity with label
-        entityList.add(new NamedEntity(placeholderName, resultPosition,
-            resultPosition + textToAppend.length()));
-      } else {
-        // raw text that does not need to be replaced
-        textToAppend = slice.getContent();
-      }
-
-      resultPosition += textToAppend.length();
-      resultText.append(textToAppend);
-    }
-    return new CompletedResponseComponent(resultText.toString(), component, entityList);
-  }
-
   private List<ResponseComponent> generateComponentOrder(
       List<ResponseComponent> responseComponents,
       Map<String, String> entities,
@@ -114,7 +113,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
     Optional<ResponseComponent> currentComponent = responseComponents.stream()
         .filter(responseComponent ->
-            responseComponent.getResponsePart().equalsIgnoreCase(nextResponsePart))
+                    responseComponent.getResponsePart().equalsIgnoreCase(nextResponsePart))
         .filter(responseComponent -> subjectMatches(optionalSubject, responseComponent))
         .filter(responseComponent -> entities.keySet()
             .containsAll(responseComponent.getRequiredEntities()))
@@ -126,7 +125,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         // TODO optimize successors
         int next = new Random().nextInt(successorParts.size());
         result = generateComponentOrder(responseComponents, entities, optionalSubject,
-            successorParts.get(next));
+                                        successorParts.get(next));
       }
       result.add(0, currentComponent.get());
       return result;

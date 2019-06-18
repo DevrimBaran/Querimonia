@@ -26,6 +26,8 @@
 src/main/resources/uploads/*
 
 # idea files
+*.iml
+../.idea/*
 .idea/*
 .idea/httpRequests/*
 build/

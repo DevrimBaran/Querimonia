@@ -23,11 +23,11 @@ import java.util.List;
  */
 @Entity
 @JsonPropertyOrder({
-    "completedComponentId",
-    "completedText",
-    "entities",
-    "component"
-})
+                        "completedComponentId",
+                        "completedText",
+                        "entities",
+                        "component"
+                    })
 public class CompletedResponseComponent {
 
   @Id
@@ -43,7 +43,7 @@ public class CompletedResponseComponent {
 
   @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "response_entity_table",
-      joinColumns = @JoinColumn(name = "completed_component_id"))
+                   joinColumns = @JoinColumn(name = "completed_component_id"))
   private List<NamedEntity> entities;
 
   /**

@@ -22,13 +22,13 @@ public class ComplaintFilter {
   /**
    * Checks if a complaint was uploaded in a certain time interval.
    *
-   * @param complaint       the complaint which gets checked.
+   * @param complaint          the complaint which gets checked.
    * @param optionalDateMinStr the earliest date that should be accepted. All complaints before this
-   *                        date get rejected.
+   *                           date get rejected.
    * @param optionalDateMaxStr the latest date that should be accepted.
    * @return true, if the upload date of the complaint is not after the maximum date or the maximum
-   * date is not given and the complaint not before the minimum date or the minimum date
-   * is not given.
+   * date is not given and the complaint not before the minimum date or the minimum date is not
+   * given.
    */
   public static boolean filterByDate(Complaint complaint, Optional<String> optionalDateMinStr,
                                      Optional<String> optionalDateMaxStr) {
@@ -47,8 +47,8 @@ public class ComplaintFilter {
   }
 
   /**
-   * Checks if the complaint text of the given complaint contains all the given keywords.
-   * Case is ignored.
+   * Checks if the complaint text of the given complaint contains all the given keywords. Case is
+   * ignored.
    *
    * @param complaint        the complaint to check.
    * @param optionalKeywords the keywords that should be in the complaint text.
@@ -69,21 +69,21 @@ public class ComplaintFilter {
    * @param complaint  the complaint which gets checked.
    * @param sentiments an optional array of sentiments. The complaint should match at least one of
    *                   these.
-   * @return true, if the value of sentiments is absent or the complaint has a sentiment with
-   * the highest probability that in one of the given sentiments.
+   * @return true, if the value of sentiments is absent or the complaint has a sentiment with the
+   * highest probability that in one of the given sentiments.
    */
   public static boolean filterBySentiment(Complaint complaint, Optional<String[]> sentiments) {
     return checkForParameters(complaint.getSentiment(), sentiments);
   }
 
   /**
-   * Checks if a complaints subject is one of the given subjects. A complaint has a certain
-   * subject, if the probability of it is at least 50%. If the value of the subjects is not
-   * given, this filter will return true.
+   * Checks if a complaints subject is one of the given subjects. A complaint has a certain subject,
+   * if the probability of it is at least 50%. If the value of the subjects is not given, this
+   * filter will return true.
    *
    * @param complaint the complaint which gets checked.
-   * @param subjects  an optional array of subjects. The complaint gets checked if its subject
-   *                  is one of these.
+   * @param subjects  an optional array of subjects. The complaint gets checked if its subject is
+   *                  one of these.
    * @return true, if the value of sentiments is absent or
    */
   public static boolean filterBySubject(Complaint complaint, Optional<String[]> subjects) {
@@ -99,8 +99,8 @@ public class ComplaintFilter {
     }
     return ComplaintUtility.getEntryWithHighestProbability(probabilityMap)
         .map(sentiment ->
-            // check if the sentiment/subject of the complaint matches
-            Arrays.asList(optionalParameters.get()).contains(sentiment))
+                 // check if the sentiment/subject of the complaint matches
+                 Arrays.asList(optionalParameters.get()).contains(sentiment))
         // if not present, complaint has no subject/sentiment
         .orElse(false);
   }
@@ -108,8 +108,8 @@ public class ComplaintFilter {
   /**
    * Creates a comparator for sorting the complaints.
    *
-   * @param sortBy an array of string, that specify the sorting. See open api specification
-   *               for details.
+   * @param sortBy an array of string, that specify the sorting. See open api specification for
+   *               details.
    */
   public static Comparator<Complaint> createComplaintComparator(Optional<String[]> sortBy) {
     return (c1, c2) -> {
@@ -142,7 +142,7 @@ public class ComplaintFilter {
               break;
             default:
               throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                  "Illegal sorting paramter: " + rawSortAspect);
+                                                "Illegal sorting paramter: " + rawSortAspect);
           }
 
           // invert sorting if desc
