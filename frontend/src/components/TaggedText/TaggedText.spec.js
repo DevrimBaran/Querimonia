@@ -176,4 +176,50 @@ describe('prepareEntities', () => {
       }
     ]);
   });
+
+  test('Overlap, style 3', () => {
+    expect(taggedText.prepareEntities([
+      {
+        label: 'Date',
+        start: 5,
+        end: 20
+      },
+      {
+        label: 'Person',
+        start: 0,
+        end: 15
+      },
+      {
+        label: 'Location',
+        start: 3,
+        end: 15
+      },
+      {
+        label: 'Location',
+        start: 3,
+        end: 15
+      }
+    ])).toEqual([
+      {
+        end: 3,
+        label: 'Person',
+        start: 0
+      },
+      {
+        end: 5,
+        label: 'Location Person',
+        start: 3
+      },
+      {
+        end: 15,
+        label: 'Location Person Date',
+        start: 5
+      },
+      {
+        "end": 20,
+        "label": "Date",
+        "start": 15
+      }
+    ]);
+  });
 });
