@@ -1,3 +1,9 @@
+/**
+ * This class creates the TagCloud view.
+ *
+ * @version <0.1>
+ */
+
 import React, { Component } from 'react';
 import randomColor from 'randomcolor';
 import TagCloud from 'react-tag-cloud';

@@ -1,3 +1,9 @@
+/**
+ * This class creates the Complaints view.
+ *
+ * @version <0.1>
+ */
+
 import React, { Component } from 'react';
 
 import Api from 'utility/Api';

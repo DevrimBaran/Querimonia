@@ -1,3 +1,10 @@
+/**
+ * ToDO:
+ * Please describe this class.
+ *
+ * @version <0.1>
+ */
+
 import React from 'react';
 import './Content.scss';
 
