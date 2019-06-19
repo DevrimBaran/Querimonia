@@ -24,7 +24,9 @@ function App () {
   return (
     <Router basename={basepath}>
       <Block className='menu'>
-        <img src={logo} className='Topbar-logo' alt='logo' width='100%' />
+        <a href='https://querimonia-dev.iao.fraunhofer.de/dev/'>
+          <img src={logo} className='Topbar-logo' alt='logo' width='100%' />
+        </a>
         <ul>
           <li>
             <Link to='/'>Start</Link>

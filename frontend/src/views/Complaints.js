@@ -81,22 +81,22 @@ class Complaints extends Component {
             <h6 className='center'>Details</h6>
             <Content>
               <div label='Details'>
-                <b>Artikulationsdatum: </b>
+                <b> Artikulationsdatum: </b>
                 <TaggedText text={{
                   text: active.receiveDate,
                   entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
                 }} />
                 <br />
-                <b>ID: </b>
+                <b> ID: </b>
                 {active.complaintId}
                 <br />
-                <b>Kategorie: </b>
+                <b> Kategorie: </b>
                 <i data-tip data-for='subjects'>{active.probableSubject}</i>
                 <br />
-                <b>Sentiment: </b>
+                <b> Sentiment: </b>
                 <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
                 <br />
-                <b>Entitäten: </b>
+                <b> Entitäten: </b>
                 <ul>
                   {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
                 </ul>
