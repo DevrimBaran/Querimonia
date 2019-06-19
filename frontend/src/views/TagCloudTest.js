@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import randomColor from 'randomcolor';
-import TagCloud from 'react-tag-cloud';
+// import randomColor from 'randomcolor';
+// import TagCloud from 'react-tag-cloud';
 import Block from 'components/Block/Block';
 import Row from 'components/Row/Row';
 import Content from 'components/Content/Content';
+import cloud from 'd3-cloud';
 
 import Api from 'utility/Api';
 
@@ -11,6 +12,7 @@ class TagCloudTest extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      word: [],
       words: {},
       color: '#179c7d',
       size: 200,
@@ -54,6 +56,24 @@ class TagCloudTest extends Component {
   }
   componentDidMount () {
     this.fetchData();
+
+    for (let key in this.state.words) {
+      this.state.word.push({
+        text: this.state.words[key],
+        size: 10 + Math.random() * 90
+      });
+    }
+
+    this.state.word.forEach((e) => { console.log(e); });
+    console.log(this.state.words);
+
+    cloud().size([960, 500])
+      .canvas(() => { return this.refs.canvas; })
+      .words(this.state.word)
+      .padding(5)
+      .font('Impact')
+      .fontSize((d) => { return d.size; })
+      .start();
   }
   renderWord = (word, index) => {
     return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: (this.state.words[word] / this.state.max) * this.state.size }}>{word}</abbr>);
@@ -89,17 +109,9 @@ class TagCloudTest extends Component {
               <input type='button' onClick={this.fetchData} value='aktualisieren' />
             </div>
             <Content>
-              <TagCloud
-                className='tag-cloud'
-                style={{
-                  fontFamily: 'sans-serif',
-                  color: () => randomColor({
-                    hue: this.state.color
-                  }),
-                  height: '100%'
-                }}>
-                {Object.keys(this.state.words).map(this.renderWord, this)}
-              </TagCloud>
+
+              <canvas ref='canvas' id='TagCloudChart' />
+
             </Content>
             <div>
               <Row vertical={false} style={{ justifyContent: 'center' }}>
