@@ -8,9 +8,7 @@ import Content from 'components/Content/Content';
 import Complaint from 'components/Complaint/Complaint';
 import Filter from 'components/Filter/Filter';
 // import Complaints from 'components/Complaints/Complaints';
-import Log from 'components/Log/Log.js';
 // import Modal from 'components/Modal/Modal';
-import Stats from 'components/Stats/Stats';
 import Tabbed from 'components/Tabbed/Tabbed';
 import TaggedText from 'components/TaggedText/TaggedText';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
@@ -93,19 +91,19 @@ class Complaints extends Component {
                 {active.complaintId}
                 <br />
                 <b>Kategorie: </b>
-                <a data-tip data-for='subjects'>{active.probableSubject}</a>
+                <i data-tip data-for='subjects'>{active.probableSubject}</i>
                 <br />
                 <b>Sentiment: </b>
-                <a data-tip data-for='sentiments'>{active.probableSentiment}</a>
+                <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
                 <br />
                 <b>Entitäten: </b>
                 <ul>
                   {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
                 </ul>
-                <ReactTooltip id='subjects' aria-haspopup='true' role='example'>
+                <ReactTooltip id='subjects' aria-haspopup='true'>
                   {createCategoriesArray(active.subject).map(this.renderEnumeration, this)}
                 </ReactTooltip>
-                <ReactTooltip id='sentiments' aria-haspopup='true' role='example'>
+                <ReactTooltip id='sentiments' aria-haspopup='true'>
                   {createCategoriesArray(active.sentiment).map(this.renderEnumeration, this)}
                 </ReactTooltip>
               </div>
