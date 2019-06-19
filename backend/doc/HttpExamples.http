@@ -10,16 +10,33 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "hallo, mein Name ist Maria Bauer. Der Bus der Linie 263 ist leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€."
+  "text": "hallo, mein Name ist Maria Bauer. Der Bus der Linie N2 an der Haltestelle Hauptbahnhof ist leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€."
 }
 
 ###
 
-GET http://localhost:8080/api/responses/plain/122
+GET http://localhost:8080/api/responses/plain/205
 
 ###
 
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/94
+PATCH http://localhost:8080/api/templates/73
+Content-Type: application/json
+
+{
+
+}
+
+###
+
+DELETE http://localhost:8080/api/complaints/all
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+
+###
+
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates/all
 
 ###
 
@@ -35,7 +52,7 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Fahrt ist leider nicht erfolgt!\nDas ist sehr schade!\nLiebe Grüße\nMax Mustermann"
+  "text": "Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!"
 }
 
 
@@ -53,6 +70,13 @@ Content-Type: application/json
   "text": "Der Fahrer war sehr unfreundlich!"
 }
 
+###
+
+GET http://localhost:8080/api/stats/tagcloud?words_only=true&subject=Sonstiges,Fahrt nicht erfolgt
+
+###
+
+GET http://localhost:8080/api/complaints?subject=Fahrt nicht erfolgt
 ###
 
 POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
@@ -87,7 +111,7 @@ POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "templateText": "\n\nit freundlichen Grüßen\n\nIhr Beschwerdebot",
+  "templateText": "\n\nMit freundlichen Grüßen\n\nIhr Beschwerdebot",
   "responsePart": "Verabschiedung",
   "successorParts": [
   ],
@@ -121,15 +145,15 @@ GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
 ###
 
 # delete a complaint
-DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints/68
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/all
 
 ### Antwortgenerierungs-Beispiele
 
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/import/text
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Hallo! Der Fahrer war heute sehr unfreundlich!"
+  "text": "Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!"
 }
 
 ###
@@ -143,5 +167,9 @@ GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/5
 ###
 
 DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/stats/tagcloud
 
 ###
