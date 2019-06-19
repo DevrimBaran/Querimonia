@@ -55,7 +55,7 @@ public class TokenAnalyzerTest {
 
     @Test
     public void testFilterStopWordsPunctuations() {
-        String testString = ". , : ; ! ?";
+        String testString = ". , : ; ! hehl";
 
         Map<String, Integer> correctFilterResult = new HashMap<>();
 
