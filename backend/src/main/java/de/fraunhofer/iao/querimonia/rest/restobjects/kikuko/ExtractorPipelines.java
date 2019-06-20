@@ -14,7 +14,9 @@ import java.util.List;
                         "[Extern] Datum Extraktor",
                         "Personen NEU",
                         "[Extern] Geldbetrag",
-                        "Personen Extraktor"
+                        "Personen Extraktor",
+                        "[Fuzzy] Ortsnamen",
+                        "Vorgangsnummer"
                     })
 public class ExtractorPipelines {
 
@@ -25,16 +27,19 @@ public class ExtractorPipelines {
   private List<TempPipeline> personNeu;
   private List<TempPipeline> extgeldbetrag;
   private List<TempPipeline> personExtraktor;
+  private List<TempPipeline> fuzortsnamen;
+  private List<TempPipeline> vorgangsnummer;
   /**
    * Extractorpipelines from Kikuko.
    *
    * @param busInformationen   Results from bus information pipeline.
-   * @param datumExtraktor     Resulots from datum extractor pipeline.
+   * @param datumExtraktor     Results from datum extractor pipeline.
    * @param extpersonExtraktor Results from ext person extractor pipeline.
-   * @param extdatumExtraktor  Resulots from ext datum extractor pipeline.
+   * @param extdatumExtraktor  Results from ext datum extractor pipeline.
    * @param personNeu          Person extractor.
    * @param extgeldbetrag      Results from  money amount pipeline.
-   * @param personExtraktor    Results from person extractor pipeline.
+   * @param fuzortsnamen       Results from fuzzy location extractor pipeline.
+   * @param vorgangsnummer     Results from operation-number extractor pipeline.
    */
   @SuppressWarnings("CheckStyle")
   public ExtractorPipelines(@JsonProperty("Businformationen") List<TempPipeline> busInformationen,
@@ -46,7 +51,9 @@ public class ExtractorPipelines {
                             @JsonProperty("Personen NEU") List<TempPipeline> personNeu,
                             @JsonProperty("[Extern] Geldbetrag") List<TempPipeline> extgeldbetrag,
                             @JsonProperty("Personen Extraktor") List<TempPipeline>
-                                personExtraktor) {
+                                personExtraktor,
+                            @JsonProperty("[Fuzzy] Ortsnamen") List<TempPipeline> fuzortsnamen,
+                            @JsonProperty("Vorgangsnummer") List<TempPipeline> vorgangsnummer) {
     this.busInformationen = busInformationen;
     this.datumExtraktor = datumExtraktor;
     this.extpersonExtraktor = extpersonExtraktor;
@@ -54,6 +61,8 @@ public class ExtractorPipelines {
     this.personNeu = personNeu;
     this.extgeldbetrag = extgeldbetrag;
     this.personExtraktor = personExtraktor;
+    this.fuzortsnamen = fuzortsnamen;
+    this.vorgangsnummer=vorgangsnummer;
   }
 
   public List<TempPipeline> getBusInformationen() {
@@ -113,5 +122,20 @@ public class ExtractorPipelines {
     this.personExtraktor = personExtraktor;
   }
 
+  public List<TempPipeline> getFuzortsnamen() {
+    return fuzortsnamen;
+  }
+
+  public void setFuzortsnamen(List<TempPipeline> fuzortsnamen) {
+    this.fuzortsnamen = fuzortsnamen;
+  }
+
+  public List<TempPipeline> getVorgangsnummer() {
+    return vorgangsnummer;
+  }
+
+  public void setVorgangsnummer(List<TempPipeline> vorgangsnummer) {
+    this.vorgangsnummer = vorgangsnummer;
+  }
 
 }
