@@ -23,37 +23,35 @@ public class KikukoExtractor extends KikukoConatct<ExtractorResponse> implements
 
     List<NamedEntity> entities = new LinkedList<>();
 
-    allPipes.getBusInformationen().forEach(e -> entities.add(new NamedEntity("Bushaltestelle",
+    allPipes.getFuzhaltestellen().forEach(e -> entities.add(new NamedEntity("Bushaltestelle",
                                                                              e.getStartposition(),
                                                                              e.getEndposition())));
-    allPipes.getDatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
-                                                                             e.getStartposition(),
-                                                                             e.getEndposition())));
+    allPipes.getLinienExtraktor().forEach(e -> entities.add(new NamedEntity("Linie",
+                                                                       e.getStartposition()+matchesNumber(e.getText())[0],
+                                                                        e.getEndposition()-matchesNumber(e.getText())[1])));
     allPipes.getExtdatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
                                                                              e.getStartposition(),
                                                                              e.getEndposition())));
     allPipes.getExtgeldbetrag().forEach(e -> entities.add(new NamedEntity("Geldbetrag",
                                                                              e.getStartposition(),
                                                                              e.getEndposition())));
+    allPipes.getExttelefonnummer().forEach(e -> entities.add(new NamedEntity("Telefonnummer",
+                                                                             e.getStartposition(),
+                                                                             e.getEndposition())));
     allPipes.getFuzortsnamen().forEach(e -> entities.add(new NamedEntity("Ortsname",
                                                                              e.getStartposition(),
                                                                              e.getEndposition())));
     allPipes.getVorgangsnummer().forEach(e -> entities.add(new NamedEntity("Vorgangsnummer",
-                                                                       e.getStartposition()+matchesNumber(e.getText())[0],
-                                                                        e.getEndposition()-matchesNumber(e.getText())[1])));/*
+                                                                        e.getStartposition()+matchesNumber(e.getText())[0],
+                                                                        e.getEndposition()-matchesNumber(e.getText())[1])));
     allPipes.getExtpersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
-        e.getStartposition(), e.getEndposition())));*/
-    allPipes.getPersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
                                                                              e.getStartposition(),
-                                                                             e.getEndposition())));/*
-    allPipes.getPersonNeu().forEach(e -> entities.add(new NamedEntity("Name",
-        e.getStartposition(), e.getEndposition() - 1)));*/
-
+                                                                             e.getEndposition())));
     return entities;
   }
 
   /**
-   * Determines the position of the number range
+   * Determines the position of the number range (Important: Prefix with length max 2/3 are ignored)
    * @param text text to be evaluated
    * @return Array containing the distance between start-index/end-index of the number range and the beginning/ending
    */
@@ -63,7 +61,10 @@ public class KikukoExtractor extends KikukoConatct<ExtractorResponse> implements
     // Check all occurrences
     int[] numberPosition={0,text.length()};
     while(matcher.find()) {
-      numberPosition[0]=matcher.start();
+      //Prefix of line number should not be omitted
+      if(matcher.start()>2&&(matcher.start()>3||text.charAt(2)!=' ')){
+         numberPosition[0]=matcher.start();
+      }
       numberPosition[1]=text.length()-matcher.end();
     }
     return numberPosition;
