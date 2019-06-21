@@ -7,12 +7,7 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 /**
  * The default response generator.
@@ -76,9 +71,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     ArrayList<CompletedResponseComponent> result = new ArrayList<>();
     Map<String, String> entityValueMap = ComplaintUtility.getEntityValueMap(text, entities);
 
-    String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+    String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG).withLocale(Locale.GERMAN)
         .format(uploadTime.toLocalDate());
-    String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
+    String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM).withLocale(Locale.GERMAN)
         .format(uploadTime.toLocalTime());
     entityValueMap.put("Upload_Datum", formattedDate);
     entityValueMap.put("Upload_Zeit", formattedTime);
