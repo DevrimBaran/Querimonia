@@ -2,7 +2,6 @@ package de.fraunhofer.iao.querimonia.nlp.analyze;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import scala.Int;
 
 import java.util.HashMap;
 import java.util.Map;
