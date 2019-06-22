@@ -7,7 +7,10 @@ const LABEL_COLORS = {
   Upload_Datum: 'red',
   Name: 'violet',
   Geldbetrag: 'turquoise',
-  Bushaltestelle: 'orange'
+  Bushaltestelle: 'orange',
+  Vorgangsnummer: 'yellow',
+  Ortsname: 'brown',
+  default: 'green'
 };
 
 class TaggedText extends Component {
@@ -41,8 +44,9 @@ class TaggedText extends Component {
     if (entities.length === 0) return;
 
     let i = 0;
+    const compare = (a, b) => { return a.start - b.start || a.end - b.end; };
     while (i < entities.length - 1) {
-      entities.sort((a, b) => a.start - b.start || a.end - b.end);
+      entities.sort(compare);
       const entityA = entities[i];
       const entityB = entities[i + 1];
 
@@ -94,9 +98,10 @@ class TaggedText extends Component {
     const individualHeightPercentage = 100 / labels.length;
     let linearGradient = '';
     labels.forEach((label, i) => {
-      linearGradient += LABEL_COLORS[label] +
+      const color = LABEL_COLORS[label] || LABEL_COLORS['default'];
+      linearGradient += color +
         (i !== 0 ? ' ' + String(individualHeightPercentage * (i)) + '%,' : ',') +
-        LABEL_COLORS[label] +
+        color +
         ' ' +
         String(individualHeightPercentage * (i + 1)) +
         '%' +

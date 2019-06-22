@@ -216,9 +216,9 @@ describe('prepareEntities', () => {
         start: 5
       },
       {
-        "end": 20,
-        "label": "Date",
-        "start": 15
+        end: 20,
+        label: 'Date',
+        start: 15
       }
     ]);
   });
