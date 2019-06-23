@@ -85,8 +85,8 @@ public class TokenAnalyzer implements StopWordFilter {
     StanfordCoreNLP pipeline = new StanfordCoreNLP(properties);
     pipeline.annotate(germanAnnotation);
 
-    //Unwanted signs
-    String punctuations = ".,:;!?";
+    //Unwanted signs ('hehl' = hyphen)
+    String punctuations = ". , : ; ! ? hehl";
     String brackets = "-lrb- -rrb- -lsb- -rsb- -lcb- -rcb-";
 
     Map<String, Integer> countByWords = new HashMap<>();
