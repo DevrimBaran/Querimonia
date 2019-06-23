@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
 import de.fraunhofer.iao.querimonia.db.ComplaintUtility;
+import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
 import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
 import org.springframework.lang.Nullable;
 
@@ -24,13 +24,13 @@ public class EntityRule implements Rule {
   }
 
   @Override
-  public boolean isRespected(Complaint complaint,
+  public boolean isRespected(ComplaintData complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return isPotentiallyRespected(complaint);
   }
 
   @Override
-  public boolean isPotentiallyRespected(Complaint complaint) {
+  public boolean isPotentiallyRespected(ComplaintData complaint) {
     return ComplaintUtility.getValueOfEntity(complaint.getText(),
                                              complaint.getEntities(),
                                              entityLabel)

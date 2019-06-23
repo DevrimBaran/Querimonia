@@ -1,10 +1,12 @@
 package de.fraunhofer.iao.querimonia.nlp.response;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.lang.Nullable;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import de.fraunhofer.iao.querimonia.nlp.response.rules.Rule;
+import de.fraunhofer.iao.querimonia.nlp.response.rules.RuleParser;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -12,201 +14,161 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * This class represents a template for a part of the response. A response consists of a list of
- * these response components.
+ * This represents a component of the response, which can have a list of alternative texts and
+ * rules, when this component should be used.
  */
 @Entity
+@JsonPropertyOrder({
+                        "componentId",
+                        "name",
+                        "priority",
+                        "rulesXml",
+                        "requiredEntities",
+                        "templateTexts"
+                    })
 public class ResponseComponent {
 
   /**
-   * Unique componentId for the template to store in the database.
+   * The unique primary key of the component.
    */
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int componentId;
 
   /**
-   * The template text that may have placeholders.
+   * A unique identifier for components.
    */
-  @Column(length = 5000)
-  private String templateText;
+  @Column(name = "name", unique = true)
+  private String componentName;
 
   /**
-   * The complaint category to this component fits.
+   * Components with high priority get used first in the response generation.
    */
-  @Nullable
-  private String subject;
+  @Column
+  private int priority;
 
   /**
-   * A unique identifier that represents where to component should be set in the full response, for
-   * example "begin", "introduction", "end"...
-   */
-  private String responsePart;
-
-  /**
-   * This list contains all the possible response parts that may follow up this component. This is
-   * used for response generation.
+   * The template texts for the component.
    */
   @ElementCollection(fetch = FetchType.LAZY)
-  private List<String> successorParts;
+  @CollectionTable(name = "template_text_table",
+                   joinColumns = @JoinColumn(name = "component_id"))
+  @Column(length = 5000)
+  private List<String> templateTexts;
 
   /**
-   * The template text gets sliced into text parts and placeholder parts.
+   * The rules in xml format.
    */
-  @JsonIgnore
+  @Column(length = 5000)
+  private String rulesXml;
+
+  /**
+   * The root rule, gets parsed from xml.
+   */
   @Transient
-  private List<ResponseSlice> slices;
+  @JsonIgnore
+  private Rule rootRule;
 
   /**
-   * Basic constructor for JSON deserialization.
+   * The slices of each template text.
    */
-  @JsonCreator
-  public ResponseComponent(@JsonProperty("templateText") String templateText,
-                           @JsonProperty("subject") String subject,
-                           @JsonProperty("responsePart") String responsePart,
-                           @JsonProperty("successorParts") ArrayList<String> successorParts) {
-    this.templateText = templateText;
-    this.subject = subject;
-    this.responsePart = responsePart;
-    this.successorParts = successorParts;
+  @Transient
+  @JsonIgnore
+  private List<List<ResponseSlice>> templateSlices;
+
+  public ResponseComponent(String componentName, List<String> templateTexts,
+                           String rulesXml) {
+    setComponentName(componentName);
+    setTemplateTexts(templateTexts);
+    setRulesXml(rulesXml);
   }
 
-  @SuppressWarnings("unused")
   public ResponseComponent() {
-
-  }
-
-  /**
-   * Slices the template text into text and placeholder parts.
-   */
-  private void createSlices() {
-    slices = new ArrayList<>();
-    // the current position in the text
-    int templatePosition = 0;
-
-    // split on every placeholder
-    String[] parts = templateText.split("\\$\\{\\w*}");
-
-    for (String currentPart : parts) {
-      templatePosition += currentPart.length();
-      // add raw text slice
-      slices.add(new ResponseSlice(false, currentPart));
-
-      String remainingText = templateText.substring(templatePosition);
-      if (remainingText.length() >= 2) {
-        // find closing bracket
-        int endPosition = remainingText.indexOf('}');
-        // check if closing bracket is there
-        if (endPosition == -1) {
-          throw new IllegalArgumentException("Illegal template format");
-        }
-        // find entity for placeholder
-        String entityLabel = remainingText.substring(2, endPosition);
-        // add label slice
-        slices.add(new ResponseSlice(true, entityLabel));
-
-        templatePosition = templatePosition + 3 + entityLabel.length();
-
-      } else {
-        break;
-      }
-    }
-  }
-
-  // getters and setters
-
-  public List<String> getSuccessorParts() {
-    return successorParts;
-  }
-
-  public ResponseComponent setSuccessorParts(List<String> successorParts) {
-    this.successorParts = successorParts;
-    return this;
-  }
-
-  public int getComponentId() {
-    return componentId;
-  }
-
-  public String getTemplateText() {
-    return templateText;
-  }
-
-  /**
-   * Sets the template text of the response component.
-   */
-  public ResponseComponent setTemplateText(String templateText) {
-    this.templateText = templateText;
-    // update slices
-    createSlices();
-    return this;
-  }
-
-  public Optional<String> getSubject() {
-    return Optional.ofNullable(subject);
-  }
-
-  public ResponseComponent setSubject(@Nullable String subject) {
-    this.subject = subject;
-    return this;
-  }
-
-  public String getResponsePart() {
-    return responsePart;
-  }
-
-  public ResponseComponent setResponsePart(String responsePart) {
-    this.responsePart = responsePart;
-    return this;
-  }
-
-  @JsonIgnore
-  @Transient
-  List<ResponseSlice> getSlices() {
-    if (slices == null) {
-      createSlices();
-    }
-    return slices;
+    // required for hibernate
   }
 
   @Transient
   @JsonProperty("requiredEntities")
   public List<String> getRequiredEntities() {
-    return getSlices()
+    return getTemplateSlices()
         .stream()
+        // get all slices
+        .flatMap(List::stream)
         .filter(ResponseSlice::isPlaceholder)
+        // map the placeholders to their identifiers
         .map(ResponseSlice::getContent)
         .collect(Collectors.toList());
   }
 
-  /**
-   * Represents a slice of the response component that is either raw text or a placeholder. The
-   * complaint text gets sliced in text and placeholders.
-   */
-  static class ResponseSlice {
+  public long getComponentId() {
+    return componentId;
+  }
 
-    private boolean isPlaceholder;
-    // this is either the placeholder name or the raw text when the slice is no placeholder.
-    private String content;
+  public String getComponentName() {
+    return componentName;
+  }
 
-    ResponseSlice(boolean isPlaceholder, String content) {
-      this.isPlaceholder = isPlaceholder;
-      this.content = content;
+  public List<String> getTemplateTexts() {
+    return templateTexts;
+  }
+
+  public String getRulesXml() {
+    return rulesXml;
+  }
+
+  public Rule getRootRule() {
+    if (rootRule == null) {
+      rootRule = parseRulesXml(rulesXml);
     }
+    return rootRule;
+  }
 
-    boolean isPlaceholder() {
-      return isPlaceholder;
-    }
+  public int getPriority() {
+    return priority;
+  }
 
-    String getContent() {
-      return content;
+  public List<List<ResponseSlice>> getTemplateSlices() {
+    if (templateSlices == null) {
+      templateSlices = createSlices();
     }
+    return templateSlices;
+  }
+
+  public ResponseComponent setComponentName(String componentName) {
+    this.componentName = componentName;
+    return this;
+  }
+
+  public ResponseComponent setTemplateTexts(List<String> templateTexts) {
+    this.templateTexts = templateTexts;
+    this.templateSlices = createSlices();
+    return this;
+  }
+
+  public ResponseComponent setRulesXml(String rulesXml) {
+    this.rulesXml = rulesXml;
+    rootRule = parseRulesXml(rulesXml);
+    return this;
+  }
+
+  public ResponseComponent setPriority(int priority) {
+    this.priority = priority;
+    return this;
+  }
+
+  private Rule parseRulesXml(String rulesXml) {
+    return RuleParser.parseRules(rulesXml);
+  }
+
+  private List<List<ResponseSlice>> createSlices() {
+    return templateTexts.stream()
+        .map(ResponseSlice::createSlices)
+        .collect(Collectors.toList());
   }
 }

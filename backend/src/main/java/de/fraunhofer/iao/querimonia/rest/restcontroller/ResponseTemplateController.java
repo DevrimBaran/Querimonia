@@ -3,12 +3,10 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseTemplateManager;
-import de.fraunhofer.iao.querimonia.rest.restobjects.ResponseComponentUpdateRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,17 +58,6 @@ public class ResponseTemplateController {
         .collect(Collectors.toList());
   }
 
-  /**
-   * Find a template with the given subject.
-   *
-   * @param subject the subject to look for
-   * @return a response template with the given subject
-   */
-  @GetMapping("api/templates/subjects/{subject}")
-  public ResponseComponent getTemplateBySubject(@PathVariable String subject) {
-    initialize();
-    return responseTemplateManager.getTemplateBySubject(templateRepository, subject);
-  }
 
   /**
    * Find the template with the given ID.
@@ -103,24 +90,4 @@ public class ResponseTemplateController {
     templateRepository.deleteAll();
   }
 
-  /**
-   * Updates a component in the database.
-   *
-   * @param templateId the id of the template that should be updated as path variable.
-   * @param request    the update request.
-   * @return the updated response component.
-   */
-  @PatchMapping("api/templates/{templateId}")
-  public ResponseComponent updateComponent(@PathVariable int templateId,
-                                           @RequestBody ResponseComponentUpdateRequest request) {
-    ResponseComponent componentToUpdate = templateRepository.findById(templateId)
-        .orElseThrow(() -> NOT_FOUNT_EXCEPTION);
-    request.getSubject().ifPresent(componentToUpdate::setSubject);
-    request.getResponsePart().ifPresent(componentToUpdate::setResponsePart);
-    request.getSuccessorParts().ifPresent(componentToUpdate::setSuccessorParts);
-    request.getTemplateText().ifPresent(componentToUpdate::setTemplateText);
-
-    templateRepository.save(componentToUpdate);
-    return componentToUpdate;
-  }
 }

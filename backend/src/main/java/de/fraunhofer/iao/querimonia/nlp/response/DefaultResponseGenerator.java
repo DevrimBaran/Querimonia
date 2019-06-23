@@ -4,22 +4,20 @@ import de.fraunhofer.iao.querimonia.db.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * The default response generator.
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
-  private static final String BEGIN_RESPONSE_PART = "Begrüßung";
   private TemplateRepository templateRepository;
 
   public DefaultResponseGenerator(TemplateRepository templateRepository) {
@@ -29,19 +27,21 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   /**
    * Fills a response component with the information given in the entities.
    *
-   * @param component the response component that gets filled out.
-   * @param entities  the named entities of the complaint.
+   * @param component     the response component that gets filled out.
+   * @param currentSlices the current text slices
+   * @param entities      the named entities of the complaint.
    * @return a filled out response component.
    */
-  private static CompletedResponseComponent fillResponseComponent(ResponseComponent component,
-                                                                  Map<String, String> entities) {
-    List<ResponseComponent.ResponseSlice> slices = component.getSlices();
+  private static SingleCompletedComponent fillResponseComponent(ResponseComponent component,
+                                                                List<ResponseSlice> currentSlices,
+                                                                Map<String, String> entities) {
+
     StringBuilder resultText = new StringBuilder();
     List<NamedEntity> entityList = new ArrayList<>();
     // the current position in the text
     int resultPosition = 0;
 
-    for (ResponseComponent.ResponseSlice slice : slices) {
+    for (ResponseSlice slice : currentSlices) {
       String textToAppend;
 
       if (slice.isPlaceholder()) {
@@ -61,76 +61,58 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       resultPosition += textToAppend.length();
       resultText.append(textToAppend);
     }
-    return new CompletedResponseComponent(resultText.toString(), component, entityList);
+    return new SingleCompletedComponent(resultText.toString(), component, entityList);
   }
 
   @Override
-  public ResponseSuggestion generateResponse(String text,
-                                             Map<String, Double> subjectMap,
-                                             Map<String, Double> sentimentMap,
-                                             List<NamedEntity> entities,
-                                             LocalDateTime uploadTime) {
+  public ResponseSuggestion generateResponse(ComplaintData complaintData) {
     List<ResponseComponent> responseComponents = new ArrayList<>();
     templateRepository.findAll().forEach(responseComponents::add);
 
-    ArrayList<CompletedResponseComponent> result = new ArrayList<>();
-    Map<String, String> entityValueMap = ComplaintUtility.getEntityValueMap(text, entities);
+    // filter out not matching templates
+    List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
+    responseComponents.stream()
+        .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
+        .forEach(responseComponentsFiltered::add);
+
+    // sort by priority
+    responseComponentsFiltered.sort(Comparator.comparingInt(ResponseComponent::getPriority));
+    Collections.reverse(responseComponentsFiltered);
+
+    Map<String, String> entityValueMap =
+        ComplaintUtility.getEntityValueMap(complaintData.getText(), complaintData.getEntities());
 
     String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-        .format(uploadTime.toLocalDate());
+        .format(complaintData.getUploadTime().toLocalDate());
     String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
-        .format(uploadTime.toLocalTime());
-    entityValueMap.put("Upload_Datum", formattedDate);
-    entityValueMap.put("Upload_Zeit", formattedTime);
+        .format(complaintData.getUploadTime().toLocalTime());
+    entityValueMap.put("UploadDatum", formattedDate);
+    entityValueMap.put("UploadZeit", formattedTime);
 
-    Optional<String> optionalSubject = ComplaintUtility.getEntryWithHighestProbability(subjectMap);
-
-    generateComponentOrder(responseComponents, entityValueMap, optionalSubject, BEGIN_RESPONSE_PART)
-        .stream()
-        .map(component -> fillResponseComponent(component, entityValueMap))
-        .forEach(result::add);
-
-    return new ResponseSuggestion(result);
-  }
-
-  /**
-   * Checks if the subject of the response component matches the subject of the complaint.
-   */
-  private boolean subjectMatches(Optional<String> optionalSubject,
-                                 ResponseComponent responseComponent) {
-    return optionalSubject.map(subject -> subject
-        .equalsIgnoreCase(
-            // if response component has no subject the filter should return true
-            responseComponent.getSubject().orElse(subject)))
-        .orElse(true);
-  }
-
-  private List<ResponseComponent> generateComponentOrder(
-      List<ResponseComponent> responseComponents,
-      Map<String, String> entities,
-      Optional<String> optionalSubject,
-      String nextResponsePart) {
-
-    Optional<ResponseComponent> currentComponent = responseComponents.stream()
-        .filter(responseComponent ->
-                    responseComponent.getResponsePart().equalsIgnoreCase(nextResponsePart))
-        .filter(responseComponent -> subjectMatches(optionalSubject, responseComponent))
-        .filter(responseComponent -> entities.keySet()
-            .containsAll(responseComponent.getRequiredEntities()))
-        .min(Comparator.comparingInt(rc -> -rc.getRequiredEntities().size()));
-    if (currentComponent.isPresent()) {
-      List<ResponseComponent> result = new ArrayList<>();
-      List<String> successorParts = currentComponent.get().getSuccessorParts();
-      if (!successorParts.isEmpty()) {
-        // TODO optimize successors
-        int next = new Random().nextInt(successorParts.size());
-        result = generateComponentOrder(responseComponents, entities, optionalSubject,
-                                        successorParts.get(next));
+    List<CompletedResponseComponent> generatedResponse = new ArrayList<>();
+    outer:
+    while (true) {
+      for (int i = 0; i < responseComponentsFiltered.size(); i++) {
+        ResponseComponent currentComponent = responseComponentsFiltered.get(i);
+        // find first respected rule, use the template and remove it from the list
+        if (currentComponent.getRootRule().isRespected(complaintData, generatedResponse)) {
+          responseComponentsFiltered.remove(i);
+          generatedResponse.add(
+              new CompletedResponseComponent(currentComponent.getTemplateSlices().stream()
+                                                 .map(responseSlices -> fillResponseComponent(
+                                                     currentComponent,
+                                                     responseSlices,
+                                                     entityValueMap))
+                                                 .collect(Collectors.toList())));
+          continue outer;
+        }
       }
-      result.add(0, currentComponent.get());
-      return result;
-    } else {
-      return new ArrayList<>();
+      // no matching rule left:
+      break;
     }
+
+    return new ResponseSuggestion(generatedResponse);
   }
+
+
 }

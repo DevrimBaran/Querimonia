@@ -4,6 +4,7 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
+import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
@@ -57,11 +58,8 @@ public class ComplaintFactory {
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
 
-    ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(complaintText,
-                                                                               subjectMap,
-                                                                               sentimentMap,
-                                                                               entities,
-                                                                               LocalDateTime.now());
+    ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(
+        new ComplaintData(complaintText, subjectMap, sentimentMap, entities, LocalDateTime.now()));
 
     return new Complaint(complaintText, preview, sentimentMap, subjectMap,
                          entities, LocalDate.now(), LocalTime.now(), responseSuggestion, words);

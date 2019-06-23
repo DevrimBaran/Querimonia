@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
+import de.fraunhofer.iao.querimonia.db.ComplaintUtility;
+import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
 import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
 
 import java.util.List;
@@ -17,15 +18,15 @@ public class SubjectRule implements Rule {
   }
 
   @Override
-  public boolean isRespected(Complaint complaint,
+  public boolean isRespected(ComplaintData complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return isPotentiallyRespected(complaint);
   }
 
   @Override
-  public boolean isPotentiallyRespected(Complaint complaint) {
+  public boolean isPotentiallyRespected(ComplaintData complaint) {
     // check if the subject of the complaint matches
-    return complaint.getBestSubject()
+    return ComplaintUtility.getEntryWithHighestProbability(complaint.getSubjectMap())
         .map(subject::equals)
         .orElse(false);
   }

@@ -6,27 +6,26 @@ import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
 import java.util.List;
 
 /**
- * This rule consists of a variable number of children rules. The rule is respected, if all the
- * children rules are respected.
+ * Simple rule that checks if a template has a certain amount of predecessors.
  */
-public class AndRule implements Rule {
+public class PredecessorCountRule implements Rule {
 
-  private List<Rule> children;
+  private int min;
+  private int max;
 
-  public AndRule(List<Rule> children) {
-    this.children = children;
+  public PredecessorCountRule(int min, int max) {
+    this.min = min;
+    this.max = max;
   }
 
   @Override
   public boolean isRespected(ComplaintData complaint,
                              List<CompletedResponseComponent> currentResponseState) {
-    return children.stream()
-        .allMatch(rule -> rule.isRespected(complaint, currentResponseState));
+    return currentResponseState.size() <= max && currentResponseState.size() >= min;
   }
 
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
-    return children.stream()
-        .allMatch(rule -> rule.isPotentiallyRespected(complaint));
+    return true;
   }
 }

@@ -1,10 +1,10 @@
 package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
+import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
 import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
+import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 /**
@@ -12,23 +12,23 @@ import java.util.List;
  */
 public class UploadDateRule implements Rule {
 
-  private LocalTime uploadTime;
-  private LocalDate uploadDate;
+  private LocalDate uploadDateMin;
+  private LocalDate uploadDateMax;
 
-  public UploadDateRule(LocalTime uploadTime, LocalDate uploadDate) {
-    this.uploadTime = uploadTime;
-    this.uploadDate = uploadDate;
+  public UploadDateRule(@Nullable LocalDate uploadDateMin, @Nullable LocalDate uploadDateMax) {
+    this.uploadDateMin = uploadDateMin != null ? uploadDateMin : LocalDate.MIN;
+    this.uploadDateMax = uploadDateMax != null ? uploadDateMax : LocalDate.MAX;
   }
 
   @Override
-  public boolean isRespected(Complaint complaint,
+  public boolean isRespected(ComplaintData complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return isPotentiallyRespected(complaint);
   }
 
   @Override
-  public boolean isPotentiallyRespected(Complaint complaint) {
-    return complaint.getReceiveDate().equals(uploadDate)
-        && complaint.getReceiveTime().equals(uploadTime);
+  public boolean isPotentiallyRespected(ComplaintData complaint) {
+    LocalDate uploadDate = complaint.getUploadTime().toLocalDate();
+    return !uploadDate.isBefore(uploadDateMin) && !uploadDate.isAfter(uploadDateMax);
   }
 }

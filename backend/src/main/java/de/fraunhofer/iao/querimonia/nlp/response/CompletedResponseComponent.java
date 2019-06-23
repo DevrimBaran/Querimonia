@@ -2,82 +2,38 @@ package de.fraunhofer.iao.querimonia.nlp.response;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import java.util.List;
 
-/**
- * This class represents a response component that was already filled out using the entities of a
- * certain complaint.
- */
 @Entity
-@JsonPropertyOrder({
-                        "completedComponentId",
-                        "completedText",
-                        "entities",
-                        "component"
-                    })
 public class CompletedResponseComponent {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private int completedComponentId;
+  private int completedResponseId;
 
-  @Column(length = 5000)
-  private String completedText;
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn
+  private List<SingleCompletedComponent> responseComponents;
 
-  @JoinColumn(name = "component_id")
-  @ManyToOne
-  private ResponseComponent component;
-
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name = "response_entity_table",
-                   joinColumns = @JoinColumn(name = "completed_component_id"))
-  private List<NamedEntity> entities;
-
-  /**
-   * Basic constructor for JSON serialization.
-   */
   @JsonCreator
-  public CompletedResponseComponent(
-      @JsonProperty String completedText,
-      @JsonProperty ResponseComponent component,
-      @JsonProperty List<NamedEntity> entities) {
-    this.completedText = completedText;
-    this.component = component;
-    this.entities = entities;
+  public CompletedResponseComponent(List<SingleCompletedComponent> responseComponents) {
+    this.responseComponents = responseComponents;
   }
 
   @SuppressWarnings("unused")
   public CompletedResponseComponent() {
-
   }
 
-  public String getCompletedText() {
-    return completedText;
+  @JsonProperty
+  public List<SingleCompletedComponent> getResponseComponents() {
+    return responseComponents;
   }
-
-  public ResponseComponent getComponent() {
-    return component;
-  }
-
-  public List<NamedEntity> getEntities() {
-    return entities;
-  }
-
-  public int getCompletedComponentId() {
-    return completedComponentId;
-  }
-
 }

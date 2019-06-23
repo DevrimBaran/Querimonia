@@ -1,7 +1,8 @@
 package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
+import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
 import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.SingleCompletedComponent;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
 
 import java.util.List;
@@ -11,11 +12,17 @@ import java.util.List;
  */
 public class PredecessorRule implements Rule {
 
-  private boolean anyPosition = false;
+  private String position = "before";
   private String predecessorName;
 
-  public PredecessorRule(String predecessorName, boolean anyPosition) {
-    this.anyPosition = anyPosition;
+  /**
+   * Creates new predecessor rule.
+   *
+   * @param predecessorName the template name.
+   * @param position the position of the predecessor. Must be "any", "before" or a positive number.
+   */
+  public PredecessorRule(String predecessorName, String position) {
+    this.position = position;
     this.predecessorName = predecessorName;
   }
 
@@ -24,25 +31,40 @@ public class PredecessorRule implements Rule {
   }
 
   @Override
-  public boolean isRespected(Complaint complaint,
+  public boolean isRespected(ComplaintData complaint,
                              List<CompletedResponseComponent> currentResponseState) {
-    if (anyPosition) {
+    // position does not matter
+    if (position.equals("any")) {
       return currentResponseState.stream()
-          .map(CompletedResponseComponent::getComponent)
-          .map(ResponseComponent::getResponsePart)
+          // position does not matter
+          .map(CompletedResponseComponent::getResponseComponents)
+          .map(list -> list.get(0))
+          .map(SingleCompletedComponent::getComponent)
+          .map(ResponseComponent::getComponentName)
           .anyMatch(predecessorName::equals);
+
     } else if (currentResponseState.isEmpty()) {
       return false;
     } else {
-      return currentResponseState.get(currentResponseState.size() - 1)
+      // look for specific index or last element
+      int index = position.equals("before")
+          ? currentResponseState.size() - 1
+          : Integer.parseInt(position);
+      if (index >= currentResponseState.size() || index < 0) {
+        // out of bounds
+        return false;
+      }
+      return currentResponseState.get(index)
+          .getResponseComponents()
+          .get(0)
           .getComponent()
-          .getResponsePart()
+          .getComponentName()
           .equals(predecessorName);
     }
   }
 
   @Override
-  public boolean isPotentiallyRespected(Complaint complaint) {
+  public boolean isPotentiallyRespected(ComplaintData complaint) {
     // no assumption can be made
     return true;
   }

@@ -3,17 +3,18 @@ package de.fraunhofer.iao.querimonia.nlp.response;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import java.util.List;
 
 @Embeddable
 public class ResponseSuggestion {
 
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn
+  @ElementCollection
+  @CollectionTable(name = "completed_response_components",
+                   joinColumns = @JoinColumn(name = "component_id"))
   private List<CompletedResponseComponent> responseComponents;
 
   @JsonCreator
