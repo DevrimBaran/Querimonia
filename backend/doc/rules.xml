@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Requirement xmlns="https://www.w3schools.com"
+<Rules xmlns="https://www.w3schools.com"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:schemaLocation="https://www.w3schools.com/xml rules-format.xsd"
-             priority="100">
+             xsi:schemaLocation="https://www.w3schools.com/xml rules-format.xsd">
 
-    <!-- Name soll nicht verfügbar sein-->
     <And>
         <PredecessorCount max="0"/>
+        <Or>
+            <Subject value="Fahrt nicht erfolgt"/>
+            <Subject value="Sonstiges"/>
+        </Or>
+        <Not>
+            <Sentiment value="Traurig"/>
+        </Not>
         <EntityAvailable label="Geschlecht" value="m"/>
         <EntityAvailable label="Nachname"/>
+        <UploadTime min="04:00:00" max="11:00:00"/>
     </And>
 
-</Requirement>
+</Rules>

@@ -19,12 +19,22 @@ GET http://localhost:8080/api/responses/plain/205
 
 ###
 
-PATCH http://localhost:8080/api/templates/73
+POST http://localhost:8080/api/templates
 Content-Type: application/json
 
 {
-
+  "componentName": "Begrüßung_Morgens_OhneName",
+  "priority": 100,
+  "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
+  "templateTexts": [
+    "Guten Morgen,",
+    "Guten Tag,"
+  ]
 }
+
+###
+
+DELETE http://localhost:8080/api/templates/1
 
 ###
 

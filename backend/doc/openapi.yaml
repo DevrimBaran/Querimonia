@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.3.2
+  version: 0.4.1
 servers:
   - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/
   - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/
@@ -236,13 +236,62 @@ paths:
             description: Es gibt keine Beschwerde mit der gegebenen ID.
 
   /api/templates:
+    get:
+      tags:
+        - templates
+      summary: Gibt die gespeicherten Antwortbausteine zurück.
+      description: Hier können alle in der Datenbank gespeicherten Antwortbausteine abgerufen werden. Dabei ist Filtern/Pagination möglich.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der Beschwerden, die zurück gegeben werden sollen. Falls nicht angegeben, werden alle Beschwerden zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: Falls page 0 ist, werden die ersten *count* Beschwerden zurück gegeben, falls page 1 ist die zweiten *count* Beschwerden, gibt also die Seitenzahl an. Falls nicht angegeben, wird 0 angenommen. Wird ignoriert, falls *count* nicht gegeben ist.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: sort_by
+          in: query
+          description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [priority_desc, priority_asc, name_desc, name_asc]
+        - name: keywords
+          in: query
+          description: Hier können Schlüsselwörter angegeben werden, die im Bausteintext oder -name enthalten sein sollen.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200: 
+          description: Die Antwortbausteine werden zurückgegeben.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseComponent'
+        400:
+          description: Fehlerhafte Parameter.
+  
     post:
       tags:
         - templates
       summary: Fügt dem System einen neuen Antwortbaustein hinzu.
       description: Fügt einen neuen Antwortbaustein hinzu. Dieser kann Platzhalter im Format ${\w*} enthalten, welche mit Entitäten aus der Beschwerden ersetzt werden.
       requestBody:
-        description: Der Textbaustein, der hinzugefügt werden soll.
+        description: Der neue Textbaustein, der dem System hinzufügt werden soll. Im Request-Body müssen ID und requiredEntities nicht angegeben werden, diese werden bei Angabe nicht beachtet.
         required: true
         content:
           application/json:
@@ -252,14 +301,86 @@ paths:
         201:
           description: Das Template ist richtig formatiert und wurde in der Datenbank gespeichert.
         400:
-          description: Der Textbaustein enthält ungültige Formatierungen oder überschreitet das Zeichenlimit von 5000 Zeichen.
+          description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+
+  /api/templates/{templateId}:
+    get:
+      tags:
+        - templates
+      summary: Gibt ein bestimmten Antwortbaustein zurück.
+      description: Gibt den Antwortbaustein mit der gegebenen ID zurück.
+      parameters:
+        - name: templateId
+          in: path
+          description: Die eindeutige ID des Bausteins.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+         description: Der Antwortbaustein wird zurückgegeben.
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseComponent'
+        404: 
+          description: Der Antwortbaustein existiert nicht.
+              
+    delete:
+      tags:
+        - templates
+      summary: Löscht einen Antwortbaustein.
+      description: Löscht den Antwortbaustein mit der gegebenen ID aus der Datenbank.
+      parameters:
+        - name: templateId
+          in: path
+          description: Die eindeutige ID des Bausteins.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+         description: Der Antwortbaustein wurde gelöscht.
+        404: 
+          description: Der Antwortbaustein existiert nicht.
+          
+    put:
+      tags:
+        - templates
+      summary: Aktualisiert einen bestehenden Antwortbaustein.
+      description: Aktualisiert den Antwortbaustein mit der gegebenen ID. 
+      parameters:
+        - name: templateId
+          in: path
+          description: Die eindeutige ID des Bausteins.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: Der aktualisierte Baustein. Im Request-Body müssen ID und requiredEntities nicht angegeben werden, bei Angabe werden diese ignoriert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseComponent'
+      responses:
+        200:
+          description: Template erfolgreich aktualisiert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseComponent'
 
   /api/templates/all:
     delete:
+      tags:
+        - templates
       summary: Löscht alle Antwortbausteine aus der Datenbank.
       responses:
         200:
-          description: Löschen erfolgreich.
+          description: Alle Antwortbausteine wurden aus der Datenbank entfernt.
 
   /api/stats/tagcloud:
     get:
@@ -382,10 +503,7 @@ components:
     Complaints:
       type: array
       items:
-        type: object
-        properties:
-          name:
-            $ref: '#/components/schemas/Complaint'
+        $ref: '#/components/schemas/Complaint'
 
     NamedEntity:
       description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie.
@@ -411,34 +529,47 @@ components:
           example: 29
 
     ResponseComponent:
-      description: Ein generischer Antwortbaustein, der ggf. Platzhälter enthält.
+      description: Ein generischer Antwortbaustein. Dieser besteht aus möglicherweise mehereren Alternativtexten, die Platzhalter enthalten können, sowie einer Regelbeschreibung, die angibt, wann der Baustein verwendet werden kann.
       type: object
       required:
-        - templateText
-        - responsePart
-        - successorParts
+        - priority
+        - componentName
+        - templateTexts
+        - rulesXml
       properties:
-        templateText:
+        componentId:
+          type: integer
+          format: int32
+          description: Die eindeutige ID des Antwortbausteins.
+          minimum: 1
+          example: 1
+        priority:
+          type: integer
+          format: int32
+          example: 100
+          description: Eine Zahl, die die Priorität bei der Antwortgenerierung angibt. Bausteine mit hoher Priorität werden zuerst geprüft und ggf. verwendet.
+        componentName:
           type: string
-          description: Der Textbaustein. Enthält ggf. Platzhalter.
-          example: "Guten Tag, ${Vorname} ${Nachname},\nVielen Dank für Ihre Nachricht am ${Upload_Datum}."
-        subject:
-          type: string
-          description: Die Kategorie von Beschwerde, zu der dieser Antwortbaustein passt. Für generische Antwortbausteine kann dies *null* sein.
-          example: 'Fahrt nicht erfolgt'
-        responsePart:
-          type: string
-          description: Eine Bezeichung, welchen Teil einer Antwort der Baustein widerspiegelt.
+          description: Eine **eindeutige** Bezeichung, welchen Teil einer Antwort der Baustein widerspiegelt.
           example: 'Begrüßung'
-        successorParts:
+        templateTexts:
           type: array
           items:
             type: string
-            description: Die *responseParts*, die als Nachfolger für diese Komponente geeignet sind. Dies ist für die Antwortgenerierung notwendig.
-            example: "Einleitung"
+            description: Bausteintext mit Platzhaltern.
+            example: "Sehr geehrter Herr ${Name},"
+        rulesXml:
+          type: string
+          description: XML-Beschreibung der Regeln, die beschreiben, wann ein Antwortbaustein verwendet werden darf. Muss dem XSD-Schema entsprechen.
+        requiredEntites:
+          type: array
+          items:
+            type: string
+            example: "Name"
+            description: Eine Entity, die für den Antwortbaustein vorhanden sein muss. Muss **nicht** beim Posten eines Bausteins angegeben werden.
 
     CompletedResponseComponent:
-      description: Ein ausgefüllter Antwortbaustein, bei dem ein Antwortbaustein mit spezifischen, zur Beschwerde passenden Informationen ausgefüllt wurde.
+      description: Ein ausgefüllter Antwortbaustein, bei dem ein ein möglicher Text eines Antwortbausteins mit spezifischen, zur Beschwerde passenden Informationen ausgefüllt wurde.
       type: object
       required:
         - completedComponentId
@@ -465,13 +596,12 @@ components:
           $ref: '#/components/schemas/ResponseComponent'
 
     ResponseSuggestion:
-      description: Eine Liste an ausgefüllten Antwortbausteinen, die einen Antwortvorschlag repräsentieren.
+      description: Eine geschachtelte Liste von ausgefüllten Antwortbausteinen. Die äußere Liste repräsentiert die Position in der Antwort, die inneren Listen enthalten alle möglchen (Alternativ-)Texten.
       type: array
       items:
-        type: object
-        properties:
-          name:
-            $ref: '#/components/schemas/CompletedResponseComponent'
+        type: array
+        items:
+          $ref: '#/components/schemas/CompletedResponseComponent'
 
     OrderBy:
       description: Ein Array von Kategorien, nach denen eine Anfrage sortiert werden soll. Zusätzlich wird angegeben, ob auf oder absteigend sortiert wird.

@@ -4,15 +4,7 @@
            xmlns="https://www.w3schools.com"
            elementFormDefault="qualified">
 
-    <xs:element name="Requirement">
-        <xs:complexType>
-            <xs:complexContent>
-                <xs:extension base="tPredicate">
-                    <xs:attribute name="priority" type="xs:int" default="0"/>
-                </xs:extension>
-            </xs:complexContent>
-        </xs:complexType>
-    </xs:element>
+    <xs:element name="Rules" type="tPredicate"/>
 
     <xs:complexType name="tPredicate" mixed="true">
         <xs:group ref="possibleChildren"/>
@@ -44,14 +36,34 @@
             <xs:element name="Predecessor">
                 <xs:complexType>
                     <xs:attribute name="template" type="xs:string" use="required"/>
-                    <xs:attribute name="anyPosition" type="xs:boolean"/>
+                    <xs:attribute name="position">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:pattern value="any|\d+|before"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
                 </xs:complexType>
             </xs:element>
 
             <xs:element name="PredecessorCount">
                 <xs:complexType>
                     <xs:attribute name="min" type="xs:nonNegativeInteger" default="0"/>
-                    <xs:attribute name="max" type="xs:nonNegativeInteger" use="required"/>
+                    <xs:attribute name="max" type="xs:nonNegativeInteger" />
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="UploadDate">
+                <xs:complexType>
+                    <xs:attribute name="min" type="xs:date"/>
+                    <xs:attribute name="max" type="xs:date"/>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="UploadTime">
+                <xs:complexType>
+                    <xs:attribute name="min" type="xs:time"/>
+                    <xs:attribute name="max" type="xs:time"/>
                 </xs:complexType>
             </xs:element>
 
