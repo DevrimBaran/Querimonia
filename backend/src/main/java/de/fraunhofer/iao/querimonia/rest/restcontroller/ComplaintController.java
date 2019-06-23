@@ -4,10 +4,10 @@ import de.fraunhofer.iao.querimonia.db.Complaint;
 import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.db.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
-import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
@@ -60,6 +60,7 @@ public class ComplaintController {
 
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
+  private final CompletedResponseComponentRepository completedResponseComponentRepository;
   private ComplaintFactory complaintFactory;
 
   /**
@@ -67,9 +68,12 @@ public class ComplaintController {
    */
   public ComplaintController(FileStorageService fileStorageService,
                              ComplaintRepository complaintRepository,
-                             TemplateRepository templateRepository) {
+                             TemplateRepository templateRepository,
+                             CompletedResponseComponentRepository
+                                 completedResponseComponentRepository) {
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
+    this.completedResponseComponentRepository = completedResponseComponentRepository;
 
     //mock sentiment for tests
     HashMap<String, Double> sentimentMock = new HashMap<>();
@@ -77,7 +81,7 @@ public class ComplaintController {
 
     complaintFactory = new ComplaintFactory()
         .setClassifier(new KiKuKoClassifier())
-        .setEntityExtractor(new KikukoExtractor())
+        .setEntityExtractor((text1) -> new ArrayList<>())
         .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
         .setSentimentAnalyzer((text1) -> sentimentMock)
         .setStopWordFilter(new TokenAnalyzer());
@@ -173,6 +177,10 @@ public class ComplaintController {
                consumes = "application/json")
   public Complaint uploadText(@RequestBody TextInput input) {
     Complaint complaint = complaintFactory.createComplaint(input.getText());
+    // save the components
+    complaint.getResponseSuggestion()
+        .getResponseComponents()
+        .forEach(completedResponseComponentRepository::save);
     complaintRepository.save(complaint);
     logger.info("Added complaint with id {}", complaint.getComplaintId());
     return complaint;
