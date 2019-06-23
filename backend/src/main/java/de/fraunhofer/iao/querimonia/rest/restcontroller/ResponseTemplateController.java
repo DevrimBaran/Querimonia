@@ -4,18 +4,14 @@ import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseTemplateManager;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 
 
 /**
@@ -23,6 +19,7 @@ import java.util.stream.StreamSupport;
  * the ResponseTemplateManager.
  *
  * @author Simon Weiler
+ * @author Baran Demir
  */
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
@@ -52,10 +49,36 @@ public class ResponseTemplateController {
     return responseTemplateManager.addTemplate(templateRepository, responseComponent);
   }
 
+  /**
+   * Pagination for templates (sort_by, page, count).
+   *
+   * @param count  Counter for the templates.
+   * @param page   Pagenumber.
+   * @param sortBy Sorts by name ascending or descending, priority ascending and descending.
+   * @return Returns a list of sorted templates.
+   */
   @GetMapping("api/templates")
-  public List<ResponseComponent> getAllTemplates() {
-    return StreamSupport.stream(templateRepository.findAll().spliterator(), false)
-        .collect(Collectors.toList());
+  public List<ResponseComponent> getAllTemplates(
+      @RequestParam("count") Optional<Integer> count,
+      @RequestParam("page") Optional<Integer> page,
+      @RequestParam("sort_by") Optional<String[]> sortBy
+  ) {
+    ArrayList<ResponseComponent> result = new ArrayList<>();
+    templateRepository.findAll().forEach(result::add);
+
+    Stream<ResponseComponent> filteredResult = result.stream().sorted(TemplateFilter
+        .createTemplateComparator(sortBy));
+
+    if (count.isPresent()) {
+      if (page.isPresent()) {
+        // skip pages
+        filteredResult = filteredResult
+            .skip(page.get() * count.get());
+      }
+      // only take count amount of entries
+      filteredResult = filteredResult.limit(count.get());
+    }
+    return filteredResult.collect(Collectors.toList());
   }
 
 
@@ -90,4 +113,16 @@ public class ResponseTemplateController {
     templateRepository.deleteAll();
   }
 
+  /**
+   * Updates templates by ID that are already in the database.
+   *
+   * @param templateId        Is the template ID.
+   * @param responseComponent Is the template itself.
+   */
+  @PutMapping("api/template/{templateId}")
+  public void updateTemplate(@PathVariable int templateId, @RequestBody ResponseComponent responseComponent) {
+    initialize();
+    responseComponent.setComponentId(templateId);
+    templateRepository.save(responseComponent);
+  }
 }

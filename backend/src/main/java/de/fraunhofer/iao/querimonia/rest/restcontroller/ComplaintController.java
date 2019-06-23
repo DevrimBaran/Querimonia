@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
-import de.fraunhofer.iao.querimonia.db.ComplaintFactory;
-import de.fraunhofer.iao.querimonia.db.ComplaintFilter;
+import de.fraunhofer.iao.querimonia.db.Complaints.Complaint;
+import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintFactory;
+import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;

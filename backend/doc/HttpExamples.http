@@ -23,12 +23,12 @@ POST http://localhost:8080/api/templates
 Content-Type: application/json
 
 {
-  "componentName": "Begrüßung_Morgens_OhneName",
-  "priority": 100,
+  "componentName": "fD1aLles zum testen",
+  "priority": 100076,
   "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
   "templateTexts": [
     "Guten Morgen,",
-    "Guten Tag,"
+    "Gute Mahlzeit,"
   ]
 }
 
@@ -65,6 +65,20 @@ Content-Type: application/json
   "text": "Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!"
 }
 
+###
+
+PUT http://localhost:8080/api/template/1
+Content-Type: application/json
+
+{
+  "componentName": "Begrüßung_Morgens_MitName",
+  "priority": 100,
+  "rulesXml": "<Rules><And><PredecessorCount min=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
+  "templateTexts": [
+    "Guten Morgen,",
+    "Guten Abend,"
+  ]
+}
 
 
 ###
@@ -151,6 +165,14 @@ Content-Type: application/json
 
 # get a single complaint
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
+
+###
+
+GET http://localhost:8080/api/templates
+
+###
+
+GET http://localhost:8080/api/templates?sort_by=priority_asc&count=3&page=1
 
 ###
 

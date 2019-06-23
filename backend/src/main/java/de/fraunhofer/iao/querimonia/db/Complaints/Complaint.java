@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.db;
+package de.fraunhofer.iao.querimonia.db.Complaints;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;

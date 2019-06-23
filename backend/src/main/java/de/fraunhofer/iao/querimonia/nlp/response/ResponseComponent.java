@@ -41,6 +41,10 @@ public class ResponseComponent {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int componentId;
 
+  public void setComponentId(int componentId) {
+    this.componentId = componentId;
+  }
+
   /**
    * A unique identifier for components.
    */
