@@ -29,19 +29,29 @@ function App () {
   return (
     <Router basename={basepath}>
       <Block className='menu'>
-        <a href='https://querimonia-dev.iao.fraunhofer.de/dev/'>
-          <img src={logo} className='Topbar-logo' alt='logo' width='100%' />
-        </a>
-        <ul>
-          <li>
-            <Link to='/'>Start</Link>
-          </li>
-          <li>
-            <Link to='/complaints'>Beschwerden</Link>
-          </li>
-          <li>
-            <Link to='/import'>Import</Link>
-          </li>
+        <nav>
+          <a href={'https://querimonia-dev.iao.fraunhofer.de' + basepath}>
+            <img src={logo} className='Topbar-logo' alt='logo' width='100%' />
+          </a>
+          <ul>
+            <li>
+              <Link to='/'>Start</Link>
+            </li>
+            <li>
+              <Link to='/complaints'>Beschwerden</Link>
+            </li>
+            <li>
+              <Link to='/import'>Import</Link>
+            </li>
+            <li>
+              <Link to='/wordvectors'>Wortvektoren</Link>
+            </li>
+            <li>
+              <Link to='/tagcloud'>Tag-Cloud</Link>
+            </li>
+            {(process.env.NODE_ENV === 'development') && <li><label htmlFor='mockApi'>no mock: </label> <input type='checkbox' defaultChecked id='mockApi' /></li>}
+          </ul>
+        </nav>
           {/*
           <li>
             <Link to='/export'>Export</Link>
@@ -50,14 +60,6 @@ function App () {
             <Link to='/statistics'>Statistik</Link>
           </li>
           */}
-          <li>
-            <Link to='/wordvectors'>Wortvektoren</Link>
-          </li>
-          <li>
-            <Link to='/tagcloud'>Tag-Cloud</Link>
-          </li>
-          {(process.env.NODE_ENV === 'development') && <li><label htmlFor='mockApi'>no mock: </label> <input type='checkbox' defaultChecked id='mockApi' /></li>}
-        </ul>
       </Block>
 
       <Route exact path='/' component={Home} />
