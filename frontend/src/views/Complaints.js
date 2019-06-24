@@ -8,17 +8,16 @@ import React, { Component } from 'react';
 
 import Api from 'utility/Api';
 
-import Block from 'components/Block/Block';
-import Row from 'components/Row/Row';
-import Content from 'components/Content/Content';
-import Complaint from 'components/Complaint/Complaint';
-import Filter from 'components/Filter/Filter';
-// import Complaints from 'components/Complaints/Complaints';
-// import Modal from 'components/Modal/Modal';
-import Tabbed from 'components/Tabbed/Tabbed';
-import TaggedText from 'components/TaggedText/TaggedText';
-import TextBuilder from 'components/TextBuilder/TextBuilder';
-import Pagination from 'components/Pagination/Pagination';
+import Block from 'components/Block';
+import Row from 'components/Row';
+import Content from 'components/Content';
+import Complaint from 'components/Complaint';
+import Filter from 'components/Filter';
+import Tabbed from 'components/Tabbed';
+import TaggedText from 'components/TaggedText';
+import TextBuilder from 'components/TextBuilder';
+import Pagination from 'components/Pagination';
+import Collapsible from 'components/Collapsible';
 import ReactTooltip from 'react-tooltip';
 import 'assets/scss/Complaints.scss';
 
@@ -53,67 +52,58 @@ class Complaints extends Component {
       this.fetchData(query);
     }
     // Creates an enumeration of words in an array
-    renderEnumeration = (word) => {
-      return (<li>{word}</li>);
+    renderEnumeration = (word, index) => {
+      return (<li key={index}>{word}</li>);
     }
     renderSingle = (active) => {
       return (<React.Fragment>
         <Block>
           <Row vertical>
             <h6 className='center'>Antwort</h6>
-            <Content>
-              <Tabbed style={{ height: '100%' }}>
-                <div label='Erstellen'>
-                  <TextBuilder complaintId={active.complaintId} />
-                </div>
-                <div label='Datenbank'>BUH!</div>
-              </Tabbed>
-            </Content>
+            <TextBuilder complaintId={active.complaintId} />
           </Row>
         </Block>
         <Block>
           <Row vertical>
             <h6 className='center'>Meldetext</h6>
             <Content>
-              <Tabbed style={{ height: '100%' }}>
+              <Tabbed className="padding" style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
-                  <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
+                  <TaggedText text={{ text: active.text, entities: active.entities }} />
                 </div>
                 <div label='Original'>
                   {active.text}
                 </div>
               </Tabbed>
             </Content>
-            <h6 className='center'>Details</h6>
-            <Content>
-              <div label='Details'>
-                <b> Artikulationsdatum: </b>
-                <TaggedText text={{
-                  text: active.receiveDate,
-                  entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
-                }} />
-                <br />
-                <b> ID: </b>
-                {active.complaintId}
-                <br />
-                <b> Kategorie: </b>
-                <i data-tip data-for='subjects'>{active.probableSubject}</i>
-                <br />
-                <b> Sentiment: </b>
-                <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
-                <br />
-                <b> Entitäten: </b>
-                <ul>
-                  {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
-                </ul>
-                <ReactTooltip id='subjects' aria-haspopup='true'>
-                  {createCategoriesArray(active.subject).map(this.renderEnumeration, this)}
-                </ReactTooltip>
-                <ReactTooltip id='sentiments' aria-haspopup='true'>
-                  {createCategoriesArray(active.sentiment).map(this.renderEnumeration, this)}
-                </ReactTooltip>
-              </div>
-            </Content>
+            <Collapsible className="Content" label="Details" collapse={false}>
+              <b> Artikulationsdatum: </b>
+              <TaggedText text={{
+                text: active.receiveDate,
+                entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+              }} />
+              <br />
+              <b> ID: </b>
+              {active.complaintId}
+              <br />
+              <b> Kategorie: </b>
+              <i data-tip data-for='subjects'>{active.probableSubject}</i>
+              <br />
+              <b> Sentiment: </b>
+              <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
+              <br />
+              </Collapsible>
+              <Collapsible className="Content" label="Entitäten" collapse={true}>  
+              <ul>
+                {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
+              </ul>
+              <ReactTooltip id='subjects' aria-haspopup='true'>
+                {createCategoriesArray(active.subject).map(this.renderEnumeration, this)}
+              </ReactTooltip>
+              <ReactTooltip id='sentiments' aria-haspopup='true'>
+                {createCategoriesArray(active.sentiment).map(this.renderEnumeration, this)}
+              </ReactTooltip>
+            </Collapsible>
           </Row>
         </Block>
       </React.Fragment>);

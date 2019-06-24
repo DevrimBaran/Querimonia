@@ -6,7 +6,7 @@
 
 import React from 'react';
 
-import Block from 'components/Block/Block';
+import Block from 'components/Block';
 
 function Export () {
   return (

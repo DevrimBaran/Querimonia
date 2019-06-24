@@ -7,9 +7,9 @@
 import React, { Component } from 'react';
 import randomColor from 'randomcolor';
 import TagCloud from 'react-tag-cloud';
-import Block from 'components/Block/Block';
-import Row from 'components/Row/Row';
-import Content from 'components/Content/Content';
+import Block from 'components/Block';
+import Row from 'components/Row';
+import Content from 'components/Content';
 
 import Api from 'utility/Api';
 

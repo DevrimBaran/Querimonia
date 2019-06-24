@@ -1,0 +1,210 @@
+@import 'variables';
+@import 'reset';
+@import 'font-awesome/fontawesome';
+@import "font-awesome/solid";
+@import 'fonts';
+@import 'inputs';
+@import 'helpers';
+@import 'TextBuilder';
+
+#root {
+    display: flex;
+    overflow: hidden;
+}
+
+#menu {
+    width: 11em;
+    border-right: 1px solid $grey;
+    #logo {
+        padding: 10px 0 20px;
+    }
+    li > * {
+        padding: 5px 20px;
+    }
+}
+
+.Block {
+    overflow: auto;
+    width: 100%;
+    //padding: 0 60px;
+    border-right: 1px solid $grey;
+    &:last-of-type {
+        border-right: none;
+    }
+}
+.Content {
+    overflow: auto;
+    flex-grow: 1;
+}
+.row {
+    height: 100%;
+    width: 100%;
+}
+
+.complaintSummary {
+    background-color: var(--primaryBackgroundColor);
+    padding:  0.5em 30px 1em 30px;
+    p {
+        height: 2.3em;
+        overflow: hidden;
+        clear: both;
+        padding-top: 0;
+        text-align: justify;
+    }
+    .title{
+        margin: 0em;
+        width: 80%;
+        float: left;
+    }
+    h3 {
+        margin: 0px;
+    }
+    .date {
+        float: left;
+        width: 20%;
+        margin: 0em;
+    }
+    .date p {
+        height: 1em;
+        text-align: right;
+        padding-top: 0;
+        margin: 0;
+    }
+    &:hover {
+        background-color: var(--secondaryBackgroundColor);
+    }
+}
+
+.pagination {
+    padding: 10px;
+    a {
+        color: $secondary;
+        margin: 10px;
+    }
+}
+
+.tabbed {
+    position: relative;
+    display: grid;
+    grid-row-gap: -1px;
+    grid-template-columns: auto;
+    grid-template-rows: 2em 1fr;
+    grid-auto-columns: auto;
+    grid-auto-flow: column;
+    background-color: inherit;
+    & > .tab {
+        grid-row: 1 / 2;
+        margin: 0em;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+    }
+    & > .tab.active, & > .tab:hover {
+        background-color: var(--primaryBackgroundColor);
+    }
+    & > .tab.active + [label] {
+        display: block;
+    }
+    & > [label] {
+        grid-column-start: 1;
+        grid-column-end: var(--tabCount);
+        grid-row: 2 / 3;
+        background-color: var(--primaryBackgroundColor);
+        padding: 1.3em var(--contentMargin) 0em var(--contentMargin);
+        overflow: auto;
+        display: none;
+    }
+}
+
+
+.Filter {
+    min-height: fit-content;
+
+    .Block {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        margin: 10px 15px;
+
+    }
+    Select.relation {
+        background-color: $primary;
+        color: white;
+    }
+    input, select, option {
+        color: black;
+    }
+    .remove {
+        &::after {
+            display: block;
+            content: 'X';
+        }
+    }
+    .relation > .remove {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
+    .clause {
+        flex-wrap: nowrap;
+    }
+    .sort,.relation {
+        flex-direction: column;
+    }
+}
+
+.collapsible {
+    position: relative;
+    overflow: hidden;
+    .handle {
+        position: relative;
+        display: block;
+        line-height: 15px;
+        width: 100%;
+        height: 40px;
+        cursor: pointer;
+        color: $black;
+        font-size: 15px;      
+        //padding: 10px 0;
+        z-index: 1;
+        &::before {
+            position: relative;
+            display: block;
+            content: '';
+            top: 7px;
+            border-top: 1px solid $grey;
+        }
+        i {
+            position: relative;
+            padding: 0 5px 0 10px;
+            margin-left: 10px;
+            background-color: $white;
+        }
+        span {
+            position: relative;
+            padding-right: 10px;
+            background-color: $white;
+        }
+    }
+    .content {
+        overflow: auto;
+        height: 100%;
+        padding-top: 10px;
+    }
+    &.Content .content {
+        height: calc(100% - 40px);
+        padding: 0 30px;
+    }
+}
+.collapsible[data-collapse=true] { 
+    min-height: 30px !important;
+    .content {
+        display: none;
+    }
+}
+
+.padding {
+    padding: 0 30px;
+}
