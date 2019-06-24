@@ -10,12 +10,12 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "hallo, mein Name ist Maria Bauer. Der Bus der Linie N2 an der Haltestelle Hauptbahnhof ist leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€."
+  "text": "Der Fahrer war sehr unfreundlich!\nIch bitte um Rückerstattung von 23,12€."
 }
 
 ###
 
-GET http://localhost:8080/api/responses/plain/205
+GET http://localhost:8080/api/responses/plain/14
 
 ###
 
@@ -25,7 +25,7 @@ Content-Type: application/json
 {
   "componentName": "Begrüßung_Morgens_OhneName",
   "priority": 100,
-  "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
+  "rulesXml": "<And><PredecessorCount min=\"1\"/><Subject value=\"Fahrer unfreundlich\"/><Sentiment value=\"Wut\"/></And>",
   "templateTexts": [
     "Guten Morgen,",
     "Guten Tag,"
@@ -86,7 +86,7 @@ GET http://localhost:8080/api/stats/tagcloud?words_only=true&subject=Sonstiges,F
 
 ###
 
-GET http://localhost:8080/api/complaints?subject=Fahrt nicht erfolgt
+GET http://localhost:8080/api/complaints?sort_by=priority_desc
 ###
 
 POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates

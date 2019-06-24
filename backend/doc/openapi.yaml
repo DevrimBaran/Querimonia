@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.4.1
+  version: 0.4.2
 servers:
   - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/
   - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/
@@ -372,6 +372,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseComponent'
+        404:
+          description: Template mit der gegebenen ID ist nicht vorhanden.
+        400:
+          description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
 
   /api/templates/all:
     delete:
@@ -444,7 +448,6 @@ components:
   schemas:
     Complaint:
       required:
-        - id
         - text
         - preview
         - receiveDate
@@ -454,7 +457,7 @@ components:
         - entities
       type: object
       properties:
-        id:
+        complaintId:
           type: integer
           format: int32
           minimum: 1
@@ -568,21 +571,40 @@ components:
             example: "Name"
             description: Eine Entity, die für den Antwortbaustein vorhanden sein muss. Muss **nicht** beim Posten eines Bausteins angegeben werden.
 
-    CompletedResponseComponent:
-      description: Ein ausgefüllter Antwortbaustein, bei dem ein ein möglicher Text eines Antwortbausteins mit spezifischen, zur Beschwerde passenden Informationen ausgefüllt wurde.
+    CompletedResponsePart:
+      description: Ein Teil der Anwort, der mögliche, asugefüllte Textbausteine enthält.
       type: object
       required:
-        - completedComponentId
+        - alternatives
+        - component
+      properties:
+        responsePartId:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 1
+          description: Die eindeutige Id des Antwortteils.
+        alternatives:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleCompletedComponent'
+          description: Der Textalternativen des Antwortteils
+        component:
+          $ref: '#/components/schemas/ResponseComponent'
+          
+    SingleCompletedComponent:
+      description: Ein einzelner, ausgefüllter Textbaustein mit markierten Entitäten.
+      type: object
+      required:
         - completedText
         - entities
-        - component
       properties:
         completedComponentId:
           type: integer
           format: int32
           minimum: 1
           example: 1
-          description: Die eindeutige Id des ausgefüllten Bausteins.
+          description: Eine eindeutige Id des ausgefüllten Bausteins.
         completedText:
           type: string
           description: Der ausgefüllte Text des Bausteins.
@@ -592,16 +614,11 @@ components:
           items:
             $ref: '#/components/schemas/NamedEntity'
           description: Enthält alle Entitäten, die in der Antwort vorhanden sind.
-        component:
-          $ref: '#/components/schemas/ResponseComponent'
 
     ResponseSuggestion:
-      description: Eine geschachtelte Liste von ausgefüllten Antwortbausteinen. Die äußere Liste repräsentiert die Position in der Antwort, die inneren Listen enthalten alle möglchen (Alternativ-)Texten.
       type: array
       items:
-        type: array
-        items:
-          $ref: '#/components/schemas/CompletedResponseComponent'
+        $ref: '#/components/schemas/CompletedResponsePart'
 
     OrderBy:
       description: Ein Array von Kategorien, nach denen eine Anfrage sortiert werden soll. Zusätzlich wird angegeben, ob auf oder absteigend sortiert wird.

@@ -35,7 +35,7 @@
             </xs:element>
             <xs:element name="Predecessor">
                 <xs:complexType>
-                    <xs:attribute name="template" type="xs:string" use="required"/>
+                    <xs:attribute name="matches" type="xs:string" use="required"/>
                     <xs:attribute name="position">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">

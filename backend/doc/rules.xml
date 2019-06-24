@@ -5,17 +5,9 @@
              xsi:schemaLocation="https://www.w3schools.com/xml rules-format.xsd">
 
     <And>
-        <PredecessorCount max="0"/>
-        <Or>
-            <Subject value="Fahrt nicht erfolgt"/>
-            <Subject value="Sonstiges"/>
-        </Or>
-        <Not>
-            <Sentiment value="Traurig"/>
-        </Not>
-        <EntityAvailable label="Geschlecht" value="m"/>
-        <EntityAvailable label="Nachname"/>
-        <UploadTime min="04:00:00" max="11:00:00"/>
+        <PredecessorCount min="1"/>
+        <EntityAvailable label="Haltestelle" value="Universität"/>
+        <EntityAvailable label="Haltestelle" value="Schranne" />
     </And>
 
 </Rules>
