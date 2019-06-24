@@ -13,7 +13,7 @@ import Tabbed from 'components/Tabbed/Tabbed';
 import TaggedText from 'components/TaggedText/TaggedText';
 import TextBuilder from 'components/TextBuilder/TextBuilder';
 import Pagination from 'components/Pagination/Pagination';
-import ReactTooltip from 'react-tooltip'
+import ReactTooltip from 'react-tooltip';
 import 'assets/scss/Complaints.scss';
 
 class Complaints extends Component {

@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "config": {
-    "backend": "https://beschwerdemanagement-dev.iao.fraunhofer.de"
+    "backend": "https://beschwerdemanagement.iao.fraunhofer.de"
   },
   "dependencies": {
     "chart.js": "^2.8.0",
