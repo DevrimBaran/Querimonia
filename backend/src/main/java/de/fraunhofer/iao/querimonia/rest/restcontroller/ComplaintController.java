@@ -8,6 +8,7 @@ import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRe
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
+import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
@@ -81,7 +82,7 @@ public class ComplaintController {
 
     complaintFactory = new ComplaintFactory()
         .setClassifier(new KiKuKoClassifier())
-        .setEntityExtractor((text1) -> new ArrayList<>())
+        .setEntityExtractor(new KikukoExtractor())
         .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
         .setSentimentAnalyzer((text1) -> sentimentMock)
         .setStopWordFilter(new TokenAnalyzer());

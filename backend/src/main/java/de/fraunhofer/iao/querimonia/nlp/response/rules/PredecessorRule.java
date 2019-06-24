@@ -2,7 +2,6 @@ package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
 import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
 import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
-import de.fraunhofer.iao.querimonia.nlp.response.SingleCompletedComponent;
 import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
 
 import java.util.List;
@@ -13,21 +12,21 @@ import java.util.List;
 public class PredecessorRule implements Rule {
 
   private String position = "before";
-  private String predecessorName;
+  private String predecessorRegex;
 
   /**
    * Creates new predecessor rule.
    *
-   * @param predecessorName the template name.
+   * @param predecessorRegex the template name.
    * @param position the position of the predecessor. Must be "any", "before" or a positive number.
    */
-  public PredecessorRule(String predecessorName, String position) {
+  public PredecessorRule(String predecessorRegex, String position) {
     this.position = position;
-    this.predecessorName = predecessorName;
+    this.predecessorRegex = predecessorRegex;
   }
 
-  public PredecessorRule(String predecessorName) {
-    this.predecessorName = predecessorName;
+  public PredecessorRule(String predecessorRegex) {
+    this.predecessorRegex = predecessorRegex;
   }
 
   @Override
@@ -37,11 +36,9 @@ public class PredecessorRule implements Rule {
     if (position.equals("any")) {
       return currentResponseState.stream()
           // position does not matter
-          .map(CompletedResponseComponent::getResponseComponents)
-          .map(list -> list.get(0))
-          .map(SingleCompletedComponent::getComponent)
+          .map(CompletedResponseComponent::getComponent)
           .map(ResponseComponent::getComponentName)
-          .anyMatch(predecessorName::equals);
+          .anyMatch(name -> name.matches(predecessorRegex));
 
     } else if (currentResponseState.isEmpty()) {
       return false;
@@ -55,11 +52,9 @@ public class PredecessorRule implements Rule {
         return false;
       }
       return currentResponseState.get(index)
-          .getResponseComponents()
-          .get(0)
           .getComponent()
           .getComponentName()
-          .equals(predecessorName);
+          .matches(predecessorRegex);
     }
   }
 

@@ -57,7 +57,7 @@ public class ResponseController {
   public String getPlainResponse(@PathVariable int complaintId) {
     return getResponse(complaintId)
         .stream()
-        .map(completedResponseComponent -> completedResponseComponent.getResponseComponents()
+        .map(completedResponseComponent -> completedResponseComponent.getAlternatives()
             .get(0).getCompletedText())
         .collect(Collectors.joining());
   }

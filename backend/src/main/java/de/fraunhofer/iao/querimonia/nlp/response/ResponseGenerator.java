@@ -8,9 +8,7 @@ public interface ResponseGenerator {
   /**
    * Generates a response out of the given information.
    *
-   *
-   * @param complaintData@return a generated response suggestion out of the given information.
+   * @return a generated response suggestion out of the given information.
    */
-  ResponseSuggestion generateResponse(
-      ComplaintData complaintData);
+  ResponseSuggestion generateResponse(ComplaintData complaintData);
 }

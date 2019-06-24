@@ -95,7 +95,7 @@ public class RuleParser {
     if (element.hasAttribute("position")) {
       position = element.getAttribute("position");
     }
-    String template = element.getAttribute("template");
+    String template = element.getAttribute("matches");
     return new PredecessorRule(template, position);
   }
 

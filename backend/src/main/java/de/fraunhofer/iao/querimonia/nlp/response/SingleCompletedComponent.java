@@ -14,7 +14,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import java.util.List;
 
 /**
@@ -37,10 +36,6 @@ public class SingleCompletedComponent {
   @Column(length = 5000)
   private String completedText;
 
-  @JoinColumn(name = "component_id")
-  @ManyToOne
-  private ResponseComponent component;
-
   @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "response_entity_table",
                    joinColumns = @JoinColumn(name = "completed_component_id"))
@@ -52,10 +47,8 @@ public class SingleCompletedComponent {
   @JsonCreator
   public SingleCompletedComponent(
       @JsonProperty String completedText,
-      @JsonProperty ResponseComponent component,
       @JsonProperty List<NamedEntity> entities) {
     this.completedText = completedText;
-    this.component = component;
     this.entities = entities;
   }
 
@@ -66,10 +59,6 @@ public class SingleCompletedComponent {
 
   public String getCompletedText() {
     return completedText;
-  }
-
-  public ResponseComponent getComponent() {
-    return component;
   }
 
   public List<NamedEntity> getEntities() {

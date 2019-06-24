@@ -27,13 +27,11 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   /**
    * Fills a response component with the information given in the entities.
    *
-   * @param component     the response component that gets filled out.
    * @param currentSlices the current text slices
    * @param entities      the named entities of the complaint.
    * @return a filled out response component.
    */
-  private static SingleCompletedComponent fillResponseComponent(ResponseComponent component,
-                                                                List<ResponseSlice> currentSlices,
+  private static SingleCompletedComponent fillResponseComponent(List<ResponseSlice> currentSlices,
                                                                 Map<String, String> entities) {
 
     StringBuilder resultText = new StringBuilder();
@@ -61,7 +59,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       resultPosition += textToAppend.length();
       resultText.append(textToAppend);
     }
-    return new SingleCompletedComponent(resultText.toString(), component, entityList);
+    return new SingleCompletedComponent(resultText.toString(), entityList);
   }
 
   @Override
@@ -100,10 +98,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
           generatedResponse.add(
               new CompletedResponseComponent(currentComponent.getTemplateSlices().stream()
                                                  .map(responseSlices -> fillResponseComponent(
-                                                     currentComponent,
                                                      responseSlices,
                                                      entityValueMap))
-                                                 .collect(Collectors.toList())));
+                                                 .collect(Collectors.toList()), currentComponent));
           continue outer;
         }
       }
