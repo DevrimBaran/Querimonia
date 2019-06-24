@@ -10,12 +10,12 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Der Fahrer war sehr unfreundlich!\nIch bitte um Rückerstattung von 23,12€."
+  "text": "hallo, mein Name ist Maria Bauer. Der Bus der Linie N2 an der Haltestelle Hauptbahnhof ist leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€."
 }
 
 ###
 
-GET http://localhost:8080/api/responses/plain/14
+GET http://localhost:8080/api/responses/plain/205
 
 ###
 
@@ -23,12 +23,12 @@ POST http://localhost:8080/api/templates
 Content-Type: application/json
 
 {
-  "componentName": "Begrüßung_Morgens_OhneName",
-  "priority": 100,
-  "rulesXml": "<And><PredecessorCount min=\"1\"/><Subject value=\"Fahrer unfreundlich\"/><Sentiment value=\"Wut\"/></And>",
+  "componentName": "fD1aLles zum testen",
+  "priority": 100076,
+  "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
   "templateTexts": [
     "Guten Morgen,",
-    "Guten Tag,"
+    "Gute Mahlzeit,"
   ]
 }
 
@@ -65,6 +65,20 @@ Content-Type: application/json
   "text": "Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!"
 }
 
+###
+
+PUT http://localhost:8080/api/template/1
+Content-Type: application/json
+
+{
+  "componentName": "Begrüßung_Morgens_MitName",
+  "priority": 100,
+  "rulesXml": "<Rules><And><PredecessorCount min=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
+  "templateTexts": [
+    "Guten Morgen,",
+    "Guten Abend,"
+  ]
+}
 
 
 ###
@@ -86,7 +100,7 @@ GET http://localhost:8080/api/stats/tagcloud?words_only=true&subject=Sonstiges,F
 
 ###
 
-GET http://localhost:8080/api/complaints?sort_by=priority_desc
+GET http://localhost:8080/api/complaints?subject=Fahrt nicht erfolgt
 ###
 
 POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
@@ -151,6 +165,14 @@ Content-Type: application/json
 
 # get a single complaint
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
+
+###
+
+GET http://localhost:8080/api/templates
+
+###
+
+GET http://localhost:8080/api/templates?sort_by=priority_asc&count=3&page=1
 
 ###
 

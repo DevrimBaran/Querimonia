@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.Complaint;
+import de.fraunhofer.iao.querimonia.db.Complaints.Complaint;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
 import org.springframework.http.HttpStatus;

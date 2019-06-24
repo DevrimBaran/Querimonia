@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.response;
 
-import de.fraunhofer.iao.querimonia.db.ComplaintUtility;
+import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 

@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.db;
+package de.fraunhofer.iao.querimonia.db.Complaints;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
