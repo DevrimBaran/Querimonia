@@ -1,3 +1,9 @@
+/**
+ * This class creates the Statistics view.
+ *
+ * @version <0.1>
+ */
+
 import React from 'react';
 
 import Block from 'components/Block/Block';

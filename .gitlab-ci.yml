@@ -23,7 +23,7 @@ build-frontend-dev: &base-frontend
       - frontend/build/
   allow_failure: true
   only:
-    - frontend-dev
+    - /^frontend.*$/
 
 build-frontend-mock:
   <<: *base-frontend
@@ -57,6 +57,8 @@ test-frontend:
       - frontend/build/
       - frontend/mock/
   allow_failure: false
+  only:
+    - /^frontend.*$/
 
 deploy-frontend-mock:
   stage: deploy
@@ -67,7 +69,7 @@ deploy-frontend-mock:
     - cp -r frontend/mock/* /home/beschwerdemanagement/export/frontend-mock/
   allow_failure: true
   only:
-    - frontend-dev
+    - frontend
 
 deploy-frontend-dev:
   stage: deploy
@@ -78,7 +80,7 @@ deploy-frontend-dev:
     - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
-    - frontend-dev
+    - frontend
 
 # backend
 build-backend-dev: &base-backend
@@ -92,13 +94,15 @@ build-backend-dev: &base-backend
       - backend/target/*.jar
   allow_failure: true
   only:
-    - backend-dev
+    - /^backend.*$/
 
 test-backend-dev:
   <<: *base-backend
   stage: test
   script:
     - echo 'no tests'
+  only:
+    - /^backend.*$/
 
 deploy-backend-dev:
   stage: deploy
@@ -112,7 +116,7 @@ deploy-backend-dev:
     - sudo systemctl restart stuprojavaserver_dev
   allow_failure: true
   only:
-    - backend-dev
+    - backend
 
 # all
 master:

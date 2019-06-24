@@ -1,3 +1,9 @@
+/**
+ * This class creates the Import view.
+ *
+ * @version <0.1>
+ */
+
 import React, { Component } from 'react';
 
 import Block from 'components/Block/Block';
