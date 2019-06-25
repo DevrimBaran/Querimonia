@@ -7,12 +7,13 @@ import nltk
 # Sarcasm, Irony not detected. For example: 'Ich hasse dich und liebe dich nicht' has value > 0
 
 
+# TODO merge positive and negative sentiment in one function
 def negative_sentiment(query):
     tokens = filter_query(query)
     sentiment_value_negative = 0
 
     for j in tokens:
-        with open('SentiWS_v2.0_Negative.txt', 'r' , encoding='utf-8') as sentis:
+        with open('data/SentiWS_v2.0_Negative.txt', 'r' , encoding='utf-8') as sentis:
             for s in sentis:
                 cells = s.split('\t')
                 lemma = cells[0].split('|')[0]
@@ -41,7 +42,7 @@ def positive_sentiment(query):
     sentiment_value_positive = 0
 
     for j in tokens:
-        with open('SentiWS_v2.0_Positive.txt', 'r' , encoding='utf-8') as sentis:
+        with open('data/SentiWS_v2.0_Positive.txt', 'r' , encoding='utf-8') as sentis:
             for s in sentis:
                 cells = s.split('\t')
                 lemma = cells[0].split('|')[0]
