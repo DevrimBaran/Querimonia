@@ -6,10 +6,10 @@ const fetchJson = function (action, options) {
     const useMock = document.getElementById('mockApi') && document.getElementById('mockApi').checked;
     if (!useMock) {
       console.log('Application is using mock backend!');
-      return fakeFetch('https://beschwerdemanagement-dev.iao.fraunhofer.de' + action, options)
+      return fakeFetch('https://beschwerdemanagement.iao.fraunhofer.de' + action, options)
         .then(response => { return response.json(); });
     } else {
-      return fetch('https://beschwerdemanagement-dev.iao.fraunhofer.de/dev' + action, options)
+      return fetch('https://beschwerdemanagement.iao.fraunhofer.de/dev' + action, options)
         .then(response => { return response.json(); });
     }
   } else {
