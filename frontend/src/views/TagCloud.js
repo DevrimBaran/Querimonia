@@ -5,24 +5,26 @@
  */
 
 import React, { Component } from 'react';
-import randomColor from 'randomcolor';
-import TagCloud from 'react-tag-cloud';
+// import randomColor from 'randomcolor';
+// import TagCloud from 'react-tag-cloud';
 import Block from 'components/Block/Block';
 import Row from 'components/Row/Row';
 import Content from 'components/Content/Content';
-
 import Api from 'utility/Api';
+import WordCloud from 'react-d3-cloud';
 
-class TagCloudTest extends Component {
+class TagCloud extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      word: [],
       words: {},
       color: '#179c7d',
       size: 200,
       max: 0
     };
   }
+
   getCSV = () => {
     // sort by value
     function Comparator (a, b) {
@@ -36,8 +38,50 @@ class TagCloudTest extends Component {
     for (var i = 0; i < Object.keys(w).length; i++) {
       ar.push([Object.keys(w)[i], Object.values(w)[i]]);
     }
-    exportToCsv('tagcloudCSV.csv', ar.sort(Comparator));
-  }
+    this.exportToCsv('tagcloudCSV.csv', ar.sort(Comparator));
+  };
+
+  /**
+   * Opens a dialog to download the CSV
+   * @param filename name of the file
+   * @param rows Array (Rows) of Arrays (Columns) include the data of the CSV
+   */
+  exportToCsv = (filename, rows) => {
+    const processRow = (row) => {
+      let finalVal = '';
+      for (let j = 0; j < row.length; j++) {
+        let result = row[j].toString();
+        if (j > 0) {
+          finalVal += ';';
+        }
+        finalVal += result;
+      }
+      return finalVal + '\r\n';
+    };
+
+    let csvFile = '';
+    for (let i = 0; i < rows.length; i++) {
+      csvFile += processRow(rows[i]);
+    }
+
+    let blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
+    if (navigator.msSaveBlob) { // IE 10+
+      navigator.msSaveBlob(blob, filename);
+    } else {
+      let link = document.createElement('a');
+      if (link.download !== undefined) { // feature detection
+        // Browsers that support HTML5 download attribute
+        let url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    }
+  };
+
   fetchData = () => {
     let query = {};
     this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
@@ -45,25 +89,37 @@ class TagCloudTest extends Component {
     this.refs.onlyWords.checked && (query.words_only = this.refs.onlyWords.checked);
     this.refs.count.value && this.refs.count.value > 0 && (query.count = this.refs.count.value);
     Api.get('/api/stats/tagcloud', query)
-      .then(a => { console.log(a); return a; })
+      .then(a => {
+        console.log(a);
+        return a;
+      })
       .then(this.setData);
-  }
+  };
+
   setData = (data) => {
-    var maxVal = Math.max.apply(Math, Object.values(data));
+    const maxVal = Math.max.apply(Math, Object.values(data));
     this.setState({ words: data });
     this.setState({ max: maxVal });
-  }
+  };
+
+  createWordArray = (wordsObject) => {
+    let wordArray = [];
+    Object.keys(wordsObject).forEach((element) => {
+      wordArray.push({ text: element, value: wordsObject[element] * 10 });
+    });
+    return wordArray;
+  };
+
   onChange = (e) => {
     let s = {};
     s[e.target.id] = e.target.value;
     this.setState(s);
-  }
+  };
+
   componentDidMount () {
     this.fetchData();
   }
-  renderWord = (word, index) => {
-    return (<abbr key={index} title={this.state.words[word]} style={{ fontSize: (this.state.words[word] / this.state.max) * this.state.size }}>{word}</abbr>);
-  }
+
   render () {
     return (
       <React.Fragment>
@@ -92,28 +148,17 @@ class TagCloudTest extends Component {
               </Row>
             </div>
             <div className='center'>
-              <input type='button' onClick={this.fetchData} value='aktualisieren' />
+              <input type='button' onClick={this.fetchData} value='Aktualisieren' />
             </div>
-            <Content>
-              <TagCloud
-                className='tag-cloud'
-                style={{
-                  fontFamily: 'sans-serif',
-                  color: () => randomColor({
-                    hue: this.state.color
-                  }),
-                  height: '100%'
-                }}>
-                {Object.keys(this.state.words).map(this.renderWord, this)}
-              </TagCloud>
+            <Content className='center' id='TagCloud'>
+              <WordCloud
+                data={this.createWordArray(this.state.words)}
+                width={1000}
+                height={400}
+              />
             </Content>
             <div>
               <Row vertical={false} style={{ justifyContent: 'center' }}>
-                <div>
-                  <label htmlFor='color'>Farbe:</label><br />
-                  <input type='color' id='color' onChange={this.onChange} value={this.state.color} />
-                </div>
-                <div style={{ width: '2em' }} />
                 <div>
                   <label htmlFor='factor'>Schriftgröße:</label><br />
                   <input type='number' id='size' onChange={this.onChange} value={this.state.size} />
@@ -130,44 +175,4 @@ class TagCloudTest extends Component {
   }
 }
 
-/**
- * Opens a dialog to download the CSV
- * @param filename name of the file
- * @param rows Array (Rows) of Arrays (Columns) include the data of the CSV
- */
-function exportToCsv (filename, rows) {
-  var processRow = function (row) {
-    var finalVal = '';
-    for (var j = 0; j < row.length; j++) {
-      var result = row[j].toString();
-      if (j > 0) { finalVal += ';'; }
-      finalVal += result;
-    }
-    return finalVal + '\r\n';
-  };
-
-  var csvFile = '';
-  for (var i = 0; i < rows.length; i++) {
-    csvFile += processRow(rows[i]);
-  }
-
-  var blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-  if (navigator.msSaveBlob) { // IE 10+
-    navigator.msSaveBlob(blob, filename);
-  } else {
-    var link = document.createElement('a');
-    if (link.download !== undefined) { // feature detection
-      // Browsers that support HTML5 download attribute
-      var url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', filename);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
-}
-
-// ReactDOM.render(<TagCloudTest />, document.getElementById('root'));
-export default TagCloudTest;
+export default TagCloud;

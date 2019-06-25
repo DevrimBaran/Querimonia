@@ -14,7 +14,7 @@ import Import from 'views/Import';
 // import Export from 'views/Export';
 // import Statistics from 'views/Statistics';
 import WordVectors from 'views/WordVectors';
-import TagCloudTest from 'views/TagCloudTest';
+import TagCloud from 'views/TagCloud';
 import logo from './assets/img/StuproLogo2.svg';
 
 function App () {
@@ -68,7 +68,7 @@ function App () {
       <Route path='/statistics' component={Statistics} />
       */}
       <Route path='/wordvectors' component={WordVectors} />
-      <Route path='/tagcloud' component={TagCloudTest} />
+      <Route path='/tagcloud' component={TagCloud} />
     </Router>
   );
 }
