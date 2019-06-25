@@ -11,6 +11,7 @@ import Complaints from 'views/Complaints';
 import Import from 'views/Import';
 import WordVectors from 'views/WordVectors';
 import TagCloudTest from 'views/TagCloudTest';
+import Templates from 'views/Templates';
 import logo from './assets/img/StuproLogo2.svg';
 
 function App () {
@@ -24,7 +25,7 @@ function App () {
   console.log('basepath', process.env.REACT_APP_BACKEND_PATH, basepath);
   return (
     <Router basename={basepath}>
-      <nav id="menu">
+      <nav id='menu'>
         <a href={basepath}>
           <img src={logo} id='logo' alt='logo' width='100%' />
         </a>
@@ -39,6 +40,9 @@ function App () {
             <Link to='/import'>Import</Link>
           </li>
           <li>
+            <Link to='/templates'>Templates</Link>
+          </li>
+          <li>
             <Link to='/wordvectors'>Wortvektoren</Link>
           </li>
           <li>
@@ -50,6 +54,7 @@ function App () {
 
       <Route exact path='/' component={Home} />
       <Route path='/complaints/:id?' component={Complaints} />
+      <Route path='/templates/:id?' component={Templates} />
       <Route path='/import' component={Import} />
       {/*
       <Route path='/export' component={Export} />

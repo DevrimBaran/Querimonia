@@ -8,27 +8,27 @@ import React, { Component } from 'react';
 
 import Block from 'components/Block';
 
-//import Api from '../utility/Api';
+// import Api from '../utility/Api';
 
 class WordVectors extends Component {
-  constructor() {
+  constructor () {
     super();
     this.state = {
-      result: ""
-    }
+      result: ''
+    };
   }
   parseText = (e) => {
     let text = e.target.value.replace(/\s+/g, '');
     let parameters = [];
     let match;
-    while(true) {
+    while (true) {
       match = text.match(/^(\+|-)?([a-zA-Z_]+)(.*)$/);
       if (match) {
         parameters.push({
           sign: match[1] || '+',
           word: match[2]
         });
-        text = match[3] || "";
+        text = match[3] || '';
       } else {
         break;
       }
@@ -36,7 +36,7 @@ class WordVectors extends Component {
     this.analogy = parameters;
   }
   word2vec = (data) => {
-    let v = /*Api.get('/api/word2vec/' + data.word, '')
+    let v = /* Api.get('/api/word2vec/' + data.word, '')
       .catch(() => {
         console.log('catch');
         return [1, 0, 0, 1];
@@ -47,25 +47,25 @@ class WordVectors extends Component {
       }).then((response) => {
         if (data.sign !== '-') return response;
         return response.map(a => -a);
-      })
+      });
     return v;
   }
   vec2word = () => {
 
   }
   calculate = () => {
-    let v = [0,0,0,0];
-    Promise.all(this.analogy.map(w => {return this.word2vec(w)}))
+    let v = [0, 0, 0, 0];
+    Promise.all(this.analogy.map(w => { return this.word2vec(w); }))
       .then(vectors => vectors.reduce((result, vec) => {
         return result.map((a, i) => {
           return vec[i] + a;
-        })
+        });
       }, v))
       .then(result => {
-        this.setState({result: result});
+        this.setState({ result: result });
       });
   }
-  render() {
+  render () {
     return (
       <React.Fragment>
         <Block>
@@ -94,7 +94,7 @@ class WordVectors extends Component {
             <br />
             <br />
             <h6>Analogie</h6>
-            <input type="text" onChange={this.parseText} />
+            <input type='text' onChange={this.parseText} />
             <input type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
             <p>{this.state.result}</p>
           </div>

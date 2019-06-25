@@ -11,7 +11,6 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 import Query from 'components/Query';
 
-
 class Pagination extends Component {
   /*
   constructor (props) {

@@ -20,7 +20,7 @@ class TextBuilder extends Component {
     super(props);
 
     this.state = {
-      text: "",
+      text: '',
       categories: []
     };
     this.data = {};
@@ -71,13 +71,13 @@ class TextBuilder extends Component {
         return { status: 404 };
       })
       .then((response) => {
-        console.log(response); 
+        console.log(response);
         return [
           {
             category: 'Begrüßung',
             answers: [
-              {completedText: 'foo', entities: []},
-              {completedText: 'faa', entities: []}
+              { completedText: 'foo', entities: [] },
+              { completedText: 'faa', entities: [] }
             ]
           },
           {
@@ -106,12 +106,12 @@ class TextBuilder extends Component {
   render () {
     return (
       <React.Fragment>
-        <Content style={{flexBasis: '100%'}}>
+        <Content style={{ flexBasis: '100%' }}>
           <textarea id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
             onChange={this.onChange} />
-          <input type="button" onClick={this.delete} value="Abschließen (löschen)" />
+          <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>
-        <Collapsible style={{ minHeight: this.state.categories.length > 0 ? '150px' : '0'}} className="Content" label="Antworten" collapse={false} id='responses'>
+        <Collapsible style={{ minHeight: this.state.categories.length > 0 ? '150px' : '0' }} className='Content' label='Antworten' collapse={false} id='responses'>
           {
             this.state.categories.map((category, index) => {
               const answers = this.data[index].answers;

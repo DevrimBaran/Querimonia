@@ -67,7 +67,7 @@ class Complaints extends Component {
           <Row vertical>
             <h6 className='center'>Meldetext</h6>
             <Content>
-              <Tabbed className="padding" style={{ height: '100%' }}>
+              <Tabbed className='padding' style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
                   <TaggedText text={{ text: active.text, entities: active.entities }} />
                 </div>
@@ -76,7 +76,7 @@ class Complaints extends Component {
                 </div>
               </Tabbed>
             </Content>
-            <Collapsible className="Content" label="Details" collapse={false}>
+            <Collapsible className='Content' label='Details' collapse={false}>
               <b> Artikulationsdatum: </b>
               <TaggedText text={{
                 text: active.receiveDate,
@@ -92,8 +92,8 @@ class Complaints extends Component {
               <b> Sentiment: </b>
               <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
               <br />
-              </Collapsible>
-              <Collapsible className="Content" label="Entitäten" collapse={true}>  
+            </Collapsible>
+            <Collapsible className='Content' label='Entitäten' collapse>
               <ul>
                 {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
               </ul>

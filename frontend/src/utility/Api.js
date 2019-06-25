@@ -6,10 +6,10 @@ const fetchJson = function (action, options) {
     const useMock = document.getElementById('mockApi') && document.getElementById('mockApi').checked;
     if (!useMock) {
       console.log('Application is using mock backend!');
-      return fakeFetch('https://beschwerdemanagement-dev.iao.fraunhofer.de' + action, options)
+      return fakeFetch('https://querimonia.iao.fraunhofer.de' + action, options)
         .then(response => { return response.json(); });
     } else {
-      return fetch('https://beschwerdemanagement-dev.iao.fraunhofer.de/dev' + action, options)
+      return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
         .then(response => { return response.json(); });
     }
   } else {
@@ -49,7 +49,7 @@ export const api = {
     //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
     return fetchJson(endpoint + (query ? '?' + query : ''), options('get'));
   },
-  delete: function(endpoint) {
+  delete: function (endpoint) {
     return fetchJson(endpoint, options('delete'));
   },
   post: function (endpoint, data) {

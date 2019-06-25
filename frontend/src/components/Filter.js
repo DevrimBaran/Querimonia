@@ -60,7 +60,7 @@ class Filter extends Component {
     // const QueryText = Query(input);
     const pathname = document.location.pathname;
     return (
-      <Collapsible label="Filter" className='Filter'>
+      <Collapsible label='Filter' className='Filter'>
         <form action={pathname} onSubmit={this.submit}>
           <QueryInput type='hidden' name='page' />
           <QueryInput type='hidden' name='count' />
@@ -92,7 +92,7 @@ class Filter extends Component {
               </div>
             </Row>
             <br />
-            <input type='submit' value="Anwenden"/>
+            <input type='submit' value='Anwenden' />
             <br />
           </Row>
         </form>
