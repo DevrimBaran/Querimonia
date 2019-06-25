@@ -10,6 +10,7 @@ import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
 import de.fraunhofer.iao.querimonia.nlp.response.DefaultResponseGenerator;
+import de.fraunhofer.iao.querimonia.nlp.sentiment.FlaskSentiment;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -76,16 +77,14 @@ public class ComplaintController {
     this.complaintRepository = complaintRepository;
     this.completedResponseComponentRepository = completedResponseComponentRepository;
 
-    //mock sentiment for tests
-    HashMap<String, Double> sentimentMock = new HashMap<>();
-    sentimentMock.put("Traurig", 11.5);
+
 
     complaintFactory = new ComplaintFactory()
         .setClassifier(new KiKuKoClassifier())
         .setEntityExtractor(new KikukoExtractor())
         .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
-        .setSentimentAnalyzer((text1) -> sentimentMock)
-        .setStopWordFilter(new TokenAnalyzer());
+        .setStopWordFilter(new TokenAnalyzer())
+        .setSentimentAnalyzer(new FlaskSentiment());
   }
 
   /**
