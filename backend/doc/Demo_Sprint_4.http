@@ -1,0 +1,88 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+### clear database
+
+DELETE http://localhost:8080/api/complaints/all
+
+###
+
+DELETE http://localhost:8080/api/templates/all
+
+### template 1
+
+POST http://localhost:8080/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "EntschuldigungFahrerUnfreundlich",
+  "priority": 1000,
+  "rulesXml": "<Rules><And><PredecessorCount min=\"1\"/><Subject value=\"Fahrer unfreundlich\"/><Sentiment value=\"Wut\"/></And></Rules>",
+  "templateTexts": [
+    "Wir bedauern das Fehlverhalten unseres Fahrers und die daraus für Sie entstandenen Unannehmlichkeiten sehr."
+  ]
+}
+
+### template 2
+
+POST http://localhost:8080/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "BaustellenInfo",
+  "priority": 1000,
+  "rulesXml": "<Rules><And><PredecessorCount min=\"1\"/><EntityAvailable label=\"Haltestelle\" value=\"Universität\"/><EntityAvailable label=\"Haltestelle\" value=\"Schranne\" /></And></Rules>",
+  "templateTexts": [
+    "Leider können die Haltestellen 'Universität' und 'Schranne' derzeit aufgrund einer Baustelle nicht angefahren werden."
+  ]
+}
+
+### template 3
+
+POST http://localhost:8080/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "Rückerstattung",
+  "priority": 900,
+  "rulesXml": "<Rules><EntityAvailable label=\"Geldbetrag\"/></Rules>",
+  "templateTexts": [
+    "Die Ihnen entstandenen Kosten in Höhe von ${Geldbetrag} werden wir Ihnen baldmöglichst zurückerstatten."
+  ]
+}
+
+###
+
+POST http://localhost:8080/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "BegrüßungStandard",
+  "priority": 10000,
+  "rulesXml": "<Rules><PredecessorCount max=\"0\"/></Rules>",
+  "templateTexts": [
+    "Guten Tag,\n",
+    "Sehr geehrter Kunde,\n"
+  ]
+}
+
+###
+
+POST http://localhost:8080/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "Verabschiedung",
+  "priority": -10000,
+  "rulesXml": "<Rules><PredecessorCount min=\"2\"/></Rules>",
+  "templateTexts": [
+    "\n\nMit freundlichen Grüßen\n\nIhr Beschwerdebot",
+    "Viele Grüße\n\nIhr Beschwerdebot"
+  ]
+}
+
+###
