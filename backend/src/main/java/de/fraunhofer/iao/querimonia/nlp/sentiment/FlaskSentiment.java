@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iao.querimonia.nlp.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpEntity;
@@ -22,15 +23,10 @@ import java.util.Map;
  */
 public class FlaskSentiment implements SentimentAnalyzer {
 
-  private final String URL = "https://querimonia.iao.fraunhofer.de/sentiment_analyse";
-
   @Override
   public Map<String, Double> analyzeSentiment(Map<String, Integer> nonStopWords) {
     String text = createPseudoText(nonStopWords);
 
-
-    HttpHeaders header = new HttpHeaders();
-    header.setContentType(MediaType.APPLICATION_JSON);
     JSONObject jsonText = new JSONObject();
     try {
       jsonText.put("text", text);
@@ -38,22 +34,14 @@ public class FlaskSentiment implements SentimentAnalyzer {
       e.printStackTrace();
     }
 
-    HttpEntity<String> request = new HttpEntity<>(jsonText.toString(), header);
-    String response = new RestTemplate().exchange(URL, HttpMethod.POST, request, String.class).getBody();
-
-
-    ObjectMapper mapper = new ObjectMapper();
-    Map<String, Double> map;
-    try {
-      map = mapper.readValue(response, HashMap.class);
-    } catch (IOException e) {
-      e.printStackTrace();
-      map = new HashMap<>();
-    }
-
-    return map;
+    return FlaskContact.recieveJSON(jsonText, "sentiment_analyse");
   }
 
+  /**
+   * creates a Text that contains each key from the map with an amount of the mapped value.
+   * @param nonStopWords map with the words and their appearance value
+   * @return
+   */
   private String createPseudoText(Map<String, Integer> nonStopWords) {
     final StringBuilder builder = new StringBuilder();
     nonStopWords.forEach((key, value) -> {

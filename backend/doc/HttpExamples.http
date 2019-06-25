@@ -6,11 +6,16 @@
 # * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
 
 
-POST http://localhost:8080/api/complaints/import
+POST http://localhost:8080/api/vector/calculation
 Content-Type: application/json
 
 {
-  "text": "hallo, mein Name ist Maria Bauer. Der Bus der Linie N2 an der Haltestelle Hauptbahnhof ist leider ausgefallen!\nIch bitte um Rückerstattung von 23,12€."
+  "vector1" : "Baum",
+  "operator1" : "+",
+  "vector2" : "Haus",
+  "operator2" : "+",
+  "vector3" : "Haus",
+  "corpus" : "beschwerden3kPolished"
 }
 
 ###
