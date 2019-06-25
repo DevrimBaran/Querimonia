@@ -52,10 +52,6 @@ class Complaints extends Component {
       }
       this.fetchData(query);
     }
-    // Creates an enumeration of words in an array
-    renderEnumeration = (word) => {
-      return (<li>{word}</li>);
-    }
     renderSingle = (active) => {
       return (<React.Fragment>
         <Block>
@@ -104,13 +100,13 @@ class Complaints extends Component {
                 <br />
                 <b> Entitäten: </b>
                 <ul>
-                  {createEntityArray(active.text, active.entities).map(this.renderEnumeration, this)}
+                  {createEntityArray(active.text, active.entities)}
                 </ul>
                 <ReactTooltip id='subjects' aria-haspopup='true'>
-                  {createCategoriesArray(active.subject).map(this.renderEnumeration, this)}
+                  {createCategoriesArray(active.subject)}
                 </ReactTooltip>
                 <ReactTooltip id='sentiments' aria-haspopup='true'>
-                  {createCategoriesArray(active.sentiment).map(this.renderEnumeration, this)}
+                  {createCategoriesArray(active.sentiment)}
                 </ReactTooltip>
               </div>
             </Content>
@@ -152,30 +148,24 @@ class Complaints extends Component {
       );
     }
 }
-// creates an Array of Entitity-Strings
+// creates an Array of Entity-Strings
 function createEntityArray (txt, ar) {
-  var a = [];
-  a = ar;
-  var text = '';
-  text = txt;
-
-  var st = [];
-  for (var i = 0; i < a.length; i++) {
-    var m = new Map();
-    m = a[i];
-    st.push(m['label'] + ': ' + text.substring(m['start'], m['end']));
-  }
-
-  return st;
+  return ar.map((entity, i) => {
+    return <li key={i}> { entity['label'] } :
+      <TaggedText text={{
+        text: ' ' + txt.substring(entity['start'], entity['end']),
+        entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
+      }} />
+    </li>;
+  });
 }
 // creates an Array of Categories-Strings
-function createCategoriesArray (map) {
-  var m = new Map();
-  m = map;
-  var ar = [];
-  for (var i = 0; i < Object.keys(m).length; i++) {
-    ar.push(Object.keys(m)[i] + ' : ' + Object.values(m)[i]);
-  }
-  return ar;
+function createCategoriesArray (object) {
+  let categoryArray = [];
+  Object.keys(object).forEach((key, i) => {
+    const value = object[key];
+    categoryArray.push(<li key={i}>{key} : {value}</li>);
+  });
+  return categoryArray;
 }
 export default Complaints;

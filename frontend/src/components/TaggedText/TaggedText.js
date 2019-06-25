@@ -8,6 +8,7 @@
 import React, { Component } from 'react';
 
 import './TaggedText.scss';
+import ReactTooltip from 'react-tooltip';
 
 const LABEL_COLORS = {
   Datum: 'blue',
@@ -17,15 +18,18 @@ const LABEL_COLORS = {
   Bushaltestelle: 'orange',
   Vorgangsnummer: 'yellow',
   Ortsname: 'brown',
+  Linie: 'pink',
   default: 'green'
 };
+
+let createdTooltips = [];
 
 class TaggedText extends Component {
   constructor (props) {
     super(props);
 
     this.state = {
-      text: this.parseText(props.text)
+      text: this.parseText(JSON.parse(JSON.stringify(props.text)))
     };
   }
 
@@ -37,8 +41,9 @@ class TaggedText extends Component {
     if (Array.isArray(text.entities)) {
       this.prepareEntities(text.entities);
       for (const tag of text.entities) {
-        p.push(<span key={p.length}>{text.text.substring(cpos, tag.start)}</span>);
-        p.push(<span key={p.length} className='tag' label={tag.label} style={this.createBackground(tag.label)}>{text.text.substring(tag.start, tag.end)}</span>);
+        !text.text.substring(cpos, tag.start) || p.push(<span key={p.length}>{text.text.substring(cpos, tag.start)}</span>);
+        p.push(<span data-tip data-for={tag.label} key={p.length} className='tag' label={tag.label} style={this.createBackground(tag.label)}>{text.text.substring(tag.start, tag.end)}</span>);
+        p.push(this.createTooltip(tag.label));
         cpos = tag.end;
       }
     }
@@ -117,6 +122,19 @@ class TaggedText extends Component {
     return { backgroundImage: 'linear-gradient(' + linearGradient + ')' };
   };
 
+  createTooltip = (labels) => {
+    let labelArray = labels.split(' ').map((label, i) => {
+      return <div key={i}>{label}<span className='dot' style={{ backgroundColor: LABEL_COLORS[label] || LABEL_COLORS['default'] }}> </span> <br /> </div>;
+    });
+    if (createdTooltips.includes(labels)) return;
+    createdTooltips.push(labels);
+    return <ReactTooltip key={labels} id={labels} aria-haspopup='true'>
+      {
+        labelArray
+      }
+    </ReactTooltip>;
+  };
+
   componentWillUpdate = (props) => {
     if (props.text !== this.props.text) {
       this.setState({
@@ -124,6 +142,10 @@ class TaggedText extends Component {
       });
     }
   };
+
+  componentWillUnmount = () => {
+    createdTooltips = [];
+  }
 
   render () {
     return (
