@@ -17,6 +17,8 @@ tags:
     description: Hier können Textbausteine für Antworten verwaltet werden.
   - name: stats
     description: Hier können verschiedene Statistiken über die Beschwerden abgerufen werden.
+  - name: vector
+    description: Hier können veschieden Operationen mit Wordvektoren ausgeführt werden.
 paths:
   /api/complaints:
     get:
@@ -444,6 +446,89 @@ paths:
               schema:
                 $ref: '#/components/schemas/MostCommonWords'
 
+  /api/vector/nearest_neighbour:
+    post:
+      tags:
+        - vector
+      summary: Berechnet die nächsten Nachbern des Wortes als Vektor.
+      description: Berechnet eine Map aus Wörtern die dem gegebenen Wort in der Vektordartellung am ehesten übereinstimmen.
+      parameters:
+        - name: corpus
+          in: query
+          required: false
+          description: Es kann angegeben werden aus welchem Textkorpus die Vektoren zur Berechnung stammen.
+          schema:
+            type: string
+      requestBody:
+        description: Enthält das Wort von dem der nearest-neighbour berechnet wird
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "Busfahrer"
+      responses:
+        200:
+          description: Die nächstligensten Wörter werden in einer Map mit ihrer prozentualen Übereinstimmung
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                description: Enthält die möglichen Wörter mit ihrer Übereinstimmung
+
+  /api/vector/calculation:
+    post:
+      tags:
+        - vector
+      summary: Berechnet diverse Rechnungen mit meheren Wörtern al Vektoren
+      description: Wandelt die angegebenen Wörter in Vektoren um und führt die angegeben Operationen aus und gibt mögliche Ergebnisse in einer Map zurück
+      requestBody:
+        description: Enthält die auszuführende Berechnung
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vector1:
+                  type: string
+                  required: true
+                  description: erster Word der Berechnung
+                operator1:
+                  type: string
+                  required: true
+                  description: erster Operator zwischen dem ersten und zweiten Vektor
+                  example: "+"
+                vector2:
+                  type: string
+                  required: true
+                  description: zweites Word der Berechnung
+                corpus:
+                  type: string
+                  required: true
+                  description: auswahl des Txtkorpus für die Berechnung
+                operator2:
+                  type: string
+                  required: false
+                  description: optionaler zwiter Operator für erweiterte Berechnungen
+                vector3:
+                  type: string
+                  required: false
+                  description: drittes optionales Word der Berechnung
+      responses:
+        200:
+          description: Die nächstligensten Wörter nach Berechnung werden in einer Map mit ihrer prozentualen Übereinstimmung
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                description: Enthält die möglichen Wörter mit ihrer Übereinstimmung zu der Berechnung
+
 components:
   schemas:
     Complaint:
@@ -644,7 +729,6 @@ components:
         "Fahrer": 32
         "Bus": 29
         "fahren": 24
-
   securitySchemes:
     basicAuth:
       type: http
