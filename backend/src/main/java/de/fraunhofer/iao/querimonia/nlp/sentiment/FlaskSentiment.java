@@ -1,18 +1,10 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.nlp.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.web.client.RestTemplate;
 
-
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +26,22 @@ public class FlaskSentiment implements SentimentAnalyzer {
       e.printStackTrace();
     }
 
-    return FlaskContact.recieveJSON(jsonText, "sentiment_analyse");
+    Map<String, Double> flaskResult = FlaskContact.recieveJSON(jsonText, "sentiment_analyse");
+    double sentimentValue = flaskResult.getOrDefault("sentiment", 0.0);
+    Map<String, Double> result = new HashMap<>();
+
+    if (sentimentValue >= 1) {
+      result.put("Euphorie", 1.0);
+    } else if (sentimentValue >= 0.5) {
+      result.put("Freude", 1.0);
+    } else if (sentimentValue >= 0) {
+      result.put("Neutral", 1.0);
+    } else if (sentimentValue >= -0.5) {
+      result.put("Unzufriedenheit", 1.0);
+    } else {
+      result.put("Wut", 1.0);
+    }
+    return result;
   }
 
   /**
