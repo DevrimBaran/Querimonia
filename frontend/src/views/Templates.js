@@ -15,6 +15,9 @@ import Template from 'components/Template';
 import Filter from 'components/Filter';
 import Pagination from 'components/Pagination';
 
+import { withRouter } from 'react-router-dom'
+// this also works with react-router-native
+
 class Templates extends Component {
   constructor(props) {
     super(props);
@@ -53,6 +56,19 @@ class Templates extends Component {
     }
     this.fetchData(query);
   }
+  newTemplate = withRouter(({ history }) => (
+    <button
+      type='button'
+      onClick={() => {
+        history.push(window.location.pathname
+          + (window.location.pathname.substr(-1) === '/' ? '0/' : '/0')
+          + window.location.search);
+        this.setState((state) => {
+          state.templates.push({ id: 0, rulesXml: '<rules></rules>', templateTexts: ["Lorem Ipsum", "Hello World!"] });
+        });
+      }}
+    >Neues Template</button>
+  ));
   // Creates an enumeration of words in an array
   renderEnumeration = (word, index) => {
     return (<li key={index}>{word}</li>);
@@ -85,6 +101,9 @@ class Templates extends Component {
     return (<Block>
       <Row vertical>
         <Filter onSubmit={this.fetchData} />
+        <div>
+          <this.newTemplate />
+        </div>
         <Content>
           {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.templates.map(Template))}
         </Content>

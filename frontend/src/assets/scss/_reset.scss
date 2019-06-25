@@ -28,7 +28,7 @@ nav > ul {
         display: block;
         color: $black;
         &:hover {
-            background-color: rgba(0, 0, 0, 0.04);
+            background-color: $lightgrey;
         }
     }
 }
