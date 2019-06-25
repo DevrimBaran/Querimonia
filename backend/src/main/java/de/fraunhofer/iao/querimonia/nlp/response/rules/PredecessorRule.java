@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PredecessorRule implements Rule {
 
-  private String position = "before";
+  private String position = "last";
   private String predecessorRegex;
 
   /**
@@ -44,7 +44,7 @@ public class PredecessorRule implements Rule {
       return false;
     } else {
       // look for specific index or last element
-      int index = position.equals("before")
+      int index = position.equals("last")
           ? currentResponseState.size() - 1
           : Integer.parseInt(position);
       if (index >= currentResponseState.size() || index < 0) {

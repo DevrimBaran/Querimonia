@@ -8,6 +8,11 @@
         <PredecessorCount min="1"/>
         <EntityAvailable label="Haltestelle" value="Universität"/>
         <EntityAvailable label="Haltestelle" value="Schranne" />
+        
+        <Or>
+            <Subject value="Fahrt nicht erfolgt"/>
+            <Subject value="Fahrer unfreundlich"/>
+        </Or>
     </And>
 
 </Rules>

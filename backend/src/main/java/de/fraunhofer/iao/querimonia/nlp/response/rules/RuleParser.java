@@ -28,6 +28,10 @@ public class RuleParser {
    * @return the root rule, parsed from the xml string.
    */
   public static Rule parseRules(String rulesXml) {
+    // allow empty rules
+    if (rulesXml.isEmpty()) {
+      return Rule.TRUE;
+    }
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();

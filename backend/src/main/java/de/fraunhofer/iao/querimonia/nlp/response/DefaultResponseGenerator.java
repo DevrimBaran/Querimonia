@@ -68,14 +68,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     templateRepository.findAll().forEach(responseComponents::add);
 
     // filter out not matching templates
-    List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
-    responseComponents.stream()
-        .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
-        .forEach(responseComponentsFiltered::add);
-
-    // sort by priority
-    responseComponentsFiltered.sort(Comparator.comparingInt(ResponseComponent::getPriority));
-    Collections.reverse(responseComponentsFiltered);
+    List<ResponseComponent> responseComponentsFiltered =
+        filterComponents(complaintData, responseComponents);
 
     Map<String, String> entityValueMap =
         ComplaintUtility.getEntityValueMap(complaintData.getText(), complaintData.getEntities());
@@ -87,14 +81,33 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     entityValueMap.put("UploadDatum", formattedDate);
     entityValueMap.put("UploadZeit", formattedTime);
 
+    return getResponseSuggestion(complaintData, responseComponentsFiltered, entityValueMap);
+  }
+
+  private List<ResponseComponent> filterComponents(ComplaintData complaintData,
+                                                   List<ResponseComponent> responseComponents) {
+    List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
+    responseComponents.stream()
+        .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
+        .forEach(responseComponentsFiltered::add);
+
+    // sort by priority
+    responseComponentsFiltered.sort(Comparator.comparingInt(ResponseComponent::getPriority));
+    Collections.reverse(responseComponentsFiltered);
+    return responseComponentsFiltered;
+  }
+
+  private ResponseSuggestion getResponseSuggestion(ComplaintData complaintData,
+                                                   List<ResponseComponent> filteredComponents,
+                                                   Map<String, String> entityValueMap) {
     List<CompletedResponseComponent> generatedResponse = new ArrayList<>();
     outer:
     while (true) {
-      for (int i = 0; i < responseComponentsFiltered.size(); i++) {
-        ResponseComponent currentComponent = responseComponentsFiltered.get(i);
+      for (int i = 0; i < filteredComponents.size(); i++) {
+        ResponseComponent currentComponent = filteredComponents.get(i);
         // find first respected rule, use the template and remove it from the list
         if (currentComponent.getRootRule().isRespected(complaintData, generatedResponse)) {
-          responseComponentsFiltered.remove(i);
+          filteredComponents.remove(i);
           generatedResponse.add(
               new CompletedResponseComponent(currentComponent.getTemplateSlices().stream()
                                                  .map(responseSlices -> fillResponseComponent(

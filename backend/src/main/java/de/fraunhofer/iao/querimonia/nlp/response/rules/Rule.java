@@ -11,4 +11,20 @@ public interface Rule {
                       List<CompletedResponseComponent> currentResponseState);
 
   boolean isPotentiallyRespected(ComplaintData complaint);
+
+  /**
+   * Rule that always is respected.
+   */
+  Rule TRUE = new Rule() {
+    @Override
+    public boolean isRespected(ComplaintData complaint,
+                               List<CompletedResponseComponent> currentResponseState) {
+      return true;
+    }
+
+    @Override
+    public boolean isPotentiallyRespected(ComplaintData complaint) {
+      return true;
+    }
+  };
 }

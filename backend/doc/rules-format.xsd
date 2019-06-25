@@ -39,7 +39,7 @@
                     <xs:attribute name="position">
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
-                                <xs:pattern value="any|\d+|before"/>
+                                <xs:pattern value="any|\d+|last"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
