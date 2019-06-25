@@ -1,0 +1,23 @@
+.tag{
+    color: #4fc4a2;
+}
+
+.tag[label=Datum] {
+    color: blue;
+}
+
+.tag[label=Upload_Datum] {
+    color: red;
+}
+
+.tag[label=Name] {
+    color: violet;
+}
+
+.tag[label=Geldbetrag] {
+    color: turquoise;
+}
+
+.tag[label=Bushaltestelle] {
+    color: orange;
+}
