@@ -7,7 +7,7 @@ import Content from 'components/Content/Content';
 import Api from 'utility/Api';
 import WordCloud from 'react-d3-cloud';
 
-class TagCloudTest extends Component {
+class TagCloud extends Component {
   constructor (props) {
     super(props);
     this.state = {
@@ -169,4 +169,4 @@ class TagCloudTest extends Component {
   }
 }
 
-export default TagCloudTest;
+export default TagCloud;
