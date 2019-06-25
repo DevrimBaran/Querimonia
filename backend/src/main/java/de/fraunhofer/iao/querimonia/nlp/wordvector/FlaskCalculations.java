@@ -33,7 +33,7 @@ public class FlaskCalculations {
       jsonVectors.put("vector2", vector2);
       jsonVectors.put("operator2", operator2);
       jsonVectors.put("vector3", vector3);
-      jsonVectors.put("textkorpus", corpus);
+      jsonVectors.put("textcorpus", corpus);
 
     } catch (JSONException e) {
       e.printStackTrace();
@@ -50,7 +50,7 @@ public class FlaskCalculations {
       jsonVectors.put("vector1", vector1);
       jsonVectors.put("operator1", operator1);
       jsonVectors.put("vector2", vector2);
-      jsonVectors.put("textkorpus", corpus);
+      jsonVectors.put("textcorpus", corpus);
 
     } catch (JSONException e) {
       e.printStackTrace();
