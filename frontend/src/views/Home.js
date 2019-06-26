@@ -6,9 +6,9 @@
 
 import React from 'react';
 
-import Block from 'components/Block/Block';
-import Row from 'components/Row/Row';
-import Content from 'components/Content/Content';
+import Block from 'components/Block';
+import Row from 'components/Row';
+import Content from 'components/Content';
 import logo from './../assets/img/StuproLogo2.svg';
 import team from './../assets/img/Gruppenfoto.jpg';
 import iaoPartner from './../assets/img/iao.png';

@@ -8,17 +8,15 @@ import React, { Component } from 'react';
 
 import Api from 'utility/Api';
 
-import Block from 'components/Block/Block';
-import Row from 'components/Row/Row';
-import Content from 'components/Content/Content';
-import Complaint from 'components/Complaint/Complaint';
-import Filter from 'components/Filter/Filter';
-// import Complaints from 'components/Complaints/Complaints';
-// import Modal from 'components/Modal/Modal';
-import Tabbed from 'components/Tabbed/Tabbed';
-import TaggedText from 'components/TaggedText/TaggedText';
-import TextBuilder from 'components/TextBuilder/TextBuilder';
-import Pagination from 'components/Pagination/Pagination';
+import Block from 'components/Block';
+import Row from 'components/Row';
+import Content from 'components/Content';
+import Complaint from 'components/Complaint';
+import Filter from 'components/Filter';
+import Tabbed from 'components/Tabbed';
+import TaggedText from 'components/TaggedText';
+import TextBuilder from 'components/TextBuilder';
+import Pagination from 'components/Pagination';
 import ReactTooltip from 'react-tooltip';
 import 'assets/scss/Complaints.scss';
 
@@ -57,23 +55,16 @@ class Complaints extends Component {
         <Block>
           <Row vertical>
             <h6 className='center'>Antwort</h6>
-            <Content>
-              <Tabbed style={{ height: '100%' }}>
-                <div label='Erstellen'>
-                  <TextBuilder complaintId={active.complaintId} />
-                </div>
-                <div label='Datenbank'>BUH!</div>
-              </Tabbed>
-            </Content>
+            <TextBuilder complaintId={active.complaintId} />
           </Row>
         </Block>
         <Block>
           <Row vertical>
             <h6 className='center'>Meldetext</h6>
             <Content>
-              <Tabbed style={{ height: '100%' }}>
+              <Tabbed className='padding' style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
-                  <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
+                  <TaggedText text={{ text: active.text, entities: active.entities }} />
                 </div>
                 <div label='Original'>
                   {active.text}
@@ -125,7 +116,7 @@ class Complaints extends Component {
         <Row vertical>
           <Filter onSubmit={this.fetchData} />
           <Content>
-            {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.issues.map(Complaint))}
+            {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.issues.map(Complaint))}
           </Content>
           <Pagination onClick={this.update} />
         </Row>

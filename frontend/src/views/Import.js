@@ -6,12 +6,12 @@
 
 import React, { Component } from 'react';
 
-import Block from 'components/Block/Block';
-
 import api from 'utility/Api';
-import Complaint from 'components/Complaint/Complaint';
-import Content from 'components/Content/Content';
-import Row from 'components/Row/Row';
+
+import Block from 'components/Block';
+import Complaint from 'components/Complaint';
+import Content from 'components/Content';
+import Row from 'components/Row';
 
 class ImportBlock extends Component {
   constructor (props) {

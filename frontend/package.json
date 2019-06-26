@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "config": {
-    "backend": "https://beschwerdemanagement.iao.fraunhofer.de"
+    "backend": "https://querimonia.iao.fraunhofer.de/"
   },
   "dependencies": {
     "express": "^4.16.4",
