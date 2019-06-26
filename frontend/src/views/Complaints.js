@@ -71,7 +71,7 @@ class Complaints extends Component {
                 </div>
               </Tabbed>
             </Content>
-            <Collapsible label='Details' className="Content" style={{minHeight: '130px'}}>
+            <Collapsible label='Details' className='Content' style={{ minHeight: '130px' }}>
               <b> Artikulationsdatum: </b>
               <TaggedText text={{
                 text: active.receiveDate,
@@ -88,7 +88,7 @@ class Complaints extends Component {
               <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
               <br />
             </Collapsible>
-            <Collapsible label='Entitäten' className="Content">
+            <Collapsible label='Entitäten' className='Content'>
               <ul>
                 {createEntityArray(active.text, active.entities)}
               </ul>
