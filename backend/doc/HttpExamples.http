@@ -92,12 +92,11 @@ POST https://kikuko.iao.fraunhofer.de/apitext
 
 ###
 
-POST http://localhost:8080/api/complaints/import
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Der Fahrer war sehr unfreundlich!"
-}
+  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"}
 
 ###
 
@@ -154,16 +153,16 @@ DELETE http://localhost:8080/api/templates/10
 ###
 
 # Returns all complaints in the database
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints
+GET https://beschwerdemanagement.iao.fraunhofer.de/api/complaints
 
 ###
 
 # Posts a new complaint text into the database
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/import
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Fahrt ist leider nicht erfolgt!"
+  "text": "Fahrt ist leider nicht erfolgt! Ich bin sauer böse Blöd ärgerlich ich hass es hass! hass!"
 }
 
 ###
