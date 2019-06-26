@@ -1,0 +1,735 @@
+openapi: 3.0.1
+info:
+  title: Stupro 2019 Querimonia API
+  description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
+  version: 0.4.2
+servers:
+  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/
+  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/
+  - url: https://beschwerdemanagement.iao.fraunhofer.de/
+  - url: http://localhost:8080/
+tags:
+  - name: complaints
+    description: Hier können die gespeicherten Beschwerden verwaltet werden.
+  - name: responses
+    description: Hier können Antworten abgerufen und verwaltet werden.
+  - name: templates
+    description: Hier können Textbausteine für Antworten verwaltet werden.
+  - name: stats
+    description: Hier können verschiedene Statistiken über die Beschwerden abgerufen werden.
+  - name: vector
+    description: Hier können veschieden Operationen mit Wordvektoren ausgeführt werden.
+paths:
+  /api/complaints:
+    get:
+      tags:
+        - complaints
+      summary: Gibt Beschwerden, die auf dem Server gespeichert sind, zurück.
+      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und das Offset der Beschwerden bestimmt werden.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der Beschwerden, die zurück gegeben werden sollen. Falls nicht angegeben, werden alle Beschwerden zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: Falls page 0 ist, werden die ersten *count* Beschwerden zurück gegeben, falls page 1 ist die zweiten *count* Beschwerden, gibt also die Seitenzahl an. Falls nicht angegeben, wird 0 angenommen. Wird ignoriert, falls *count* nicht gegeben ist.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: sort_by
+          in: query
+          required: false
+          description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
+          schema:
+            $ref: '#/components/schemas/OrderBy'
+        - name: date_min
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die nach diesem Datum hochgeladen wurden. Datum muss [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6) enstprechen, also dem Format yyyy-mm-dd.
+          schema:
+            type: string
+            format: date
+        - name: date_max
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die vor diesem Datum hochgeladen wurden. Das Datum entpricht dem gleichen Format wie bei *dateMin*
+          schema:
+            type: string
+            format: date
+        - name: sentiment
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die einem der gegebenen *sentiments* entsprechen.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: subject
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die einem der gegebenen Kategorien von Beschwerden entsprechen.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: keywords
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die die angebenen Schlüsselwörter enthalten.
+          schema:
+            type: array
+            items:
+              type: string
+
+      operationId: getComplaints
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaints'
+        400:
+          description: Üngültige Angabe von Paramtern.
+          content: {}
+
+  /api/complaints/{complaintId}:
+    get:
+      tags:
+        - complaints
+      summary: Gibt eine Beschwerde mit der gegebenen Id zurück.
+      description: Gibt eine Beschwerde mit der gegebenen Id zurück.
+      parameters:
+        - name: complaintId
+          in: path
+          description: Die eindeutige Id der Beschwerde.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      operationId: getComplaint
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+        404:
+          description: Beschwerde mit gegebener Id existiert nicht
+          content:
+            {}
+
+    delete:
+      tags:
+        - complaints
+      summary: Löscht eine Beschwerde.
+      description: Löscht eine Beschwerde mit gegebener Id, falls diese vorhanden ist.
+      parameters:
+        - name: complaintId
+          in: path
+          description: Die eindeutige Id der Beschwerde.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      operationId: deleteComplaint
+      responses:
+        200:
+          description: Löschen erfolgreich.
+          content:
+            {}
+        404:
+          description: Beschwerde mit gegebener Id existiert nicht
+          content:
+            {}
+
+  /api/complaints/import:
+    post:
+      tags:
+        - complaints
+      summary: Läd eine neue Beschwerde in die Datenbank.
+      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 5000 Zeichen.
+      requestBody:
+        description: Die Datei, die hochgeladen werden soll.
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+              format: binary
+              example: file content
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "Das ist eine Beispielbeschwerde"
+      responses:
+        201:
+          description: Datei wurde erfolgreich hochgeladen, der Text extrahiert, ausgewertet und als Beschwerde im System gespeichert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+        400:
+          description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
+  /api/complaints/all:
+    delete:
+      tags:
+        - complaints
+      summary: Löscht alle Beschwerden aus der Datenbank
+      description: Löscht alle Beschwerden aus der Datenbank.
+      responses:
+        200:
+          description: Löschen erfolgreich.
+
+  /api/responses/{complaintId}:
+    get:
+      tags:
+        - responses
+      summary: Gibt die generierte Antwort zu einer Beschwerde zurück.
+      description: Zur jeder Beschwerde wird eine Antwort generiert. Diese kann über diese Schnittstelle abgerufen werden.
+      parameters:
+        - name: complaintId
+          in: path
+          description: Die Id der Beschwerde, zu der die Antwort zurückgegeben werden soll.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Die Antwort der Beschwerde wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        404:
+          description: Es gibt keine Beschwerde mit der gegebenen ID.
+
+  /api/responses/plain/{complaintId}:
+    get:
+      tags:
+        - responses
+      summary: Gibt die generierte Antwort als String zurück.
+      description: Gibt den vollen Text einer generierten Antwort als String zurück.
+      parameters:
+        - name: complaintId
+          in: path
+          description: Die Id der Beschwerde, zu der die Antwort zurückgegeben werden soll.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Die Antwort der Beschwerde als Gesamttext wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                type: string
+        404:
+            description: Es gibt keine Beschwerde mit der gegebenen ID.
+
+  /api/templates:
+    get:
+      tags:
+        - templates
+      summary: Gibt die gespeicherten Antwortbausteine zurück.
+      description: Hier können alle in der Datenbank gespeicherten Antwortbausteine abgerufen werden. Dabei ist Filtern/Pagination möglich.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der Beschwerden, die zurück gegeben werden sollen. Falls nicht angegeben, werden alle Beschwerden zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: Falls page 0 ist, werden die ersten *count* Beschwerden zurück gegeben, falls page 1 ist die zweiten *count* Beschwerden, gibt also die Seitenzahl an. Falls nicht angegeben, wird 0 angenommen. Wird ignoriert, falls *count* nicht gegeben ist.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: sort_by
+          in: query
+          description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [priority_desc, priority_asc, name_desc, name_asc]
+        - name: keywords
+          in: query
+          description: Hier können Schlüsselwörter angegeben werden, die im Bausteintext oder -name enthalten sein sollen.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+      responses:
+        200: 
+          description: Die Antwortbausteine werden zurückgegeben.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseComponent'
+        400:
+          description: Fehlerhafte Parameter.
+  
+    post:
+      tags:
+        - templates
+      summary: Fügt dem System einen neuen Antwortbaustein hinzu.
+      description: Fügt einen neuen Antwortbaustein hinzu. Dieser kann Platzhalter im Format ${\w*} enthalten, welche mit Entitäten aus der Beschwerden ersetzt werden.
+      requestBody:
+        description: Der neue Textbaustein, der dem System hinzufügt werden soll. Im Request-Body müssen ID und requiredEntities nicht angegeben werden, diese werden bei Angabe nicht beachtet.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseComponent'
+      responses:
+        201:
+          description: Das Template ist richtig formatiert und wurde in der Datenbank gespeichert.
+        400:
+          description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+
+  /api/templates/{templateId}:
+    get:
+      tags:
+        - templates
+      summary: Gibt ein bestimmten Antwortbaustein zurück.
+      description: Gibt den Antwortbaustein mit der gegebenen ID zurück.
+      parameters:
+        - name: templateId
+          in: path
+          description: Die eindeutige ID des Bausteins.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+         description: Der Antwortbaustein wird zurückgegeben.
+         content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseComponent'
+        404: 
+          description: Der Antwortbaustein existiert nicht.
+              
+    delete:
+      tags:
+        - templates
+      summary: Löscht einen Antwortbaustein.
+      description: Löscht den Antwortbaustein mit der gegebenen ID aus der Datenbank.
+      parameters:
+        - name: templateId
+          in: path
+          description: Die eindeutige ID des Bausteins.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+         description: Der Antwortbaustein wurde gelöscht.
+        404: 
+          description: Der Antwortbaustein existiert nicht.
+          
+    put:
+      tags:
+        - templates
+      summary: Aktualisiert einen bestehenden Antwortbaustein.
+      description: Aktualisiert den Antwortbaustein mit der gegebenen ID. 
+      parameters:
+        - name: templateId
+          in: path
+          description: Die eindeutige ID des Bausteins.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      requestBody:
+        description: Der aktualisierte Baustein. Im Request-Body müssen ID und requiredEntities nicht angegeben werden, bei Angabe werden diese ignoriert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseComponent'
+      responses:
+        200:
+          description: Template erfolgreich aktualisiert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseComponent'
+        404:
+          description: Template mit der gegebenen ID ist nicht vorhanden.
+        400:
+          description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+
+  /api/templates/all:
+    delete:
+      tags:
+        - templates
+      summary: Löscht alle Antwortbausteine aus der Datenbank.
+      responses:
+        200:
+          description: Alle Antwortbausteine wurden aus der Datenbank entfernt.
+
+  /api/stats/tagcloud:
+    get:
+      tags:
+        - stats
+      summary: Gibt die häufigsten Worte aus den Beschwerden zurück.
+      description: Gibt eine Map zurück, die die häufigsten Wörter der Beschwerden und deren absoluten Häufigkeiten zurück. Hierbei werden Stopwörter heraus gefiltert. Über Parameter können die Beschwerden gefiltert werden, aus denen die häufigsten Worten analysiert werden.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der häufigsten Wörter, die maximal zurückgegben werden sollen. Ohne Angabe werden alle zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: date_min
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden analysiert, die nach diesem Datum hochgeladen wurden. Datum muss [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6) enstprechen, also dem Format yyyy-mm-dd.
+          schema:
+            type: string
+            format: date
+        - name: date_max
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden analysiert, die vor diesem Datum hochgeladen wurden. Das Datum entpricht dem gleichen Format wie bei *dateMin*
+          schema:
+            type: string
+            format: date
+        - name: sentiment
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden analysiert, die einem der gegebenen *sentiments* entsprechen.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: subject
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden analysiert, die einem der gegebenen Kategorien von Beschwerden entsprechen.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: words_only
+          in: query
+          required: false
+          description: Falls true, werden alle Worte die nur aus Zahlen oder Sonderzeichen bestehen herausgefiltert.
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Die häufigsten Wörter und deren Häufigkeit werden zuückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MostCommonWords'
+
+  /api/vector/nearest_neighbour:
+    post:
+      tags:
+        - vector
+      summary: Berechnet die nächsten Nachbern des Wortes als Vektor.
+      description: Berechnet eine Map aus Wörtern die dem gegebenen Wort in der Vektordartellung am ehesten übereinstimmen.
+      parameters:
+        - name: corpus
+          in: query
+          required: false
+          description: Es kann angegeben werden aus welchem Textkorpus die Vektoren zur Berechnung stammen.
+          schema:
+            type: string
+      requestBody:
+        description: Enthält das Wort von dem der nearest-neighbour berechnet wird
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text:
+                  type: string
+                  example: "Busfahrer"
+      responses:
+        200:
+          description: Die nächstligensten Wörter werden in einer Map mit ihrer prozentualen Übereinstimmung
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                description: Enthält die möglichen Wörter mit ihrer Übereinstimmung
+
+  /api/vector/calculation:
+    post:
+      tags:
+        - vector
+      summary: Berechnet diverse Rechnungen mit meheren Wörtern al Vektoren
+      description: Wandelt die angegebenen Wörter in Vektoren um und führt die angegeben Operationen aus und gibt mögliche Ergebnisse in einer Map zurück
+      requestBody:
+        description: Enthält die auszuführende Berechnung
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                vector1:
+                  type: string
+                  required: true
+                  description: erster Word der Berechnung
+                operator1:
+                  type: string
+                  required: true
+                  description: erster Operator zwischen dem ersten und zweiten Vektor
+                  example: "+"
+                vector2:
+                  type: string
+                  required: true
+                  description: zweites Word der Berechnung
+                corpus:
+                  type: string
+                  required: true
+                  description: auswahl des Txtkorpus für die Berechnung
+                operator2:
+                  type: string
+                  required: false
+                  description: optionaler zwiter Operator für erweiterte Berechnungen
+                vector3:
+                  type: string
+                  required: false
+                  description: drittes optionales Word der Berechnung
+      responses:
+        200:
+          description: Die nächstligensten Wörter nach Berechnung werden in einer Map mit ihrer prozentualen Übereinstimmung
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties:
+                  type: number
+                description: Enthält die möglichen Wörter mit ihrer Übereinstimmung zu der Berechnung
+
+components:
+  schemas:
+    Complaint:
+      required:
+        - text
+        - preview
+        - receiveDate
+        - receiveTime
+        - subject
+        - sentiment
+        - entities
+      type: object
+      properties:
+        complaintId:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 1
+          description: Die eindeutige ID der Beschwerde.
+        text:
+          type: string
+          description: Der volle Beschwerdetext.
+          example: "Guten Tag,\nMein Bus kam heute viel zu spät!\nSie müssen mir den Schaden ersetzen!!"
+        preview:
+          type: string
+          description: Die ersten zwei Zeilen der Beschwerde.
+          example: "Guten Tag,\nMein Bus kam heute viel zu spät!"
+        receiveDate:
+          type: string
+          description: Das Eingangsdatum der Beschwerde.
+          example: "12.05.2019"
+        receiveTime:
+          type: string
+          description: Die Eingangszeit der Beschwerde im System.
+          example: "13:45"
+        subject:
+          type: object
+          additionalProperties:
+            type: number
+          description: Enthält alle möglichen Kategorien und die Wahrscheinlichkeiten, dass die Beschwerde in diese Kategorie fällt.
+          example:
+            "Fahrer unfreundlich": 0.5
+            "Fahrt nicht erfolgt": 0.4
+            "Sonstiges": 0.1
+        sentiment:
+          type: object
+          additionalProperties:
+            type: number
+          description: Enthält alle möglichen Bezeichnungen der "Stimmung" der Beschwerde mit Angabe deren Wahrscheinlichkeit, dass die Beschwerde in dieser Stimmung geschrieben ist.
+          example:
+            "Wütend": 0.6
+            "Neutral": 0.3
+            "Freundlich": 0.1
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedEntity'
+          description: Enthält alle Entitäten, die in der Beschwerde gefunden wurden.
+
+    Complaints:
+      type: array
+      items:
+        $ref: '#/components/schemas/Complaint'
+
+    NamedEntity:
+      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie.
+      type: object
+      required:
+        - label
+        - startIndex
+        - endIndex
+      properties:
+        label:
+          type: string
+          description: Die Kategorie der Entität.
+          example: Datum
+        startIndex:
+          type: integer
+          format: int32
+          description: Der Index des Zeichens im Text, mit dem die Named Entity beginnt.
+          example: 24
+        endIndex:
+          type: integer
+          format: int32
+          description: Der Index des Zeichens im Text, ab dem der Text *nicht* mehr diese Named Entity ist.
+          example: 29
+
+    ResponseComponent:
+      description: Ein generischer Antwortbaustein. Dieser besteht aus möglicherweise mehereren Alternativtexten, die Platzhalter enthalten können, sowie einer Regelbeschreibung, die angibt, wann der Baustein verwendet werden kann.
+      type: object
+      required:
+        - priority
+        - componentName
+        - templateTexts
+        - rulesXml
+      properties:
+        componentId:
+          type: integer
+          format: int32
+          description: Die eindeutige ID des Antwortbausteins.
+          minimum: 1
+          example: 1
+        priority:
+          type: integer
+          format: int32
+          example: 100
+          description: Eine Zahl, die die Priorität bei der Antwortgenerierung angibt. Bausteine mit hoher Priorität werden zuerst geprüft und ggf. verwendet.
+        componentName:
+          type: string
+          description: Eine **eindeutige** Bezeichung, welchen Teil einer Antwort der Baustein widerspiegelt.
+          example: 'Begrüßung'
+        templateTexts:
+          type: array
+          items:
+            type: string
+            description: Bausteintext mit Platzhaltern.
+            example: "Sehr geehrter Herr ${Name},"
+        rulesXml:
+          type: string
+          description: XML-Beschreibung der Regeln, die beschreiben, wann ein Antwortbaustein verwendet werden darf. Muss dem XSD-Schema entsprechen.
+        requiredEntites:
+          type: array
+          items:
+            type: string
+            example: "Name"
+            description: Eine Entity, die für den Antwortbaustein vorhanden sein muss. Muss **nicht** beim Posten eines Bausteins angegeben werden.
+
+    CompletedResponsePart:
+      description: Ein Teil der Anwort, der mögliche, asugefüllte Textbausteine enthält.
+      type: object
+      required:
+        - alternatives
+        - component
+      properties:
+        responsePartId:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 1
+          description: Die eindeutige Id des Antwortteils.
+        alternatives:
+          type: array
+          items:
+            $ref: '#/components/schemas/SingleCompletedComponent'
+          description: Der Textalternativen des Antwortteils
+        component:
+          $ref: '#/components/schemas/ResponseComponent'
+          
+    SingleCompletedComponent:
+      description: Ein einzelner, ausgefüllter Textbaustein mit markierten Entitäten.
+      type: object
+      required:
+        - completedText
+        - entities
+      properties:
+        completedComponentId:
+          type: integer
+          format: int32
+          minimum: 1
+          example: 1
+          description: Eine eindeutige Id des ausgefüllten Bausteins.
+        completedText:
+          type: string
+          description: Der ausgefüllte Text des Bausteins.
+          example: "Guten Tag, Max Mustermann,\nVielen Dank für Ihre Nachricht am 23.01.1999."
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedEntity'
+          description: Enthält alle Entitäten, die in der Antwort vorhanden sind.
+
+    ResponseSuggestion:
+      type: array
+      items:
+        $ref: '#/components/schemas/CompletedResponsePart'
+
+    OrderBy:
+      description: Ein Array von Kategorien, nach denen eine Anfrage sortiert werden soll. Zusätzlich wird angegeben, ob auf oder absteigend sortiert wird.
+      type: array
+      items:
+        type: string
+        description: Gibt an, nach was die Beschwerden sortiert werden sollen.
+        enum:
+          - upload_date_asc
+          - upload_date_desc
+          - subject_asc
+          - subject_desc
+          - sentiment_asc
+          - sentiment_desc
+
+    MostCommonWords:
+      description: Enthält die häufigsten Wörter aus den Beschwerden
+      type: object
+      additionalProperties:
+        type: integer
+        format: int32
+      example:
+        "Fahrer": 32
+        "Bus": 29
+        "fahren": 24
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic

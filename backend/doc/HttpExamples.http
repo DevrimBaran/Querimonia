@@ -1,0 +1,211 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+POST http://localhost:8080/api/vector/calculation
+Content-Type: application/json
+
+{
+  "vector1" : "Baum",
+  "operator1" : "+",
+  "vector2" : "Haus",
+  "operator2" : "+",
+  "vector3" : "Haus",
+  "corpus" : "beschwerden3kPolished"
+}
+
+###
+
+GET http://localhost:8080/api/responses/plain/205
+
+###
+
+POST http://localhost:8080/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "fD1aLles zum testen",
+  "priority": 100076,
+  "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
+  "templateTexts": [
+    "Guten Morgen,",
+    "Gute Mahlzeit,"
+  ]
+}
+
+###
+
+DELETE http://localhost:8080/api/templates/1
+
+###
+
+DELETE http://localhost:8080/api/complaints/all
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+
+###
+
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates/all
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/1
+
+###
+
+DELETE http://localhost:8080/api/complaints/1
+
+###
+
+POST http://localhost:8080/api/complaints/import
+Content-Type: application/json
+
+{
+  "text": "Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!"
+}
+
+###
+
+PUT http://localhost:8080/api/template/1
+Content-Type: application/json
+
+{
+  "componentName": "Begrüßung_Morgens_MitName",
+  "priority": 100,
+  "rulesXml": "<Rules><And><PredecessorCount min=\"0\"/><UploadTime max=\"11:00:00\"/></And></Rules>",
+  "templateTexts": [
+    "Guten Morgen,",
+    "Guten Abend,"
+  ]
+}
+
+
+###
+
+POST https://kikuko.iao.fraunhofer.de/apitext
+
+###
+
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
+Content-Type: application/json
+
+{
+  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"}
+
+###
+
+GET http://localhost:8080/api/stats/tagcloud?words_only=true&subject=Sonstiges,Fahrt nicht erfolgt
+
+###
+
+GET http://localhost:8080/api/complaints?subject=Fahrt nicht erfolgt
+###
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Guten Tag!\n\nEs tut uns sehr leid, dass Sie mit uns unzufrieden sind.",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Datumsangabe"
+  ],
+  "subject": null
+}
+
+###
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Ihre Beschwerde ist am ${upload_date} um ${upload_time} bei uns eingegangen.",
+  "responsePart": "Datumsangabe",
+  "successorParts": [
+    "Verabschiedung"
+  ],
+  "subject": null
+}
+
+###
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "\n\nMit freundlichen Grüßen\n\nIhr Beschwerdebot",
+  "responsePart": "Verabschiedung",
+  "successorParts": [
+  ],
+  "subject": null
+}
+
+###
+
+DELETE http://localhost:8080/api/templates/10
+
+###
+
+# Returns all complaints in the database
+GET https://beschwerdemanagement.iao.fraunhofer.de/api/complaints
+
+###
+
+# Posts a new complaint text into the database
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
+Content-Type: application/json
+
+{
+  "text": "Fahrt ist leider nicht erfolgt! Ich bin sauer böse Blöd ärgerlich ich hass es hass! hass!"
+}
+
+###
+
+# get a single complaint
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
+
+###
+
+GET http://localhost:8080/api/templates
+
+###
+
+GET http://localhost:8080/api/templates?sort_by=priority_asc&count=3&page=1
+
+###
+
+# delete a complaint
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/all
+
+### Antwortgenerierungs-Beispiele
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/import
+Content-Type: application/json
+
+{
+  "text": "Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!"
+}
+
+###
+
+POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/4
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/5
+
+###
+
+DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
+
+###
+
+GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/stats/tagcloud
+
+###
