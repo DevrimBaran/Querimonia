@@ -119,7 +119,7 @@ public class ResponseTemplateController {
    * @param templateId        Is the template ID.
    * @param responseComponent Is the template itself.
    */
-  @PutMapping("api/template/{templateId}")
+  @PutMapping("api/templates/{templateId}")
   public void updateTemplate(@PathVariable int templateId, @RequestBody ResponseComponent responseComponent) {
     initialize();
     responseComponent.setComponentId(templateId);
