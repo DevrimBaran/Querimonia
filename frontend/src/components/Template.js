@@ -19,7 +19,7 @@ function Template (data, index) {
               <p>Id: {data.componentId}</p>
               <p>Name: {data.componentName}</p>
               <p>Antwortvariationen: {data.templateTexts.length}</p>
-              <p>Entitäten: {data.templateTexts.requiredEntites.join(', ')}</p>
+              <p>Entitäten: {data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p>
             </div>
           </Link>
         )

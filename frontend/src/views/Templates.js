@@ -74,7 +74,7 @@ class Templates extends Component {
             priority: 100,
             componentName: "Begrüßung",
             templateTexts: [
-              "Sehr geehrter Herr ${Name},"
+              'Sehr geehrter Herr ${Name},'
             ],
             rulesXml: '<Rules><And><Sentiment value="Wut" /><Subject value="Fahrt nicht erfolgt" /></And></Rules>',
             requiredEntites: [
