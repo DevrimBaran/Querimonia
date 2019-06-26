@@ -122,7 +122,12 @@ class TaggedText extends Component {
 
   createTooltip = (labels) => {
     let labelArray = labels.split(' ').map((label, i) => {
-      return <div key={i}>{label}<span className='dot' style={{ backgroundColor: LABEL_COLORS[label] || LABEL_COLORS['default'] }}> </span> <br /> </div>;
+      return <div key={i}>{label}<span className='dot' style={{ backgroundColor: LABEL_COLORS[label] || LABEL_COLORS['default'],
+        height: '10px',
+        width: '10px',
+        borderRadius: '50%',
+        display: 'inline-block',
+        marginLeft: '5px' }}> </span> <br /> </div>;
     });
     if (createdTooltips.includes(labels)) return;
     createdTooltips.push(labels);
