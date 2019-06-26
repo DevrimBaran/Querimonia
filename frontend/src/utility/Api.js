@@ -10,11 +10,11 @@ const fetchJson = function (action, options) {
         .then(response => { return response.json(); });
     } else {
       return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
-        .then(response => { return response.json(); });
+        .then(response => { return response.ok ? response.json() : []; });
     }
   } else {
     return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
-      .then(response => { return response.json(); });
+      .then(response => { return response.ok ? response.json() : []; });
   }
 };
 

@@ -119,7 +119,7 @@ class Complaints extends Component {
         <Row vertical>
           <Filter onSubmit={this.fetchData} />
           <Content>
-            {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.issues.map(Complaint))}
+            {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.issues.map(Complaint))}
           </Content>
           <Pagination onClick={this.update} />
         </Row>

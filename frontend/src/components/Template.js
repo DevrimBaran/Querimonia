@@ -14,9 +14,12 @@ function Template (data, index) {
     <React.Fragment key={index}>
       {
         data && (
-          <Link to={'/templates/' + data.id}>
+          <Link to={'/templates/' + data.componentId}>
             <div className='Template'>
-              Lorem Ipsum
+              <p>Id: {data.componentId}</p>
+              <p>Name: {data.componentName}</p>
+              <p>Antwortvariationen: {data.templateTexts.length}</p>
+              <p>Entitäten: {data.templateTexts.requiredEntites.join(', ')}</p>
             </div>
           </Link>
         )
