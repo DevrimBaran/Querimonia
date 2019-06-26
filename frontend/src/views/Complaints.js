@@ -1,20 +1,24 @@
+/**
+ * This class creates the Complaints view.
+ *
+ * @version <0.1>
+ */
+
 import React, { Component } from 'react';
 
 import Api from 'utility/Api';
 
-import Block from 'components/Block/Block';
-import Row from 'components/Row/Row';
-import Content from 'components/Content/Content';
-import Complaint from 'components/Complaint/Complaint';
-import Filter from 'components/Filter/Filter';
-// import Complaints from 'components/Complaints/Complaints';
-import Log from 'components/Log/Log.js';
-// import Modal from 'components/Modal/Modal';
-import Stats from 'components/Stats/Stats';
-import Tabbed from 'components/Tabbed/Tabbed';
-import TaggedText from 'components/TaggedText/TaggedText';
-import TextBuilder from 'components/TextBuilder/TextBuilder';
-import Pagination from 'components/Pagination/Pagination';
+import Block from 'components/Block';
+import Row from 'components/Row';
+import Content from 'components/Content';
+import Complaint from 'components/Complaint';
+import Collapsible from 'components/Collapsible';
+import Filter from 'components/Filter';
+import Tabbed from 'components/Tabbed';
+import TaggedText from 'components/TaggedText';
+import TextBuilder from 'components/TextBuilder';
+import Pagination from 'components/Pagination';
+import ReactTooltip from 'react-tooltip';
 
 class Complaints extends Component {
   constructor (props) {
@@ -51,42 +55,50 @@ class Complaints extends Component {
         <Block>
           <Row vertical>
             <h6 className='center'>Antwort</h6>
-            <Content>
-              <Tabbed style={{ height: '100%' }}>
-                <div label='Erstellen'>
-                  <TextBuilder complaintId={active.complaintId} />
-                </div>
-                <div label='Details'>
-                  <Stats label='Kategorisierung' data={active.subject} />
-                  <Stats label='Sentiments' data={active.sentiment} />
-                  <Log />
-                </div>
-                <div label='Datenbank'>BUH!</div>
-              </Tabbed>
-            </Content>
+            <TextBuilder complaintId={active.complaintId} />
           </Row>
         </Block>
         <Block>
           <Row vertical>
             <h6 className='center'>Meldetext</h6>
-            <Content>
-              <Tabbed style={{ height: '100%' }}>
+            <Content style={{ flexBasis: '100%' }}>
+              <Tabbed className='padding' style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
-                  <TaggedText label='Überarbeitet' text={{ text: active.text, entities: active.entities }} />
-                  <div>
-                    <br />
-                    <b>Artikulationsdatum: </b>
-                    <TaggedText text={{
-                      text: active.receiveDate,
-                      entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
-                    }} />
-                  </div>
+                  <TaggedText text={{ text: active.text, entities: active.entities }} />
                 </div>
                 <div label='Original'>
                   {active.text}
                 </div>
               </Tabbed>
             </Content>
+            <Collapsible label='Details' className="Content" style={{minHeight: '130px'}}>
+              <b> Artikulationsdatum: </b>
+              <TaggedText text={{
+                text: active.receiveDate,
+                entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+              }} />
+              <br />
+              <b> ID: </b>
+              {active.complaintId}
+              <br />
+              <b> Kategorie: </b>
+              <i data-tip data-for='subjects'>{active.probableSubject}</i>
+              <br />
+              <b> Sentiment: </b>
+              <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
+              <br />
+            </Collapsible>
+            <Collapsible label='Entitäten' className="Content">
+              <ul>
+                {createEntityArray(active.text, active.entities)}
+              </ul>
+              <ReactTooltip id='subjects' aria-haspopup='true'>
+                {createCategoriesArray(active.subject)}
+              </ReactTooltip>
+              <ReactTooltip id='sentiments' aria-haspopup='true'>
+                {createCategoriesArray(active.sentiment)}
+              </ReactTooltip>
+            </Collapsible>
           </Row>
         </Block>
       </React.Fragment>);
@@ -102,7 +114,7 @@ class Complaints extends Component {
         <Row vertical>
           <Filter onSubmit={this.fetchData} />
           <Content>
-            {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.issues.map(Complaint))}
+            {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.issues.map(Complaint))}
           </Content>
           <Pagination onClick={this.update} />
         </Row>
@@ -125,5 +137,24 @@ class Complaints extends Component {
       );
     }
 }
-
+// creates an Array of Entity-Strings
+function createEntityArray (txt, ar) {
+  return ar.map((entity, i) => {
+    return <li key={i}> { entity['label'] } :
+      <TaggedText text={{
+        text: ' ' + txt.substring(entity['start'], entity['end']),
+        entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
+      }} />
+    </li>;
+  });
+}
+// creates an Array of Categories-Strings
+function createCategoriesArray (object) {
+  let categoryArray = [];
+  Object.keys(object).forEach((key, i) => {
+    const value = object[key];
+    categoryArray.push(<li key={i}>{key} : {value}</li>);
+  });
+  return categoryArray;
+}
 export default Complaints;

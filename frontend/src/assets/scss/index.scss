@@ -267,4 +267,13 @@ textarea:focus {
     box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
     background-color: var(--secondaryBackgroundColor);
 }
+
+.logo {
+    position: relative;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+
 @import "Home";
