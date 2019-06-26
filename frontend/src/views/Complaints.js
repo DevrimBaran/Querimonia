@@ -12,13 +12,13 @@ import Block from 'components/Block';
 import Row from 'components/Row';
 import Content from 'components/Content';
 import Complaint from 'components/Complaint';
+import Collapsible from 'components/Collapsible';
 import Filter from 'components/Filter';
 import Tabbed from 'components/Tabbed';
 import TaggedText from 'components/TaggedText';
 import TextBuilder from 'components/TextBuilder';
 import Pagination from 'components/Pagination';
 import ReactTooltip from 'react-tooltip';
-import 'assets/scss/Complaints.scss';
 
 class Complaints extends Component {
   constructor (props) {
@@ -61,7 +61,7 @@ class Complaints extends Component {
         <Block>
           <Row vertical>
             <h6 className='center'>Meldetext</h6>
-            <Content>
+            <Content style={{ flexBasis: '100%' }}>
               <Tabbed className='padding' style={{ height: '100%' }}>
                 <div label='Überarbeitet'>
                   <TaggedText text={{ text: active.text, entities: active.entities }} />
@@ -71,36 +71,34 @@ class Complaints extends Component {
                 </div>
               </Tabbed>
             </Content>
-            <h6 className='center'>Details</h6>
-            <Content>
-              <div label='Details'>
-                <b> Artikulationsdatum: </b>
-                <TaggedText text={{
-                  text: active.receiveDate,
-                  entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
-                }} />
-                <br />
-                <b> ID: </b>
-                {active.complaintId}
-                <br />
-                <b> Kategorie: </b>
-                <i data-tip data-for='subjects'>{active.probableSubject}</i>
-                <br />
-                <b> Sentiment: </b>
-                <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
-                <br />
-                <b> Entitäten: </b>
-                <ul>
-                  {createEntityArray(active.text, active.entities)}
-                </ul>
-                <ReactTooltip id='subjects' aria-haspopup='true'>
-                  {createCategoriesArray(active.subject)}
-                </ReactTooltip>
-                <ReactTooltip id='sentiments' aria-haspopup='true'>
-                  {createCategoriesArray(active.sentiment)}
-                </ReactTooltip>
-              </div>
-            </Content>
+            <Collapsible label='Details' className="Content" style={{minHeight: '130px'}}>
+              <b> Artikulationsdatum: </b>
+              <TaggedText text={{
+                text: active.receiveDate,
+                entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+              }} />
+              <br />
+              <b> ID: </b>
+              {active.complaintId}
+              <br />
+              <b> Kategorie: </b>
+              <i data-tip data-for='subjects'>{active.probableSubject}</i>
+              <br />
+              <b> Sentiment: </b>
+              <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
+              <br />
+            </Collapsible>
+            <Collapsible label='Entitäten' className="Content">
+              <ul>
+                {createEntityArray(active.text, active.entities)}
+              </ul>
+              <ReactTooltip id='subjects' aria-haspopup='true'>
+                {createCategoriesArray(active.subject)}
+              </ReactTooltip>
+              <ReactTooltip id='sentiments' aria-haspopup='true'>
+                {createCategoriesArray(active.sentiment)}
+              </ReactTooltip>
+            </Collapsible>
           </Row>
         </Block>
       </React.Fragment>);
