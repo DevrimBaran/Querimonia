@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "./",
   "config": {
-    "backend": "https://querimonia.iao.fraunhofer.de/"
+    "backend": "https://querimonia.iao.fraunhofer.de"
   },
   "dependencies": {
     "express": "^4.16.4",
@@ -50,8 +50,6 @@
     "husky": "^2.3.0"
   },
   "husky": {
-    "hooks": {
-      "pre-push": "npm run eslint"
-    }
+    "hooks": {}
   }
 }
