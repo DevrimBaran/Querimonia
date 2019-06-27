@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
-import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
-import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.CompletedResponseComponent;
 
 import java.util.List;
 
@@ -24,7 +24,7 @@ public class NotRule implements Rule {
 
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
-    // no secure assumption can be made.
+    // no assumption can be made.
     return true;
   }
 }

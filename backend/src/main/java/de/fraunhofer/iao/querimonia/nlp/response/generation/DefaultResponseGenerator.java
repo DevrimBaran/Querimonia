@@ -1,8 +1,15 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.nlp.response.generation;
 
-import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintUtility;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseGenerator;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.SingleCompletedComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseSlice;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;

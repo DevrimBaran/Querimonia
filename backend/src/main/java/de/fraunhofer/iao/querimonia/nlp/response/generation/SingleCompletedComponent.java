@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.nlp.response.generation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

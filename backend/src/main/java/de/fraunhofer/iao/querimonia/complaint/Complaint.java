@@ -1,11 +1,11 @@
-package de.fraunhofer.iao.querimonia.db.Complaints;
+package de.fraunhofer.iao.querimonia.complaint;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseSuggestion;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;

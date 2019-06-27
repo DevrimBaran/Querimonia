@@ -162,13 +162,15 @@ POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Fahrt ist leider nicht erfolgt! Ich bin sauer böse Blöd ärgerlich ich hass es hass! hass!"
+  "text": "Sehr geehrte Damen und Herren, also ich würde mich gerne über den Busfahrer der am 31.10.2018 um 14:13 den Bus 622 Richtung Oberbarmen Bahnhof gefahren ist beschweren. Ich weiß nicht ob ich hier richtig bin oder nicht, was mir aber wirklich egal ist, denn sowas hat mich wirklich sehr verärgert. Es fing schon damit an, dass er einen Mann am Hauptbahnhof (Elberfeld) nicht rein gelassen hat obwohl er da noch eine weile stand. Dann an der Heusner Straße ist ein kleiner Junge ausgestiegen und hat direkt vorne an der Scheibe angeklopft und der Busfahrer hat es ignoriert. Der kleine Junge ist dem Bus bis zur Schönebecker Straße hinterher gelaufen und genau als er da ankam hat der Busfahrer die Tür zugemacht (wie immer Sie es auch nennen) den Jungen ein zweites Mal ignoriert und ist einfach weggefahren. Ich habe dort dem Busfahrer gesagt er solle die Tür doch bitte öffnen, dies hat er vielleicht nicht gehört oder ignoriert. Dann haben zwei Jungs die Tasche des anderen Jungen nach vorne zum Busfahrer gebracht, wo er leicht verärgert über sein Verhalten war, was ich wirklich sehr hoffe. Was ich aber nicht verstehe ist, dass der Busfahrer einer jungen Dame die Türe öffnen konnte und die Jungs/Männer ignoriert hat. Es gibt sowas wie Gleichberechtigung. Ich weiß leider nicht wie es bei Ihnen abläuft, ich will nicht, dass er Stress hat aber ich will, das was er getan hat auch nicht ignorieren. Ich hoffe Sie können verstehen warum ich verärgert war oder es heute noch bin. Ich wünsche Ihnen einen wunderschönen Tag."
 }
 
 ###
 
+###
+
 # get a single complaint
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
+GET https://beschwerdemanagement.iao.fraunhofer.de/api/responses/61
 
 ###
 

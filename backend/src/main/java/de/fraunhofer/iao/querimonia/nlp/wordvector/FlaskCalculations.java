@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.wordvector;
 
-import de.fraunhofer.iao.querimonia.nlp.FlaskContact;
+import de.fraunhofer.iao.querimonia.contact.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 

@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.nlp.response.template;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

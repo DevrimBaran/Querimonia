@@ -1,7 +1,8 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.nlp.response.generation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseComponent;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

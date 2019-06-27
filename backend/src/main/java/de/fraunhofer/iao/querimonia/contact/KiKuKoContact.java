@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.nlp;
+package de.fraunhofer.iao.querimonia.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -14,14 +14,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-
-public class KikukoConatct<T> {
+public class KiKuKoContact<T> {
 
   private static final String URL = "https://kikuko.iao.fraunhofer.de/apitext";
   private final String domainType;
   private final String domainName;
 
-  protected KikukoConatct(final String domainType, final String domainName) {
+  protected KiKuKoContact(final String domainType, final String domainName) {
     if (!domainType.matches("(tool)|(domain)|(pipeline)")) {
       throw new IllegalArgumentException();
     }

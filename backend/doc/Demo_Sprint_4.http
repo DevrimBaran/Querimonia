@@ -7,7 +7,7 @@
 
 ###
 
-GET https://beschwerdemanagement.iao.fraunhofer.de/dev/api/complaints
+GET https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates?count=5&page=1
 
 ### clear database
 
@@ -25,7 +25,7 @@ Content-Type: application/json
 {
   "componentName": "EntschuldigungFahrerUnfreundlich",
   "priority": 1000,
-  "rulesXml": "<Rules><And><PredecessorCount min=\"1\"/><Subject value=\"Fahrer unfreundlich\"/><Sentiment value=\"Wut\"/></And></Rules>",
+  "rulesXml": "<Rules><Subject value=\"Fahrer unfreundlich\"/></Rules>",
   "templateTexts": [
     "Wir bedauern das Fehlverhalten unseres Fahrers und die daraus für Sie entstandenen Unannehmlichkeiten sehr."
   ]
@@ -39,9 +39,9 @@ Content-Type: application/json
 {
   "componentName": "BaustellenInfo",
   "priority": 1000,
-  "rulesXml": "<Rules><And><PredecessorCount min=\"1\"/><Or><EntityAvailable label=\"Haltestelle\" value=\"Universität\"/><EntityAvailable label=\"Haltestelle\" value=\"Schranne\" /></Or></And></Rules>",
+  "rulesXml": "<Rules><Or><EntityAvailable label=\"Haltestelle\" value=\"Universität\"/><EntityAvailable label=\"Haltestelle\" value=\"Schranne\" /></Or></Rules>",
   "templateTexts": [
-    "Leider können die Haltestellen 'Universität' und 'Schranne' derzeit aufgrund einer Baustelle nicht angefahren werden."
+    "Leider können die Haltestellen 'Universität' und 'Schranne' derzeit aufgrund einer Baustelle nicht angefahren werden. \n"
   ]
 }
 
@@ -51,11 +51,25 @@ POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "componentName": "Rückerstattung",
+  "componentName": "RückerstattungTest",
   "priority": 900,
   "rulesXml": "<Rules><EntityAvailable label=\"Geldbetrag\"/></Rules>",
   "templateTexts": [
-    "Die Ihnen entstandenen Kosten in Höhe von ${Geldbetrag} werden wir Ihnen baldmöglichst zurückerstatten."
+    "Die Ihnen entstandenen Kosten in Höhe von ${Geldbetrag} werden wir Ihnen baldmöglichst zurückerstatten. "
+  ]
+}
+
+###
+
+PUT https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates/71
+Content-Type: application/json
+
+{
+  "componentName": "BegrüßungStandardTest",
+  "priority": 10000,
+  "rulesXml": "<Rules><PredecessorCount max=\"0\"/><EntityAvailable label=\"Name\"/></Rules>",
+  "templateTexts": [
+    "Sehr geehrter Herr/Frau ${Name},\n"
   ]
 }
 
@@ -65,12 +79,11 @@ POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
 Content-Type: application/json
 
 {
-  "componentName": "BegrüßungStandard",
-  "priority": 10000,
-  "rulesXml": "<Rules><PredecessorCount max=\"0\"/></Rules>",
+  "componentName": "BegrüßungMorgens",
+  "priority": 10001,
+  "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><UploadTime max=\"12:00:00\"/></And></Rules>",
   "templateTexts": [
-    "Guten Tag,\n",
-    "Sehr geehrter Kunde,\n"
+    "Guten Morgen,\n"
   ]
 }
 
@@ -88,5 +101,41 @@ Content-Type: application/json
     "Viele Grüße\n\nIhr Beschwerdebot"
   ]
 }
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "componentName": "BaustellenInfo2",
+  "priority": 901,
+  "rulesXml": "<Rules><And><Subject value=\"Fahrt nicht erfolgt\"/><Or><EntityAvailable label=\"Linie\" value=\"621\"/><EntityAvailable label=\"Haltestelle\" value=\"Vohwinkel\"/></Or></And></Rules>",
+  "templateTexts": [
+    "Aufgrund einer Baustelle kann es auf der Buslinie 621 Richtung Vohwinkel zur Zeit zu vermehrten Fahrtausfällen kommen. "
+  ]
+}
+
+###
+
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
+Content-Type: application/json
+
+{
+  "text": "ich möchte auf diesem Weg ein Lob für einen Ihrer Fahrer aussprechen. Nachdem am Bahnhof die erste Durchsage des Busfahrers noch lautete dass wir wahrscheinlich nicht weiterfahren können, erklärte er nach ein paar Minuten dass er  zumindest noch bis zur Uni fährt. Da der Bus voller Studierender war gab es daraufhin sogar spontanen Beifall. (Insbesondere da einige Mitfahrende wohl kurz darauf zu Klausuren oder Prüfungen erscheinen mussten und sonst auf Taxis hätten ausweichen müssen, da der Weg zu Fuß doch deutlich länger ist.)Die Entscheidung des Fahrers war also ein Lichtblick für viele Ihrer Kunden."
+}
+
+###
+
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
+Content-Type: application/json
+
+{
+  "text": "Beispiel"
+}
+
+###
+
+GET https://querimonia.iao.fraunhofer.de/dev/api/responses/plain/29
 
 ###

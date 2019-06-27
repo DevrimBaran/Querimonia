@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.db.Complaints;
+package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.springframework.http.HttpStatus;

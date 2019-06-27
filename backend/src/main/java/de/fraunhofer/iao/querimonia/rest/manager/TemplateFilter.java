@@ -1,6 +1,6 @@
-package de.fraunhofer.iao.querimonia.rest.restcontroller;
+package de.fraunhofer.iao.querimonia.rest.manager;
 
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
