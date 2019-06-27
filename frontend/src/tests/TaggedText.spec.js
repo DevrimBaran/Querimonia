@@ -1,4 +1,4 @@
-import TaggedText from '../TaggedText.js/index.js';
+import TaggedText from '../components/TaggedText';
 
 describe('prepareEntities', () => {
   let taggedText;

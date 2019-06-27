@@ -16,19 +16,14 @@ import Filter from 'components/Filter';
 import Pagination from 'components/Pagination';
 
 import {pd} from 'pretty-data';
-//pp_xml = require('../pretty-data').pd.xml(xml),
-//pp_xmlmin = require('../pretty-data').pd.xmlmin(xml);
-
 import { withRouter } from 'react-router-dom'
-// this also works with react-router-native
 
 class Templates extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props);
 
     this.state = {
-      loading: false,
-      templates: []
+      loading: []
     };
   }
   fetchData = (query) => {
@@ -69,32 +64,32 @@ class Templates extends Component {
     <button
       type='button'
       onClick={() => {
-        history.push(window.location.pathname
-          + (window.location.pathname.substr(-1) === '/' ? '0/' : '/0')
-          + window.location.search);
+        history.push(window.location.pathname +
+          (window.location.pathname.substr(-1) === '/' ? '0/' : '/0') +
+          window.location.search);
         this.setState((state) => ({
           templates: [...state.templates, {
             componentId: 0,
             priority: 100,
-            componentName: "Begrüßung",
+            componentName: 'Begrüßung',
             templateTexts: [
               'Sehr geehrter Herr,'
             ],
             rulesXml: '<Rules><And><Sentiment value="Wut" /><Subject value="Fahrt nicht erfolgt" /></And></Rules>',
             requiredEntites: [
-              "Name"
+              'Name'
             ]
           }]
         }));
       }
-    }>Neues Template</button>
+      }>Neues Template</button>
   ));
   saveTemplate = withRouter(({ history }) => (
     <button
       type='button'
       onClick={() => {
-        history.push('/templates/'
-          + window.location.search);
+        history.push('/templates/' +
+          window.location.search);
         let template = this.state.templates.filter((a) => '' + a.componentId === this.props.match.params.id)[0];
         template.rulesXml = pd.xmlmin(template.rulesXml);
         delete template.componentId;
@@ -122,9 +117,9 @@ class Templates extends Component {
         <Row vertical>
           <h6 className='center'>Antworvariationen</h6>
           <Content>
-          {active.templateTexts.map((text, index) => {
-            return <textarea key={index} value={text} onChange={() => {}} />
-          })}
+            {active.templateTexts.map((text, index) => {
+              return <textarea key={index} value={text} onChange={() => {}} />;
+            })}
           </Content>
           <div>
             <this.saveTemplate />
@@ -153,7 +148,7 @@ class Templates extends Component {
       </Row>
     </Block>);
   }
-  render() {
+  render () {
     let active = false;
     if (this.props.match.params.id) {
       active = this.state.templates.filter((a) => '' + a.componentId === this.props.match.params.id)[0];
@@ -166,8 +161,8 @@ class Templates extends Component {
         {active ? (
           this.renderSingle(active)
         ) : (
-            this.renderList()
-          )}
+          this.renderList()
+        )}
 
       </React.Fragment>
     );

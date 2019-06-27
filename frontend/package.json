@@ -51,6 +51,8 @@
     "husky": "^2.3.0"
   },
   "husky": {
-    "hooks": {}
+    "hooks": {
+      "pre-push": "npm run eslint"
+    }
   }
 }
