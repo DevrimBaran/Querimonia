@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.nlp.response.rules;
 
-import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
-import de.fraunhofer.iao.querimonia.nlp.response.CompletedResponseComponent;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseComponent;
 
 import java.util.List;
 

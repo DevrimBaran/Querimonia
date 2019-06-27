@@ -1,12 +1,11 @@
-package de.fraunhofer.iao.querimonia.db.Complaints;
+package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
-import de.fraunhofer.iao.querimonia.nlp.response.ComplaintData;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseGenerator;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseGenerator;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 
 import java.time.LocalDate;

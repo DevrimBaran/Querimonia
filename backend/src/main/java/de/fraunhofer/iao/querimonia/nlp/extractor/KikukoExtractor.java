@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.extractor;
 
-import de.fraunhofer.iao.querimonia.nlp.KikukoConatct;
+import de.fraunhofer.iao.querimonia.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorPipelines;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorResponse;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KikukoExtractor extends KikukoConatct<ExtractorResponse> implements EntityExtractor {
+public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements EntityExtractor {
 
   public KikukoExtractor() {
     super("domain", "QuerimoniaExtract");

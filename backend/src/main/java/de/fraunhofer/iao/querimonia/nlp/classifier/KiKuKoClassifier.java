@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
-import de.fraunhofer.iao.querimonia.nlp.KikukoConatct;
+import de.fraunhofer.iao.querimonia.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
 import java.util.LinkedHashMap;
@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */
-public class KiKuKoClassifier extends KikukoConatct<KikukoResponse> implements Classifier {
+public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
 
 
   public KiKuKoClassifier() {

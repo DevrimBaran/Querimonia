@@ -1,15 +1,15 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.Complaints.Complaint;
-import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintFactory;
-import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintFilter;
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
-import de.fraunhofer.iao.querimonia.nlp.response.DefaultResponseGenerator;
+import de.fraunhofer.iao.querimonia.nlp.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.FlaskSentiment;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
@@ -43,7 +43,6 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;

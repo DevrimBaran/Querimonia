@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.nlp;
+package de.fraunhofer.iao.querimonia.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.configurationprocessor.json.JSONObject;

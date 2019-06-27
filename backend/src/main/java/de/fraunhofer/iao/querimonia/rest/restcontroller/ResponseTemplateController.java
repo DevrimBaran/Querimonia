@@ -1,8 +1,9 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseComponent;
-import de.fraunhofer.iao.querimonia.nlp.response.ResponseTemplateManager;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseComponent;
+import de.fraunhofer.iao.querimonia.rest.manager.ResponseTemplateManager;
+import de.fraunhofer.iao.querimonia.rest.manager.TemplateFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

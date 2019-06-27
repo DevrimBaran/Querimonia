@@ -1,4 +1,6 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.nlp.response.generation;
+
+import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 
 /**
  * This interface is used to generate response texts from given complaints.

@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.db.repositories;
 
-import de.fraunhofer.iao.querimonia.db.Complaints.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import org.springframework.data.repository.CrudRepository;
 
 /**
