@@ -9,9 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * The main class of the backend, which starts the server.
  */
 @SpringBootApplication
-@EnableConfigurationProperties({
-                                    FileStorageProperties.class
-                                })
+@EnableConfigurationProperties({FileStorageProperties.class})
 public class Launcher {
 
   public static void main(String[] args) {

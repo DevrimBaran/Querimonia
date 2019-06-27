@@ -1,6 +1,7 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.nlp.response.template.ResponseComponent;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -41,7 +42,7 @@ public class ResponseTemplateManager {
    * @return the created template
    */
   public ResponseComponent addTemplate(TemplateRepository templateRepository,
-                                           ResponseComponent responseComponent) {
+                                       ResponseComponent responseComponent) {
     templateRepository.save(responseComponent);
     return responseComponent;
   }

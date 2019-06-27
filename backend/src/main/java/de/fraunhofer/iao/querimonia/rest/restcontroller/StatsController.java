@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.Complaints.Complaint;
-import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintFilter;
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;

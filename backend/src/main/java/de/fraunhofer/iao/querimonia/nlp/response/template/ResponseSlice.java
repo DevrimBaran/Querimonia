@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.nlp.response;
+package de.fraunhofer.iao.querimonia.nlp.response.template;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.List;
  * Represents a slice of the response component that is either raw text or a placeholder. The
  * complaint text gets sliced in text and placeholders.
  */
-class ResponseSlice {
+public class ResponseSlice {
 
   private boolean isPlaceholder;
   // this is either the placeholder name or the raw text when the slice is no placeholder.
@@ -18,11 +18,11 @@ class ResponseSlice {
     this.content = content;
   }
 
-  boolean isPlaceholder() {
+  public boolean isPlaceholder() {
     return isPlaceholder;
   }
 
-  String getContent() {
+  public String getContent() {
     return content;
   }
 
@@ -31,7 +31,7 @@ class ResponseSlice {
    *
    * @param text the text that should be sliced.
    */
-  static List<ResponseSlice> createSlices(String text) {
+  public static List<ResponseSlice> createSlices(String text) {
     List<ResponseSlice> slices = new ArrayList<>();
     // the current position in the text
     int templatePosition = 0;

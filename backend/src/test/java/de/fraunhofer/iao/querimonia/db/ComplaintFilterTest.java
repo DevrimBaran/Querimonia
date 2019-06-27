@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.db;
 
-import de.fraunhofer.iao.querimonia.db.Complaints.Complaint;
-import de.fraunhofer.iao.querimonia.db.Complaints.ComplaintFilter;
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
