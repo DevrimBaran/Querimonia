@@ -12,6 +12,9 @@ import Import from 'views/Import';
 import WordVectors from 'views/WordVectors';
 import TagCloud from 'views/TagCloud';
 import Templates from 'views/Templates';
+
+import OpenApi from 'components/OpenApi';
+
 import logo from './assets/img/StuproLogo2.svg';
 
 function App () {
@@ -48,7 +51,10 @@ function App () {
           <li>
             <Link to='/tagcloud'>Tag-Cloud</Link>
           </li>
-          {(process.env.NODE_ENV === 'development') && <li><label htmlFor='mockApi'>no mock: </label> <input type='checkbox' defaultChecked id='mockApi' /></li>}
+          <li>
+            {/* wird nur in development und mock gerendered */}
+            <OpenApi />
+          </li>
         </ul>
       </nav>
 

@@ -15,6 +15,10 @@ import Template from 'components/Template';
 import Filter from 'components/Filter';
 import Pagination from 'components/Pagination';
 
+import {pd} from 'pretty-data';
+//pp_xml = require('../pretty-data').pd.xml(xml),
+//pp_xmlmin = require('../pretty-data').pd.xmlmin(xml);
+
 import { withRouter } from 'react-router-dom'
 // this also works with react-router-native
 
@@ -92,11 +96,13 @@ class Templates extends Component {
         history.push('/templates/'
           + window.location.search);
         let template = this.state.templates.filter((a) => '' + a.componentId === this.props.match.params.id)[0];
-        template.rulesXml = template.rulesXml.replace(/\n/g, '').replace(/\t/g, ' ').replace(/\s{2,}/g, ' ');
+        template.rulesXml = pd.xmlmin(template.rulesXml);
         delete template.componentId;
         delete template.requiredEntites;
-        Api.post('/api/templates', template)
+        console.log(template);
+        /*Api.post('/api/templates', template)
           .then(this.componentDidMount);
+        */
       }}
     >Speichern</button>
   ));
@@ -109,7 +115,7 @@ class Templates extends Component {
       <Block>
         <Row vertical>
           <h6 ref="editor" className='center'>Regeln</h6>
-          <div id="editor">{active.rulesXml}</div>
+          <div id="editor">{pd.xml(active.rulesXml)}</div>
         </Row>
       </Block>
       <Block>

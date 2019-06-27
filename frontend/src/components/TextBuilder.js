@@ -57,8 +57,8 @@ class TextBuilder extends Component {
   setData = (data) => {
     this.data = data;
     const categories = data.map(block => block.category);
-    let state = categories.reduce((obj, category) => {
-      obj[category] = 0;
+    let state = categories.reduce((obj, block) => {
+      obj[block.component.componentName] = 0;
       return obj;
     }, {});
     state.categories = categories;
