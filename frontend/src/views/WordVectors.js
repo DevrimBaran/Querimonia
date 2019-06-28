@@ -54,44 +54,37 @@ class WordVectors extends Component {
           token += chars.shift();
         }
       }
-      switch (token) {
-        case '+': // fallthrough
-        case '-': // fallthrough
-        case '*': // fallthrough
-        case '/': // fallthrough
-          // token is operator
-          while (precedence(operatorStack[operatorStack.length - 1]) >= precedence(token) &&
-            operatorStack[operatorStack.length - 1] !== '(') {
-            outputQueue.push(operatorStack.pop());
+      if (token === '+' || token === '-' || token === '*' || token === '/') {
+        while (precedence(operatorStack[operatorStack.length - 1]) >= precedence(token) &&
+          operatorStack[operatorStack.length - 1] !== '(') {
+          outputQueue.push(operatorStack.pop());
+        }
+        operatorStack.push(token);
+      } else if (token === '(') {
+        operatorStack.push(token);
+      } else if (token === ')') {
+        while (operatorStack[operatorStack.length - 1] !== '(') {
+          outputQueue.push(operatorStack.pop());
+          if (operatorStack.length === 0) {
+            this.setState({ error: 'parentheses missmatch!' });
+            return;
           }
-        case '(': // fallthrough
-          operatorStack.push(token);
-          break;
-        case ')':
-          while (operatorStack[operatorStack.length - 1] !== '(') {
-            outputQueue.push(operatorStack.pop());
-            if (operatorStack.length === 0) {
-              this.setState({ error: 'parentheses missmatch!' });
-              return;
-            }
-          }
-          operatorStack.pop();
-          break;
-        default:
-          // token is a word
-          outputQueue.push(token);
+        }
+        operatorStack.pop();
+      } else {
+        // token is a word
+        outputQueue.push(token);
       }
     }
     while (operatorStack.length > 0) {
-      switch (operatorStack[operatorStack.length - 1]) {
-        case '(':// fallthrough
-        case ')':
-          this.setState({ error: 'parentheses missmatch!' });
-          return;
-        default:
-          outputQueue.push(operatorStack.pop());
+      if (operatorStack[operatorStack.length - 1] === '(' || operatorStack[operatorStack.length - 1] === ')') {
+        this.setState({ error: 'parentheses missmatch!' });
+        return;
+      } else {
+        outputQueue.push(operatorStack.pop());
       }
     }
+
     this.setState({ error: null });
     this.analogy = outputQueue;
   }
