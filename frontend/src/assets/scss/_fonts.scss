@@ -1,5 +1,9 @@
 %font {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: $black;
+}
+html {
+    @extend %font;
 }
 h1, .h1 {
     @extend %font;
@@ -30,7 +34,8 @@ p, .p {
     font-size: 1em;
 }
 a, .a {
-    @extend %font;
+    @extend p;
+    color: $primary;
 }
 label, .label {
     @extend %font;

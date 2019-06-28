@@ -15,8 +15,8 @@ import Template from 'components/Template';
 import Filter from 'components/Filter';
 import Pagination from 'components/Pagination';
 
-import {pd} from 'pretty-data';
-import { withRouter } from 'react-router-dom'
+import { pd } from 'pretty-data';
+import { withRouter } from 'react-router-dom';
 
 class Templates extends Component {
   constructor (props) {
@@ -95,7 +95,7 @@ class Templates extends Component {
         delete template.componentId;
         delete template.requiredEntites;
         console.log(template);
-        /*Api.post('/api/templates', template)
+        /* Api.post('/api/templates', template)
           .then(this.componentDidMount);
         */
       }}
@@ -109,8 +109,8 @@ class Templates extends Component {
     return (<React.Fragment>
       <Block>
         <Row vertical>
-          <h6 ref="editor" className='center'>Regeln</h6>
-          <div id="editor">{pd.xml(active.rulesXml)}</div>
+          <h6 ref='editor' className='center'>Regeln</h6>
+          <div id='editor'>{pd.xml(active.rulesXml)}</div>
         </Row>
       </Block>
       <Block>
