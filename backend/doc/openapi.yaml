@@ -4,9 +4,9 @@ info:
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
   version: 0.4.2
 servers:
-  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/
-  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
+  - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
+  - url: https://querimonia.iao.fraunhofer.de/
   - url: http://localhost:8080/
 tags:
   - name: complaints
@@ -179,6 +179,67 @@ paths:
                 $ref: '#/components/schemas/Complaint'
         400:
           description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
+          
+  /api/complaints/count:
+    get:
+      tags:
+        - complaints
+      summary: Gibt die Anzahl der Beschwerden zurück.
+      description: Gibt die Anzahl von Beschwerden in der Datenbank zurück, wobei Filter angewendet werden können.
+      parameters:
+        - name: date_min
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden gezählt, die nach diesem Datum hochgeladen wurden. Datum muss [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6) enstprechen, also dem Format yyyy-mm-dd.
+          schema:
+            type: string
+            format: date
+        - name: date_max
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden gezählt, die vor diesem Datum hochgeladen wurden. Das Datum entpricht dem gleichen Format wie bei *dateMin*
+          schema:
+            type: string
+            format: date
+        - name: sentiment
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die einem der gegebenen *sentiments* entsprechen.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: subject
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die einem der gegebenen Kategorien von Beschwerden entsprechen.
+          schema:
+            type: array
+            items:
+              type: string
+        - name: keywords
+          in: query
+          required: false
+          description: Bei Angabe werden nur Beschwerden zurückgegeben, die die angebenen Schlüsselwörter enthalten.
+          schema:
+            type: array
+            items:
+              type: string
+
+      operationId: countComplaints
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            text/plain:
+              schema:
+                type: integer
+                format: int32
+                example: 140
+        400:
+          description: Üngültige Angabe von Paramtern.
+          content: {}
+          
   /api/complaints/all:
     delete:
       tags:
@@ -210,6 +271,31 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResponseSuggestion'
+        404:
+          description: Es gibt keine Beschwerde mit der gegebenen ID.
+    
+    patch:
+      tags:
+        - responses
+      summary: Generiert eine neue Antwort zu einer Beschwerde
+      description: Die Antwort zu einer Beschwerde wird neugeneriert und zurückgegben.
+      parameters:
+        - name: complaintId
+          in: path
+          description: Die Id der Beschwerde, zu der die Antwort zurückgegeben werden soll.
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Die neu generierte Antwort der Beschwerde wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        400:
+          description: Die Beschwerde wurde bereits abgeschlossen.
         404:
           description: Es gibt keine Beschwerde mit der gegebenen ID.
 
@@ -492,31 +578,30 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - vector1
+                - operator1
+                - vector2
+                - corpus
               properties:
                 vector1:
                   type: string
-                  required: true
                   description: erster Word der Berechnung
                 operator1:
                   type: string
-                  required: true
                   description: erster Operator zwischen dem ersten und zweiten Vektor
                   example: "+"
                 vector2:
                   type: string
-                  required: true
                   description: zweites Word der Berechnung
                 corpus:
                   type: string
-                  required: true
                   description: auswahl des Txtkorpus für die Berechnung
                 operator2:
                   type: string
-                  required: false
-                  description: optionaler zwiter Operator für erweiterte Berechnungen
+                  description: optionaler zweiter Operator für erweiterte Berechnungen
                 vector3:
                   type: string
-                  required: false
                   description: drittes optionales Word der Berechnung
       responses:
         200:
@@ -565,28 +650,40 @@ components:
           description: Die Eingangszeit der Beschwerde im System.
           example: "13:45"
         subject:
-          type: object
-          additionalProperties:
-            type: number
-          description: Enthält alle möglichen Kategorien und die Wahrscheinlichkeiten, dass die Beschwerde in diese Kategorie fällt.
-          example:
-            "Fahrer unfreundlich": 0.5
-            "Fahrt nicht erfolgt": 0.4
-            "Sonstiges": 0.1
+          $ref: '#/components/schemas/ComplaintProperty'
         sentiment:
-          type: object
-          additionalProperties:
-            type: number
-          description: Enthält alle möglichen Bezeichnungen der "Stimmung" der Beschwerde mit Angabe deren Wahrscheinlichkeit, dass die Beschwerde in dieser Stimmung geschrieben ist.
-          example:
-            "Wütend": 0.6
-            "Neutral": 0.3
-            "Freundlich": 0.1
+          $ref: '#/components/schemas/ComplaintProperty'
         entities:
           type: array
           items:
             $ref: '#/components/schemas/NamedEntity'
           description: Enthält alle Entitäten, die in der Beschwerde gefunden wurden.
+          
+    ComplaintProperty:
+      type: object
+      description: Eine Eigenschaft für Beschwerden, bisher für Subject und Sentiment. Enhält einen Bezeichner, Wahrscheinlichkeiten für Werte und ein Flag, ob der Wert vom Nutzer gesetzt wurde.
+      required:
+        - name
+        - probabilities
+        - setByUser
+      properties:
+        name:
+          type: string
+          example: Fahrt nicht erfolgt
+          description: Die Bezeichnung der Kategorie.
+        setByUser:
+          type: boolean
+          example: false
+          description: Ob der Parameter vom Nutzer gesetzt wurde oder automatisch erkannt wurde.
+        probabilities:
+          type: object
+          description: Gibt die Wahrscheinlichkeiten für alle Kategorien an, dass die Beschwerde eine bestimmte Kategorie hat.
+          additionalProperties:
+            type: number
+          example:
+            "Fahrt nicht erfolgt": 0.6
+            "Fahrer unfreundlich": 0.3
+            "Sontiges": 0.1
 
     Complaints:
       type: array
