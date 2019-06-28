@@ -152,8 +152,9 @@ class WordVectors extends Component {
               x.push(a[i] / b[i]);
             }
           }
-          let len = x.reduce((len, a) => len + a * a, 0);
-          stack.push(x.map(a => a / len));
+          // let len = x.reduce((len, a) => len + a * a, 0);
+          // stack.push(x.map(a => a / len));
+          stack.push(x);
         } else {
           stack.push(dictionary[token]);
         }
