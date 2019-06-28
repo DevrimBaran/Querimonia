@@ -72,6 +72,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:8080/api/responses/plain/47
+
+###
+
 PUT http://localhost:8080/api/template/1
 Content-Type: application/json
 
@@ -92,11 +96,12 @@ POST https://kikuko.iao.fraunhofer.de/apitext
 
 ###
 
-POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
+POST https://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"}
+  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"
+}
 
 ###
 

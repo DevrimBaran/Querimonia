@@ -11,10 +11,7 @@ import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -53,7 +50,11 @@ public class ComplaintFactory {
 
     String preview = makePreview(complaintText);
     Map<String, Double> subjectMap = classifier.classifyText(complaintText);
-    List<NamedEntity> entities = entityExtractor.extractEntities(complaintText);
+    List<NamedEntity> entities = entityExtractor.extractEntities(complaintText)
+        .stream()
+        .distinct()
+        .collect(Collectors.toList());
+
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
 

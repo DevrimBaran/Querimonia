@@ -391,6 +391,18 @@ paths:
         400:
           description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
 
+  /api/templates/default:
+    post:
+      tags:
+        - templates
+      summary: Fügt dem System eine Menge an Standard-Antwortbausteinen hinzu.
+      description: Fügt eine Menge an Standard-Antwortbausteinen hinzu. Diese enthält verschiedene Bausteine für Begrüßungen, Eingangsdaten, Problembeschreibungen, Entschuldigungen, Lösungsvorschläge, Erstattungen und Schlüsse. Die Bausteine gehören zu den Kategorien Fahrer unfreundlich, Fahrt nicht erfolgt, Sonstiges. Jeder Baustein hat drei verschiedene Texte und verschiedene Varianten mit/ohne Platzhaltern.
+      responses:
+        200:
+          description: Die Standard Bausteine wurden erfolgreich hinzugefügt.
+        500:
+          description: Die Datei mit den Standard-Antwortbausteinen ist nicht vorhanden, korrupt oder nicht richtig formatiert.
+
   /api/templates/{templateId}:
     get:
       tags:
