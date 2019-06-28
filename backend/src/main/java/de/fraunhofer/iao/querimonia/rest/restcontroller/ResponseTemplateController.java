@@ -50,6 +50,18 @@ public class ResponseTemplateController {
     return responseTemplateManager.addTemplate(templateRepository, responseComponent);
   }
 
+
+  /**
+   * Add a set of default templates to the repository.
+   *
+   * @return the list of default templates
+   */
+  @PostMapping("api/templates/default")
+  public List<ResponseComponent> addDefaultTemplates() {
+    initialize();
+    return responseTemplateManager.addDefaultTemplates(templateRepository);
+  }
+
   /**
    * Pagination for templates (sort_by, page, count).
    *
