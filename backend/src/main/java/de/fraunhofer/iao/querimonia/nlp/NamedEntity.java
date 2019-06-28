@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Embeddable;
 
@@ -10,7 +11,7 @@ import javax.persistence.Embeddable;
  * "Date", "Org") and the indices where the entity starts and ends in the text.
  */
 @Embeddable
-public class NamedEntity {
+public class NamedEntity implements Comparable<NamedEntity> {
 
   private String label;
   private int start;
@@ -58,5 +59,23 @@ public class NamedEntity {
         + '}';
   }
 
-  
+  @Override
+  public boolean equals(Object obj) {
+    if (obj instanceof NamedEntity) {
+      NamedEntity other = (NamedEntity) obj;
+      return other.start == start && other.end == end && other.label.equals(label);
+    }
+    return false;
+  }
+
+  @Override
+  public int compareTo(@NotNull NamedEntity o) {
+    if (start < o.start) {
+      return -1;
+    }
+    if (end < o.end) {
+      return -1;
+    }
+    return label.compareTo(o.label);
+  }
 }

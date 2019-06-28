@@ -18,7 +18,7 @@ public class PredecessorRule implements Rule {
    * Creates new predecessor rule.
    *
    * @param predecessorRegex the template name.
-   * @param position the position of the predecessor. Must be "any", "before" or a positive number.
+   * @param position the position of the predecessor. Must be "any", "last" or a positive number.
    */
   public PredecessorRule(String predecessorRegex, String position) {
     this.position = position;
