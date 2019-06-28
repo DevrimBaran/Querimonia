@@ -121,7 +121,7 @@ class WordVectors extends Component {
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
       return x.map(a => a / len);
-    }
+    };
     if (this.state.error) return;
     // this.analogy is postfix expression
     let words = this.analogy.filter((token) => {
@@ -166,13 +166,13 @@ class WordVectors extends Component {
         }
       }
       return this.vec2word(normalize(stack.pop()));
-    })  
+    })
       .then(result => {
         this.setState(result);
       });
   }
   changeCorpora = (e) => {
-    this.setState({corpora: e.target.value});
+    this.setState({ corpora: e.target.value });
   }
   render () {
     return (

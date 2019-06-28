@@ -1,3 +1,4 @@
+/* eslint handle-callback-err:0 */
 import React, { Component } from 'react';
 
 const jsonPath = 'https://querimonia.iao.fraunhofer.de/inf/data/backend-openapi/openapi.json';
@@ -43,7 +44,7 @@ class OpenApi extends Component {
       })
       .catch(error => {
         this.setState({
-          error: true
+          error: error
         });
       });
   }

@@ -1,3 +1,4 @@
+/* eslint no-undef:0 */
 import TaggedText from '../components/TaggedText';
 
 describe('prepareEntities', () => {
