@@ -33,14 +33,13 @@ class WordVectors extends Component {
   }
   parseText = (e) => {
     const precedence = (o) => {
-      switch (o) {
-        case '*':
-        case '/':
-          return 3;
-        case '+':
-        case '-':
-          return 2;
+      if (o === '*' || o === '/') {
+        return 3;
       }
+      if (o === '+' || o === '-') {
+        return 2;
+      }
+      return 0;
     };
     // Shunting-yard algorithm
     let chars = e.target.value.replace(/\s+/g, '').split('');
@@ -142,30 +141,28 @@ class WordVectors extends Component {
       let postfix = this.analogy;
       while (postfix.length > 0) {
         token = postfix.shift();
-        switch (token) {
-          case '+':
-          case '-':
-          case '*':
-          case '/':
-            b = stack.pop();
-            a = stack.pop();
-            let x = a.map((a, i) => {
-              switch (token) {
-                case '+':
-                  return a + b[i];
-                case '-':
-                  return a - b[i];
-                case '*':
-                  return a * b[i];
-                case '/':
-                  return a / b[i];
-              }
-            });
-            let len = x.reduce((len, a) => len + a * a, 0);
-            stack.push(x.map(a => a / len));
-            break;
-          default:
-            stack.push(dictionary[token]);
+        if (token === '+' || token === '-' || token === '*' || token === '/') {
+          b = stack.pop();
+          a = stack.pop();
+          let x = [];
+          for (let i = 0; i < a.length; i++) {
+            if (token === '+') {
+              x.push(a[i] + b[i]);
+            } else
+            if (token === '-') {
+              x.push(a[i] - b[i]);
+            } else
+            if (token === '*') {
+              x.push(a[i] * b[i]);
+            } else
+            if (token === '/') {
+              x.push(a[i] / b[i]);
+            }
+          }
+          let len = x.reduce((len, a) => len + a * a, 0);
+          stack.push(x.map(a => a / len));
+        } else {
+          stack.push(dictionary[token]);
         }
       }
       return this.vec2word(stack.pop());
