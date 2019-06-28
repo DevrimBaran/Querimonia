@@ -39,7 +39,9 @@ class Calc:
         return result_multiple
 
     @staticmethod
-    def getword(vec):
+    def getword(vec, modelName=None):
+        if modelName != None:
+            model = FastText.load_fasttext_format("../" + modelName )
         return model.similar_by_vector(vec)
 
     @staticmethod
@@ -47,7 +49,9 @@ class Calc:
         return vec / np.sqrt(np.sum(vec**2))
     
     @staticmethod
-    def vectorize( word ):
+    def vectorize( word, modelName=None):
+        if modelName != None:
+            model = FastText.load_fasttext_format("../" + modelName )
         return np.array(model[word])
     
     @staticmethod

@@ -73,14 +73,16 @@ def return_wortvektor():
 def return_vektor():
     content = request.get_json()
     word = content['word']
-    result = wordvector.Calc.vectorize(word)
+    modelName = content['model']
+    result = wordvector.Calc.vectorize(word, modelName)
     return jsonify(result.tolist())
 
 @app.route('/vec_to_word', methods=['POST'])
 def return_wort():
     content = request.get_json()
     vector = content['vector']
-    result = wordvector.Calc.getword(np.asarray(vector))
+    modelName = content['model']
+    result = wordvector.Calc.getword(np.asarray(vector), modelName)
     # print(result)
     return jsonify(result)
 
