@@ -52,8 +52,11 @@ function App () {
             <Link to='/tagcloud'>Tag-Cloud</Link>
           </li>
           <li>
-            {/* wird nur in development und mock gerendered */}
+            {/* wird nur in development und mock gerendered */
+            /* 
             <OpenApi />
+            */
+            }
           </li>
         </ul>
       </nav>

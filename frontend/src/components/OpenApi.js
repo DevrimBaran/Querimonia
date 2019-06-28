@@ -112,7 +112,7 @@ class OpenApi extends Component {
         </div>
       );
     } else {
-      return <React.Fragment></React.Fragment>;
+      return (<li />);
     }
   }
 }
