@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 
 import Block from 'components/Block';
+import Select from 'components/Select';
 import Content from 'components/Content';
 
 // TODO Api anpassen/backend ändern
@@ -28,7 +29,8 @@ class WordVectors extends Component {
     super();
     this.state = {
       result: [],
-      error: false
+      error: false,
+      corpora: 'beschwerden3kPolished.bin'
     };
   }
   parseText = (e) => {
@@ -97,7 +99,7 @@ class WordVectors extends Component {
     // return new Promise(function (resolve, reject) {
     //  resolve([parseInt(data), parseInt(data)]);
     // })
-    return Api.post('/word_to_vec', { word: word });
+    return Api.post('/word_to_vec', { word: word, corpora: this.state.corpora });
     // .then((response) => {
     //  if (data.sign !== '-') return response;
     //  return response.map(a => -a);
@@ -106,7 +108,7 @@ class WordVectors extends Component {
   vec2word = (vec) => {
     // console.log('result: ' + vec[0]);
     // return vec;
-    return Api.post('/vec_to_word', { vector: vec })
+    return Api.post('/vec_to_word', { vector: vec, corpora: this.state.corpora })
       .then((response) => {
         return {
           result: response.map(function (arr, index) {
@@ -116,6 +118,10 @@ class WordVectors extends Component {
       });
   };
   calculate = () => {
+    const normalize = (x) => {
+      let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
+      return x.map(a => a / len);
+    };
     if (this.state.error) return;
     // this.analogy is postfix expression
     let words = this.analogy.filter((token) => {
@@ -152,18 +158,21 @@ class WordVectors extends Component {
               x.push(a[i] / b[i]);
             }
           }
-          let len = x.reduce((len, a) => len + a * a, 0);
-          stack.push(x.map(a => a / len));
+          // let len = x.reduce((len, a) => len + a * a, 0);
+          // stack.push(x.map(a => a / len));
+          stack.push(x);
         } else {
           stack.push(dictionary[token]);
         }
       }
-      return this.vec2word(stack.pop());
+      return this.vec2word(normalize(stack.pop()));
     })
       .then(result => {
-        console.log(result);
         this.setState(result);
       });
+  }
+  changeCorpora = (e) => {
+    this.setState({ corpora: e.target.value });
   }
   render () {
     return (
@@ -172,13 +181,7 @@ class WordVectors extends Component {
           <h6 className='center'>Wortvektoren</h6>
           <Content style={{ flexBasis: '100%' }}>
             <label htmlFor='textkorpora'>Textkorpora: </label>
-            <select id='textkorpora' name='textkorpora'>
-              <option>beschwerden3kPolished.bin</option>
-              <option>cc.de.300.bin</option>
-              <option>ngram_ger.bin</option>
-              <option>BeschwerdenCATLeipzig.bin</option>
-              <option>leipzigCorporaCollection1M.bin</option>
-            </select>
+            <Select required id='textkorpora' name='textkorpora' value={this.state.corpora} values={['beschwerden3kPolished.bin', 'cc.de.300.bin', 'ger.bin', 'zig.bin', 'n1M.bin']} onChange={this.changeCorpora} />
             <label htmlFor='analogy'>Analogie: </label>
             <input id='analogy' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
             <input type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />

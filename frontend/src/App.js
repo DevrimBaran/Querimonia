@@ -13,7 +13,7 @@ import WordVectors from 'views/WordVectors';
 import TagCloud from 'views/TagCloud';
 import Templates from 'views/Templates';
 
-import OpenApi from 'components/OpenApi';
+// import OpenApi from 'components/OpenApi';
 
 import logo from './assets/img/StuproLogo2.svg';
 
@@ -52,8 +52,11 @@ function App () {
             <Link to='/tagcloud'>Tag-Cloud</Link>
           </li>
           <li>
-            {/* wird nur in development und mock gerendered */}
+            {/* wird nur in development und mock gerendered */
+            /*
             <OpenApi />
+            */
+            }
           </li>
         </ul>
       </nav>
