@@ -124,10 +124,10 @@ deploy-backend-dev:
     - echo 'start server in background'
     - sudo systemctl restart stuprojavaserver_dev
     - echo 'copy current openapi to destination'
-    - chmod +x backend/doc/openapi.yaml
+    - chmod +rx backend/doc/openapi.yaml
     - sudo cp backend/doc/openapi.yaml /home/beschwerdemanagement/export/data/
-    - cd /home/beschwerdemanagement/export/data/
-    - cat openapi.yaml | yq -j . > openapi.json
+    - cd /home/gitlab-runner/
+    - ./convert.sh
     - chmod +x openapi.json
   allow_failure: true
   only:
