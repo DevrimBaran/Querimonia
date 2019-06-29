@@ -2,19 +2,24 @@ openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.4.2
+  version: 0.5.1
 servers:
-  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/
-  - url: https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/
+  - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
+  - url: https://querimonia.iao.fraunhofer.de/dev
+  - url: https://querimonia.iao.fraunhofer.de/
   - url: http://localhost:8080/
 tags:
   - name: complaints
-    description: Hier können die gespeicherten Beschwerden verwaltet werden.
+    description: Hier können Beschwerden hochgeladen, verwaltet und editiert werden.
   - name: responses
-    description: Hier können Antworten abgerufen und verwaltet werden.
+    description: Hier können Antworten abgerufen werden.
   - name: templates
     description: Hier können Textbausteine für Antworten verwaltet werden.
+  - name: actions
+    description: Hier können Aktionen (z.B. Gutschein anhängen) für Beschwerden verwaltet werden.
+  - name: config
+    description: Hier werden Einstellungen verwaltet, es können Extraktoren, Klassifizierer und Sentiment-Analysierer festgelegt werden.
   - name: stats
     description: Hier können verschiedene Statistiken über die Beschwerden abgerufen werden.
   - name: vector
@@ -24,67 +29,18 @@ paths:
     get:
       tags:
         - complaints
-      summary: Gibt Beschwerden, die auf dem Server gespeichert sind, zurück.
+      summary: Gibt Beschwerden zurück, die auf dem Server gespeichert sind.
       description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und das Offset der Beschwerden bestimmt werden.
       parameters:
-        - name: count
-          in: query
-          description: Anzahl der Beschwerden, die zurück gegeben werden sollen. Falls nicht angegeben, werden alle Beschwerden zurückgegeben.
-          required: false
-          schema:
-            type: integer
-            format: int32
-        - name: page
-          in: query
-          description: Falls page 0 ist, werden die ersten *count* Beschwerden zurück gegeben, falls page 1 ist die zweiten *count* Beschwerden, gibt also die Seitenzahl an. Falls nicht angegeben, wird 0 angenommen. Wird ignoriert, falls *count* nicht gegeben ist.
-          required: false
-          schema:
-            type: integer
-            format: int32
-        - name: sort_by
-          in: query
-          required: false
-          description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
-          schema:
-            $ref: '#/components/schemas/OrderBy'
-        - name: date_min
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden zurückgegeben, die nach diesem Datum hochgeladen wurden. Datum muss [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6) enstprechen, also dem Format yyyy-mm-dd.
-          schema:
-            type: string
-            format: date
-        - name: date_max
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden zurückgegeben, die vor diesem Datum hochgeladen wurden. Das Datum entpricht dem gleichen Format wie bei *dateMin*
-          schema:
-            type: string
-            format: date
-        - name: sentiment
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden zurückgegeben, die einem der gegebenen *sentiments* entsprechen.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: subject
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden zurückgegeben, die einem der gegebenen Kategorien von Beschwerden entsprechen.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: keywords
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden zurückgegeben, die die angebenen Schlüsselwörter enthalten.
-          schema:
-            type: array
-            items:
-              type: string
+        - $ref: '#/components/parameters/CountParameter'
+        - $ref: '#/components/parameters/PageParameter'
+        - $ref: '#/components/parameters/ComplaintsSortParameter'
+        - $ref: '#/components/parameters/ComplaintStateParameter'
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/SentimentParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+        - $ref: '#/components/parameters/KeywordsParameter'
 
       operationId: getComplaints
       responses:
@@ -93,68 +49,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Complaints'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Complaint'
         400:
-          description: Üngültige Angabe von Paramtern.
-          content: {}
-
-  /api/complaints/{complaintId}:
-    get:
-      tags:
-        - complaints
-      summary: Gibt eine Beschwerde mit der gegebenen Id zurück.
-      description: Gibt eine Beschwerde mit der gegebenen Id zurück.
-      parameters:
-        - name: complaintId
-          in: path
-          description: Die eindeutige Id der Beschwerde.
-          required: true
-          schema:
-            type: integer
-            format: int32
-      operationId: getComplaint
-      responses:
-        200:
-          description: Erfolgreiche Anfrage.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Complaint'
-        404:
-          description: Beschwerde mit gegebener Id existiert nicht
-          content:
-            {}
-
-    delete:
-      tags:
-        - complaints
-      summary: Löscht eine Beschwerde.
-      description: Löscht eine Beschwerde mit gegebener Id, falls diese vorhanden ist.
-      parameters:
-        - name: complaintId
-          in: path
-          description: Die eindeutige Id der Beschwerde.
-          required: true
-          schema:
-            type: integer
-            format: int32
-      operationId: deleteComplaint
-      responses:
-        200:
-          description: Löschen erfolgreich.
-          content:
-            {}
-        404:
-          description: Beschwerde mit gegebener Id existiert nicht
-          content:
-            {}
+          description: Üngültige Angabe von Parametern.
 
   /api/complaints/import:
     post:
       tags:
         - complaints
       summary: Läd eine neue Beschwerde in die Datenbank.
-      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 5000 Zeichen.
+      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 5000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
+      parameters:
+        - $ref: '#/components/parameters/ConfigIdQueryParameter'
       requestBody:
         description: Die Datei, die hochgeladen werden soll.
         content:
@@ -170,6 +78,7 @@ paths:
                 text:
                   type: string
                   example: "Das ist eine Beispielbeschwerde"
+      operationId: importComplaint
       responses:
         201:
           description: Datei wurde erfolgreich hochgeladen, der Text extrahiert, ausgewertet und als Beschwerde im System gespeichert.
@@ -179,30 +88,187 @@ paths:
                 $ref: '#/components/schemas/Complaint'
         400:
           description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
+        500:
+          description: Fehlerhafte Konfiguration der Extraktoren, Klassifikatoren oder den Antwortbausteinen oder externe Extraktoren konnten nicht aufgerufen werden.
+
+  /api/complaints/{complaintId}:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    get:
+      tags:
+        - complaints
+      summary: Gibt eine Beschwerde mit der gegebenen Id zurück.
+      description: Gibt eine Beschwerde mit der gegebenen Id zurück.
+      operationId: getComplaint
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+        404:
+          description: Beschwerde mit gegebener Id existiert nicht.
+
+    patch:
+      tags:
+        - complaints
+      summary: Aktualisiert eine Beschwerde.
+      description: Mit dieser Anfrage können bestimmt Attribute einer Beschwerde aktualisiert werden.
+      requestBody:
+        description: Ein Objekt mit Attributen, die aktualisiert werden sollen. Es müssen nur die Attribute angegeben werden, bei denen eine Änderung an der Beschwerde vorgenommen werden soll.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ComplaintUpdateRequest'
+            example:
+              "state": "CLOSED"
+              "subject": "Fahrt nicht erfolgt"
+      operationId: updateComplaint
+      responses:
+        200:
+          description: Beschwerde wurde erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+
+    delete:
+      tags:
+        - complaints
+      summary: Löscht eine Beschwerde.
+      description: Löscht eine Beschwerde mit gegebener Id, falls diese vorhanden ist.
+      operationId: deleteComplaint
+      responses:
+        204:
+          description: Löschen erfolgreich.
+        404:
+          description: Beschwerde mit gegebener Id existiert nicht
+
+  /api/complaints/{complaintId}/refresh:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    patch:
+      tags:
+        - complaints
+      summary: Ruft alle Analyse-Funktionen erneut auf.
+      description: Alle Tools werden neu ausgeführt, vorhandene Informationen werden überschrieben.
+      parameters:
+        - name: keepUserInformation
+          in: query
+          description: Falls dieser Wert auf true gesetzt wird, werden vom Nutzer gesetzte Informationen nicht überschrieben.
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - $ref: '#/components/parameters/ConfigIdQueryParameter'
+      operationId: reanalyzeComplaints
+      responses:
+        200:
+          description: Beschwerde wurde erfolgreich aktualisiert
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Complaint'
+
+  /api/complaints/count:
+    get:
+      tags:
+        - complaints
+      summary: Gibt die Anzahl der Beschwerden zurück.
+      description: Gibt die Anzahl von Beschwerden in der Datenbank zurück, wobei Filter angewendet werden können.
+      parameters:
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/SentimentParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+        - $ref: '#/components/parameters/KeywordsParameter'
+
+      operationId: countComplaints
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            text/plain:
+              schema:
+                type: integer
+                format: int32
+                example: 140
+        400:
+          description: Üngültige Angabe von Parametern.
+
+  /api/complaints/{complaintId}/entities:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    post:
+      tags:
+        - complaints
+      summary: Fügt eine neue Named Entity hinzu.
+      description: Eine neue Named Entity wird der Liste der Entitäten der Beschwerde hinzugefügt.
+      parameters:
+        - $ref: '#/components/parameters/LabelParameter'
+        - $ref: '#/components/parameters/StartParameter'
+        - $ref: '#/components/parameters/EndParameter'
+        - $ref: '#/components/parameters/ExtractorParameter'
+      operationId: addEntity
+      responses:
+        200:
+          description: Die Entity wurde der Beschwerde hinzugefügt. Eine aktualisierte Entity-Liste wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedEntity'
+        400:
+          description: Die gegebene Entität ist schon vorhanden (mit gleichem Extraktor an der exakt gleichen Position), der gebene Extraktor ist unbekannt, die Beschwerde ist bereits abgeschlossen oder die gegebenen Indices liegen außerhalb der Textgrenzen.
+
+    delete:
+      tags:
+        - complaints
+      summary: Löscht eine Named Entity.
+      description: Eine neue Named Entity wird aus der Liste der Entitäten entfernt.
+      parameters:
+        - $ref: '#/components/parameters/LabelParameter'
+        - $ref: '#/components/parameters/StartParameter'
+        - $ref: '#/components/parameters/EndParameter'
+        - $ref: '#/components/parameters/ExtractorParameter'
+      operationId: deleteEntity
+      responses:
+        200:
+          description: Die Entity wurde der Beschwerde hinzugefügt. Eine aktualisierte Entity-Liste wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedEntity'
+        404:
+          description: Die gegebene Entität ist nicht vorhanden.
+
   /api/complaints/all:
     delete:
       tags:
         - complaints
       summary: Löscht alle Beschwerden aus der Datenbank
       description: Löscht alle Beschwerden aus der Datenbank.
+      operationId: deleteAllComplaints
       responses:
-        200:
+        204:
           description: Löschen erfolgreich.
 
   /api/responses/{complaintId}:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
     get:
       tags:
         - responses
       summary: Gibt die generierte Antwort zu einer Beschwerde zurück.
       description: Zur jeder Beschwerde wird eine Antwort generiert. Diese kann über diese Schnittstelle abgerufen werden.
-      parameters:
-        - name: complaintId
-          in: path
-          description: Die Id der Beschwerde, zu der die Antwort zurückgegeben werden soll.
-          required: true
-          schema:
-            type: integer
-            format: int32
+      operationId: getResponse
       responses:
         200:
           description: Die Antwort der Beschwerde wird zurückgegeben.
@@ -213,29 +279,45 @@ paths:
         404:
           description: Es gibt keine Beschwerde mit der gegebenen ID.
 
+  /api/responses/{complaintId}/refresh:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+    patch:
+      tags:
+        - responses
+      summary: Generiert eine neue Antwort zu einer Beschwerde
+      description: Die Antwort zu einer Beschwerde wird neugeneriert und zurückgegben.
+      operationId: regenerateResponse
+      responses:
+        200:
+          description: Die neu generierte Antwort der Beschwerde wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        400:
+          description: Die Beschwerde wurde bereits abgeschlossen.
+        404:
+          description: Es gibt keine Beschwerde mit der gegebenen ID.
+
   /api/responses/plain/{complaintId}:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
     get:
       tags:
         - responses
       summary: Gibt die generierte Antwort als String zurück.
-      description: Gibt den vollen Text einer generierten Antwort als String zurück.
-      parameters:
-        - name: complaintId
-          in: path
-          description: Die Id der Beschwerde, zu der die Antwort zurückgegeben werden soll.
-          required: true
-          schema:
-            type: integer
-            format: int32
+      deprecated: true
+      description: Gibt den vollen Text einer generierten Antwort als String zurück.  Sollte nur zum Testen verwendet werden.
       responses:
         200:
           description: Die Antwort der Beschwerde als Gesamttext wird zurückgegeben.
           content:
-            application/json:
+            text/plain:
               schema:
                 type: string
         404:
-            description: Es gibt keine Beschwerde mit der gegebenen ID.
+          description: Es gibt keine Beschwerde mit der gegebenen ID.
 
   /api/templates:
     get:
@@ -244,20 +326,8 @@ paths:
       summary: Gibt die gespeicherten Antwortbausteine zurück.
       description: Hier können alle in der Datenbank gespeicherten Antwortbausteine abgerufen werden. Dabei ist Filtern/Pagination möglich.
       parameters:
-        - name: count
-          in: query
-          description: Anzahl der Beschwerden, die zurück gegeben werden sollen. Falls nicht angegeben, werden alle Beschwerden zurückgegeben.
-          required: false
-          schema:
-            type: integer
-            format: int32
-        - name: page
-          in: query
-          description: Falls page 0 ist, werden die ersten *count* Beschwerden zurück gegeben, falls page 1 ist die zweiten *count* Beschwerden, gibt also die Seitenzahl an. Falls nicht angegeben, wird 0 angenommen. Wird ignoriert, falls *count* nicht gegeben ist.
-          required: false
-          schema:
-            type: integer
-            format: int32
+        - $ref: '#/components/parameters/CountParameter'
+        - $ref: '#/components/parameters/PageParameter'
         - name: sort_by
           in: query
           description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
@@ -267,16 +337,9 @@ paths:
             items:
               type: string
               enum: [priority_desc, priority_asc, name_desc, name_asc]
-        - name: keywords
-          in: query
-          description: Hier können Schlüsselwörter angegeben werden, die im Bausteintext oder -name enthalten sein sollen.
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
+        - $ref: '#/components/parameters/KeywordsParameter'
       responses:
-        200: 
+        200:
           description: Die Antwortbausteine werden zurückgegeben.
           content:
             application/json:
@@ -286,7 +349,7 @@ paths:
                   $ref: '#/components/schemas/ResponseComponent'
         400:
           description: Fehlerhafte Parameter.
-  
+
     post:
       tags:
         - templates
@@ -302,6 +365,10 @@ paths:
       responses:
         201:
           description: Das Template ist richtig formatiert und wurde in der Datenbank gespeichert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseComponent'
         400:
           description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
 
@@ -312,73 +379,62 @@ paths:
       summary: Fügt dem System eine Menge an Standard-Antwortbausteinen hinzu.
       description: Fügt eine Menge an Standard-Antwortbausteinen hinzu. Diese enthält verschiedene Bausteine für Begrüßungen, Eingangsdaten, Problembeschreibungen, Entschuldigungen, Lösungsvorschläge, Erstattungen und Schlüsse. Die Bausteine gehören zu den Kategorien Fahrer unfreundlich, Fahrt nicht erfolgt, Sonstiges. Jeder Baustein hat drei verschiedene Texte und verschiedene Varianten mit/ohne Platzhaltern.
       responses:
-        200:
+        204:
           description: Die Standard Bausteine wurden erfolgreich hinzugefügt.
         500:
           description: Die Datei mit den Standard-Antwortbausteinen ist nicht vorhanden, korrupt oder nicht richtig formatiert.
 
   /api/templates/{templateId}:
+    parameters:
+      - name: templateId
+        in: path
+        description: Die eindeutige ID des Bausteins.
+        required: true
+        schema:
+          type: integer
+          format: int32
+          example: 1
+
     get:
       tags:
         - templates
       summary: Gibt ein bestimmten Antwortbaustein zurück.
       description: Gibt den Antwortbaustein mit der gegebenen ID zurück.
-      parameters:
-        - name: templateId
-          in: path
-          description: Die eindeutige ID des Bausteins.
-          required: true
-          schema:
-            type: integer
-            format: int32
+      operationId: getComponent
       responses:
         200:
-         description: Der Antwortbaustein wird zurückgegeben.
-         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ResponseComponent'
-        404: 
+          description: Der Antwortbaustein wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseComponent'
+        404:
           description: Der Antwortbaustein existiert nicht.
-              
+
     delete:
       tags:
         - templates
       summary: Löscht einen Antwortbaustein.
       description: Löscht den Antwortbaustein mit der gegebenen ID aus der Datenbank.
-      parameters:
-        - name: templateId
-          in: path
-          description: Die eindeutige ID des Bausteins.
-          required: true
-          schema:
-            type: integer
-            format: int32
+      operationId: deleteComponent
       responses:
-        200:
-         description: Der Antwortbaustein wurde gelöscht.
-        404: 
+        204:
+          description: Der Antwortbaustein wurde gelöscht.
+        404:
           description: Der Antwortbaustein existiert nicht.
-          
+
     put:
       tags:
         - templates
       summary: Aktualisiert einen bestehenden Antwortbaustein.
-      description: Aktualisiert den Antwortbaustein mit der gegebenen ID. 
-      parameters:
-        - name: templateId
-          in: path
-          description: Die eindeutige ID des Bausteins.
-          required: true
-          schema:
-            type: integer
-            format: int32
+      description: Aktualisiert den Antwortbaustein mit der gegebenen ID. Es sollten nur die Properties angegeben werden, die als required markiert sind, "requiredEntities" und ID sollten nicht angegeben werden und werden bei Angabe ignoriert.
       requestBody:
         description: Der aktualisierte Baustein. Im Request-Body müssen ID und requiredEntities nicht angegeben werden, bei Angabe werden diese ignoriert.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/ResponseComponent'
+      operationId: updateComponent
       responses:
         200:
           description: Template erfolgreich aktualisiert.
@@ -391,14 +447,340 @@ paths:
         400:
           description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
 
+  /api/templates/count:
+    get:
+      tags:
+        - templates
+      summary: Zählt die gespeicherten Antwortbausteine.
+      description: Hier kann die Anzahl der Anwortbausteine in der Datenbank abgerufen werden. Dabei können auch Filter angewendet werden.
+      parameters:
+        - $ref: '#/components/parameters/KeywordsParameter'
+      operationId: countComponents
+      responses:
+        200:
+          description: Die Anzahl der Antwortbausteine werden zurückgegeben.
+          content:
+            text/plain:
+              schema:
+                type: integer
+                format: int32
+                example: 48
+        400:
+          description: Fehlerhafte Parameter.
+
   /api/templates/all:
     delete:
       tags:
         - templates
       summary: Löscht alle Antwortbausteine aus der Datenbank.
+      description: Alle Antwortbausteine werden aus der Datenbank entfernt.
+      operationId: deleteAllComponents
+      responses:
+        204:
+          description: Alle Antwortbausteine wurden aus der Datenbank entfernt.
+
+  /api/actions:
+    get:
+      tags:
+        - actions
+      summary: Gibt die gespeicherten Antwortaktionen zurück.
+      description: Gibt die gespeicherten Anwortaktionen zurück.
+      parameters:
+        - $ref: '#/components/parameters/CountParameter'
+        - $ref: '#/components/parameters/PageParameter'
+        - name: sort_by
+          in: query
+          description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [id_desc, id_asc, name_desc, name_asc]
+        - $ref: '#/components/parameters/ActionCodeParameter'
+        - $ref: '#/components/parameters/KeywordsParameter'
+
+      operationId: getActions
       responses:
         200:
-          description: Alle Antwortbausteine wurden aus der Datenbank entfernt.
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Action'
+        400:
+          description: Üngültige Angabe von Parametern.
+
+    post:
+      tags:
+        - actions
+      summary: Fügt dem System eine neue Aktion hinzu.
+      description: Fügt einen neuen Aktion hinzu.
+      requestBody:
+        description: Die neue Aktion, die dem System hinzufügt werden soll. Im Request-Body muss die ID nicht angegeben werden, diese wird bei Angabe nicht beachtet.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Action'
+      responses:
+        201:
+          description: Das Aktion ist gültig und wurde gespeichert. Die gespeicherte Aktion wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        400:
+          description: Der Aktionscode oder die Parameter sind ungültig.
+
+  /api/actions/{actionId}:
+    parameters:
+      - $ref: '#/components/parameters/ActionIdParameter'
+
+    get:
+      tags:
+        - actions
+      summary: Gibt eine Aktion zurück.
+      description: Gibt die Aktion mit der gegebenen ID zurück.
+      responses:
+        200:
+          description: Die Aktion wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        404:
+          description: Die Aktion existiert nicht.
+
+    delete:
+      tags:
+        - actions
+      summary: Löscht eine Aktion.
+      description: Löscht die gegebene Aktion. aus der Datenbank.
+      responses:
+        204:
+          description: Der Aktion wurde gelöscht.
+        404:
+          description: Der Aktion existiert nicht.
+
+    put:
+      tags:
+        - actions
+      summary: Aktualisiert eine bestehende Aktion.
+      description: Aktualisiert die Aktion mit der gegebenen ID.
+      requestBody:
+        description: Die Aktion, die übernommen werden soll. Das ID fällt sollte nicht angegeben werden und wird ansonsten ignoriert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Action'
+      responses:
+        200:
+          description: Konfiguration wurde erfolgreich aktualisiert und wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Action'
+        404:
+          description: Aktion mit der gegebenen ID ist nicht vorhanden.
+        400:
+          description: Die übergebene Aktion ist nicht gültig.
+
+  /api/actions/count:
+    get:
+      tags:
+        - actions
+      summary: Gibt die Anzahl der gespeicherten Aktionen zurück.
+      description: Gibt die Anzahl der gespeicherten Aktionen zurück. Es kann nach Aktion-Code und Schlüsselwörtern gefiltert werden.
+      parameters:
+        - $ref: '#/components/parameters/ActionCodeParameter'
+        - $ref: '#/components/parameters/KeywordsParameter'
+
+      operationId: getActions
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Action'
+        400:
+          description: Üngültige Angabe von Parametern.
+
+  /api/actions/all:
+    delete:
+      tags:
+        - actions
+      summary: Löscht alle Antwortaktionen aus der Datenbank.
+      operationId: deleteAllActions
+      responses:
+        204:
+          description: Alle Antwortaktionen wurden aus der Datenbank entfernt.
+
+  /api/config:
+    get:
+      tags:
+        - config
+      summary: Gibt die gespeicherten Konfigurationen zurück.
+      description: Hier können alle in der Datenbank gespeicherten Konfigurationen abgerufen werden. Dabei ist Pagination/Sortieren möglich.
+      parameters:
+        - $ref: '#/components/parameters/CountParameter'
+        - $ref: '#/components/parameters/PageParameter'
+        - name: sort_by
+          in: query
+          description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
+          required: false
+          schema:
+            type: array
+            items:
+              type: string
+              enum: [id_desc, id_asc, name_desc, name_asc]
+              default: "id_desc"
+      responses:
+        200:
+          description: Die Konfigurationen werden zurückgegeben
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnalyzerConfiguration'
+        400:
+          description: Fehlerhafte Parameter.
+
+    post:
+      tags:
+        - config
+      summary: Fügt dem System eine neue Konfiguration hinzu.
+      description: Fügt eine neue Konfiguration hinzu. Diese wird **nicht** automatisch als aktive Konfiguration gesetzt.
+      requestBody:
+        description: Die neue Konfiguration, die dem System hinzugefügt werden soll. Die ID wird automatisch generiert und muss nicht angegeben werden.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzerConfiguration'
+      responses:
+        201:
+          description: Die Konfiguration ist gültig und wurde dem System hinzugefügt.
+        400:
+          description: Ungültige Konfiguration.
+
+  /api/config/{configId}:
+    parameters:
+      - $ref: '#/components/parameters/ConfigIdParameter'
+
+    get:
+      tags:
+        - config
+      summary: Gibt eine bestimmte Konfiguration zurück.
+      description: Gibt die Konfiguration mit der gegebenen ID zurück.
+      responses:
+        200:
+          description: Die Konfiguration wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzerConfiguration'
+        404:
+          description: Die Konfiguration existiert nicht.
+
+    delete:
+      tags:
+        - config
+      summary: Löscht eine Konfiguration.
+      description: Löscht die gegebene Konfiguration aus der Datenbank. Wenn alle Konfigurationen gelöscht wurden, wird eine Default-Konfiguration verwendet.
+      responses:
+        204:
+          description: Der Konfiguration wurde gelöscht.
+        404:
+          description: Der Konfiguration existiert nicht.
+
+    put:
+      tags:
+        - config
+      summary: Aktualisiert eine bestehende Konfiguration.
+      description: Aktualisiert die Konfiguration mit der gegebenen ID.
+      requestBody:
+        description: Die Konfiguration, die übernommen werden soll. Das ID fällt sollte nicht angegeben werden und wird ansonsten ignoriert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnalyzerConfiguration'
+      responses:
+        200:
+          description: Konfiguration wurde erfolgreich aktualisiert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzerConfiguration'
+        404:
+          description: Konfiguration mit der gegebenen ID ist nicht vorhanden.
+        400:
+          description: Die übergebene Konfiguration ist ungültig.
+
+  /api/config/count:
+    get:
+      tags:
+        - config
+      summary: Gibt die Anzahl der Konfigurationen zurück.
+      description: Gibt die Anzahl der in der Datenbank gespeicherten Konfigurationen zurück.
+      responses:
+        200:
+          description: Konfigurationsanzahl wird zurückgegeben.
+          content:
+            text/plain:
+              schema:
+                type: integer
+                format: int32
+                minimum: 0
+                example: 42
+
+  /api/config/current:
+    get:
+      tags:
+        - config
+      summary: Gibt die aktuell aktive Konfiguration zurück.
+      description: Gibt die Konfiguration zurück, die aktuell als Standard eingestellt ist.
+      responses:
+        200:
+          description: Gibt die aktuell als Standard einsgestellte Konfiguration zurück.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzerConfiguration'
+    put:
+      tags:
+        - config
+      summary: Setzt die aktuell aktive Konfiguration.
+      description: Setzt die aktuell aktive Konfiguration auf die Konfiguration mit der gegebenen ID.
+      parameters:
+        - $ref: '#/components/parameters/ConfigIdQueryParameter'
+      operationId: updateActiveConfig
+      responses:
+        200:
+          description: Die Konfiguration mit der gegebenen ID wurde als aktive Konfiguration ausgewählt, diese wird zurück gegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzerConfiguration'
+        404:
+          description: Es existiert keine Konfiguration mit der gegebenen ID.
+
+  /api/config/all:
+    delete:
+      tags:
+        - config
+      summary: Löscht alle Konfigurationen.
+      description: Löscht alle Konfigurationen aus der Datenbank und setzt das System auf eine Default-Konfiguration zurück.
+      operationId: deleteAllConfigs
+      responses:
+        204:
+          description: Löschen war erfolgreich.
 
   /api/stats/tagcloud:
     get:
@@ -414,36 +796,11 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: date_min
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden analysiert, die nach diesem Datum hochgeladen wurden. Datum muss [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6) enstprechen, also dem Format yyyy-mm-dd.
-          schema:
-            type: string
-            format: date
-        - name: date_max
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden analysiert, die vor diesem Datum hochgeladen wurden. Das Datum entpricht dem gleichen Format wie bei *dateMin*
-          schema:
-            type: string
-            format: date
-        - name: sentiment
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden analysiert, die einem der gegebenen *sentiments* entsprechen.
-          schema:
-            type: array
-            items:
-              type: string
-        - name: subject
-          in: query
-          required: false
-          description: Bei Angabe werden nur Beschwerden analysiert, die einem der gegebenen Kategorien von Beschwerden entsprechen.
-          schema:
-            type: array
-            items:
-              type: string
+            example: 32
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/SentimentParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
         - name: words_only
           in: query
           required: false
@@ -504,32 +861,31 @@ paths:
           application/json:
             schema:
               type: object
+              required:
+                - vector1
+                - operator1
+                - vector2
+                - corpus
               properties:
                 vector1:
                   type: string
-                  required: true
-                  description: erster Word der Berechnung
+                  description: Erstes Word der Berechnung
                 operator1:
                   type: string
-                  required: true
-                  description: erster Operator zwischen dem ersten und zweiten Vektor
+                  description: Erster Operator zwischen dem ersten und zweiten Vektor
                   example: "+"
                 vector2:
                   type: string
-                  required: true
-                  description: zweites Word der Berechnung
+                  description: Zweites Word der Berechnung
                 corpus:
                   type: string
-                  required: true
-                  description: auswahl des Txtkorpus für die Berechnung
+                  description: Auswahl des Textkorpus für die Berechnung
                 operator2:
                   type: string
-                  required: false
-                  description: optionaler zwiter Operator für erweiterte Berechnungen
+                  description: Optionaler zweiter Operator für erweiterte Berechnungen
                 vector3:
                   type: string
-                  required: false
-                  description: drittes optionales Word der Berechnung
+                  description: Drittes optionales Word der Berechnung
       responses:
         200:
           description: Die nächstligensten Wörter nach Berechnung werden in einer Map mit ihrer prozentualen Übereinstimmung
@@ -542,9 +898,201 @@ paths:
                 description: Enthält die möglichen Wörter mit ihrer Übereinstimmung zu der Berechnung
 
 components:
+  parameters:
+    ComplaintIdParameter:
+      name: complaintId
+      in: path
+      description: Die eindeutige ID einer Beschwerde.
+      required: true
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        example: 1
+
+    ComplaintStateParameter:
+      name: state
+      in: query
+      required: false
+      description: Gibt den Status an, in dem sich eine Beschwerde befindet.
+      schema:
+        $ref: '#/components/schemas/ComplaintState'
+
+    ConfigIdParameter:
+      name: configId
+      in: path
+      required: true
+      description: Die eindeutige ID einer Konfiguration
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        example: 1
+
+    ActionIdParameter:
+      name: actionId
+      in: path
+      required: true
+      description: Die eindeutige ID einger Aktion
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        example: 1
+
+    CountParameter:
+      name: count
+      in: query
+      description: Anzahl der Elemente, die zurück gegeben werden sollen. Falls nicht angegeben, werden alle Elemente zurückgegeben.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        example: 10
+
+    PageParameter:
+      name: page
+      in: query
+      description: Falls page 0 ist, werden die ersten *count* Elemente zurück gegeben, falls page 1 ist die zweiten *count* Elemente, gibt also die Seitenzahl an. Falls nicht angegeben, wird 0 angenommen. Wird ignoriert, falls *count* nicht gegeben ist.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        default: 0
+        minimum: 0
+        example: 0
+
+    ComplaintsSortParameter:
+      name: sort_by
+      in: query
+      required: false
+      description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
+      schema:
+        $ref: '#/components/schemas/OrderBy'
+
+    DateMinParameter:
+      name: date_min
+      in: query
+      required: false
+      description: Bei Angabe werden nur Beschwerden ausgewertet, die nach diesem Datum hochgeladen wurden. Datum muss [RFC3339 5.6](https://tools.ietf.org/html/rfc3339#section-5.6) enstprechen, also dem Format yyyy-mm-dd.
+      schema:
+        type: string
+        format: date
+        example: 2019-03-29
+
+    DateMaxParameter:
+      name: date_max
+      in: query
+      required: false
+      description: Bei Angabe werden nur Beschwerden ausgewertet, die vor diesem Datum hochgeladen wurden. Das Datum entpricht dem gleichen Format wie bei *dateMin*
+      schema:
+        type: string
+        format: date
+        example: 2019-07-23
+
+    SentimentParameter:
+      name: sentiment
+      in: query
+      required: false
+      description: Bei Angabe werden nur Beschwerden ausgewertet, die einem der gegebenen Sentimenten entsprechen.
+      schema:
+        type: array
+        items:
+          type: string
+        example:
+          - "Wut"
+          - "Unzufriedenheit"
+
+    SubjectParameter:
+      name: subject
+      in: query
+      required: false
+      description: Bei Angabe werden nur Beschwerden ausgewertet, die einem der gegebenen Kategorien von Beschwerden entsprechen.
+      schema:
+        type: array
+        items:
+          type: string
+        example:
+          - "Fahrt nicht erfolgt"
+          - "Sonstiges"
+
+    KeywordsParameter:
+      name: keywords
+      in: query
+      required: false
+      description: Bei Angabe werden nur Elemente ausgewertet, die die angebenen Schlüsselwörter enthalten.
+      schema:
+        type: array
+        items:
+          type: string
+        example:
+          - "Busfahrer"
+          - "unfreundlich"
+
+    ConfigIdQueryParameter:
+      name: configId
+      in: query
+      description: Falls dieser Wert gegeben wird, wird die Beschwerde mit der gegebenen Konfiguration analysiert. Ansonsten wird die aktuell ausgewählt Konfiguration ausgewählt.
+      required: false
+      schema:
+        type: integer
+        format: int32
+        minimum: 1
+        example: 1
+
+    LabelParameter:
+      name: label
+      in: query
+      description: Der Tag der Entität.
+      required: true
+      schema:
+        type: string
+        example: "Haltestelle"
+
+    StartParameter:
+      name: start
+      in: query
+      description: Der Start-Index der Named Entity. Muss innerhalb der Textgrenzen liegen.
+      required: true
+      schema:
+        type: integer
+        format: int32
+        example: 12
+        minimum: 0
+
+    EndParameter:
+      name: end
+      in: query
+      description: Der End-Index der Named Entity. Muss innerhalb der Textgrenzen liegen und größer als start sein.
+      required: true
+      schema:
+        type: integer
+        format: int32
+        example: 18
+
+    ExtractorParameter:
+      name: extractor
+      in: query
+      description: Der Name des Extraktors, mit dem die Entity hätte gefunden werden sollen.
+      required: true
+      schema:
+        type: string
+        example: "QuerimoniaExtract"
+
+    ActionCodeParameter:
+      name: actionCode
+      in: query
+      required: false
+      description: Bei Angabe werden nur Aktionen mit dem gegebenen Aktionscode zurückgegeben.
+      schema:
+        $ref: '#/components/schemas/ActionCode'
+
   schemas:
     Complaint:
       required:
+        - state
+        - configuration
         - text
         - preview
         - receiveDate
@@ -553,6 +1101,7 @@ components:
         - sentiment
         - entities
       type: object
+      description: Diese Datenstuktur modelliert eine Beschwerde (oder eine eingegangen Meldung von anderer Art). Eine Beschwerde besitzt eine eindeutige ID, einen Zustand (in Bearbeitung, geschlossen), den Meldetext, Eingangsdatum, eine Kategorie und Sentiment so wie eine Liste an erkannten Entitäten. Weiterhin ist zu jeder Beschwerde gespeichert mit welcher Konfigutartion sie analysiere wurde,
       properties:
         complaintId:
           type: integer
@@ -560,6 +1109,10 @@ components:
           minimum: 1
           example: 1
           description: Die eindeutige ID der Beschwerde.
+        state:
+          $ref: '#/components/schemas/ComplaintState'
+        configuration:
+          $ref: '#/components/schemas/AnalyzerConfiguration'
         text:
           type: string
           description: Der volle Beschwerdetext.
@@ -570,43 +1123,73 @@ components:
           example: "Guten Tag,\nMein Bus kam heute viel zu spät!"
         receiveDate:
           type: string
-          description: Das Eingangsdatum der Beschwerde.
-          example: "12.05.2019"
+          format: date
+          description: Das Eingangsdatum der Beschwerde im Format yyyy-mm-dd.
+          example: "2019-05-02"
         receiveTime:
           type: string
-          description: Die Eingangszeit der Beschwerde im System.
-          example: "13:45"
+          format: date-time
+          description: Die Eingangszeit der Beschwerde im System im Format hh:mm:ss
+          example: "13:45:00"
         subject:
-          type: object
-          additionalProperties:
-            type: number
-          description: Enthält alle möglichen Kategorien und die Wahrscheinlichkeiten, dass die Beschwerde in diese Kategorie fällt.
-          example:
-            "Fahrer unfreundlich": 0.5
-            "Fahrt nicht erfolgt": 0.4
-            "Sonstiges": 0.1
+          $ref: '#/components/schemas/ComplaintProperty'
         sentiment:
-          type: object
-          additionalProperties:
-            type: number
-          description: Enthält alle möglichen Bezeichnungen der "Stimmung" der Beschwerde mit Angabe deren Wahrscheinlichkeit, dass die Beschwerde in dieser Stimmung geschrieben ist.
-          example:
-            "Wütend": 0.6
-            "Neutral": 0.3
-            "Freundlich": 0.1
+          $ref: '#/components/schemas/ComplaintProperty'
         entities:
           type: array
           items:
             $ref: '#/components/schemas/NamedEntity'
           description: Enthält alle Entitäten, die in der Beschwerde gefunden wurden.
 
-    Complaints:
-      type: array
-      items:
-        $ref: '#/components/schemas/Complaint'
+    ComplaintProperty:
+      type: object
+      description: Eine Eigenschaft für Beschwerden, bisher für Subject und Sentiment. Enhält einen Bezeichner, Wahrscheinlichkeiten für Werte und ein Flag, ob der Wert vom Nutzer gesetzt wurde.
+      required:
+        - name
+        - probabilities
+        - setByUser
+      properties:
+        name:
+          type: string
+          example: Fahrt nicht erfolgt
+          description: Die Bezeichnung der Kategorie.
+        setByUser:
+          type: boolean
+          example: false
+          description: Ob der Parameter vom Nutzer gesetzt wurde oder automatisch erkannt wurde.
+        probabilities:
+          type: object
+          description: Gibt die Wahrscheinlichkeiten für alle Kategorien an, dass die Beschwerde eine bestimmte Kategorie hat.
+          additionalProperties:
+            type: number
+          example:
+            "Fahrt nicht erfolgt": 0.6
+            "Fahrer unfreundlich": 0.3
+            "Sontiges": 0.1
+
+    ComplaintState:
+      type: string
+      description: Definiert den Status einer Beschwerde. Eine Beschwerde kann neu, in Bearbeitung und abgeschlossen sein.
+      enum: [NEW, IN_PROGRESS, CLOSED]
+      example: "NEW"
+
+    ComplaintUpdateRequest:
+      description: Ein Objekt mit optionalen Feldern, welches zum Aktualisieren von Beschwerden verwendet wird.
+      type: object
+      properties:
+        state:
+          $ref: '#/components/schemas/ComplaintState'
+        subject:
+          type: string
+          description: Die Kategorie der Beschwerde, die übernommen werden soll.
+          example: "Fahrer unfreundlich"
+        sentiment:
+          type: string
+          description: Das Sentiment der Beschwerde, das übernommen werden soll.
+          example: "Freunde"
 
     NamedEntity:
-      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie.
+      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie. Außerdem ist angeben. ob die Entität von einem Nutzer gesetzt wurde und welcher Extraktor zur Findung gefunden wurde. Dieser wird nicht aktualisiert, wenn sich die Extraktoren-Einstellungen ändern! Der gegebene Farbwert, sollte also nur als Fallback verwendet werden.
       type: object
       required:
         - label
@@ -627,6 +1210,74 @@ components:
           format: int32
           description: Der Index des Zeichens im Text, ab dem der Text *nicht* mehr diese Named Entity ist.
           example: 29
+        setByUser:
+          type: boolean
+          description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
+          example: false
+        extractor:
+          $ref: '#/components/schemas/Extractor'
+
+    AnalyzerConfiguration:
+      description: In der Konfiguration ist festgelegt, welche Extraktoren, welcher Klassifikator und Sentiment-Analysierer verwerdet wird.
+      type: object
+      required:
+        - extractors
+        - classifier
+        - sentimentAnalyzer
+      properties:
+        configID:
+          type: integer
+          format: int32
+          description: Eindeutige ID der Konfiguration.
+          minimum: 1
+          example: 1
+        name:
+          type: string
+          description: Ein Name zur Identifikation und besseren Unterscheidung für den Nutzer. Muss **eindeutig** sein.
+          example: "Default-Konfiguration"
+        extractors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Extractor'
+        classifier:
+          type: string
+          description: Der Name eines vorhandenen Klassifizierers, der verwendet werden soll.
+          example: KIKuKoClassifier
+        sentimentAnalyzer:
+          type: string
+          description: Der Name eines vorhandenen Sentiment-Analysierers, der verwendet werden soll.
+          example: DefaultSentimentAnalyzer
+
+    Extractor:
+      description: Ein Extraktor hat einen **eindeutigen** Namen, einen Typ und eine zugeordnete Farbe für jede Entity für die Anzeige im Frontend.
+      type: object
+      required:
+        - name
+        - type
+        - colors
+      properties:
+        name:
+          type: string
+          description: Der Name des Extraktors. Bei KIKuKo Extraktoren muss ein Extraktor mit diesem Namen konfiguriert sein.
+          example: GeldbetragExtraktor
+        entityLabel:
+          type: string
+          description: Gibt das Lebel der Entitäten an, die mit diesem Extraktor gefunden werden.
+          example: Geldbetrag
+        type:
+          type: string
+          enum: [KIkukoTool]
+          description: Eine Bezeichner für den Typ von Entraktor. KIkukoTool wird für Tools von KIkuko verwendet.
+          example: KIKuKoTool
+        colors:
+          type: object
+          description: Gibt für beliebige Entity-Labels einen Farbcode an, mit der die Entität dargestellt wird.
+          additionalProperties:
+            type: string
+            format: color
+          example:
+            "Haltestelle": "#0A2BFF"
+            "Name": "#0ABCFF"
 
     ResponseComponent:
       description: Ein generischer Antwortbaustein. Dieser besteht aus möglicherweise mehereren Alternativtexten, die Platzhalter enthalten können, sowie einer Regelbeschreibung, die angibt, wann der Baustein verwendet werden kann.
@@ -661,7 +1312,7 @@ components:
         rulesXml:
           type: string
           description: XML-Beschreibung der Regeln, die beschreiben, wann ein Antwortbaustein verwendet werden darf. Muss dem XSD-Schema entsprechen.
-        requiredEntites:
+        requiredEntities:
           type: array
           items:
             type: string
@@ -688,7 +1339,7 @@ components:
           description: Der Textalternativen des Antwortteils
         component:
           $ref: '#/components/schemas/ResponseComponent'
-          
+
     SingleCompletedComponent:
       description: Ein einzelner, ausgefüllter Textbaustein mit markierten Entitäten.
       type: object
@@ -713,9 +1364,20 @@ components:
           description: Enthält alle Entitäten, die in der Antwort vorhanden sind.
 
     ResponseSuggestion:
-      type: array
-      items:
-        $ref: '#/components/schemas/CompletedResponsePart'
+      description: Vollständiger Antwortvorschlag, bestehend aus ausgefüllten Text-Komponenten und Aktionen.
+      type: object
+      required:
+        - components
+        - actions
+      properties:
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/CompletedResponsePart'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Action'
 
     OrderBy:
       description: Ein Array von Kategorien, nach denen eine Anfrage sortiert werden soll. Zusätzlich wird angegeben, ob auf oder absteigend sortiert wird.
@@ -730,6 +1392,49 @@ components:
           - subject_desc
           - sentiment_asc
           - sentiment_desc
+
+    Action:
+      description: Eine Aktion kann automatisch beim Abschluss einer Beschwerde ausgelöst werden, wenn bestimmt Regeln dafür erfüllt sind. Zum Beispiel können E-Mails versendet werden, Gutscheine als Attachment angehängt werden, Beschwerden weitergeleitet werden etc.
+      type: object
+      required:
+        - name
+        - actionCode
+        - rulesXml
+        - parameters
+      properties:
+        actionId:
+          description: Die eindeutige ID der Aktion.
+          type: integer
+          format: int32
+          minimum: 1
+          example: 1
+        name:
+          description: Ein eindeutiger Bezeichnert für die Aktion.
+          type: string
+          example: "GutscheinFreifahrt"
+        actionCode:
+          $ref: '#/components/schemas/ActionCode'
+        rulesXml:
+          description: Die Regeln, wann eine Aktion ausgelöst werden kann im XML-Format.
+          type: string
+          format: xml
+          example: '<Rules><Subject value="Fahrt nicht erfolgt"/></Rules>'
+        parameters:
+          description: Zusätzliche Parameter für die Aktion, zum Beispiel an wen eine E-Mail gesendet wird oder den Wert des Gutscheins.
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            "E-Mail": "beispiel@gmail.com"
+            "Wert": "5"
+
+    ActionCode:
+      description: Eine Bezeichung, die den Typ der Aktion angibt.
+      type: string
+      enum:
+        - SEND_MAIL
+        - ATTACH_VOUCHER
+      example: "ATTACH_VOUCHER"
 
     MostCommonWords:
       description: Enthält die häufigsten Wörter aus den Beschwerden
