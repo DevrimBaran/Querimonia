@@ -3,8 +3,11 @@ from gensim.models.wrappers import FastText
 import numpy as np
 import pdb
 
-model_beschwerden3kPolished = FastText.load_fasttext_format("../beschwerden3kPolished.bin")
+# Standard Model
+basepath = "../wortvektoren/fastText/models/"
+model_beschwerden3kPolished = FastText.load_fasttext_format( basepath + "beschwerden3kPolished.bin")
 model = model_beschwerden3kPolished
+
 #model_cc_de_300 = FastText.load_fasttext_format("cc.de.300.bin")
 #model_ngram_ger = FastText.load_fasttext_format("ngram_ger.bin")
 #model_beschwerden_CAT_leipzig = FastText.load_fasttext_format("BeschwerdenCATLeipzig.bin")
@@ -41,7 +44,7 @@ class Calc:
     @staticmethod
     def getword(vec, modelName=None):
         if modelName != None:
-            model = FastText.load_fasttext_format("../" + modelName )
+            model = FastText.load_fasttext_format( basepath + modelName )
         return model.similar_by_vector(vec)
 
     @staticmethod
@@ -51,7 +54,7 @@ class Calc:
     @staticmethod
     def vectorize( word, modelName=None):
         if modelName != None:
-            model = FastText.load_fasttext_format("../" + modelName )
+            model = FastText.load_fasttext_format( basepath + modelName )
         return np.array(model[word])
     
     @staticmethod

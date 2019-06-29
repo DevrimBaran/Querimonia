@@ -9,7 +9,7 @@ import numpy as np
 app = Flask(__name__)
 
 # TODO routes in seperate dir
-@app.route('/sentiment_analyse', methods=['POST'])
+@app.route('/python/sentiment_analyse', methods=['POST'])
 def return_sentiment():
     # Example: python -c "import requests; res = requests.post('http://localhost:5000/sentiment', json={'text':'Ich hasse Hawaiipizza'}); print(res.json())"
     # get complaint text
@@ -22,15 +22,48 @@ def return_sentiment():
     #sentiment_value = 0.5
     return jsonify({"sentiment": sentiment_value})
 
-@app.route('/vector_calculation', methods=['POST'])
+@app.route('/python/vector_calculation', methods=['POST'])
 def return_wortvektor():
     # TODO rename  operation
     # {"vector1": "wrong json",  "operation": "+", "vector2": "wrong json",  "operation": "+", "textkorpus": "beschwerden3kPolished.bin"}
-    # {"vector1": "wrong json", "operation": "+", "vector2": "wrong json", "operation2": "+", "vector3": "wrong json", "textkorpus": "beschwerden3kPolished.bin"}
+    # {"vector1": "wrong json", "operation": "+", "vector2": "wrong json", "operation2": "+", "vector3": "wrong json", "textcorpus": "beschwerden3kPolished.bin"}
     # TODO move into seperate file
     # TODO error handling 
-    # TODO select textkorpus
+    # TODO select textcorpus
     content = request.get_json()
+    vector1 = content['vector1']
+    vector2 = content['vector2']
+    operation1 = content['operator1']
+    textcorpus = None
+    if 'textcorpus' in content:
+        textcorpus = content['textcorpus']
+    # vec3
+    if 'vector3' and 'operator2' in content:
+        vector3 = content['vector3']
+        operation2 = content['operator2']
+        similiarities = wordvector.Calc.calculate(operation1, vector1, vector2, operation2, vector3, textcorpus=textcorpus)
+    else:
+        # just for vec1 and vec2
+        similiarities = wordvector.Calc.calculate(operation1, vector1, vector2, textcorpus=textcorpus)
+    result = {}
+    for e in similiarities:
+        result[e[0]] = e[1]
+    return jsonify(result)
+
+@app.route('/python/vector_calculation_verbose', methods=['POST'])
+def return_wortvektor_verbose():
+    # returns 100 results --> copied from not verbose 
+    # TODO rewrite
+    # TODO rename  operation
+    # {"vector1": "wrong json",  "operation": "+", "vector2": "wrong json",  "operation": "+", "textcorpus": "beschwerden3kPolished.bin"}
+    # {"vector1": "wrong json", "operation": "+", "vector2": "wrong json", "operation2": "+", "vector3": "wrong json", "textcorpus": "beschwerden3kPolished.bin"}
+    # TODO move into seperate file
+    # TODO error handling 
+    # TODO select textcorpus
+    content = request.get_json()
+    textcorpus = None
+    if 'textcorpus' in content:
+        textcorpus = content['textcorpus']
     vector1 = content['vector1']
     vector2 = content['vector2']
     operation1 = content['operator1']
@@ -38,7 +71,7 @@ def return_wortvektor():
     if 'vector3' and 'operator2' in content:
         vector3 = content['vector3']
         operation2 = content['operator2']
-        similiarities = wordvector.Calc.calculate(operation1, vector1, vector2, operation2, vector3)
+        similiarities = wordvector.Calc.calculate(operation1, vector1, vector2, operation2, vector3, verbose=True, textcorpus=textcorpus)
         # transform into json for vec1, vec2, vec3
         result = {}
         #pdb.set_trace()
@@ -60,16 +93,15 @@ def return_wortvektor():
         return jsonify(result)
     else:
         # vec1 and vec2
-        similiarities = wordvector.Calc.calculate(operation1, vector1, vector2)
+        similiarities = wordvector.Calc.calculate(operation1, vector1, vector2, textcorpus=textcorpus)
         # transform into json for vec1, vec2
         result = {}
         for e in similiarities:
             result[e[0]] = e[1]
         return jsonify(result)
 
-    #return jsonify(result)
 
-@app.route('/word_to_vec', methods=['POST'])
+@app.route('/python/word_to_vec', methods=['POST'])
 def return_vektor():
     content = request.get_json()
     word = content['word']
@@ -77,7 +109,7 @@ def return_vektor():
     result = wordvector.Calc.vectorize(word, modelName)
     return jsonify(result.tolist())
 
-@app.route('/vec_to_word', methods=['POST'])
+@app.route('/python/vec_to_word', methods=['POST'])
 def return_wort():
     content = request.get_json()
     vector = content['vector']
@@ -86,8 +118,7 @@ def return_wort():
     # print(result)
     return jsonify(result)
 
-@app.route('/word_nn', methods=['POST'])
-# nearest neighbour
+@app.route('/python/word_nn', methods=['POST'])
 def return_word():
     # {"vector1": "wrong json", "textkorpus": "beschwerden3kPolished"}
     # TODO error handling 
@@ -105,4 +136,4 @@ def return_word():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
