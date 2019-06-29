@@ -21,7 +21,7 @@ build-frontend-dev: &base-frontend
   artifacts:
     paths:
       - frontend/build/
-    expire_in: 5 mins
+    expire_in: 1
   allow_failure: true
   only:
     - /^frontend.*$/
@@ -37,7 +37,7 @@ build-frontend-mock:
   artifacts:
     paths:
       - frontend/mock/
-    expire_in: 5 mins
+    expire_in: 1
 
 build-frontend-master:
   <<: *base-frontend
@@ -58,7 +58,7 @@ test-frontend:
     paths:
       - frontend/build/
       - frontend/mock/
-    expire_in: 5 mins
+    expire_in: 1
   allow_failure: false
   only:
     - /^frontend.*$/
@@ -97,7 +97,7 @@ build-backend-dev: &base-backend
     paths:
       - backend/target/*.jar
       - backend/doc/openapi.yaml
-    expire_in: 5 mins
+    expire_in: 1
   allow_failure: true
   only:
     - /^backend.*$/
