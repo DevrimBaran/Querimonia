@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.5.1
+  version: 0.5.2
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
@@ -60,7 +60,7 @@ paths:
       tags:
         - complaints
       summary: Läd eine neue Beschwerde in die Datenbank.
-      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 5000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
+      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 5000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Die Beschwerde wird beim Upload analysiert und eine Antwort wird generiert. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
       parameters:
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
       requestBody:
@@ -115,7 +115,7 @@ paths:
       tags:
         - complaints
       summary: Aktualisiert eine Beschwerde.
-      description: Mit dieser Anfrage können bestimmt Attribute einer Beschwerde aktualisiert werden.
+      description: Mit dieser Anfrage können Sentiment, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
       requestBody:
         description: Ein Objekt mit Attributen, die aktualisiert werden sollen. Es müssen nur die Attribute angegeben werden, bei denen eine Änderung an der Beschwerde vorgenommen werden soll.
         content:
@@ -154,7 +154,7 @@ paths:
       tags:
         - complaints
       summary: Ruft alle Analyse-Funktionen erneut auf.
-      description: Alle Tools werden neu ausgeführt, vorhandene Informationen werden überschrieben.
+      description: Alle Tools werden neu ausgeführt, vorhandene Informationen werden überschrieben. Über die Parameter kann definiert werden, ob vom Nutzer gesetzte Information dabei nicht überschreiben werden soll und welche Konfiguration verwendet werden soll.
       parameters:
         - name: keepUserInformation
           in: query
@@ -164,7 +164,7 @@ paths:
             type: boolean
             default: false
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
-      operationId: reanalyzeComplaints
+      operationId: refreshComplaint
       responses:
         200:
           description: Beschwerde wurde erfolgreich aktualisiert
@@ -213,6 +213,7 @@ paths:
         - $ref: '#/components/parameters/StartParameter'
         - $ref: '#/components/parameters/EndParameter'
         - $ref: '#/components/parameters/ExtractorParameter'
+
       operationId: addEntity
       responses:
         200:
@@ -236,6 +237,7 @@ paths:
         - $ref: '#/components/parameters/StartParameter'
         - $ref: '#/components/parameters/EndParameter'
         - $ref: '#/components/parameters/ExtractorParameter'
+
       operationId: deleteEntity
       responses:
         200:
@@ -263,11 +265,12 @@ paths:
   /api/responses/{complaintId}:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
+
     get:
       tags:
         - responses
       summary: Gibt die generierte Antwort zu einer Beschwerde zurück.
-      description: Zur jeder Beschwerde wird eine Antwort generiert. Diese kann über diese Schnittstelle abgerufen werden.
+      description: Zur jeder Beschwerde wird eine Antwort generiert, die über diese Schnittstelle abgerufen werden kann. Eine Antwort enthält eine Liste an Antwortbausteinen sowie eine Liste an Aktionen.
       operationId: getResponse
       responses:
         200:
@@ -282,12 +285,13 @@ paths:
   /api/responses/{complaintId}/refresh:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
+
     patch:
       tags:
         - responses
-      summary: Generiert eine neue Antwort zu einer Beschwerde
+      summary: Generiert eine neue Antwort zu einer Beschwerde.
       description: Die Antwort zu einer Beschwerde wird neugeneriert und zurückgegben.
-      operationId: regenerateResponse
+      operationId: refreshResponse
       responses:
         200:
           description: Die neu generierte Antwort der Beschwerde wird zurückgegeben.
@@ -303,12 +307,14 @@ paths:
   /api/responses/plain/{complaintId}:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
+
     get:
       tags:
         - responses
       summary: Gibt die generierte Antwort als String zurück.
       deprecated: true
       description: Gibt den vollen Text einer generierten Antwort als String zurück.  Sollte nur zum Testen verwendet werden.
+      operationId: getPlainResponse
       responses:
         200:
           description: Die Antwort der Beschwerde als Gesamttext wird zurückgegeben.
@@ -336,11 +342,15 @@ paths:
             type: array
             items:
               type: string
-              enum: [priority_desc, priority_asc, name_desc, name_asc]
+              enum: [id_desc, id_asc, priority_desc, priority_asc, name_desc, name_asc]
+              default: name_asc
+              example: name_asc
         - $ref: '#/components/parameters/KeywordsParameter'
+
+      operationId: getResponseComponents
       responses:
         200:
-          description: Die Antwortbausteine werden zurückgegeben.
+          description: Die Antwortbausteine werden gefiltert und sortiert zurückgegeben.
           content:
             application/json:
               schema:
@@ -354,7 +364,7 @@ paths:
       tags:
         - templates
       summary: Fügt dem System einen neuen Antwortbaustein hinzu.
-      description: Fügt einen neuen Antwortbaustein hinzu. Dieser kann Platzhalter im Format ${\w*} enthalten, welche mit Entitäten aus der Beschwerden ersetzt werden.
+      description: Fügt einen neuen Antwortbaustein hinzu. Dieser kann Platzhalter enthalten, welche mit Entitäten aus der Beschwerden ersetzt werden.
       requestBody:
         description: Der neue Textbaustein, der dem System hinzufügt werden soll. Im Request-Body müssen ID und requiredEntities nicht angegeben werden, diese werden bei Angabe nicht beachtet.
         required: true
@@ -362,9 +372,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ResponseComponent'
+
+      operationId: addResponseComponent
       responses:
         201:
-          description: Das Template ist richtig formatiert und wurde in der Datenbank gespeichert.
+          description: Das Template ist richtig formatiert, die Regelbeschreibung ist gültig und wurde in der Datenbank gespeichert.
           content:
             application/json:
               schema:
@@ -378,6 +390,8 @@ paths:
         - templates
       summary: Fügt dem System eine Menge an Standard-Antwortbausteinen hinzu.
       description: Fügt eine Menge an Standard-Antwortbausteinen hinzu. Diese enthält verschiedene Bausteine für Begrüßungen, Eingangsdaten, Problembeschreibungen, Entschuldigungen, Lösungsvorschläge, Erstattungen und Schlüsse. Die Bausteine gehören zu den Kategorien Fahrer unfreundlich, Fahrt nicht erfolgt, Sonstiges. Jeder Baustein hat drei verschiedene Texte und verschiedene Varianten mit/ohne Platzhaltern.
+
+      operationId: addDefaultComponents
       responses:
         204:
           description: Die Standard Bausteine wurden erfolgreich hinzugefügt.
@@ -393,6 +407,7 @@ paths:
         schema:
           type: integer
           format: int32
+          minimum: 1
           example: 1
 
     get:
@@ -400,7 +415,7 @@ paths:
         - templates
       summary: Gibt ein bestimmten Antwortbaustein zurück.
       description: Gibt den Antwortbaustein mit der gegebenen ID zurück.
-      operationId: getComponent
+      operationId: getResponseComponent
       responses:
         200:
           description: Der Antwortbaustein wird zurückgegeben.
@@ -416,7 +431,7 @@ paths:
         - templates
       summary: Löscht einen Antwortbaustein.
       description: Löscht den Antwortbaustein mit der gegebenen ID aus der Datenbank.
-      operationId: deleteComponent
+      operationId: deleteResponseComponent
       responses:
         204:
           description: Der Antwortbaustein wurde gelöscht.
@@ -434,7 +449,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ResponseComponent'
-      operationId: updateComponent
+      operationId: updateResponseComponent
       responses:
         200:
           description: Template erfolgreich aktualisiert.
@@ -455,7 +470,7 @@ paths:
       description: Hier kann die Anzahl der Anwortbausteine in der Datenbank abgerufen werden. Dabei können auch Filter angewendet werden.
       parameters:
         - $ref: '#/components/parameters/KeywordsParameter'
-      operationId: countComponents
+      operationId: countResponseComponents
       responses:
         200:
           description: Die Anzahl der Antwortbausteine werden zurückgegeben.
@@ -474,7 +489,7 @@ paths:
         - templates
       summary: Löscht alle Antwortbausteine aus der Datenbank.
       description: Alle Antwortbausteine werden aus der Datenbank entfernt.
-      operationId: deleteAllComponents
+      operationId: deleteAllResponseComponents
       responses:
         204:
           description: Alle Antwortbausteine wurden aus der Datenbank entfernt.
@@ -483,8 +498,8 @@ paths:
     get:
       tags:
         - actions
-      summary: Gibt die gespeicherten Antwortaktionen zurück.
-      description: Gibt die gespeicherten Anwortaktionen zurück.
+      summary: Gibt die gespeicherten Aktionen zurück.
+      description: Gibt die gespeicherten Aktionen zurück. Es kann gefiletert und sortiert, sowie Pagination angewandt werden.
       parameters:
         - $ref: '#/components/parameters/CountParameter'
         - $ref: '#/components/parameters/PageParameter'
@@ -517,7 +532,7 @@ paths:
       tags:
         - actions
       summary: Fügt dem System eine neue Aktion hinzu.
-      description: Fügt einen neuen Aktion hinzu.
+      description: Fügt eine neue Aktion hinzu.
       requestBody:
         description: Die neue Aktion, die dem System hinzufügt werden soll. Im Request-Body muss die ID nicht angegeben werden, diese wird bei Angabe nicht beachtet.
         required: true
@@ -525,6 +540,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Action'
+      operationId: addAction
       responses:
         201:
           description: Das Aktion ist gültig und wurde gespeichert. Die gespeicherte Aktion wird zurückgegeben.
@@ -544,6 +560,7 @@ paths:
         - actions
       summary: Gibt eine Aktion zurück.
       description: Gibt die Aktion mit der gegebenen ID zurück.
+      operationId: getAction
       responses:
         200:
           description: Die Aktion wird zurückgegeben.
@@ -558,7 +575,8 @@ paths:
       tags:
         - actions
       summary: Löscht eine Aktion.
-      description: Löscht die gegebene Aktion. aus der Datenbank.
+      description: Löscht die gegebene Aktion aus der Datenbank.
+      operationId: deleteAction
       responses:
         204:
           description: Der Aktion wurde gelöscht.
@@ -571,11 +589,12 @@ paths:
       summary: Aktualisiert eine bestehende Aktion.
       description: Aktualisiert die Aktion mit der gegebenen ID.
       requestBody:
-        description: Die Aktion, die übernommen werden soll. Das ID fällt sollte nicht angegeben werden und wird ansonsten ignoriert.
+        description: Die Aktion, die übernommen werden soll. Die ID sollte nicht angegeben werden und wird ansonsten ignoriert.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/Action'
+      operationId: updateAction
       responses:
         200:
           description: Konfiguration wurde erfolgreich aktualisiert und wird zurückgegeben.
@@ -598,7 +617,7 @@ paths:
         - $ref: '#/components/parameters/ActionCodeParameter'
         - $ref: '#/components/parameters/KeywordsParameter'
 
-      operationId: getActions
+      operationId: countActions
       responses:
         200:
           description: Erfolgreiche Anfrage.
@@ -640,6 +659,7 @@ paths:
               type: string
               enum: [id_desc, id_asc, name_desc, name_asc]
               default: "id_desc"
+      operationId: getConfigurations
       responses:
         200:
           description: Die Konfigurationen werden zurückgegeben
@@ -664,6 +684,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AnalyzerConfiguration'
+      operationId: addConfiguration
       responses:
         201:
           description: Die Konfiguration ist gültig und wurde dem System hinzugefügt.
@@ -679,6 +700,7 @@ paths:
         - config
       summary: Gibt eine bestimmte Konfiguration zurück.
       description: Gibt die Konfiguration mit der gegebenen ID zurück.
+      operationId: getConfiguration
       responses:
         200:
           description: Die Konfiguration wird zurückgegeben.
@@ -694,6 +716,7 @@ paths:
         - config
       summary: Löscht eine Konfiguration.
       description: Löscht die gegebene Konfiguration aus der Datenbank. Wenn alle Konfigurationen gelöscht wurden, wird eine Default-Konfiguration verwendet.
+      operationId: deleteConfiguration
       responses:
         204:
           description: Der Konfiguration wurde gelöscht.
@@ -706,11 +729,12 @@ paths:
       summary: Aktualisiert eine bestehende Konfiguration.
       description: Aktualisiert die Konfiguration mit der gegebenen ID.
       requestBody:
-        description: Die Konfiguration, die übernommen werden soll. Das ID fällt sollte nicht angegeben werden und wird ansonsten ignoriert.
+        description: Die Konfiguration, die übernommen werden soll. Die ID sollte nicht angegeben werden und wird ansonsten ignoriert.
         content:
           application/json:
             schema:
               $ref: '#/components/schemas/AnalyzerConfiguration'
+      operationId: updateConfiguration
       responses:
         200:
           description: Konfiguration wurde erfolgreich aktualisiert.
@@ -729,6 +753,7 @@ paths:
         - config
       summary: Gibt die Anzahl der Konfigurationen zurück.
       description: Gibt die Anzahl der in der Datenbank gespeicherten Konfigurationen zurück.
+      operationId: countConfigurations
       responses:
         200:
           description: Konfigurationsanzahl wird zurückgegeben.
@@ -746,6 +771,7 @@ paths:
         - config
       summary: Gibt die aktuell aktive Konfiguration zurück.
       description: Gibt die Konfiguration zurück, die aktuell als Standard eingestellt ist.
+      operationId: getCurrentConfiguration
       responses:
         200:
           description: Gibt die aktuell als Standard einsgestellte Konfiguration zurück.
@@ -760,7 +786,7 @@ paths:
       description: Setzt die aktuell aktive Konfiguration auf die Konfiguration mit der gegebenen ID.
       parameters:
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
-      operationId: updateActiveConfig
+      operationId: updateCurrentConfiguration
       responses:
         200:
           description: Die Konfiguration mit der gegebenen ID wurde als aktive Konfiguration ausgewählt, diese wird zurück gegeben.
@@ -777,7 +803,7 @@ paths:
         - config
       summary: Löscht alle Konfigurationen.
       description: Löscht alle Konfigurationen aus der Datenbank und setzt das System auf eine Default-Konfiguration zurück.
-      operationId: deleteAllConfigs
+      operationId: deleteAllConfigurations
       responses:
         204:
           description: Löschen war erfolgreich.
@@ -807,6 +833,8 @@ paths:
           description: Falls true, werden alle Worte die nur aus Zahlen oder Sonderzeichen bestehen herausgefiltert.
           schema:
             type: boolean
+            default: false
+      operationId: getMostCommonWords
       responses:
         200:
           description: Die häufigsten Wörter und deren Häufigkeit werden zuückgegeben.
@@ -838,6 +866,7 @@ paths:
                 text:
                   type: string
                   example: "Busfahrer"
+      operationId: getNearestNeighbour
       responses:
         200:
           description: Die nächstligensten Wörter werden in einer Map mit ihrer prozentualen Übereinstimmung
@@ -886,6 +915,7 @@ paths:
                 vector3:
                   type: string
                   description: Drittes optionales Word der Berechnung
+      operationId: calculateVector
       responses:
         200:
           description: Die nächstligensten Wörter nach Berechnung werden in einer Map mit ihrer prozentualen Übereinstimmung
