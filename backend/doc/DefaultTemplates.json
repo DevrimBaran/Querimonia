@@ -1,15 +1,14 @@
 [
   {
-  "componentName": "BegrüßungMitName",
-  "priority": 100,
-  "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><EntityAvailable label=\"Name\"/></And></Rules>",
-  "templateTexts": [
-    "Sehr geehrter Herr/Frau ${Name},\n",
-    "Liebe/Lieber Frau/Herr ${Name},\n",
-    "Guten Tag, Frau/Herr ${Name},\n"
-  ]
+    "componentName": "BegrüßungMitName",
+    "priority": 100,
+    "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><EntityAvailable label=\"Name\"/></And></Rules>",
+    "templateTexts": [
+      "Sehr geehrter Herr/Frau ${Name},\n",
+      "Liebe/Lieber Frau/Herr ${Name},\n",
+      "Guten Tag, Frau/Herr ${Name},\n"
+    ]
   },
-
   {
     "componentName": "BegrüßungOhneName",
     "priority": 100,
@@ -20,7 +19,6 @@
       "Guten Tag,\n"
     ]
   },
-
   {
     "componentName": "EingangsdatumMitDatum",
     "priority": 100,
@@ -31,7 +29,6 @@
       "vielen Dank für Ihre Beschwerde, die Sie am ${UploadDatum} bei uns eingereicht haben.\n"
     ]
   },
-
   {
     "componentName": "EingangsdatumOhneDatum",
     "priority": 100,
@@ -42,7 +39,6 @@
       "vielen Dank für Ihre Beschwerde, die Sie vor Kurzem bei uns eingereicht haben.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrerUnfreundlichKeinePlatzhalter",
     "priority": 100,
@@ -53,7 +49,6 @@
       "Sie beschwerten sich über einen Fahrer, der sich unangemessen verhalten hat.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrerUnfreundlichNurLinie",
     "priority": 100,
@@ -64,7 +59,6 @@
       "Sie beschwerten sich über einen Fahrer der Linie ${Linie}, der sich unangemessen verhalten hat.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrerUnfreundlichNurHaltestelle",
     "priority": 100,
@@ -75,7 +69,6 @@
       "Sie beschwerten sich über einen Fahrer an der Haltestelle ${Haltestelle}, der sich unangemessen verhalten hat.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrerUnfreundlichLinieUndHaltestelle",
     "priority": 100,
@@ -86,7 +79,6 @@
       "Sie beschwerten sich über einen Fahrer der Linie ${Linie} an der Haltestelle ${Haltestelle}, der sich unangemessen verhalten hat.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrtNichtErfolgtKeinePlatzhalter",
     "priority": 100,
@@ -97,7 +89,6 @@
       "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrtNichtErfolgtNurLinie",
     "priority": 100,
@@ -108,7 +99,6 @@
       "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Linie}.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrtNichtErfolgtNurHaltestelle",
     "priority": 100,
@@ -119,7 +109,6 @@
       "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle}.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungFahrtNichtErfolgtLinieUndHaltestelle",
     "priority": 100,
@@ -130,7 +119,6 @@
       "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungSonstigesKeinePlatzhalter",
     "priority": 100,
@@ -141,7 +129,6 @@
       "Darin äußerten Sie Kritik an unserem Betrieb.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungSonstigesNurLinie",
     "priority": 100,
@@ -152,7 +139,6 @@
       "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Linie}.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungSonstigesNurHaltestelle",
     "priority": 100,
@@ -163,7 +149,6 @@
       "Darin äußerten Sie Kritik an unserem Betrieb an der Haltestelle ${Haltestelle}.\n"
     ]
   },
-
   {
     "componentName": "ProblembeschreibungSonstigesLinieUndHaltestelle",
     "priority": 100,
@@ -174,7 +159,6 @@
       "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n"
     ]
   },
-
   {
     "componentName": "EntschuldigungFahrerUnfreundlich",
     "priority": 50,
@@ -185,7 +169,6 @@
       "Dass Sie von diesem Fehlverhalten betroffen waren, bedauern wir und entschuldigen uns für die daraus entstandenen Unannehmlichkeiten.\n"
     ]
   },
-
   {
     "componentName": "EntschuldigungFahrtNichtErfolgt",
     "priority": 50,
@@ -196,7 +179,6 @@
       "Für den Ausfall der betroffenen Fahrt und die daraus für Sie enstandenen Unannehmlichkeiten entschuldigen wir uns.\n"
     ]
   },
-
   {
     "componentName": "EntschuldigungSonstiges",
     "priority": 50,
@@ -207,7 +189,6 @@
       "Der Vorfall ist bedauernswert und wir bitten Sie, die daraus entstandenen Unannehmlichkeiten zu entschuldigen.\n"
     ]
   },
-
   {
     "componentName": "LösungsvorschlagFahrerUnfreundlich",
     "priority": 100,
@@ -218,7 +199,6 @@
       "Wir haben Ihr Anliegen an den Teamleiter des betreffenden Fahrers weitergegeben, der ihn diesbezüglich ansprechen wird.\n"
     ]
   },
-
   {
     "componentName": "LösungsvorschlagFahrtNichtErfolgt",
     "priority": 100,
@@ -229,7 +209,6 @@
       "Der Ausfall ist auf eine Störung in unserem Betrieb zurückzuführen, welche mittlerweile behoben wurde. Der Betrieb sollte daher wieder planmäßig laufen.\n"
     ]
   },
-
   {
     "componentName": "LösungsvorschlagSonstiges",
     "priority": 100,
@@ -240,7 +219,6 @@
       "Wir haben das Problem an die zuständigen Fachbereiche weitergeleitet, welche aktuell an einer Lösung dafür arbeiten.\n"
     ]
   },
-
   {
     "componentName": "ErstattungMitGeldbetrag",
     "priority": 50,
@@ -251,7 +229,6 @@
       "Als Entschädigung wird Ihnen der genannte Betrag von ${Geldbetrag} so bald wie möglich überwiesen.\n"
     ]
   },
-
   {
     "componentName": "ErstattungOhneGeldbetrag",
     "priority": 50,
@@ -262,7 +239,6 @@
       "Als Entschädigung wird Ihnen so bald wie möglich ein entsprechender Geldbetrag überwiesen.\n"
     ]
   },
-
   {
     "componentName": "Schluss",
     "priority": 100,
