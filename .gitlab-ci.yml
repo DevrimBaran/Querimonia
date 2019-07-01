@@ -128,7 +128,6 @@ deploy-backend-dev:
     - sudo cp backend/doc/openapi.yaml /home/beschwerdemanagement/export/data/
     - cd /home/gitlab-runner/
     - ./convert.sh
-    - chmod +x openapi.json
   allow_failure: true
   only:
     - backend
