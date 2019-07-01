@@ -27,7 +27,7 @@ public class ActionController {
       @RequestParam("page") Optional<Integer> page,
       @RequestParam("sort_by") Optional<String[]> sortBy,
       @RequestParam("action_code") Optional<String> actionCode,
-      @RequestParam("keyowords") Optional<String[]> keywords) {
+      @RequestParam("keywords") Optional<String[]> keywords) {
 
     return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }

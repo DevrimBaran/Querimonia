@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  *
  * @author Simon Weiler
  */
+// TODO add patch endpoint and actions to responses
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ResponseController {
