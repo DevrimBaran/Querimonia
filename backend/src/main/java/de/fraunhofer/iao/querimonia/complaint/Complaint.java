@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;

@@ -1,52 +1,30 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
-import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
-import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
-import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
-import de.fraunhofer.iao.querimonia.nlp.response.generation.DefaultResponseGenerator;
-import de.fraunhofer.iao.querimonia.nlp.sentiment.FlaskSentiment;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * This controller manages complaint view, import and export.
@@ -55,14 +33,7 @@ import java.util.stream.Stream;
 @RestController()
 public class ComplaintController {
 
-  private static final Logger logger = LoggerFactory.getLogger(ComplaintController.class);
-  private static final ResponseStatusException NOT_FOUNT_EXCEPTION
-      = new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint does not exist!");
-
-  private final FileStorageService fileStorageService;
-  private final ComplaintRepository complaintRepository;
-  private final CompletedResponseComponentRepository completedResponseComponentRepository;
-  private ComplaintFactory complaintFactory;
+  private final ComplaintManager complaintManager;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint factory.
@@ -72,109 +43,101 @@ public class ComplaintController {
                              TemplateRepository templateRepository,
                              CompletedResponseComponentRepository
                                  completedResponseComponentRepository) {
-    this.fileStorageService = fileStorageService;
-    this.complaintRepository = complaintRepository;
-    this.completedResponseComponentRepository = completedResponseComponentRepository;
+    complaintManager = new ComplaintManager(fileStorageService, complaintRepository,
+        templateRepository, completedResponseComponentRepository);
+  }
 
-
-
-    complaintFactory = new ComplaintFactory()
-        .setClassifier(new KiKuKoClassifier())
-        .setEntityExtractor(new KikukoExtractor())
-        .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
-        .setStopWordFilter(new TokenAnalyzer())
-        .setSentimentAnalyzer(new FlaskSentiment());
+  /**
+   * Returns the complaints of the database. With the given parameters the complaints get filtered,
+   * sorted and pagination can be used.
+   *
+   * @param count     used for pagination: The amount of complaints per page. It is the number of
+   *                  complaints, that should be returned at most. If this is not given, all
+   *                  complaints will be returned (that match the other filters)
+   * @param page      for pagination: the current page index (starts at 0). If not given, 0 is
+   *                  assumed as page number.
+   * @param sortBy    an array of sorting aspects. The order in the array represents the priority
+   *                  for the sorting: The complaints get sorted by the first array entry first, and
+   *                  then by the second, etc. Valid sort aspects are: <code>upload_date_asc,
+   *                  upload_date_desc, subject_asc, subject_desc, sentiment_asc,
+   *                  sentiment_desc}</code>
+   * @param state     If given, only complaints in that state will be returned.
+   * @param dateMin   If given, no complaints that were uploaded before that date will be returned.
+   * @param dateMax   If given, no complaints that were uploaded after that date will be returned.
+   * @param sentiment If given, only complaints with this sentiment will be returned.
+   * @param subject   If given, only complaints with this subject will be returned.
+   * @param keywords  If given, only complaints that contain the keywords will returned.
+   * @return a response entity with status code 200, containing the filtered and sorted list of
+   * complaints as response body.
+   * @throws ResponseStatusException with
+   *                                 <ul>
+   *                                 <li>status code 400: with empty response body, if the
+   *                                 parameters are malformed.</li>
+   *                                 <li>status code 5XX: some unexpected server error
+   *                                 occurred.</li>
+   *                                 </ul>
+   */
+  @GetMapping("/api/complaints")
+  public ResponseEntity<List<Complaint>> getComplaints(
+      @RequestParam("count") Optional<Integer> count,
+      @RequestParam("page") Optional<Integer> page,
+      @RequestParam("sort_by") Optional<String[]> sortBy,
+      @RequestParam("state") Optional<String> state,
+      @RequestParam("date_min") Optional<String> dateMin,
+      @RequestParam("date_max") Optional<String> dateMax,
+      @RequestParam("sentiment") Optional<String[]> sentiment,
+      @RequestParam("subject") Optional<String[]> subject,
+      @RequestParam("keywords") Optional<String[]> keywords
+  ) {
+    return new ResponseEntity<>(complaintManager.getComplaints(count, page, sortBy,
+        state, dateMin, dateMax, sentiment, subject, keywords), HttpStatus.OK);
   }
 
   /**
    * This endpoint is used for uploading files with complaint texts. It accepts txt, word and pdf
-   * files and extracts the text from them.
+   * files and extracts the text from them. Then the complaint gets analyzed with a given
+   * configuration or the currently active configuration.
    *
-   * @param file the multipart file which gets transferred via http.
-   * @return the generated complaint object.
+   * @param file     the multipart file which gets transferred via http.
+   * @param configId the ID of the configuration that should be used to analyze the complaint.
+   * @return a response entity with status code 201, the response body is the new complaint object.
+   * @throws ResponseStatusException with
+   *                                 <ul>
+   *                                 <li>status code 400: with empty response body, if the file
+   *                                 could not be processed or the text is too long.</li>
+   *                                 <li>status code 5XX: Bad configuration, external services can
+   *                                 not be accessed or some unexpected server error occurred.</li>
+   *                                 </ul>
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "multipart/form-data")
-  public Complaint uploadComplaint(@RequestParam("file") MultipartFile file) {
-    String fileName = fileStorageService.storeFile(file);
-    String fullFilePath = "src/main/resources/uploads/" + fileName;
-
-    Complaint complaint;
-
-    try (FileInputStream fileInputStream = new FileInputStream(fullFilePath)) {
-
-      complaint = getComplaintFromData(fullFilePath, fileInputStream);
-
-    } catch (IOException e) {
-      logger.error("Fehler beim Datei-Upload");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                        "Fehler beim Dateiupload\n" + e.getMessage());
-    }
-
-    complaintRepository.save(complaint);
-    logger.info("Added complaint with id {}", complaint.getComplaintId());
-    return complaint;
+  public ResponseEntity<Complaint> uploadComplaint(
+      @RequestParam("file") MultipartFile file,
+      @RequestParam("configId") Optional<Integer> configId) {
+    Complaint complaint = complaintManager.uploadComplaint(file, configId);
+    return new ResponseEntity<>(complaint, HttpStatus.CREATED);
   }
 
   /**
-   * Extracts text out of a file.
+   * This endpoint is used for importing raw complaint texts. The complaint gets analyzed with a
+   * given configuration or the currently active configuration.
    *
-   * @param fullFilePath    the file path
-   * @param fileInputStream a input stream of that file
-   * @return the extracted complaint.
-   * @throws IOException on an io-error.
-   */
-  private Complaint getComplaintFromData(String fullFilePath,
-                                         InputStream fileInputStream)
-      throws IOException {
-
-    String text = null;
-    switch (fullFilePath.substring(fullFilePath.lastIndexOf("."))) {
-      case ".txt":
-        text = new String(Files.readAllBytes(Paths.get(fullFilePath)), Charset.defaultCharset());
-        break;
-      case ".pdf":
-        PDDocument document = PDDocument.load(new File(fullFilePath));
-        if (!document.isEncrypted()) {
-          PDFTextStripper stripper = new PDFTextStripper();
-          text = stripper.getText(document);
-        }
-        document.close();
-        break;
-      //read a word file (docx)
-      case ".docx":
-        XWPFDocument docxDocument = new XWPFDocument(fileInputStream);
-        XWPFWordExtractor extractor = new XWPFWordExtractor(docxDocument);
-        text = extractor.getText();
-        extractor.close();
-        break;
-      //read word file (doc)
-      case ".doc":
-        HWPFDocument docDocument = new HWPFDocument(fileInputStream);
-        WordExtractor docExtractor = new WordExtractor(docDocument);
-        text = docExtractor.getText();
-        docExtractor.close();
-        break;
-      default:
-        logger.error("Not a supported file format");
-        throw new HttpServerErrorException(HttpStatus.BAD_REQUEST, "Not a supported file format");
-    }
-
-    if (text == null) {
-      throw new IllegalStateException();
-    }
-    return complaintFactory.createComplaint(text);
-  }
-
-  /**
-   * This endpoint is used to transfer text which is not given in a file.
-   *
-   * @param input a text input object that gets deserialized from json.
-   * @return the generated complaint of the text.
+   * @param input    the complaint text that should be imported.
+   * @param configId the ID of the configuration that should be used to analyze the complaint.
+   * @return a response entity with status code 201, the response body is the new complaint object.
+   * @throws ResponseStatusException with
+   *                                 <ul>
+   *                                 <li>status code 400: with empty response body, if the
+   *                                 text is too long.</li>
+   *                                 <li>status code 5XX: Bad configuration, external services can
+   *                                 not be accessed or some unexpected server error occurred.</li>
+   *                                 </ul>
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/json")
-  public Complaint uploadText(@RequestBody TextInput input) {
+  public ResponseEntity<Complaint> uploadText(@RequestBody TextInput input,
+                                              @RequestParam Optional<Integer> configId) {
+    /* old code:
     Complaint complaint = complaintFactory.createComplaint(input.getText());
     // save the components
     complaint.getResponseSuggestion()
@@ -182,83 +145,202 @@ public class ComplaintController {
         .forEach(completedResponseComponentRepository::save);
     complaintRepository.save(complaint);
     logger.info("Added complaint with id {}", complaint.getComplaintId());
-    return complaint;
-  }
-
-  /**
-   * This method will return the complaints that match a certain filter, as given, will sort them in
-   * the specified way and limit their count. For more information, see openapi.yaml.
-   */
-  @GetMapping("/api/complaints")
-  public List<Complaint> getTexts(
-      @RequestParam("count") Optional<Integer> count,
-      @RequestParam("page") Optional<Integer> page,
-      @RequestParam("sort_by") Optional<String[]> sortBy,
-      @RequestParam("date_min") Optional<String> dateMin,
-      @RequestParam("date_max") Optional<String> dateMax,
-      @RequestParam("sentiment") Optional<String[]> sentiment,
-      @RequestParam("subject") Optional<String[]> subject,
-      @RequestParam("keywords") Optional<String[]> keywords
-  ) {
-    ArrayList<Complaint> result = new ArrayList<>();
-    complaintRepository.findAll().forEach(result::add);
-
-    Stream<Complaint> filteredResult =
-        result.stream()
-            .filter(complaint -> ComplaintFilter.filterByDate(complaint, dateMin, dateMax))
-            .filter(complaint -> ComplaintFilter.filterBySentiment(complaint, sentiment))
-            .filter(complaint -> ComplaintFilter.filterBySubject(complaint, subject))
-            .filter(complaint -> ComplaintFilter.filterByKeywords(complaint, keywords))
-            .sorted(ComplaintFilter.createComplaintComparator(sortBy));
-
-    if (count.isPresent()) {
-      if (page.isPresent()) {
-        // skip pages
-        filteredResult = filteredResult
-            .skip(page.get() * count.get());
-      }
-      // only take count amount of entries
-      filteredResult = filteredResult.limit(count.get());
-    }
-
-    return filteredResult.collect(Collectors.toList());
+    return complaint;*/
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
    * Returns a specific complaint with the given complaint complaintId.
    *
    * @param complaintId the if of the complaint.
-   * @return the complaint with the given complaintId if it exists.
+   * @return a response entity with the complaint as response body.
+   * @throws ResponseStatusException with
+   *                                 <ul>
+   *                                 <li>status code 404: no complaint with the given Id
+   *                                 exists.</li>
+   *                                 <li>status code 5XX: some unexpected server error
+   *                                 occurred.</li>
+   *                                 </ul>
    */
   @GetMapping("/api/complaints/{complaintId}")
   public ResponseEntity<Complaint> getComplaint(@PathVariable int complaintId) {
-    return complaintRepository.findById(complaintId)
+    /*return complaintRepository.findById(complaintId)
         .map(complaint -> new ResponseEntity<>(complaint, HttpStatus.OK))
-        .orElseThrow(() -> NOT_FOUNT_EXCEPTION);
+        .orElseThrow(() -> NOT_FOUNT_EXCEPTION);*/
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  /**
+   * With this method sentiment, subject and state of a complaint can be updated.
+   *
+   * @param complaintId   the id of the complaint that should be updated.
+   * @param updateRequest the request body with the new values for the attributes.
+   * @return a response entity with response code 200 and the complaint that was updated
+   * successfully as response body.
+   * @throws ResponseStatusException with:
+   *                                 <ul>
+   *                                 <li>status code 404: no complaint with the given Id
+   *                                 exists.</li>
+   *                                 <li>status code 5XX: some unexpected server error
+   *                                 occurred.</li>
+   *                                 </ul>
+   */
+  @PatchMapping("/api/complaints/{complaintId}")
+  public ResponseEntity<Complaint> updateComplaint(
+      @PathVariable int complaintId,
+      @RequestBody ComplaintUpdateRequest updateRequest) {
+
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
    * Deletes the complaint with the given id.
    *
-   * @param complaintId the id of the complaint to delete.
+   * @return a response entity with status code 204: the complaint was deleted successfully.
+   * @throws ResponseStatusException with:
+   *                                 <ul>
+   *                                 <li>status code 404: no complaint with the given Id
+   *                                 exists.</li>
+   *                                 <li>status code 5XX: some unexpected server error
+   *                                 occurred.</li>
+   *                                 </ul>
    */
   @DeleteMapping("/api/complaints/{complaintId}")
-  public ResponseEntity<String> deleteComplaint(@PathVariable int complaintId) {
-    if (complaintRepository.existsById(complaintId)) {
+  public ResponseEntity deleteComplaint(@PathVariable int complaintId) {
+    /*if (complaintRepository.existsById(complaintId)) {
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
       return new ResponseEntity<>("Delete successful", HttpStatus.OK);
     } else {
       throw NOT_FOUNT_EXCEPTION;
-    }
+    }*/
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  /**
+   * Reruns the analyze and response generation process and overwrites the current information of
+   * the complaint.
+   *
+   * @param complaintId         the id of the complaint with should be refreshed.
+   * @param keepUserInformation if this is true, no information with the flag
+   *                            <code>isSetByUser</code> should be overwritten.
+   * @param configId            the id of the configuration that should be used to analyze the
+   *                            complaint. If not given, the currently active configuration is
+   *                            used.
+   * @return a response entity with status code 200 and the refreshed complaint as response body.
+   * @throws ResponseStatusException with
+   *                                 <ul>
+   *                                 <li>status code 404: the complaintId or the configId do not
+   *                                 belong to existing objects.</li>
+   *                                 <li>status code 400: malformed parameters</li>
+   *                                 <li>status code 5XX: Bad configuration, external services can
+   *                                 not be accessed or some unexpected server error occurred.</li>
+   *                                 </ul>
+   */
+  @PatchMapping("api/complaint/{complaintId}/refresh")
+  public ResponseEntity<Complaint> refreshComplaint(
+      @PathVariable int complaintId,
+      @RequestParam Optional<Boolean> keepUserInformation,
+      @RequestParam Optional<Integer> configId) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
+
+
+  /**
+   * This function is used to count the number of complaints, that match a certain filter.
+   *
+   * @param state     If given, only complaints in that state will be returned.
+   * @param dateMin   If given, no complaints that were uploaded before that date will be returned.
+   * @param dateMax   If given, no complaints that were uploaded after that date will be returned.
+   * @param sentiment If given, only complaints with this sentiment will be returned.
+   * @param subject   If given, only complaints with this subject will be returned.
+   * @param keywords  If given, only complaints that contain the keywords will returned.
+   * @return a response entity that contains the number of complaints as response body and status
+   * code 200.
+   * @throws ResponseStatusException with
+   *                                 <ul>
+   *                                 <li>status code 400: with empty response body, if the
+   *                                 parameters are malformed.</li>
+   *                                 <li>status code 5XX: some unexpected server error
+   *                                 occurred.</li>
+   *                                 </ul>
+   */
+  @GetMapping("api/complaints/count")
+  public ResponseEntity<Integer> countComplaints(
+      @RequestParam("state") Optional<String> state,
+      @RequestParam("date_min") Optional<String> dateMin,
+      @RequestParam("date_max") Optional<String> dateMax,
+      @RequestParam("sentiment") Optional<String[]> sentiment,
+      @RequestParam("subject") Optional<String[]> subject,
+      @RequestParam("keywords") Optional<String[]> keywords
+  ) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  /**
+   * Adds a new named entity to a complaint.
+   *
+   * @param complaintId the id of the complaint.
+   * @param label       the label of the entity.
+   * @param start       the start index of the entity. Must not be negative and in the bounds of the
+   *                    complaint text.
+   * @param end         the end index of the entity. Must be greater than start and in the bounds of
+   *                    the complaint text.
+   * @param extractor   the name of the extractor, that should have found the entity.
+   * @return a response entity with status code 201 and a list of the named entities of the
+   * complaint as response body.
+   * @throws ResponseStatusException with:
+   *                                 <ul>
+   *                                 <li>400: the named entity that should be add is invalid or
+   *                                 already there.</li>
+   *                                 <li>5XX: some unexpected server error occurred.</li>
+   *                                 </ul>
+   */
+  @PostMapping("api/complaints/{complaintId}/entities")
+  public ResponseEntity<List<NamedEntity>> addEntity(
+      @PathVariable int complaintId,
+      @RequestParam String label,
+      @RequestParam int start,
+      @RequestParam int end,
+      @RequestParam String extractor) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
+
+  /**
+   * Deletes a named entity of a complaint.
+   *
+   * @param complaintId the id of the complaint.
+   * @param label       the label of the entity.
+   * @param start       the start index of the entity.
+   * @param end         the end index of the entity.
+   * @param extractor   the name of the extractor, that should have found the entity.
+   * @return a response entity with status code 200 and a list of the named entities of the
+   * complaint as response body.
+   * @throws ResponseStatusException with:
+   *                                 <ul>
+   *                                 <li>404: The named entity does not exist</li>
+   *                                 <li>5XX: some unexpected server error occurred.</li>
+   *                                 </ul>
+   */
+  @DeleteMapping("api/complaints/{complaintId}/entities")
+  public ResponseEntity<List<NamedEntity>> removeEntity(
+      @PathVariable int complaintId,
+      @RequestParam String label,
+      @RequestParam int start,
+      @RequestParam int end,
+      @RequestParam String extractor) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
   /**
    * Deletes all complaints in the database.
+   *
+   * @return a response entity with status code 204.
+   * @throws ResponseStatusException on some unexpected server error.
    */
   @DeleteMapping("/api/complaints/all")
-  public void deleteAll() {
-    complaintRepository.deleteAll();
+  public ResponseEntity deleteAllComplaints() {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
   }
 
 }

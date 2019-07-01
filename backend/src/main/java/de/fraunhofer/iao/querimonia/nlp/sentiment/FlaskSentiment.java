@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
 
-import de.fraunhofer.iao.querimonia.contact.FlaskContact;
+import de.fraunhofer.iao.querimonia.rest.contact.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 

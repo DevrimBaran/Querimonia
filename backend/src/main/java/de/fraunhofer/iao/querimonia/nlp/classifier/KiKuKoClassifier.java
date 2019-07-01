@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
-import de.fraunhofer.iao.querimonia.contact.KiKuKoContact;
+import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
 import java.util.LinkedHashMap;
