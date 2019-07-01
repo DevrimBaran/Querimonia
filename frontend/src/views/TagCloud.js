@@ -17,69 +17,52 @@ class TagCloud extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      word: [],
       words: {},
-      color: '#179c7d',
-      size: 200,
-      max: 0
+      maxOccurrence: 0,
+      cloudActive: true
     };
   }
 
-  getCSV = () => {
-    // sort by value
-    function Comparator (a, b) {
-      if (a[1] < b[1]) return 1;
-      if (a[1] > b[1]) return -1;
-      return 0;
-    }
+  exportSvg = () => {
+    let svgElement = document.getElementById('TagCloud').firstChild.firstChild;
+    svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    const svg = svgElement.outerHTML;
 
-    var w = this.state.words;
-    var ar = [['Token', 'Anzahl']];
-    for (var i = 0; i < Object.keys(w).length; i++) {
-      ar.push([Object.keys(w)[i], Object.values(w)[i]]);
-    }
-    this.exportToCsv('tagcloudCSV.csv', ar.sort(Comparator));
+    this.createDownload(svg, 'image/svg+xml; charset=utf-8', 'tagcloudSVG.svg');
   };
 
-  /**
-   * Opens a dialog to download the CSV
-   * @param filename name of the file
-   * @param rows Array (Rows) of Arrays (Columns) include the data of the CSV
-   */
-  exportToCsv = (filename, rows) => {
-    const processRow = (row) => {
-      let finalVal = '';
-      for (let j = 0; j < row.length; j++) {
-        let result = row[j].toString();
-        if (j > 0) {
-          finalVal += ';';
-        }
-        finalVal += result;
-      }
-      return finalVal + '\r\n';
-    };
+  exportCsv = () => {
+    let csv = 'Token;Anzahl\r\n';
+    Object.keys(this.state.words)
+      .sort((a, b) => {
+        return this.state.words[b] - this.state.words[a];
+      })
+      .forEach((word) => {
+        csv += `${word};${this.state.words[word]}\r\n`;
+      });
 
-    let csvFile = '';
-    for (let i = 0; i < rows.length; i++) {
-      csvFile += processRow(rows[i]);
-    }
+    this.createDownload(csv, 'text/csv;charset=utf-8;', 'tagCloudCSV.csv');
+  };
 
-    let blob = new Blob([csvFile], { type: 'text/csv;charset=utf-8;' });
-    if (navigator.msSaveBlob) { // IE 10+
-      navigator.msSaveBlob(blob, filename);
-    } else {
-      let link = document.createElement('a');
-      if (link.download !== undefined) { // feature detection
-        // Browsers that support HTML5 download attribute
-        let url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', filename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+  createDownload = (file, type, name) => {
+    let link = document.createElement('a');
+    if (link.download !== undefined) {
+      let url = URL.createObjectURL(new Blob([file], { type: type }));
+      link.setAttribute('href', url);
+      link.setAttribute('download', name);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
+  };
+
+  createWordArray = (wordsObject) => {
+    let wordArray = [];
+    Object.keys(wordsObject).forEach((element) => {
+      wordArray.push({ text: element, value: wordsObject[element] * (130 / this.state.maxOccurrence) });
+    });
+    return wordArray;
   };
 
   fetchData = () => {
@@ -89,35 +72,28 @@ class TagCloud extends Component {
     this.refs.onlyWords.checked && (query.words_only = this.refs.onlyWords.checked);
     this.refs.count.value && this.refs.count.value > 0 && (query.count = this.refs.count.value);
     Api.get('/api/stats/tagcloud', query)
-      .then(a => {
-        console.log(a);
-        return a;
+      .then(data => {
+        return data;
       })
       .then(this.setData);
   };
 
   setData = (data) => {
-    const maxVal = Math.max.apply(Math, Object.values(data));
-    this.setState({ words: data });
-    this.setState({ max: maxVal });
+    const max = Math.max(...Object.values(data));
+    this.setState({ words: data, maxOccurrence: max });
   };
 
-  createWordArray = (wordsObject) => {
-    let wordArray = [];
-    Object.keys(wordsObject).forEach((element) => {
-      wordArray.push({ text: element, value: wordsObject[element] * 10 });
-    });
-    return wordArray;
-  };
-
-  onChange = (e) => {
-    let s = {};
-    s[e.target.id] = e.target.value;
-    this.setState(s);
+  onResize = () => {
+    this.setState(this.state);
   };
 
   componentDidMount () {
     this.fetchData();
+    window.addEventListener('resize', this.onResize);
+  }
+
+  componentWillUnmount () {
+    window.removeEventListener('resize', this.onResize);
   }
 
   render () {
@@ -139,32 +115,43 @@ class TagCloud extends Component {
                 </div>
                 <div>
                   <label htmlFor='onlyWords'>Nur Wörter anzeigen:</label><br />
-                  <input type='checkbox' id='onlyWords' ref='onlyWords' />
+                  <input type='checkbox' id='onlyWords' ref='onlyWords' defaultChecked />
                 </div>
                 <div>
                   <label htmlFor='count'>Wortanzahl:</label><br />
-                  <input type='number' id='count' ref='count' defaultValue='0' min='0' />
+                  <input type='number' id='count' ref='count' defaultValue='70' min='0' />
                 </div>
               </Row>
             </div>
             <div className='center'>
               <input type='button' onClick={this.fetchData} value='Aktualisieren' />
             </div>
-            <Content className='center' id='TagCloud'>
-              <WordCloud
-                data={this.createWordArray(this.state.words)}
-                width={1000}
-                height={400}
-              />
-            </Content>
+            <br />
+            {this.state.cloudActive
+              ? (<Content className='center' id='TagCloud'>
+                <WordCloud
+                  data={this.createWordArray(this.state.words)}
+                  width={window.innerWidth / 100 * 80}
+                  // 190 = Filterbar + Downloadbar
+                  height={window.innerHeight - 190}
+                  padding={0.5}
+                  font={'Impact'}
+                />
+              </Content>)
+              : (<Content className='center' id='OccurrenceList'>
+                <ul>
+                  {this.createWordArray(this.state.words).map((element) => {
+                    return (<li><h3>{element['text']}</h3></li>);
+                  })}
+                </ul>
+              </Content>)}
             <div>
               <Row vertical={false} style={{ justifyContent: 'center' }}>
-                <div>
-                  <label htmlFor='factor'>Schriftgröße:</label><br />
-                  <input type='number' id='size' onChange={this.onChange} value={this.state.size} />
-                </div>
+                <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
+                  onClick={this.exportCsv} />
                 <div style={{ width: '2em' }} />
-                <div className='fa fa-file-csv fa-3x export-button' onClick={this.getCSV} />
+                <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
+                  onClick={this.exportSvg} />
               </Row>
             </div>
             <br />
