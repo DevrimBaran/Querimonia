@@ -13,11 +13,11 @@ import java.util.Optional;
 public class ComplaintUpdateRequest {
 
   @Nullable
-  private String newSentiment;
+  private final String newSentiment;
   @Nullable
-  private String newSubject;
+  private final String newSubject;
   @Nullable
-  private ComplaintState newState;
+  private final ComplaintState newState;
 
   @JsonCreator
   public ComplaintUpdateRequest(@JsonProperty("sentiment") String newSentiment,

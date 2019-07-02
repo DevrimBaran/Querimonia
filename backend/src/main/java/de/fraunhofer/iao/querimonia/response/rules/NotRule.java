@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class NotRule implements Rule {
 
-  private Rule child;
+  private final Rule child;
 
   public NotRule(Rule child) {
     this.child = child;

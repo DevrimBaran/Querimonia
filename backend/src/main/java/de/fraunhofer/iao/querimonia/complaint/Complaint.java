@@ -33,19 +33,17 @@ import java.util.Map;
  * subject, the sentiment and the date of the complaint.
  */
 @Entity
-@JsonPropertyOrder({
-                        "complaintId",
-                        "text",
-                        "preview",
-                        "state",
-                        "receiveDate",
-                        "receiveTime",
-                        "subject",
-                        "probableSubject",
-                        "sentiment",
-                        "probableSentiment",
-                        "entities"
-                    })
+@JsonPropertyOrder(value = {
+    "complaintId",
+    "text",
+    "preview",
+    "state",
+    "receiveDate",
+    "receiveTime",
+    "subject",
+    "sentiment",
+    "entities"
+})
 public class Complaint {
 
   /**

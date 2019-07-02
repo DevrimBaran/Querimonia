@@ -10,8 +10,8 @@ import java.util.List;
  */
 public class PredecessorCountRule implements Rule {
 
-  private int min;
-  private int max;
+  private final int min;
+  private final int max;
 
   public PredecessorCountRule(int min, int max) {
     this.min = min;

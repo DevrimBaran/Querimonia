@@ -29,7 +29,7 @@ public class ResponseComponentController {
   private static final ResponseStatusException NOT_FOUNT_EXCEPTION
       = new ResponseStatusException(HttpStatus.NOT_FOUND, "Template does not exist!");
   private final TemplateRepository templateRepository;
-  private ResponseComponentManager responseTemplateManager;
+  private final ResponseComponentManager responseTemplateManager;
 
   public ResponseComponentController(TemplateRepository templateRepository) {
     this.templateRepository = templateRepository;
@@ -127,7 +127,8 @@ public class ResponseComponentController {
    * @param responseComponent Is the component itself.
    */
   @PutMapping("api/templates/{templateId}")
-  public void updateTemplate(@PathVariable int templateId, @RequestBody ResponseComponent responseComponent) {
+  public void updateTemplate(@PathVariable int templateId,
+                             @RequestBody ResponseComponent responseComponent) {
     responseComponent.setComponentId(templateId);
     templateRepository.save(responseComponent);
   }

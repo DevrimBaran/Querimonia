@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class UploadDateRule implements Rule {
 
-  private LocalDate uploadDateMin;
-  private LocalDate uploadDateMax;
+  private final LocalDate uploadDateMin;
+  private final LocalDate uploadDateMax;
 
   public UploadDateRule(@Nullable LocalDate uploadDateMin, @Nullable LocalDate uploadDateMax) {
     this.uploadDateMin = uploadDateMin != null ? uploadDateMin : LocalDate.MIN;

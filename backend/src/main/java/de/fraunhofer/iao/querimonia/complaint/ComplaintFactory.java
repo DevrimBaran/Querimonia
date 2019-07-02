@@ -54,6 +54,13 @@ public class ComplaintFactory {
     return analyzeComplaint(complaint, true);
   }
 
+  /**
+   * Runs the analyze process on a given complaint.
+   *
+   * @param complaint           the complaint, which gets modified.
+   * @param keepUserInformation if true, no information gets overwritten where setByUser is true
+   * @return the modified complaint.
+   */
   public Complaint analyzeComplaint(Complaint complaint, boolean keepUserInformation) {
     Objects.requireNonNull(classifier, "classifier not initialized");
     Objects.requireNonNull(sentimentAnalyzer, "sentiment analyzer not initialized");

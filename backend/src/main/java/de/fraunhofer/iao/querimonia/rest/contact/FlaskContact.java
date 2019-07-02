@@ -28,6 +28,7 @@ public class FlaskContact {
     ObjectMapper mapper = new ObjectMapper();
     Map<String, Double> map;
     try {
+      //noinspection unchecked
       map = mapper.readValue(response, Map.class);
     } catch (IOException e) {
       e.printStackTrace();

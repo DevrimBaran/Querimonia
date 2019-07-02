@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class AndRule implements Rule {
 
-  private List<Rule> children;
+  private final List<Rule> children;
 
   public AndRule(List<Rule> children) {
     this.children = children;

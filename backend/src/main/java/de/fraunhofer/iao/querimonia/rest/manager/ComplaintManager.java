@@ -53,7 +53,7 @@ public class ComplaintManager {
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
   private final CompletedResponseComponentRepository completedResponseComponentRepository;
-  private ComplaintFactory complaintFactory;
+  private final ComplaintFactory complaintFactory;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint factory.

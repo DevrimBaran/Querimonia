@@ -31,8 +31,7 @@ public class ComplaintProperty {
   private String value = "";
 
   /**
-   * This map contains the possible values of the property mapped to their
-   * probabilities.
+   * This map contains the possible values of the property mapped to their probabilities.
    */
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "probability_table", joinColumns = @JoinColumn(name = "id"))
@@ -56,6 +55,12 @@ public class ComplaintProperty {
     this.isSetByUser = isSetByUser;
   }
 
+  /**
+   * Creates new complaint property from a probability map. The element with the greatest
+   * probability is set as value. Set by user is set to false.
+   *
+   * @param probabilities the probability map, that maps each value to its probability.
+   */
   public ComplaintProperty(Map<String, Double> probabilities) {
     this.probabilities = probabilities;
     this.value = ComplaintUtility.getEntryWithHighestProbability(probabilities)
@@ -85,6 +90,13 @@ public class ComplaintProperty {
     return this;
   }
 
+  /**
+   * Updates the probability map to a new map. If not setByUser and keepUserInformation, the
+   * value gets also updated.
+   *
+   * @param valueProbabilities  the map that maps values to their probabilities.
+   * @param keepUserInformation if true, the value attribute does not get overwritten.
+   */
   public void updateValueProbabilities(
       Map<String, Double> valueProbabilities, boolean keepUserInformation) {
     this.probabilities = valueProbabilities;

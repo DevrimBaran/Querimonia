@@ -12,7 +12,7 @@ import java.util.List;
 public class PredecessorRule implements Rule {
 
   private String position = "last";
-  private String predecessorRegex;
+  private final String predecessorRegex;
 
   /**
    * Creates new predecessor rule.

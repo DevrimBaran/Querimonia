@@ -13,8 +13,8 @@ import java.util.List;
  */
 public class UploadTimeRule implements Rule {
 
-  private LocalTime uploadTimeMin;
-  private LocalTime uploadTimeMax;
+  private final LocalTime uploadTimeMin;
+  private final LocalTime uploadTimeMax;
 
   public UploadTimeRule(@Nullable LocalTime uploadTimeMin, @Nullable LocalTime uploadTimeMax) {
     this.uploadTimeMin = uploadTimeMin != null ? uploadTimeMin : LocalTime.MIN;

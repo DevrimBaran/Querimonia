@@ -9,9 +9,9 @@ import java.util.List;
  */
 public class ResponseSlice {
 
-  private boolean isPlaceholder;
+  private final boolean isPlaceholder;
   // this is either the placeholder name or the raw text when the slice is no placeholder.
-  private String content;
+  private final String content;
 
   private ResponseSlice(boolean isPlaceholder, String content) {
     this.isPlaceholder = isPlaceholder;

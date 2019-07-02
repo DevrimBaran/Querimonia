@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class SubjectRule implements Rule {
 
-  private String subject;
+  private final String subject;
 
   public SubjectRule(String subject) {
     this.subject = subject;

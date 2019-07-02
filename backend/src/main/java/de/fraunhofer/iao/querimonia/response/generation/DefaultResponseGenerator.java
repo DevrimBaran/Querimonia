@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
-  private TemplateRepository templateRepository;
+  private final TemplateRepository templateRepository;
 
   public DefaultResponseGenerator(TemplateRepository templateRepository) {
     this.templateRepository = templateRepository;

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class OrRule implements Rule {
 
-  private List<Rule> children;
+  private final List<Rule> children;
 
   public OrRule(List<Rule> children) {
     this.children = children;

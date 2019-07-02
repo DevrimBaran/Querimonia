@@ -8,7 +8,7 @@ import java.util.List;
 
 public class SentimentRule implements Rule {
 
-  private String sentiment;
+  private final String sentiment;
 
   public SentimentRule(String sentiment) {
     this.sentiment = sentiment;
