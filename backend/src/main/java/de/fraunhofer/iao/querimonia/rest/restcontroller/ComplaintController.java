@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.db.repositories.ComplaintPropertyRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
@@ -38,13 +39,16 @@ public class ComplaintController {
   /**
    * Constructor gets only called by spring. Sets up the complaint factory.
    */
-  public ComplaintController(FileStorageService fileStorageService,
-                             ComplaintRepository complaintRepository,
-                             TemplateRepository templateRepository,
-                             CompletedResponseComponentRepository
-                                 completedResponseComponentRepository) {
+  public ComplaintController(
+      FileStorageService fileStorageService,
+      ComplaintRepository complaintRepository,
+      TemplateRepository templateRepository,
+      CompletedResponseComponentRepository
+          completedResponseComponentRepository,
+      ComplaintPropertyRepository complaintPropertyRepository
+  ) {
     complaintManager = new ComplaintManager(fileStorageService, complaintRepository,
-        templateRepository, completedResponseComponentRepository);
+        templateRepository, completedResponseComponentRepository, complaintPropertyRepository);
   }
 
   /**
@@ -137,16 +141,7 @@ public class ComplaintController {
                consumes = "application/json")
   public ResponseEntity<Complaint> uploadText(@RequestBody TextInput input,
                                               @RequestParam Optional<Integer> configId) {
-    /* old code:
-    Complaint complaint = complaintFactory.createComplaint(input.getText());
-    // save the components
-    complaint.getResponseSuggestion()
-        .getResponseComponents()
-        .forEach(completedResponseComponentRepository::save);
-    complaintRepository.save(complaint);
-    logger.info("Added complaint with id {}", complaint.getComplaintId());
-    return complaint;*/
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.uploadText(input, configId), HttpStatus.CREATED);
   }
 
   /**
@@ -164,10 +159,7 @@ public class ComplaintController {
    */
   @GetMapping("/api/complaints/{complaintId}")
   public ResponseEntity<Complaint> getComplaint(@PathVariable int complaintId) {
-    /*return complaintRepository.findById(complaintId)
-        .map(complaint -> new ResponseEntity<>(complaint, HttpStatus.OK))
-        .orElseThrow(() -> NOT_FOUNT_EXCEPTION);*/
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.getComplaint(complaintId), HttpStatus.OK);
   }
 
   /**
@@ -190,7 +182,8 @@ public class ComplaintController {
       @PathVariable int complaintId,
       @RequestBody ComplaintUpdateRequest updateRequest) {
 
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.updateComplaint(complaintId, updateRequest),
+        HttpStatus.OK);
   }
 
   /**
@@ -207,14 +200,8 @@ public class ComplaintController {
    */
   @DeleteMapping("/api/complaints/{complaintId}")
   public ResponseEntity deleteComplaint(@PathVariable int complaintId) {
-    /*if (complaintRepository.existsById(complaintId)) {
-      complaintRepository.deleteById(complaintId);
-      logger.info("Deleted complaint with id {}", complaintId);
-      return new ResponseEntity<>("Delete successful", HttpStatus.OK);
-    } else {
-      throw NOT_FOUNT_EXCEPTION;
-    }*/
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    complaintManager.deleteComplaint(complaintId);
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
   /**
@@ -242,7 +229,9 @@ public class ComplaintController {
       @PathVariable int complaintId,
       @RequestParam Optional<Boolean> keepUserInformation,
       @RequestParam Optional<Integer> configId) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    return new ResponseEntity<>(complaintManager.refreshComplaint(complaintId,
+        keepUserInformation, configId), HttpStatus.OK);
   }
 
 
@@ -274,7 +263,8 @@ public class ComplaintController {
       @RequestParam("subject") Optional<String[]> subject,
       @RequestParam("keywords") Optional<String[]> keywords
   ) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.countComplaints(state, dateMin, dateMax,
+        sentiment, subject, keywords), HttpStatus.OK);
   }
 
   /**
@@ -303,7 +293,8 @@ public class ComplaintController {
       @RequestParam int start,
       @RequestParam int end,
       @RequestParam String extractor) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.addEntity(complaintId, label, start, end,
+        extractor), HttpStatus.CREATED);
   }
 
   /**
@@ -329,7 +320,8 @@ public class ComplaintController {
       @RequestParam int start,
       @RequestParam int end,
       @RequestParam String extractor) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.removeEntity(complaintId, label, start, end,
+        extractor), HttpStatus.OK);
   }
 
   /**
@@ -340,7 +332,8 @@ public class ComplaintController {
    */
   @DeleteMapping("/api/complaints/all")
   public ResponseEntity deleteAllComplaints() {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    complaintManager.deleteAllComplaints();
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
 }

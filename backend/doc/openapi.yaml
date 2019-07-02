@@ -1198,17 +1198,17 @@ components:
         - probabilities
         - setByUser
       properties:
-        name:
+        value:
           type: string
           example: Fahrt nicht erfolgt
-          description: Die Bezeichnung der Kategorie.
+          description: Die Bezeichnung der Kategorie oder des Sentiments.
         setByUser:
           type: boolean
           example: false
           description: Ob der Parameter vom Nutzer gesetzt wurde oder automatisch erkannt wurde.
         probabilities:
           type: object
-          description: Gibt die Wahrscheinlichkeiten für alle Kategorien an, dass die Beschwerde eine bestimmte Kategorie hat.
+          description: Gibt die Wahrscheinlichkeiten für alle Kategorien an, dass die Beschwerde eine bestimmte Kategorie / ein bestimmtes Sentiment hat.
           additionalProperties:
             type: number
           example:

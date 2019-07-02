@@ -1,3 +1,4 @@
+/*
 package de.fraunhofer.iao.querimonia.db;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
@@ -20,11 +21,13 @@ import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+*/
 /**
  * Unit test class for ComplaintFilter
  *
  * @author Simon Weiler
- */
+ *//*
+
 public class ComplaintFilterTest {
 
   private static String testText;
@@ -882,4 +885,4 @@ public class ComplaintFilterTest {
 
     int comparison = complaintComparator.compare(testComplaint1, testComplaint2);
   }
-}
+}*/

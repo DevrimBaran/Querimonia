@@ -2,7 +2,8 @@ package de.fraunhofer.iao.querimonia.rest.restobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jdk.internal.jline.internal.Nullable;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
+import org.springframework.lang.Nullable;
 
 import java.util.Optional;
 
@@ -16,12 +17,12 @@ public class ComplaintUpdateRequest {
   @Nullable
   private String newSubject;
   @Nullable
-  private String newState;
+  private ComplaintState newState;
 
   @JsonCreator
   public ComplaintUpdateRequest(@JsonProperty("sentiment") String newSentiment,
                                 @JsonProperty("subject") String newSubject,
-                                @JsonProperty("state") String newState) {
+                                @JsonProperty("state") ComplaintState newState) {
     this.newSentiment = newSentiment;
     this.newSubject = newSubject;
     this.newState = newState;
@@ -35,7 +36,7 @@ public class ComplaintUpdateRequest {
     return Optional.ofNullable(newSubject);
   }
 
-  public Optional<String> getNewState() {
+  public Optional<ComplaintState> getNewState() {
     return Optional.ofNullable(newState);
   }
 }

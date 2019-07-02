@@ -4,15 +4,19 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.EntityExtractor;
+import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
-import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -42,18 +46,27 @@ public class ComplaintFactory {
    * @return the generated complaint object.
    */
   public Complaint createComplaint(String complaintText) {
+    Complaint complaint = new Complaint(
+        complaintText,
+        makePreview(complaintText),
+        LocalDate.now(),
+        LocalTime.now());
+    return analyzeComplaint(complaint, true);
+  }
+
+  public Complaint analyzeComplaint(Complaint complaint, boolean keepUserInformation) {
     Objects.requireNonNull(classifier, "classifier not initialized");
     Objects.requireNonNull(sentimentAnalyzer, "sentiment analyzer not initialized");
     Objects.requireNonNull(entityExtractor, "entity extractor not initialized");
     Objects.requireNonNull(responseGenerator, "response generator not initialized");
     Objects.requireNonNull(stopWordFilter, "stop word filter not initialized");
 
-    String preview = makePreview(complaintText);
+    String complaintText = complaint.getText();
+
     Map<String, Double> subjectMap = classifier.classifyText(complaintText);
-    List<NamedEntity> entities = entityExtractor.extractEntities(complaintText)
-        .stream()
-        .distinct()
-        .collect(Collectors.toList());
+
+    List<NamedEntity> entities =
+        extractEntities(complaint, keepUserInformation, complaintText);
 
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
@@ -61,8 +74,28 @@ public class ComplaintFactory {
     ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(
         new ComplaintData(complaintText, subjectMap, sentimentMap, entities, LocalDateTime.now()));
 
-    return new Complaint(complaintText, preview, sentimentMap, subjectMap,
-                         entities, LocalDate.now(), LocalTime.now(), responseSuggestion, words);
+    complaint.getSubject().updateValueProbabilities(subjectMap, keepUserInformation);
+    complaint.getSentiment().updateValueProbabilities(sentimentMap, keepUserInformation);
+
+    return complaint
+        .setResponseSuggestion(responseSuggestion)
+        .setWordList(words);
+  }
+
+  /**
+   * Analyzes the complaint for named entities.
+   */
+  private List<NamedEntity> extractEntities(Complaint complaint, boolean keepUserInformation,
+                                            String complaintText) {
+    Stream<NamedEntity> entityStream = entityExtractor.extractEntities(complaintText)
+        .stream();
+    Stream<NamedEntity> oldEntityStream = complaint.getEntities()
+        .stream()
+        .filter(NamedEntity::isSetByUser);
+    if (keepUserInformation) {
+      entityStream = Stream.concat(entityStream, oldEntityStream).distinct();
+    }
+    return entityStream.collect(Collectors.toList());
   }
 
   private String makePreview(String text) {

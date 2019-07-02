@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -9,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -92,17 +92,18 @@ public class ComplaintFilter {
     return checkForParameters(complaint.getSubject(), subjects);
   }
 
-  private static boolean checkForParameters(Map<String, Double> probabilityMap,
+  private static boolean checkForParameters(ComplaintProperty complaintProperty,
                                             Optional<String[]> optionalParameters) {
     //noinspection OptionalIsPresent
     if (!optionalParameters.isPresent()) {
       // no filter is applied, then return true
       return true;
     }
-    return ComplaintUtility.getEntryWithHighestProbability(probabilityMap)
+    return ComplaintUtility.getEntryWithHighestProbability(
+        complaintProperty.getProbabilities())
         .map(sentiment ->
-                 // check if the sentiment/subject of the complaint matches
-                 Arrays.asList(optionalParameters.get()).contains(sentiment))
+            // check if the sentiment/subject of the complaint matches
+            Arrays.asList(optionalParameters.get()).contains(sentiment))
         // if not present, complaint has no subject/sentiment
         .orElse(false);
   }
@@ -133,18 +134,16 @@ public class ComplaintFilter {
               break;
             case "sentiment":
               // TODO better sorting for sentiments
-              compareValue = c1.getBestSentiment()
-                  .orElse("")
-                  .compareTo(c2.getBestSentiment().orElse(""));
+              compareValue = c1.getSentiment().getValue()
+                  .compareTo(c2.getSentiment().getValue());
               break;
             case "subject":
-              // TODO better sorting for subjects
-              compareValue = c1.getBestSubject().orElse("")
-                  .compareTo(c2.getBestSubject().orElse(""));
+              compareValue = c1.getSubject().getValue()
+                  .compareTo(c2.getSubject().getValue());
               break;
             default:
               throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                                "Illegal sorting paramter: " + rawSortAspect);
+                  "Illegal sorting paramter: " + rawSortAspect);
           }
 
           // invert sorting if desc
