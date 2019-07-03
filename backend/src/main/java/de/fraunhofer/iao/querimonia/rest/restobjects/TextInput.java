@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class TextInput {
 
-  private String text;
+  private final String text;
 
   @JsonCreator
   public TextInput(@JsonProperty String text) {

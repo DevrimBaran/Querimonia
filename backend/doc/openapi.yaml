@@ -54,6 +54,8 @@ paths:
                   $ref: '#/components/schemas/Complaint'
         400:
           description: Üngültige Angabe von Parametern.
+        5XX:
+          description: Ein unerwarteter Server Fehler ist aufgetreten.
 
   /api/complaints/import:
     post:
@@ -944,9 +946,14 @@ components:
       name: state
       in: query
       required: false
-      description: Gibt den Status an, in dem sich eine Beschwerde befindet.
+      description: Gibt die Status an, in dem sich eine Beschwerde befindet. Ohne Angabe werden geschlossene Beschwerden nicht zurückgegeben.
       schema:
-        $ref: '#/components/schemas/ComplaintState'
+        type: array
+        items:
+          $ref: '#/components/schemas/ComplaintState'
+        default:
+          - NEW
+          - IN_PROGRESS
 
     ConfigIdParameter:
       name: configId
@@ -963,7 +970,7 @@ components:
       name: actionId
       in: path
       required: true
-      description: Die eindeutige ID einger Aktion
+      description: Die eindeutige ID einer Aktion
       schema:
         type: integer
         format: int32
@@ -999,7 +1006,19 @@ components:
       required: false
       description: Hier können alle Kategorien angegeben werden, nach denen die Anfrage sortiert werden soll. Die Reihenfolge im Array bestimmt die Priorität beim Sortieren.
       schema:
-        $ref: '#/components/schemas/OrderBy'
+        description: Ein Array von Kategorien, nach denen eine Anfrage sortiert werden soll. Zusätzlich wird angegeben, ob auf oder absteigend sortiert wird.
+        type: array
+        items:
+          type: string
+          description: Gibt an, nach was die Beschwerden sortiert werden sollen.
+          enum:
+            - upload_date_asc
+            - upload_date_desc
+            - subject_asc
+            - subject_desc
+            - sentiment_asc
+            - sentiment_desc
+        default: ["upload_date_desc"]
 
     DateMinParameter:
       name: date_min
@@ -1111,7 +1130,7 @@ components:
         example: "QuerimoniaExtract"
 
     ActionCodeParameter:
-      name: actionCode
+      name: action_code
       in: query
       required: false
       description: Bei Angabe werden nur Aktionen mit dem gegebenen Aktionscode zurückgegeben.
@@ -1179,17 +1198,17 @@ components:
         - probabilities
         - setByUser
       properties:
-        name:
+        value:
           type: string
           example: Fahrt nicht erfolgt
-          description: Die Bezeichnung der Kategorie.
+          description: Die Bezeichnung der Kategorie oder des Sentiments.
         setByUser:
           type: boolean
           example: false
           description: Ob der Parameter vom Nutzer gesetzt wurde oder automatisch erkannt wurde.
         probabilities:
           type: object
-          description: Gibt die Wahrscheinlichkeiten für alle Kategorien an, dass die Beschwerde eine bestimmte Kategorie hat.
+          description: Gibt die Wahrscheinlichkeiten für alle Kategorien an, dass die Beschwerde eine bestimmte Kategorie / ein bestimmtes Sentiment hat.
           additionalProperties:
             type: number
           example:
@@ -1304,7 +1323,6 @@ components:
           description: Gibt für beliebige Entity-Labels einen Farbcode an, mit der die Entität dargestellt wird.
           additionalProperties:
             type: string
-            format: color
           example:
             "Haltestelle": "#0A2BFF"
             "Name": "#0ABCFF"
@@ -1409,20 +1427,6 @@ components:
           items:
             $ref: '#/components/schemas/Action'
 
-    OrderBy:
-      description: Ein Array von Kategorien, nach denen eine Anfrage sortiert werden soll. Zusätzlich wird angegeben, ob auf oder absteigend sortiert wird.
-      type: array
-      items:
-        type: string
-        description: Gibt an, nach was die Beschwerden sortiert werden sollen.
-        enum:
-          - upload_date_asc
-          - upload_date_desc
-          - subject_asc
-          - subject_desc
-          - sentiment_asc
-          - sentiment_desc
-
     Action:
       description: Eine Aktion kann automatisch beim Abschluss einer Beschwerde ausgelöst werden, wenn bestimmt Regeln dafür erfüllt sind. Zum Beispiel können E-Mails versendet werden, Gutscheine als Attachment angehängt werden, Beschwerden weitergeleitet werden etc.
       type: object
@@ -1447,7 +1451,6 @@ components:
         rulesXml:
           description: Die Regeln, wann eine Aktion ausgelöst werden kann im XML-Format.
           type: string
-          format: xml
           example: '<Rules><Subject value="Fahrt nicht erfolgt"/></Rules>'
         parameters:
           description: Zusätzliche Parameter für die Aktion, zum Beispiel an wen eine E-Mail gesendet wird oder den Wert des Gutscheins.

@@ -96,7 +96,7 @@ POST https://kikuko.iao.fraunhofer.de/apitext
 
 ###
 
-POST https://localhost:8080/api/complaints/import
+POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {

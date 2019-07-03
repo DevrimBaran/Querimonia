@@ -2,15 +2,17 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.nlp.response.generation.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
  *
  * @author Simon Weiler
  */
+// TODO add patch endpoint and actions to responses
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ResponseController {
@@ -36,7 +39,7 @@ public class ResponseController {
    * @return the new response
    */
   @GetMapping("api/responses/{complaintId}")
-  public List<CompletedResponseComponent> getResponse(@PathVariable int complaintId) {
+  public ResponseEntity<ResponseSuggestion> getResponse(@PathVariable int complaintId) {
     Optional<Complaint> complaint = complaintRepository.findById(complaintId);
 
     // Only respond to existing complaints
@@ -44,7 +47,7 @@ public class ResponseController {
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint does not exist");
     }
 
-    return complaint.get().getResponseSuggestion().getResponseComponents();
+    return new ResponseEntity<>(complaint.get().getResponseSuggestion(), HttpStatus.OK);
   }
 
   /**
@@ -53,13 +56,19 @@ public class ResponseController {
    * @param complaintId the Id of the complaint to respond to
    * @return the response as plain string
    */
-  @GetMapping(("api/responses/plain/{complaintId}"))
+  @GetMapping("api/responses/plain/{complaintId}")
   public String getPlainResponse(@PathVariable int complaintId) {
-    return getResponse(complaintId)
+    return Objects.requireNonNull(getResponse(complaintId)
+        .getBody())
+        .getResponseComponents()
         .stream()
         .map(completedResponseComponent -> completedResponseComponent.getAlternatives()
             .get(0).getCompletedText())
         .collect(Collectors.joining());
   }
 
+  @PatchMapping("api/responses/{complaintId}/refresh")
+  public ResponseEntity<ResponseSuggestion> refreshResponse(@PathVariable int complaintId) {
+    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  }
 }

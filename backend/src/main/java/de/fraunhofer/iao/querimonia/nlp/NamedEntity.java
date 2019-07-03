@@ -16,6 +16,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private String label;
   private int start;
   private int end;
+  private boolean setByUser = false;
 
   /**
    * Simple constructor for creating a new named entity object.
@@ -26,7 +27,14 @@ public class NamedEntity implements Comparable<NamedEntity> {
    */
   @JsonCreator
   public NamedEntity(@JsonProperty String label, @JsonProperty("start") int start, @JsonProperty(
-      "end") int end) {
+      "end") int end, @JsonProperty boolean setByUser) {
+    this.label = label;
+    this.start = start;
+    this.end = end;
+    this.setByUser = setByUser;
+  }
+
+  public NamedEntity(String label, int start, int end) {
     this.label = label;
     this.start = start;
     this.end = end;
@@ -48,6 +56,11 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @JsonProperty("end")
   public int getEndIndex() {
     return end;
+  }
+
+  @JsonProperty("setByUser")
+  public boolean isSetByUser() {
+    return setByUser;
   }
 
   @Override

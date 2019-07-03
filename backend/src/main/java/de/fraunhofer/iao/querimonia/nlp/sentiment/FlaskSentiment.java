@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
 
-import de.fraunhofer.iao.querimonia.contact.FlaskContact;
+import de.fraunhofer.iao.querimonia.rest.contact.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
@@ -46,8 +46,8 @@ public class FlaskSentiment implements SentimentAnalyzer {
 
   /**
    * creates a Text that contains each key from the map with an amount of the mapped value.
+   *
    * @param nonStopWords map with the words and their appearance value
-   * @return
    */
   private String createPseudoText(Map<String, Integer> nonStopWords) {
     final StringBuilder builder = new StringBuilder();
