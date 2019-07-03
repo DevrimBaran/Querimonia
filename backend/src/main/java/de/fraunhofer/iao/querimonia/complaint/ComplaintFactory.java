@@ -78,15 +78,20 @@ public class ComplaintFactory {
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
 
-    ResponseSuggestion responseSuggestion = responseGenerator.generateResponse(
-        new ComplaintData(complaintText, subjectMap, sentimentMap, entities, LocalDateTime.now()));
 
     complaint.getSubject().updateValueProbabilities(subjectMap, keepUserInformation);
     complaint.getSentiment().updateValueProbabilities(sentimentMap, keepUserInformation);
 
+    ComplaintData complaintData = new ComplaintData(complaintText, subjectMap, sentimentMap,
+        entities, LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()));
+    ResponseSuggestion responseSuggestion = createResponse(complaintData);
     return complaint
         .setResponseSuggestion(responseSuggestion)
         .setWordList(words);
+  }
+
+  public ResponseSuggestion createResponse(ComplaintData complaintData) {
+    return responseGenerator.generateResponse(complaintData);
   }
 
   /**
