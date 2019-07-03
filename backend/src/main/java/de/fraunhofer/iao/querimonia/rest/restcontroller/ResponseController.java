@@ -2,7 +2,11 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,10 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -26,10 +28,15 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ResponseController {
 
-  private final ComplaintRepository complaintRepository;
+  private final ComplaintManager complaintManager;
 
-  public ResponseController(ComplaintRepository complaintRepository) {
-    this.complaintRepository = complaintRepository;
+  public ResponseController(FileStorageService fileStorageService,
+                            ComplaintRepository complaintRepository,
+                            TemplateRepository templateRepository,
+                            CompletedResponseComponentRepository
+                                completedResponseComponentRepository) {
+    this.complaintManager = new ComplaintManager(fileStorageService, complaintRepository,
+        templateRepository, completedResponseComponentRepository);
   }
 
   /**
@@ -40,14 +47,9 @@ public class ResponseController {
    */
   @GetMapping("api/responses/{complaintId}")
   public ResponseEntity<ResponseSuggestion> getResponse(@PathVariable int complaintId) {
-    Optional<Complaint> complaint = complaintRepository.findById(complaintId);
+    Complaint complaint = complaintManager.getComplaint(complaintId);
 
-    // Only respond to existing complaints
-    if (!complaint.isPresent()) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Complaint does not exist");
-    }
-
-    return new ResponseEntity<>(complaint.get().getResponseSuggestion(), HttpStatus.OK);
+    return new ResponseEntity<>(complaint.getResponseSuggestion(), HttpStatus.OK);
   }
 
   /**
@@ -69,6 +71,6 @@ public class ResponseController {
 
   @PatchMapping("api/responses/{complaintId}/refresh")
   public ResponseEntity<ResponseSuggestion> refreshResponse(@PathVariable int complaintId) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    return new ResponseEntity<>(complaintManager.refreshResponse(complaintId), HttpStatus.OK);
   }
 }

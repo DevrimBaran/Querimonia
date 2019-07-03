@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -63,7 +63,7 @@ public class ComplaintUtility {
             return text.substring(namedEntity.getStartIndex(),
                                   namedEntity.getEndIndex());
           } catch (IndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+            throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
                                               "Entity error: " + namedEntity.getLabel()
                                                   + " in:\n " + text
                                                   + "\n " + e.getMessage());

@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.Optional;
@@ -22,8 +22,9 @@ public class ResponseComponentFilter {
 
       for (String sortAspect : sortBy.orElse(new String[] {"name_asc"})) {
         if (!(sortAspect.endsWith("desc") || sortAspect.endsWith("asc"))) {
-          throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-              "Illegal sorting paramter: Sorting parameter must end with desc or asc.");
+          throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
+              "Ungültiger Sortier-Parameter: " + sortAspect + "; Sortierparameter müssen mit "
+                  + "'desc' und 'asc' enden.");
         }
         // get index where prefix starts
         int indexOfPrefix = sortAspect.lastIndexOf('_');
@@ -38,8 +39,8 @@ public class ResponseComponentFilter {
                 .getComponentName().toLowerCase());
             break;
           default:
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Illegal sorting paramter: " + rawSortAspect);
+            throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
+                "Ungültiger Sortier-Parameter: " + sortAspect);
         }
         // invert sorting if desc
         if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {

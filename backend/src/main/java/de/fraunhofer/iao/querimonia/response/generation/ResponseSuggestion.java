@@ -18,7 +18,6 @@ public class ResponseSuggestion {
                    joinColumns = @JoinColumn(name = "component_id"))
   private List<CompletedResponseComponent> responseComponents;
 
-  // TODO add join column!
   @ElementCollection
   @CollectionTable(name = "response_actions",
                    joinColumns = @JoinColumn(name = "action_id"))

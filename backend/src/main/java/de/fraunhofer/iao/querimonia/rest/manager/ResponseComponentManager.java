@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,20 +20,18 @@ import java.util.List;
  */
 public class ResponseComponentManager {
 
-  private static final ResponseStatusException NOT_FOUND_EXCEPTION
-      = new ResponseStatusException(HttpStatus.NOT_FOUND, "Component does not exist!");
+  private static final QuerimoniaException NOT_FOUND_EXCEPTION
+      = new QuerimoniaException(HttpStatus.NOT_FOUND, "Antwort-Komponente existiert nicht!");
 
-  private static final ResponseStatusException JSON_PARSE_EXCEPTION
-      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-      "Contents of DefaultTemplates.json are not valid JSON code!");
+  private static final QuerimoniaException JSON_PARSE_EXCEPTION
+      = new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "Die Beispiel-Bausteine konnten nicht geladen werden!");
 
-  private static final ResponseStatusException JSON_MAPPING_EXCEPTION
-      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-      "Could not map contents of DefaultTemplates.json to an array of ResponseComponents!");
+  private static final QuerimoniaException JSON_MAPPING_EXCEPTION
+      = JSON_PARSE_EXCEPTION;
 
-  private static final ResponseStatusException FILE_IO_EXCEPTION
-      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-      "Could not read DefaultTemplates.json!");
+  private static final QuerimoniaException FILE_IO_EXCEPTION
+      = JSON_PARSE_EXCEPTION;
 
 
   /**

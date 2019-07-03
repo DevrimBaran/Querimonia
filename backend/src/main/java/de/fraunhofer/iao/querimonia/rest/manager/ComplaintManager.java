@@ -1,17 +1,20 @@
 package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
 import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.FlaskSentiment;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
@@ -27,7 +30,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -48,7 +50,6 @@ import java.util.stream.Stream;
 public class ComplaintManager {
 
   private static final Logger logger = LoggerFactory.getLogger(ComplaintManager.class);
-
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
   private final CompletedResponseComponentRepository completedResponseComponentRepository;
@@ -72,6 +73,11 @@ public class ComplaintManager {
         .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
         .setStopWordFilter(new TokenAnalyzer())
         .setSentimentAnalyzer(new FlaskSentiment());
+  }
+
+  private static QuerimoniaException getNotFoundException(int complaintId) {
+    return new QuerimoniaException(HttpStatus.NOT_FOUND, "Es existiert keine Beschwerde mit der "
+        + "ID " + complaintId);
   }
 
   /**
@@ -128,8 +134,8 @@ public class ComplaintManager {
 
     } catch (IOException e) {
       logger.error("Fehler beim Datei-Upload");
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload\n" + e.getMessage());
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Fehler beim Dateiupload:\n" + e.getMessage());
     }
     return complaint;
   }
@@ -154,7 +160,7 @@ public class ComplaintManager {
    */
   public synchronized Complaint getComplaint(int complaintId) {
     return complaintRepository.findById(complaintId)
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        .orElseThrow(() -> getNotFoundException(complaintId));
   }
 
   /**
@@ -187,7 +193,7 @@ public class ComplaintManager {
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
     } else {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw getNotFoundException(complaintId);
     }
   }
 
@@ -203,7 +209,9 @@ public class ComplaintManager {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
     // TODO work with config id
-    return complaintFactory.analyzeComplaint(complaint, keepUserInformation.orElse(false));
+    complaint = complaintFactory.analyzeComplaint(complaint, keepUserInformation.orElse(false));
+    storeComplaint(complaint);
+    return complaint;
   }
 
   /**
@@ -234,9 +242,10 @@ public class ComplaintManager {
     if (!complaintEntities.contains(newEntity)) {
       complaintEntities.add(newEntity);
     } else {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "entity exists already");
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität existiert bereits!");
     }
     // TODO check entities ranges
+    storeComplaint(complaint);
     return complaintEntities;
   }
 
@@ -246,16 +255,18 @@ public class ComplaintManager {
    * @see ComplaintController#removeEntity(int, String, int, int, String) removeEntity
    */
   public List<NamedEntity> removeEntity(int complaintId, String label, int start,
-                                                        int end, String extractor) {
+                                        int end, String extractor) {
     Complaint complaint = getComplaint(complaintId);
     NamedEntity newEntity = new NamedEntity(label, start, end);
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
     boolean removed = complaintEntities.remove(newEntity);
     if (!removed) {
-      throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+      throw new QuerimoniaException(HttpStatus.NOT_FOUND, "Die gegebene Entität existiert nicht "
+          + "in der Beschwerde.");
     }
     // TODO check entities ranges
+    storeComplaint(complaint);
     return complaintEntities;
   }
 
@@ -269,6 +280,16 @@ public class ComplaintManager {
     completedResponseComponentRepository.deleteAll();
   }
 
+  /**
+   * Refreshed the response for a complaint.
+   */
+  public ResponseSuggestion refreshResponse(int complaintId) {
+    Complaint complaint = getComplaint(complaintId);
+    ResponseSuggestion suggestion = complaintFactory.createResponse(new ComplaintData(complaint));
+    storeComplaint(complaint);
+    return suggestion;
+  }
+
   private synchronized void storeComplaint(Complaint complaint) {
     // save the components
     complaint.getResponseSuggestion()
@@ -280,7 +301,8 @@ public class ComplaintManager {
 
   private void checkState(Complaint complaint) {
     if (complaint.getState().equals(ComplaintState.CLOSED)) {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
+          + "werden, da sie bereits geschlossen ist.");
     }
   }
 
@@ -296,7 +318,8 @@ public class ComplaintManager {
       throws IOException {
 
     String text = null;
-    switch (fullFilePath.substring(fullFilePath.lastIndexOf("."))) {
+    String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
+    switch (suffix) {
       case ".txt":
         text = new String(Files.readAllBytes(Paths.get(fullFilePath)), Charset.defaultCharset());
         break;
@@ -324,7 +347,8 @@ public class ComplaintManager {
         break;
       default:
         logger.error("Not a supported file format");
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Not a supported file format");
+        throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Das Dateiformat " + suffix
+            + " wird nicht unterstützt!");
     }
 
     if (text == null) {
