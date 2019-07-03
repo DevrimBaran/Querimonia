@@ -2,7 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.restobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jdk.internal.jline.internal.Nullable;
+import com.sun.istack.internal.Nullable;
 
 import java.util.Optional;
 
