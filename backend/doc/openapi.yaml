@@ -1323,7 +1323,6 @@ components:
           description: Gibt für beliebige Entity-Labels einen Farbcode an, mit der die Entität dargestellt wird.
           additionalProperties:
             type: string
-            format: color
           example:
             "Haltestelle": "#0A2BFF"
             "Name": "#0ABCFF"
@@ -1452,7 +1451,6 @@ components:
         rulesXml:
           description: Die Regeln, wann eine Aktion ausgelöst werden kann im XML-Format.
           type: string
-          format: xml
           example: '<Rules><Subject value="Fahrt nicht erfolgt"/></Rules>'
         parameters:
           description: Zusätzliche Parameter für die Aktion, zum Beispiel an wen eine E-Mail gesendet wird oder den Wert des Gutscheins.
