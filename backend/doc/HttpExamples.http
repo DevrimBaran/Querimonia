@@ -92,7 +92,7 @@ Content-Type: application/json
 
 ###
 
-POST https://kikuko.iao.fraunhofer.de/apitext
+GET http://localhost:8080/api/test
 
 ###
 

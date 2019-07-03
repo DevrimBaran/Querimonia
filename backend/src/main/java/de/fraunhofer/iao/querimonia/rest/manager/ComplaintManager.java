@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
-import de.fraunhofer.iao.querimonia.db.repositories.ComplaintPropertyRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
@@ -62,8 +61,7 @@ public class ComplaintManager {
                           ComplaintRepository complaintRepository,
                           TemplateRepository templateRepository,
                           CompletedResponseComponentRepository
-                              completedResponseComponentRepository,
-                          ComplaintPropertyRepository complaintPropertyRepository) {
+                              completedResponseComponentRepository) {
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
     this.completedResponseComponentRepository = completedResponseComponentRepository;

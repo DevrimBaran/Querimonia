@@ -124,7 +124,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       break;
     }
 
-    return new ResponseSuggestion(generatedResponse);
+    return new ResponseSuggestion(generatedResponse, new ArrayList<>());
   }
 
 
