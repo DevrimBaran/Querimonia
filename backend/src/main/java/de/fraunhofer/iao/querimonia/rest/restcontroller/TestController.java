@@ -14,7 +14,7 @@ import java.io.File;
 public class TestController {
 
   @GetMapping("/api/test")
-  public File[] test() {
-    return new File("").listFiles();
+  public String[] test() {
+    return new File("").getAbsoluteFile().list();
   }
 }
