@@ -60,9 +60,14 @@ class TagCloud extends Component {
   createWordArray = (wordsObject) => {
     let wordArray = [];
     Object.keys(wordsObject).forEach((element) => {
-      wordArray.push({ text: element, value: wordsObject[element] * (130 / this.state.maxOccurrence) });
+      wordArray.push({ text: element, value: this.calculateSize(wordsObject[element]) });
     });
     return wordArray;
+  };
+
+  calculateSize = (size) => {
+    return 130 * (size / this.state.maxOccurrence);
+    // TODO: caclitlate size
   };
 
   fetchData = () => {
@@ -80,6 +85,7 @@ class TagCloud extends Component {
 
   setData = (data) => {
     const max = Math.max(...Object.values(data));
+    // TODO: Calculate other constants
     this.setState({ words: data, maxOccurrence: max });
   };
 
