@@ -25,7 +25,7 @@ function App () {
   } catch (e) {
     basepath = '/';
   }
-  console.log('basepath', process.env.REACT_APP_BACKEND_PATH, basepath);
+
   return (
     <Router basename={basepath}>
       <nav id='menu'>
