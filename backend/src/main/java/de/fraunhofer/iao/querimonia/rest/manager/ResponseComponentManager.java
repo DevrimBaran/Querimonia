@@ -5,8 +5,9 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
@@ -56,14 +57,23 @@ public class ResponseComponentManager {
 
   /**
    * Add a set of default templates to the repository. Default templates can be found in
-   * backend/doc/DefaultTemplates.json.
+   * resources/DefaultTemplates.json.
    *
    * @return the list of default templates
    */
-  public synchronized List<ResponseComponent> addDefaultTemplates(TemplateRepository templateRepository) {
+  public synchronized List<ResponseComponent> addDefaultTemplates(
+          TemplateRepository templateRepository) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
-      File defaultTemplatesFile = ResourceUtils.getFile("classpath:DefaultTemplates.json");
+      DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
+      Resource defaultTemplatesResource = defaultResourceLoader
+              .getResource("DefaultTemplates.json");
+
+      if (!defaultTemplatesResource.exists()) {
+        throw FILE_NOT_FOUND_EXCEPTION;
+      }
+
+      File defaultTemplatesFile = defaultTemplatesResource.getFile();
 
       List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(
               defaultTemplatesFile, ResponseComponent[].class));

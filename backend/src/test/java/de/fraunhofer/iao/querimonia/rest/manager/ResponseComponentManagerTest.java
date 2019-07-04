@@ -1,4 +1,4 @@
-/*package de.fraunhofer.iao.querimonia.rest.manager;
+package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
@@ -15,7 +15,7 @@ public class ResponseComponentManagerTest {
 
     @Before
     public void setup() {
-        TemplateRepository templateRepository = mock(TemplateRepository.class);
+        templateRepository = mock(TemplateRepository.class);
         when(templateRepository.save(any(ResponseComponent.class))).thenReturn(new ResponseComponent());
     }
 
@@ -23,4 +23,4 @@ public class ResponseComponentManagerTest {
     public void testAddDefaultTemplates() {
         responseComponentManager.addDefaultTemplates(templateRepository);
     }
-}*/
+}
