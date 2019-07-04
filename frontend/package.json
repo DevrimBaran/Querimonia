@@ -9,6 +9,7 @@
   "dependencies": {
     "express": "^4.16.4",
     "node-sass": "^4.12.0",
+    "pretty-data": "^0.40.0",
     "randomcolor": "^0.5.4",
     "react": "^16.8.6",
     "react-d3-cloud": "^0.7.0",
@@ -19,7 +20,7 @@
     "typescript": "^3.5.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "REACT_APP_DEVELOPMENT=true react-scripts start",
     "build-prod": "REACT_APP_BACKEND_PATH=$npm_package_config_backend react-scripts build",
     "build-dev": "REACT_APP_BACKEND_PATH=$npm_package_config_backend/dev react-scripts build",
     "build-mock": "REACT_APP_BACKEND_PATH=mock react-scripts build",

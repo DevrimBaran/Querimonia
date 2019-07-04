@@ -9,8 +9,8 @@ import React, { Component } from 'react';
 
 import Api from '../utility/Api';
 
+import Debug from 'components/Debug';
 import Collapsible from 'components/Collapsible';
-
 import TaggedText from 'components/TaggedText';
 import Content from 'components/Content';
 
@@ -28,7 +28,7 @@ class TextBuilder extends Component {
 
   add = (index) => {
     const category = this.state.categories[index];
-    const answers = this.data[index].answers;
+    const answers = this.data[index].alternatives;
     const answer = answers[this.state[category] % answers.length];
     this.setState((state) => {
       return {
@@ -56,7 +56,7 @@ class TextBuilder extends Component {
   }
   setData = (data) => {
     this.data = data;
-    const categories = data.map(block => block.category);
+    const categories = data.map(block => block.component.componentName);
     let state = categories.reduce((obj, category) => {
       obj[category] = 0;
       return obj;
@@ -70,39 +70,13 @@ class TextBuilder extends Component {
       .catch(() => {
         return { status: 404 };
       })
-      .then((response) => {
-        console.log(response);
-        return [
-          {
-            category: 'Begrüßung',
-            answers: [
-              { completedText: 'foo', entities: [] },
-              { completedText: 'faa', entities: [] }
-            ]
-          },
-          {
-            category: 'Lorem',
-            answers: [
-              { completedText: 'foo', entities: [] },
-              { completedText: 'faa', entities: [] }
-            ]
-          },
-          {
-            category: 'Ipsum',
-            answers: [
-              { completedText: 'foo', entities: [] },
-              { completedText: 'faa', entities: [] }
-            ]
-          }
-        ];
-      })
+      .then(Debug.log)
       .then((response) => this.setData(response));
   };
 
   componentDidMount () {
     this.fetch();
   }
-
   render () {
     return (
       <React.Fragment>
@@ -114,7 +88,7 @@ class TextBuilder extends Component {
         <Collapsible style={{ minHeight: this.state.categories.length > 0 ? '150px' : '0' }} className='Content' label='Antworten' collapse={false} id='responses'>
           {
             this.state.categories.map((category, index) => {
-              const answers = this.data[index].answers;
+              const answers = this.data[index].alternatives;
               const answer = answers[this.state[category] % answers.length];
               return (
                 <div className='response' key={index}>

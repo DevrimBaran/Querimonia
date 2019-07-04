@@ -1,9 +1,16 @@
-label {
+%inputs {
     @extend %font;
+}
+label {
+    @extend %inputs;
     font-weight: bold;
 }
 button {
+    @extend %inputs;
     height: 30px;
     margin: auto;
     display: block;
+}
+textarea {
+    @extend %inputs;
 }

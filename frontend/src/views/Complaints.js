@@ -72,7 +72,7 @@ class Complaints extends Component {
               </Tabbed>
             </Content>
             <Collapsible label='Details' className='Content' style={{ minHeight: '130px' }}>
-              <b> Artikulationsdatum: </b>
+              <b>Eingangsdatum: </b>
               <TaggedText text={{
                 text: active.receiveDate,
                 entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
@@ -93,10 +93,10 @@ class Complaints extends Component {
                 {createEntityArray(active.text, active.entities)}
               </ul>
               <ReactTooltip id='subjects' aria-haspopup='true'>
-                {createCategoriesArray(active.subject)}
+                {Object.keys(active.subject).map(s => 's: ' + active.subject[s])}
               </ReactTooltip>
               <ReactTooltip id='sentiments' aria-haspopup='true'>
-                {createCategoriesArray(active.sentiment)}
+                {Object.keys(active.subject).map(s => 's: ' + active.subject[s])}
               </ReactTooltip>
             </Collapsible>
           </Row>
@@ -147,14 +147,5 @@ function createEntityArray (txt, ar) {
       }} />
     </li>;
   });
-}
-// creates an Array of Categories-Strings
-function createCategoriesArray (object) {
-  let categoryArray = [];
-  Object.keys(object).forEach((key, i) => {
-    const value = object[key];
-    categoryArray.push(<li key={i}>{key} : {value}</li>);
-  });
-  return categoryArray;
 }
 export default Complaints;

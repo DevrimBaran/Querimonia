@@ -1,7 +1,7 @@
 
 const fetchJson = function (action, options) {
   console.log(process.env.NODE_ENV);
-  if ((process.env.NODE_ENV === 'development' || process.env.REACT_APP_BACKEND_PATH === 'mock')) {
+  if ((process.env.REACT_APP_DEVELOPMENT === true || process.env.REACT_APP_BACKEND_PATH === 'mock')) {
     const useMock = !document.getElementById('mockApi') && document.getElementById('mockApi').checked;
     if (useMock) {
       console.log('Application is using mock backend!');
@@ -16,7 +16,6 @@ const fetchJson = function (action, options) {
       .then(response => { return response.ok ? response.json() : []; });
   }
 };
-
 const options = function (method, data) {
   data = data || {};
 

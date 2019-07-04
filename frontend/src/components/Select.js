@@ -20,9 +20,10 @@ class Select extends Component {
         className: className ? className + ' Select' : 'Select',
         onChange: this.onChange
       };
+      console.log('required', this.props.required);
       return (
         <select {...injectedProp} {...passThroughProps}>
-          <option key='null' value=''>-</option>
+          {this.props.required || <option key='null' value=''>-</option>}
           {
             this.props.values.map((value) => {
               return (

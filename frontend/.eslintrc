@@ -4,6 +4,12 @@
 		"standard-react"
 	],
 	"parser": "babel-eslint",
+	"globals": {
+		"fetch": false,
+		"Blob": false,
+		"Response": false,
+		"FormData": false
+	},
 	"rules": {
 		"semi": [
 			2,
@@ -13,7 +19,7 @@
 			1
 		],
 		"react/prop-types": [
-			1
+			0
 		],
 		"no-undef": [
 			0
@@ -22,6 +28,9 @@
 			1
 		],
 		"no-new": [
+			1
+		],
+		"no-fallthrough": [
 			1
 		]
 	}
