@@ -1,13 +1,12 @@
-import fakeFetch from '../tests/apiMock';
 
 const fetchJson = function (action, options) {
   console.log(process.env.NODE_ENV);
   if ((process.env.NODE_ENV === 'development' || process.env.REACT_APP_BACKEND_PATH === 'mock')) {
-    const useMock = document.getElementById('mockApi') && document.getElementById('mockApi').checked;
-    if (!useMock) {
+    const useMock = !document.getElementById('mockApi') && document.getElementById('mockApi').checked;
+    if (useMock) {
       console.log('Application is using mock backend!');
-      return fakeFetch('https://querimonia.iao.fraunhofer.de' + action, options)
-        .then(response => { return response.json(); });
+      return fetch('https://querimonia.iao.fraunhofer.de/mock' + action, options)
+        .then(response => { return response.ok ? response.json() : []; });
     } else {
       return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
         .then(response => { return response.ok ? response.json() : []; });
