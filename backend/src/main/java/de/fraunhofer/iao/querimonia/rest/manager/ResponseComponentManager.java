@@ -10,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,6 +31,10 @@ public class ResponseComponentManager {
   private static final ResponseStatusException JSON_MAPPING_EXCEPTION
       = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
       "Could not map contents of DefaultTemplates.json to an array of ResponseComponents!");
+
+  private static final ResponseStatusException FILE_NOT_FOUND_EXCEPTION
+          = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Could not find DefaultTemplates.json!");
 
   private static final ResponseStatusException FILE_IO_EXCEPTION
       = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -59,8 +64,13 @@ public class ResponseComponentManager {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
 
-      List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(
-          new File("backend/doc/DefaultTemplates.json"), ResponseComponent[].class));
+      URL defaultTemplatesResource =  getClass().getClassLoader().getResource("DefaultTemplates.json");
+
+      if (defaultTemplatesResource == null) {
+        throw FILE_NOT_FOUND_EXCEPTION;
+      }
+
+      List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(new File(defaultTemplatesResource.getFile()), ResponseComponent[].class));
 
       defaultTemplates.forEach(templateRepository::save);
       return defaultTemplates;
