@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -20,19 +23,24 @@ import java.util.List;
  */
 public class ResponseComponentManager {
 
-  private static final QuerimoniaException NOT_FOUND_EXCEPTION
-      = new QuerimoniaException(HttpStatus.NOT_FOUND, "Antwort-Komponente existiert nicht!",
-      "Ungültige ID");
+  private static final ResponseStatusException NOT_FOUND_EXCEPTION
+      = new ResponseStatusException(HttpStatus.NOT_FOUND, "Component does not exist!");
 
-  private static final QuerimoniaException JSON_PARSE_EXCEPTION
-      = new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-      "Die Beispiel-Bausteine konnten nicht geladen werden!", "Server-Error");
+  private static final ResponseStatusException JSON_PARSE_EXCEPTION
+      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "Contents of DefaultTemplates.json are not valid JSON code!");
 
-  private static final QuerimoniaException JSON_MAPPING_EXCEPTION
-      = JSON_PARSE_EXCEPTION;
+  private static final ResponseStatusException JSON_MAPPING_EXCEPTION
+      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "Could not map contents of DefaultTemplates.json to an array of ResponseComponents!");
 
-  private static final QuerimoniaException FILE_IO_EXCEPTION
-      = JSON_PARSE_EXCEPTION;
+  private static final ResponseStatusException FILE_NOT_FOUND_EXCEPTION
+      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "Could not find DefaultTemplates.json!");
+
+  private static final ResponseStatusException FILE_IO_EXCEPTION
+      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "Could not read DefaultTemplates.json!");
 
 
   /**
@@ -49,17 +57,26 @@ public class ResponseComponentManager {
 
   /**
    * Add a set of default templates to the repository. Default templates can be found in
-   * backend/doc/DefaultTemplates.json.
+   * resources/DefaultTemplates.json.
    *
    * @return the list of default templates
    */
   public synchronized List<ResponseComponent> addDefaultTemplates(
-      TemplateRepository templateRepository) {
+          TemplateRepository templateRepository) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
+      DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
+      Resource defaultTemplatesResource = defaultResourceLoader
+              .getResource("DefaultTemplates.json");
+
+      if (!defaultTemplatesResource.exists()) {
+        throw FILE_NOT_FOUND_EXCEPTION;
+      }
+
+      File defaultTemplatesFile = defaultTemplatesResource.getFile();
 
       List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(
-          new File("backend/doc/DefaultTemplates.json"), ResponseComponent[].class));
+              defaultTemplatesFile, ResponseComponent[].class));
 
       defaultTemplates.forEach(templateRepository::save);
       return defaultTemplates;
@@ -68,6 +85,8 @@ public class ResponseComponentManager {
       throw JSON_PARSE_EXCEPTION;
     } catch (JsonMappingException e) {
       throw JSON_MAPPING_EXCEPTION;
+    } catch (FileNotFoundException e) {
+      throw FILE_NOT_FOUND_EXCEPTION;
     } catch (IOException e) {
       throw FILE_IO_EXCEPTION;
     }
