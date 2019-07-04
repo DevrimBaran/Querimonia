@@ -42,6 +42,7 @@ public class Action {
   /**
    * The action that could be executed
    */
+  @Enumerated(EnumType.STRING)
   @Column(name = "actionCode")
   private ActionCode actionCode;
 

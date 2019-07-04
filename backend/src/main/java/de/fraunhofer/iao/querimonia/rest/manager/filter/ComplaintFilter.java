@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
+
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import org.apache.commons.lang3.StringUtils;
@@ -119,9 +120,9 @@ public class ComplaintFilter {
         int compareValue = 0;
 
         for (String sortAspect : sortBy.get()) {
-          // get index where prefix starts
+          // get index where suffix starts
           int indexOfPrefix = sortAspect.lastIndexOf('_');
-          // get aspect without prefix
+          // get aspect without suffix
           String rawSortAspect = sortAspect.substring(0, indexOfPrefix);
 
           switch (rawSortAspect) {
