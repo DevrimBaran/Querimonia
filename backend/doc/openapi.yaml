@@ -54,8 +54,12 @@ paths:
                   $ref: '#/components/schemas/Complaint'
         400:
           description: Üngültige Angabe von Parametern.
-        5XX:
-          description: Ein unerwarteter Server Fehler ist aufgetreten.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/complaints/import:
     post:
@@ -90,8 +94,16 @@ paths:
                 $ref: '#/components/schemas/Complaint'
         400:
           description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         500:
           description: Fehlerhafte Konfiguration der Extraktoren, Klassifikatoren oder den Antwortbausteinen oder externe Extraktoren konnten nicht aufgerufen werden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
 
   /api/complaints/{complaintId}:
     parameters:
@@ -112,6 +124,12 @@ paths:
                 $ref: '#/components/schemas/Complaint'
         404:
           description: Beschwerde mit gegebener Id existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     patch:
       tags:
@@ -130,11 +148,19 @@ paths:
       operationId: updateComplaint
       responses:
         200:
-          description: Beschwerde wurde erfolgreich aktualisiert
+          description: Beschwerde wurde erfolgreich aktualisiert.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
+        400:
+          description: Die Beschwerde wurde bereits geschlossen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
@@ -146,7 +172,13 @@ paths:
         204:
           description: Löschen erfolgreich.
         404:
-          description: Beschwerde mit gegebener Id existiert nicht
+          description: Beschwerde mit gegebener Id existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/complaints/{complaintId}/refresh:
     parameters:
@@ -174,6 +206,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
+        404:
+          description: Eine Konfiguration oder eine Beschwerde mit der gegebenen ID existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          description: Unerwarteter Serverfehler, externe Tools können nicht erreicht werden oder fehlerhafte Konfiguration.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
 
   /api/complaints/count:
     get:
@@ -200,6 +244,12 @@ paths:
                 example: 140
         400:
           description: Üngültige Angabe von Parametern.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/complaints/{complaintId}/entities:
     parameters:
@@ -228,6 +278,12 @@ paths:
                   $ref: '#/components/schemas/NamedEntity'
         400:
           description: Die gegebene Entität ist schon vorhanden (mit gleichem Extraktor an der exakt gleichen Position), der gebene Extraktor ist unbekannt, die Beschwerde ist bereits abgeschlossen oder die gegebenen Indices liegen außerhalb der Textgrenzen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
@@ -252,6 +308,12 @@ paths:
                   $ref: '#/components/schemas/NamedEntity'
         404:
           description: Die gegebene Entität ist nicht vorhanden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/complaints/all:
     delete:
@@ -263,6 +325,8 @@ paths:
       responses:
         204:
           description: Löschen erfolgreich.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/responses/{complaintId}:
     parameters:
@@ -283,6 +347,12 @@ paths:
                 $ref: '#/components/schemas/ResponseSuggestion'
         404:
           description: Es gibt keine Beschwerde mit der gegebenen ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/responses/{complaintId}/refresh:
     parameters:
@@ -303,8 +373,22 @@ paths:
                 $ref: '#/components/schemas/ResponseSuggestion'
         400:
           description: Die Beschwerde wurde bereits abgeschlossen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         404:
           description: Es gibt keine Beschwerde mit der gegebenen ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          description: Fehlerhaft konfigurierte Textbausteine/Aktionen, unerwarteter Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
 
   /api/responses/plain/{complaintId}:
     parameters:
@@ -326,6 +410,12 @@ paths:
                 type: string
         404:
           description: Es gibt keine Beschwerde mit der gegebenen ID.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/templates:
     get:
@@ -361,6 +451,12 @@ paths:
                   $ref: '#/components/schemas/ResponseComponent'
         400:
           description: Fehlerhafte Parameter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     post:
       tags:
@@ -385,6 +481,8 @@ paths:
                 $ref: '#/components/schemas/ResponseComponent'
         400:
           description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/templates/default:
     post:
@@ -397,8 +495,16 @@ paths:
       responses:
         204:
           description: Die Standard Bausteine wurden erfolgreich hinzugefügt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         500:
           description: Die Datei mit den Standard-Antwortbausteinen ist nicht vorhanden, korrupt oder nicht richtig formatiert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
 
   /api/templates/{templateId}:
     parameters:
@@ -427,6 +533,12 @@ paths:
                 $ref: '#/components/schemas/ResponseComponent'
         404:
           description: Der Antwortbaustein existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
@@ -439,6 +551,12 @@ paths:
           description: Der Antwortbaustein wurde gelöscht.
         404:
           description: Der Antwortbaustein existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     put:
       tags:
@@ -463,6 +581,8 @@ paths:
           description: Template mit der gegebenen ID ist nicht vorhanden.
         400:
           description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/templates/count:
     get:
@@ -484,6 +604,12 @@ paths:
                 example: 48
         400:
           description: Fehlerhafte Parameter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/templates/all:
     delete:
@@ -495,6 +621,8 @@ paths:
       responses:
         204:
           description: Alle Antwortbausteine wurden aus der Datenbank entfernt.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/actions:
     get:
@@ -529,6 +657,12 @@ paths:
                   $ref: '#/components/schemas/Action'
         400:
           description: Üngültige Angabe von Parametern.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     post:
       tags:
@@ -551,7 +685,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/Action'
         400:
-          description: Der Aktionscode oder die Parameter sind ungültig.
+          description: Der Aktion ist nicht gültig. Beispielsweise, wenn der Aktionscode nicht gültig ist oder nicht die korrekten, benötigen Parameter vorhanden sind.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/actions/{actionId}:
     parameters:
@@ -572,6 +712,12 @@ paths:
                 $ref: '#/components/schemas/Action'
         404:
           description: Die Aktion existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
@@ -581,9 +727,15 @@ paths:
       operationId: deleteAction
       responses:
         204:
-          description: Der Aktion wurde gelöscht.
+          description: Die Aktion wurde gelöscht.
         404:
-          description: Der Aktion existiert nicht.
+          description: Die Aktion existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     put:
       tags:
@@ -606,8 +758,18 @@ paths:
                 $ref: '#/components/schemas/Action'
         404:
           description: Aktion mit der gegebenen ID ist nicht vorhanden.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         400:
           description: Die übergebene Aktion ist nicht gültig.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/actions/count:
     get:
@@ -631,6 +793,12 @@ paths:
                   $ref: '#/components/schemas/Action'
         400:
           description: Üngültige Angabe von Parametern.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/actions/all:
     delete:
@@ -641,6 +809,8 @@ paths:
       responses:
         204:
           description: Alle Antwortaktionen wurden aus der Datenbank entfernt.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/config:
     get:
@@ -673,6 +843,12 @@ paths:
                   $ref: '#/components/schemas/AnalyzerConfiguration'
         400:
           description: Fehlerhafte Parameter.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     post:
       tags:
@@ -691,7 +867,13 @@ paths:
         201:
           description: Die Konfiguration ist gültig und wurde dem System hinzugefügt.
         400:
-          description: Ungültige Konfiguration.
+          description: Ungültige Konfiguration. Es werden ungültige Extraktoren, Klassifikatoren oder Sentiment-Analysierer verwendet.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/config/{configId}:
     parameters:
@@ -712,6 +894,8 @@ paths:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
         404:
           description: Die Konfiguration existiert nicht.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
@@ -724,6 +908,8 @@ paths:
           description: Der Konfiguration wurde gelöscht.
         404:
           description: Der Konfiguration existiert nicht.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     put:
       tags:
@@ -748,6 +934,8 @@ paths:
           description: Konfiguration mit der gegebenen ID ist nicht vorhanden.
         400:
           description: Die übergebene Konfiguration ist ungültig.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/config/count:
     get:
@@ -766,6 +954,8 @@ paths:
                 format: int32
                 minimum: 0
                 example: 42
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/config/current:
     get:
@@ -781,6 +971,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
     put:
       tags:
         - config
@@ -798,6 +990,8 @@ paths:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
         404:
           description: Es existiert keine Konfiguration mit der gegebenen ID.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/config/all:
     delete:
@@ -809,6 +1003,8 @@ paths:
       responses:
         204:
           description: Löschen war erfolgreich.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/stats/tagcloud:
     get:
@@ -844,6 +1040,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MostCommonWords'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/vector/nearest_neighbour:
     post:
@@ -879,6 +1077,10 @@ paths:
                 additionalProperties:
                   type: number
                 description: Enthält die möglichen Wörter mit ihrer Übereinstimmung
+        400:
+          $ref: '#/components/responses/IllegalParametersError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
   /api/vector/calculation:
     post:
@@ -928,6 +1130,8 @@ paths:
                 additionalProperties:
                   type: number
                 description: Enthält die möglichen Wörter mit ihrer Übereinstimmung zu der Berechnung
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
 components:
   parameters:
@@ -1479,6 +1683,61 @@ components:
         "Fahrer": 32
         "Bus": 29
         "fahren": 24
+
+    QuerimoniaException:
+      description: Rückgabetyp im Fehlerfall.
+      type: object
+      required:
+        - timestamp
+        - statusCode
+        - message
+        - title
+      properties:
+        timestamp:
+          description: Der genaue Zeitpunkt, wann der Fehler aufgetreten ist.
+          type: string
+          format: 'date-time'
+          example: '2019-07-04T15:24:23.3942221'
+        statusCode:
+          description: Der HTTP-Status Code, der zuückgegeben wird.
+          type: integer
+          format: int32
+          example: 500
+        message:
+          description: Die Beschreibung des Fehlers auf Deutsch
+          type: string
+          example: 'Die Beschwerde konnte nicht gespeichert werden!'
+        title:
+          description: Kurze Fehlerbeschreibung, Titel für Fehlerdialog
+          type: string
+          example: 'Fehler beim Speichern'
+        exception:
+          description: Falls verfügbar, der Name der Java-Exception, die beim Fehler geworfen wurde.
+          type: string
+          example: "IOException"
+
+  responses:
+    UnexpectedError:
+      description: Unerwarteter Serverfehler
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/QuerimoniaException'
+
+    NotFoundError:
+      description: Auf dem Server existiert kein Element mit der übergebenen ID.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/QuerimoniaException'
+
+    IllegalParametersError:
+      description: Die übergebenen Parameter sind ungültig, zum Beispiel vom falschen Datentyp.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/QuerimoniaException'
+
   securitySchemes:
     basicAuth:
       type: http

@@ -11,7 +11,7 @@ POST http://localhost:8080/api/templates/default
 
 ###### test
 
-GET http://localhost:8080/api/templates/default
+GET http://localhost:8080/api/test
 
 ###### Begrüßung - Mit Name
 
