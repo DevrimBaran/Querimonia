@@ -6,11 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,8 +34,8 @@ public class ResponseComponentManager {
       "Could not map contents of DefaultTemplates.json to an array of ResponseComponents!");
 
   private static final ResponseStatusException FILE_NOT_FOUND_EXCEPTION
-          = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Could not find DefaultTemplates.json!");
+      = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
+      "Could not find DefaultTemplates.json!");
 
   private static final ResponseStatusException FILE_IO_EXCEPTION
       = new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
@@ -59,18 +60,13 @@ public class ResponseComponentManager {
    *
    * @return the list of default templates
    */
-  public synchronized List<ResponseComponent> addDefaultTemplates(
-      TemplateRepository templateRepository) {
+  public synchronized List<ResponseComponent> addDefaultTemplates(TemplateRepository templateRepository) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
+      File defaultTemplatesFile = ResourceUtils.getFile("classpath:DefaultTemplates.json");
 
-      URL defaultTemplatesResource =  getClass().getClassLoader().getResource("DefaultTemplates.json");
-
-      if (defaultTemplatesResource == null) {
-        throw FILE_NOT_FOUND_EXCEPTION;
-      }
-
-      List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(new File(defaultTemplatesResource.getFile()), ResponseComponent[].class));
+      List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(
+              defaultTemplatesFile, ResponseComponent[].class));
 
       defaultTemplates.forEach(templateRepository::save);
       return defaultTemplates;
@@ -79,6 +75,8 @@ public class ResponseComponentManager {
       throw JSON_PARSE_EXCEPTION;
     } catch (JsonMappingException e) {
       throw JSON_MAPPING_EXCEPTION;
+    } catch (FileNotFoundException e) {
+      throw FILE_NOT_FOUND_EXCEPTION;
     } catch (IOException e) {
       throw FILE_IO_EXCEPTION;
     }
