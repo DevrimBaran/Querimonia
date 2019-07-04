@@ -77,7 +77,7 @@ public class ComplaintManager {
 
   private static QuerimoniaException getNotFoundException(int complaintId) {
     return new QuerimoniaException(HttpStatus.NOT_FOUND, "Es existiert keine Beschwerde mit der "
-        + "ID " + complaintId);
+        + "ID " + complaintId, "Ungültige ID");
   }
 
   /**
@@ -135,7 +135,7 @@ public class ComplaintManager {
     } catch (IOException e) {
       logger.error("Fehler beim Datei-Upload");
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload:\n" + e.getMessage());
+          "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
     }
     return complaint;
   }
@@ -242,7 +242,8 @@ public class ComplaintManager {
     if (!complaintEntities.contains(newEntity)) {
       complaintEntities.add(newEntity);
     } else {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität existiert bereits!");
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität mit Label " + label +
+          "existiert bereits!", "Entität bereits vorhanden");
     }
     // TODO check entities ranges
     storeComplaint(complaint);
@@ -263,7 +264,7 @@ public class ComplaintManager {
     boolean removed = complaintEntities.remove(newEntity);
     if (!removed) {
       throw new QuerimoniaException(HttpStatus.NOT_FOUND, "Die gegebene Entität existiert nicht "
-          + "in der Beschwerde.");
+          + "in der Beschwerde.", "Ungültige Entity");
     }
     // TODO check entities ranges
     storeComplaint(complaint);
@@ -302,7 +303,7 @@ public class ComplaintManager {
   private void checkState(Complaint complaint) {
     if (complaint.getState().equals(ComplaintState.CLOSED)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
-          + "werden, da sie bereits geschlossen ist.");
+          + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
     }
   }
 
@@ -348,7 +349,7 @@ public class ComplaintManager {
       default:
         logger.error("Not a supported file format");
         throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Das Dateiformat " + suffix
-            + " wird nicht unterstützt!");
+            + " wird nicht unterstützt!", "Ungültiges Dateiformat");
     }
 
     if (text == null) {

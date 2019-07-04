@@ -66,7 +66,7 @@ public class ComplaintUtility {
             throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
                                               "Entity error: " + namedEntity.getLabel()
                                                   + " in:\n " + text
-                                                  + "\n " + e.getMessage());
+                                                  + "\n " + e.getMessage(), "Fehlerhafte Entity");
           }
         })
         .collect(Collectors.toList());

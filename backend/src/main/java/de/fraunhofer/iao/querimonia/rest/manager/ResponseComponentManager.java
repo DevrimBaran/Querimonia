@@ -21,11 +21,12 @@ import java.util.List;
 public class ResponseComponentManager {
 
   private static final QuerimoniaException NOT_FOUND_EXCEPTION
-      = new QuerimoniaException(HttpStatus.NOT_FOUND, "Antwort-Komponente existiert nicht!");
+      = new QuerimoniaException(HttpStatus.NOT_FOUND, "Antwort-Komponente existiert nicht!",
+      "Ungültige ID");
 
   private static final QuerimoniaException JSON_PARSE_EXCEPTION
       = new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-      "Die Beispiel-Bausteine konnten nicht geladen werden!");
+      "Die Beispiel-Bausteine konnten nicht geladen werden!", "Server-Error");
 
   private static final QuerimoniaException JSON_MAPPING_EXCEPTION
       = JSON_PARSE_EXCEPTION;

@@ -46,17 +46,17 @@ public class RuleParser {
         return getRuleFromNode((Element) root.getFirstChild());
       } else {
         throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Fehlerhaftes XML: "
-            + "Root-Element muss 'Rules' heißen.");
+            + "Root-Element muss 'Rules' heißen.", "XML Error");
       }
     } catch (ParserConfigurationException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Unerwarter Fehler: "
-          + "XML-Parser falsch konfiguriert.");
+          + "XML-Parser falsch konfiguriert.", "XML Error");
     } catch (SAXParseException e) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Zeile: " + e.getLineNumber() + "; "
-          + "Index " + (e.getColumnNumber() - 1) + ": XML-Fehler: " + e.getMessage());
+          + "Index " + (e.getColumnNumber() - 1) + ": XML-Fehler: " + e.getMessage(), "XML Error");
     } catch (SAXException e) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
-          "Unbekannter XML-Fehler: " + e.getMessage());
+          "Unbekannter XML-Fehler: " + e.getMessage(), "XML Error");
     } catch (IOException e) {
       throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unerwarteter "
           + "I/O-Fehler!");

@@ -24,7 +24,7 @@ public class ResponseComponentFilter {
         if (!(sortAspect.endsWith("desc") || sortAspect.endsWith("asc"))) {
           throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
               "Ungültiger Sortier-Parameter: " + sortAspect + "; Sortierparameter müssen mit "
-                  + "'desc' und 'asc' enden.");
+                  + "'desc' und 'asc' enden.", "Illegaler Parameter");
         }
         // get index where prefix starts
         int indexOfPrefix = sortAspect.lastIndexOf('_');
@@ -40,7 +40,7 @@ public class ResponseComponentFilter {
             break;
           default:
             throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
-                "Ungültiger Sortier-Parameter: " + sortAspect);
+                "Ungültiger Sortier-Parameter: " + sortAspect, "Illegaler Parameter");
         }
         // invert sorting if desc
         if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {

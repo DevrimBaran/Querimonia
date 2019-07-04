@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -53,14 +53,15 @@ public class KiKuKoContact<T> {
 
     // get response
     String returnValue = template.exchange(URL, HttpMethod.POST,
-                                           request, String.class).getBody();
+        request, String.class).getBody();
     // map string to json
     ObjectMapper mapper = new ObjectMapper();
     T[] responses;
     // exception for illegal answers
-    HttpServerErrorException kikukoException =
-        new HttpServerErrorException(HttpStatus.CONFLICT,
-                                     "No response from KiKUKO available");
+    QuerimoniaException kikukoException =
+        new QuerimoniaException(HttpStatus.CONFLICT,
+            "Keine Antwort von KIKiKo verfügbar", "KIKuKo nicht "
+            + "erreichbar");
 
     try {
       responses = mapper.readValue(returnValue, type);
