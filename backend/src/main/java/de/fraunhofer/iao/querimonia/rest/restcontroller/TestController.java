@@ -15,6 +15,6 @@ public class TestController {
 
   @GetMapping("/api/test")
   public String[] test() {
-    return new File("src").getAbsoluteFile().list();
+    return new File("src/main").getAbsoluteFile().list();
   }
 }
