@@ -6,18 +6,18 @@
 
 import React, { Component } from 'react';
 
-import Api from 'utility/Api';
+import Api from './../utility/Api';
 
-import Block from 'components/Block';
-import Row from 'components/Row';
-import Content from 'components/Content';
-import Complaint from 'components/Complaint';
-import Collapsible from 'components/Collapsible';
-import Filter from 'components/Filter';
-import Tabbed from 'components/Tabbed';
-import TaggedText from 'components/TaggedText';
-import TextBuilder from 'components/TextBuilder';
-import Pagination from 'components/Pagination';
+import Block from './../components/Block';
+import Row from './../components/Row';
+import Content from './../components/Content';
+import Complaint from './../components/Complaint';
+import Collapsible from './../components/Collapsible';
+import Filter from './../components/Filter';
+import Tabbed from './../components/Tabbed';
+import TaggedText from './../components/TaggedText';
+import TextBuilder from './../components/TextBuilder';
+import Pagination from './../components/Pagination';
 import ReactTooltip from 'react-tooltip';
 
 class Complaints extends Component {

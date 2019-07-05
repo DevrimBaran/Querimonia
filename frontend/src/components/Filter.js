@@ -9,11 +9,11 @@ import React, { Component } from 'react';
 
 // import Api from '../../utility/Api';
 
-import Collapsible from 'components/Collapsible';
-import Select from 'components/Select';
-import Row from 'components/Row';
-import Query from 'components/Query';
-import Input from 'components/Input';
+import Collapsible from './../components/Collapsible';
+import Select from './../components/Select';
+import Row from './../components/Row';
+import Query from './../components/Query';
+import Input from './../components/Input';
 
 // import RadioButton from '../RadioButton/RadioButton';
 // import Body from '../Body/Body';
@@ -31,7 +31,7 @@ import Input from 'components/Input';
 // import TextBuilder from '../TextBuilder/TextBuilder';
 // import Topbar from '../Topbar/Topbar';
 
-var filterTemplate = {
+let filterTemplate = {
   count: 'number',
   page: 'number',
   order_by: ['upload_date', 'subject', 'sentiment'],

@@ -9,10 +9,10 @@ import React, { Component } from 'react';
 
 import Api from '../utility/Api';
 
-import Debug from 'components/Debug';
-import Collapsible from 'components/Collapsible';
-import TaggedText from 'components/TaggedText';
-import Content from 'components/Content';
+import Debug from './../components/Debug';
+import Collapsible from './../components/Collapsible';
+import TaggedText from './../components/TaggedText';
+import Content from './../components/Content';
 
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
