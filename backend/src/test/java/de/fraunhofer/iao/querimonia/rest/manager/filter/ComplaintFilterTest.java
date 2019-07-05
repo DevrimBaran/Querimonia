@@ -1,8 +1,9 @@
-/*
-package de.fraunhofer.iao.querimonia.db;
+
+package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -14,29 +15,28 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-*/
 /**
  * Unit test class for ComplaintFilter
  *
  * @author Simon Weiler
- *//*
+ */
 
 public class ComplaintFilterTest {
 
   private static String testText;
-  private static Map<String, Double> testSentiment;
-  private static Map<String, Double> testSubject;
+  private static ComplaintProperty testSentiment;
+  private static ComplaintProperty testSubject;
   private static LocalDate testReceiveDate;
   private static Optional<String> optionalMinDateString;
   private static Optional<String> optionalMaxDateString;
   private final String TEST_PREVIEW = "preview";
+  private final ComplaintState TEST_STATE = ComplaintState.NEW;
   private final LocalTime TEST_RECEIVE_TIME = LocalTime.NOON;
   private final List<NamedEntity> TEST_ENTITIES = new ArrayList<>();
 
@@ -45,15 +45,17 @@ public class ComplaintFilterTest {
 
     testText = "It's over Anakin, I have the high ground!";
 
-    testSentiment = new HashMap<>();
-    testSentiment.put("Anger", 0.75);
-    testSentiment.put("Sadness", 0.5);
-    testSentiment.put("Joy", 0.1);
+    HashMap<String, Double> testSentimentProbabilityMap = new HashMap<>();
+    testSentimentProbabilityMap.put("Anger", 0.75);
+    testSentimentProbabilityMap.put("Sadness", 0.5);
+    testSentimentProbabilityMap.put("Joy", 0.1);
+    testSentiment = new ComplaintProperty(testSentimentProbabilityMap);
 
-    testSubject = new HashMap<>();
-    testSubject.put("Late arrival", 0.75);
-    testSubject.put("Impolite driver", 0.25);
-    testSubject.put("Other", 0.1);
+    HashMap<String, Double> testSubjectProbabilityMap = new HashMap<>();
+    testSubjectProbabilityMap.put("Late arrival", 0.75);
+    testSubjectProbabilityMap.put("Impolite driver", 0.25);
+    testSubjectProbabilityMap.put("Other", 0.1);
+    testSubject = new ComplaintProperty(testSubjectProbabilityMap);
 
     testReceiveDate = LocalDate.of(1970, 1, 1);
 
@@ -67,6 +69,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -84,6 +87,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -101,6 +105,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -117,6 +122,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -133,6 +139,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -149,6 +156,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -165,6 +173,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -181,6 +190,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             receiveDate,
@@ -197,6 +207,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -213,6 +224,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -229,6 +241,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -245,6 +258,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -260,6 +274,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -271,12 +286,12 @@ public class ComplaintFilterTest {
 
   @Test
   public void testFilterByKeywordsNoComplaintText() {
-    String complaintText = null;
     String[] keywords = {"over", "Anakin", "high ground"};
     Optional<String[]> optionalKeywords = Optional.of(keywords);
 
-    Complaint testComplaint = new Complaint(complaintText,
+    Complaint testComplaint = new Complaint(null,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -293,6 +308,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -309,6 +325,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -325,6 +342,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -341,6 +359,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -356,6 +375,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -367,13 +387,14 @@ public class ComplaintFilterTest {
 
   @Test
   public void testFilterBySentimentNoComplaintSentiment() {
-    Map<String, Double> complaintSentiment = new HashMap<>();
+    ComplaintProperty complaintSentiment = new ComplaintProperty(new HashMap<>());
 
     String[] sentiments = {"Anger"};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             complaintSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -390,6 +411,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -406,6 +428,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -422,6 +445,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -438,6 +462,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -453,6 +478,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             testSubject,
                                             testReceiveDate,
@@ -464,13 +490,14 @@ public class ComplaintFilterTest {
 
   @Test
   public void testFilterBySubjectNoComplaintSubjects() {
-    Map<String, Double> complaintSubject = new HashMap<>();
+    ComplaintProperty complaintSubject = new ComplaintProperty(new HashMap<>());
 
     String[] subjects = {"Late arrival"};
     Optional<String[]> optionalSubjects = Optional.of(subjects);
 
     Complaint testComplaint = new Complaint(testText,
                                             TEST_PREVIEW,
+                                            TEST_STATE,
                                             testSentiment,
                                             complaintSubject,
                                             testReceiveDate,
@@ -487,6 +514,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 15),
@@ -495,6 +523,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 16),
@@ -511,6 +540,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 16),
@@ -519,6 +549,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 15),
@@ -535,6 +566,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -543,6 +575,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -559,6 +592,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -567,6 +601,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -583,6 +618,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -591,6 +627,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -609,6 +646,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 15),
@@ -617,6 +655,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 16),
@@ -635,6 +674,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 16),
@@ -643,6 +683,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 15),
@@ -661,6 +702,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -669,6 +711,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -687,6 +730,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -695,6 +739,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -713,6 +758,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -721,6 +767,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -739,6 +786,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 15),
@@ -747,6 +795,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 16),
@@ -765,6 +814,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 16),
@@ -773,6 +823,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              LocalDate.of(2019, 6, 15),
@@ -791,6 +842,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -799,6 +851,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -817,6 +870,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -825,6 +879,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -843,6 +898,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -851,6 +907,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -869,6 +926,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint1 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -877,6 +935,7 @@ public class ComplaintFilterTest {
 
     Complaint testComplaint2 = new Complaint(testText,
                                              TEST_PREVIEW,
+                                             TEST_STATE,
                                              testSentiment,
                                              testSubject,
                                              testReceiveDate,
@@ -885,4 +944,4 @@ public class ComplaintFilterTest {
 
     int comparison = complaintComparator.compare(testComplaint1, testComplaint2);
   }
-}*/
+}

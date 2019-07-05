@@ -1,6 +1,5 @@
-package de.fraunhofer.iao.querimonia.db;
+package de.fraunhofer.iao.querimonia.complaint;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.junit.Test;
 import org.springframework.web.server.ResponseStatusException;
