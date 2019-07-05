@@ -40,12 +40,12 @@ class Complaints extends Component {
     }
     activate = (issue) => {
       // console.log(issue);
-      this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
+      this.setState({ active: this.state.issues.filter((a) => a.complaintId === issue.complaintId)[0] });
     }
     componentDidMount = () => {
       let searchParams = new URLSearchParams(document.location.search);
       let query = {};
-      for (var key of searchParams.keys()) {
+      for (const key of searchParams.keys()) {
         query[key] = searchParams.get(key);
       }
       this.fetchData(query);
@@ -82,10 +82,10 @@ class Complaints extends Component {
               {active.complaintId}
               <br />
               <b> Kategorie: </b>
-              <i data-tip data-for='subjects'>{active.probableSubject}</i>
+              <i data-tip data-for='subjects'>{active.subject.value}</i>
               <br />
               <b> Sentiment: </b>
-              <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
+              <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
               <br />
             </Collapsible>
             <Collapsible label='Entitäten' className='Content'>
@@ -93,10 +93,10 @@ class Complaints extends Component {
                 {createEntityArray(active.text, active.entities)}
               </ul>
               <ReactTooltip id='subjects' aria-haspopup='true'>
-                {Object.keys(active.subject).map(s => 's: ' + active.subject[s])}
+                {Object.keys(active.subject.probabilities).map(subject => `${subject}: ${active.subject.probabilities[subject]}`)}
               </ReactTooltip>
               <ReactTooltip id='sentiments' aria-haspopup='true'>
-                {Object.keys(active.subject).map(s => 's: ' + active.subject[s])}
+                {Object.keys(active.sentiment.probabilities).map(sentiment => `${sentiment}: ${active.sentiment.probabilities[sentiment]}`)}
               </ReactTooltip>
             </Collapsible>
           </Row>
