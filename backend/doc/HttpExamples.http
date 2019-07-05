@@ -215,8 +215,8 @@ DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
 
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/stats/tagcloud
 
-### Standard Templates hinzufügen
+### Standard Templates local tests
 
-POST https://querimonia.iao.fraunhofer.de/dev/api/templates/default
+GET http://localhost:8080/api/templates
 
 ###

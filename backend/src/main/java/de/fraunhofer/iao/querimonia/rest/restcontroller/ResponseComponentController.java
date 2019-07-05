@@ -5,6 +5,7 @@ import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import de.fraunhofer.iao.querimonia.rest.manager.ResponseComponentManager;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ResponseComponentFilter;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,8 +23,8 @@ import java.util.stream.Stream;
  * @author Simon Weiler
  * @author Baran Demir
  */
-@RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
+@RestController
 public class ResponseComponentController {
 
   private static final ResponseStatusException NOT_FOUNT_EXCEPTION
@@ -43,8 +44,11 @@ public class ResponseComponentController {
    * @return the created component
    */
   @PostMapping("api/templates")
-  public ResponseComponent addTemplate(@RequestBody ResponseComponent responseComponent) {
-    return responseTemplateManager.addTemplate(templateRepository, responseComponent);
+  public ResponseEntity<ResponseComponent> addTemplate(
+          @RequestBody ResponseComponent responseComponent) {
+    return new ResponseEntity<>(
+            responseTemplateManager.addTemplate(templateRepository, responseComponent),
+            HttpStatus.OK);
   }
 
 
@@ -54,20 +58,22 @@ public class ResponseComponentController {
    * @return the list of default templates
    */
   @PostMapping("api/templates/default")
-  public List<ResponseComponent> addDefaultTemplates() {
-    return responseTemplateManager.addDefaultTemplates(templateRepository);
+  public ResponseEntity<List<ResponseComponent>> addDefaultTemplates() {
+    return new ResponseEntity<>(
+            responseTemplateManager.addDefaultTemplates(templateRepository),
+            HttpStatus.OK);
   }
 
   /**
    * Pagination for templates (sort_by, page, count).
    *
    * @param count  Counter for the templates.
-   * @param page   Pagenumber.
+   * @param page   Page number.
    * @param sortBy Sorts by name ascending or descending, priority ascending and descending.
    * @return Returns a list of sorted templates.
    */
   @GetMapping("api/templates")
-  public List<ResponseComponent> getAllTemplates(
+  public ResponseEntity<List<ResponseComponent>> getAllTemplates(
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
       @RequestParam("sort_by") Optional<String[]> sortBy
@@ -87,7 +93,7 @@ public class ResponseComponentController {
       // only take count amount of entries
       filteredResult = filteredResult.limit(count.get());
     }
-    return filteredResult.collect(Collectors.toList());
+    return new ResponseEntity<>(filteredResult.collect(Collectors.toList()), HttpStatus.OK);
   }
 
 
@@ -98,8 +104,9 @@ public class ResponseComponentController {
    * @return the response component with the given ID
    */
   @GetMapping("api/templates/{id}")
-  public ResponseComponent getTemplateByID(@PathVariable int id) {
-    return responseTemplateManager.getTemplateByID(templateRepository, id);
+  public ResponseEntity<ResponseComponent> getTemplateByID(@PathVariable int id) {
+    return new ResponseEntity<>(
+            responseTemplateManager.getTemplateByID(templateRepository, id), HttpStatus.OK);
   }
 
   /**
