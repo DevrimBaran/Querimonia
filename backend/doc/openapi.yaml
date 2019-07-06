@@ -1463,10 +1463,6 @@ components:
           type: string
           description: Der Name des Extraktors. Bei KIKuKo Extraktoren muss ein Extraktor mit diesem Namen konfiguriert sein.
           example: GeldbetragExtraktor
-        entityLabel:
-          type: string
-          description: Gibt das Lebel der Entitäten an, die mit diesem Extraktor gefunden werden.
-          example: Geldbetrag
         type:
           type: string
           enum: [KIkukoTool]
