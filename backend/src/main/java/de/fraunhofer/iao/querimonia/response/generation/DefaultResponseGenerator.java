@@ -9,11 +9,7 @@ import de.fraunhofer.iao.querimonia.response.component.ResponseSlice;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -78,8 +74,10 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         ComplaintUtility.getEntityValueMap(complaintData.getText(), complaintData.getEntities());
 
     String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+        .withLocale(Locale.GERMAN)
         .format(complaintData.getUploadTime().toLocalDate());
     String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
+        .withLocale(Locale.GERMAN)
         .format(complaintData.getUploadTime().toLocalTime());
     entityValueMap.put("UploadDatum", formattedDate);
     entityValueMap.put("UploadZeit", formattedTime);
