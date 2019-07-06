@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
@@ -7,6 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -43,10 +45,21 @@ public class RuleParser {
       if (root.getTagName().equals("Rules") && root.hasChildNodes()) {
         return getRuleFromNode((Element) root.getFirstChild());
       } else {
-        throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Malformed xml");
+        throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Fehlerhaftes XML: "
+            + "Root-Element muss 'Rules' heißen.", "XML Error");
       }
-    } catch (ParserConfigurationException | SAXException | IOException e) {
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+    } catch (ParserConfigurationException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Unerwarter Fehler: "
+          + "XML-Parser falsch konfiguriert.", "XML Error");
+    } catch (SAXParseException e) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Zeile: " + e.getLineNumber() + "; "
+          + "Index " + (e.getColumnNumber() - 1) + ": XML-Fehler: " + e.getMessage(), "XML Error");
+    } catch (SAXException e) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
+          "Unbekannter XML-Fehler: " + e.getMessage(), "XML Error");
+    } catch (IOException e) {
+      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unerwarteter "
+          + "I/O-Fehler!");
     }
   }
 

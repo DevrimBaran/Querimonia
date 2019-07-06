@@ -35,6 +35,20 @@ public class ComplaintData {
     this.uploadTime = uploadTime;
   }
 
+  /**
+   * Creates a complaint data object from a complaint.
+   *
+   * @param complaint the complaint, this data object contains the same information as the
+   *                  complaint.
+   */
+  public ComplaintData(Complaint complaint) {
+    this.text = complaint.getText();
+    this.subjectMap = complaint.getSubject().getProbabilities();
+    this.sentimentMap = complaint.getSentiment().getProbabilities();
+    this.entities = complaint.getEntities();
+    this.uploadTime = LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime());
+  }
+
   public String getText() {
     return text;
   }

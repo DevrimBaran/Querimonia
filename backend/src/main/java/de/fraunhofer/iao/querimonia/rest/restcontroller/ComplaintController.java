@@ -1,10 +1,9 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
-import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -80,7 +78,7 @@ public class ComplaintController {
    *                                 </ul>
    */
   @GetMapping("/api/complaints")
-  public ResponseEntity<List<Complaint>> getComplaints(
+  public ResponseEntity<?> getComplaints(
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
       @RequestParam("sort_by") Optional<String[]> sortBy,
@@ -91,8 +89,8 @@ public class ComplaintController {
       @RequestParam("subject") Optional<String[]> subject,
       @RequestParam("keywords") Optional<String[]> keywords
   ) {
-    return new ResponseEntity<>(complaintManager.getComplaints(count, page, sortBy,
-        state, dateMin, dateMax, sentiment, subject, keywords), HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() -> complaintManager.getComplaints(count, page, sortBy,
+        state, dateMin, dateMax, sentiment, subject, keywords));
   }
 
   /**
@@ -113,11 +111,11 @@ public class ComplaintController {
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "multipart/form-data")
-  public ResponseEntity<Complaint> uploadComplaint(
+  public ResponseEntity<?> uploadComplaint(
       @RequestParam("file") MultipartFile file,
       @RequestParam("configId") Optional<Integer> configId) {
-    Complaint complaint = complaintManager.uploadComplaint(file, configId);
-    return new ResponseEntity<>(complaint, HttpStatus.CREATED);
+    return ControllerUtility.tryAndCatch(() -> complaintManager.uploadComplaint(file, configId),
+        HttpStatus.CREATED);
   }
 
   /**
@@ -137,9 +135,10 @@ public class ComplaintController {
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/json")
-  public ResponseEntity<Complaint> uploadText(@RequestBody TextInput input,
-                                              @RequestParam Optional<Integer> configId) {
-    return new ResponseEntity<>(complaintManager.uploadText(input, configId), HttpStatus.CREATED);
+  public ResponseEntity<?> uploadText(@RequestBody TextInput input,
+                                      @RequestParam Optional<Integer> configId) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.uploadText(input, configId),
+        HttpStatus.CREATED);
   }
 
   /**
@@ -156,8 +155,8 @@ public class ComplaintController {
    *                                 </ul>
    */
   @GetMapping("/api/complaints/{complaintId}")
-  public ResponseEntity<Complaint> getComplaint(@PathVariable int complaintId) {
-    return new ResponseEntity<>(complaintManager.getComplaint(complaintId), HttpStatus.OK);
+  public ResponseEntity<?> getComplaint(@PathVariable int complaintId) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.getComplaint(complaintId));
   }
 
   /**
@@ -176,12 +175,12 @@ public class ComplaintController {
    *                                 </ul>
    */
   @PatchMapping("/api/complaints/{complaintId}")
-  public ResponseEntity<Complaint> updateComplaint(
+  public ResponseEntity<?> updateComplaint(
       @PathVariable int complaintId,
       @RequestBody ComplaintUpdateRequest updateRequest) {
 
-    return new ResponseEntity<>(complaintManager.updateComplaint(complaintId, updateRequest),
-        HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() ->
+        complaintManager.updateComplaint(complaintId, updateRequest));
   }
 
   /**
@@ -197,8 +196,12 @@ public class ComplaintController {
    *                                 </ul>
    */
   @DeleteMapping("/api/complaints/{complaintId}")
-  public ResponseEntity deleteComplaint(@PathVariable int complaintId) {
-    complaintManager.deleteComplaint(complaintId);
+  public ResponseEntity<?> deleteComplaint(@PathVariable int complaintId) {
+    try {
+      complaintManager.deleteComplaint(complaintId);
+    } catch (QuerimoniaException e) {
+      return new ResponseEntity<>(e, e.getStatus());
+    }
     return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 
@@ -223,13 +226,13 @@ public class ComplaintController {
    *                                 </ul>
    */
   @PatchMapping("api/complaint/{complaintId}/refresh")
-  public ResponseEntity<Complaint> refreshComplaint(
+  public ResponseEntity<?> refreshComplaint(
       @PathVariable int complaintId,
       @RequestParam Optional<Boolean> keepUserInformation,
       @RequestParam Optional<Integer> configId) {
 
-    return new ResponseEntity<>(complaintManager.refreshComplaint(complaintId,
-        keepUserInformation, configId), HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() ->
+        complaintManager.refreshComplaint(complaintId, keepUserInformation, configId));
   }
 
 
@@ -253,7 +256,7 @@ public class ComplaintController {
    *                                 </ul>
    */
   @GetMapping("api/complaints/count")
-  public ResponseEntity<Integer> countComplaints(
+  public ResponseEntity<?> countComplaints(
       @RequestParam("state") Optional<String> state,
       @RequestParam("date_min") Optional<String> dateMin,
       @RequestParam("date_max") Optional<String> dateMax,
@@ -261,8 +264,8 @@ public class ComplaintController {
       @RequestParam("subject") Optional<String[]> subject,
       @RequestParam("keywords") Optional<String[]> keywords
   ) {
-    return new ResponseEntity<>(complaintManager.countComplaints(state, dateMin, dateMax,
-        sentiment, subject, keywords), HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() ->
+        complaintManager.countComplaints(state, dateMin, dateMax, sentiment, subject, keywords));
   }
 
   /**
@@ -285,14 +288,14 @@ public class ComplaintController {
    *                                 </ul>
    */
   @PostMapping("api/complaints/{complaintId}/entities")
-  public ResponseEntity<List<NamedEntity>> addEntity(
+  public ResponseEntity<?> addEntity(
       @PathVariable int complaintId,
       @RequestParam String label,
       @RequestParam int start,
       @RequestParam int end,
       @RequestParam String extractor) {
-    return new ResponseEntity<>(complaintManager.addEntity(complaintId, label, start, end,
-        extractor), HttpStatus.CREATED);
+    return ControllerUtility.tryAndCatch(() ->
+        complaintManager.addEntity(complaintId, label, start, end, extractor), HttpStatus.CREATED);
   }
 
   /**
@@ -312,14 +315,14 @@ public class ComplaintController {
    *                                 </ul>
    */
   @DeleteMapping("api/complaints/{complaintId}/entities")
-  public ResponseEntity<List<NamedEntity>> removeEntity(
+  public ResponseEntity<?> removeEntity(
       @PathVariable int complaintId,
       @RequestParam String label,
       @RequestParam int start,
       @RequestParam int end,
       @RequestParam String extractor) {
-    return new ResponseEntity<>(complaintManager.removeEntity(complaintId, label, start, end,
-        extractor), HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() ->
+        complaintManager.removeEntity(complaintId, label, start, end, extractor));
   }
 
   /**
@@ -329,9 +332,8 @@ public class ComplaintController {
    * @throws ResponseStatusException on some unexpected server error.
    */
   @DeleteMapping("/api/complaints/all")
-  public ResponseEntity deleteAllComplaints() {
-    complaintManager.deleteAllComplaints();
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  public ResponseEntity<?> deleteAllComplaints() {
+    return ControllerUtility.tryAndCatch(complaintManager::deleteAllComplaints);
   }
 
 }
