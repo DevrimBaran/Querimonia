@@ -3,17 +3,10 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import de.fraunhofer.iao.querimonia.rest.manager.ResponseComponentManager;
-import de.fraunhofer.iao.querimonia.rest.manager.filter.ResponseComponentFilter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 /**
@@ -27,14 +20,12 @@ import java.util.stream.Stream;
 @RestController
 public class ResponseComponentController {
 
-  private static final ResponseStatusException NOT_FOUNT_EXCEPTION
-      = new ResponseStatusException(HttpStatus.NOT_FOUND, "Template does not exist!");
   private final TemplateRepository templateRepository;
-  private final ResponseComponentManager responseTemplateManager;
+  private final ResponseComponentManager responseComponentManager;
 
   public ResponseComponentController(TemplateRepository templateRepository) {
     this.templateRepository = templateRepository;
-    responseTemplateManager = new ResponseComponentManager();
+    responseComponentManager = new ResponseComponentManager();
   }
 
 
@@ -44,11 +35,10 @@ public class ResponseComponentController {
    * @return the created component
    */
   @PostMapping("api/templates")
-  public ResponseEntity<ResponseComponent> addTemplate(
+  public ResponseEntity<?> addTemplate(
           @RequestBody ResponseComponent responseComponent) {
-    return new ResponseEntity<>(
-            responseTemplateManager.addTemplate(templateRepository, responseComponent),
-            HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() -> responseComponentManager
+                    .addTemplate(templateRepository, responseComponent));
   }
 
 
@@ -58,10 +48,9 @@ public class ResponseComponentController {
    * @return the list of default templates
    */
   @PostMapping("api/templates/default")
-  public ResponseEntity<List<ResponseComponent>> addDefaultTemplates() {
-    return new ResponseEntity<>(
-            responseTemplateManager.addDefaultTemplates(templateRepository),
-            HttpStatus.OK);
+  public ResponseEntity<?> addDefaultTemplates() {
+    return ControllerUtility.tryAndCatch(() -> responseComponentManager
+            .addDefaultTemplates(templateRepository));
   }
 
   /**
@@ -73,27 +62,13 @@ public class ResponseComponentController {
    * @return Returns a list of sorted templates.
    */
   @GetMapping("api/templates")
-  public ResponseEntity<List<ResponseComponent>> getAllTemplates(
+  public ResponseEntity<?> getAllTemplates(
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
       @RequestParam("sort_by") Optional<String[]> sortBy
   ) {
-    ArrayList<ResponseComponent> result = new ArrayList<>();
-    templateRepository.findAll().forEach(result::add);
-
-    Stream<ResponseComponent> filteredResult = result.stream().sorted(ResponseComponentFilter
-        .createTemplateComparator(sortBy));
-
-    if (count.isPresent()) {
-      if (page.isPresent()) {
-        // skip pages
-        filteredResult = filteredResult
-            .skip(page.get() * count.get());
-      }
-      // only take count amount of entries
-      filteredResult = filteredResult.limit(count.get());
-    }
-    return new ResponseEntity<>(filteredResult.collect(Collectors.toList()), HttpStatus.OK);
+    return ControllerUtility.tryAndCatch(() -> responseComponentManager
+            .getAllTemplates(templateRepository, count, page, sortBy));
   }
 
 
@@ -104,9 +79,9 @@ public class ResponseComponentController {
    * @return the response component with the given ID
    */
   @GetMapping("api/templates/{id}")
-  public ResponseEntity<ResponseComponent> getTemplateByID(@PathVariable int id) {
-    return new ResponseEntity<>(
-            responseTemplateManager.getTemplateByID(templateRepository, id), HttpStatus.OK);
+  public ResponseEntity<?> getTemplateByID(@PathVariable int id) {
+    return ControllerUtility.tryAndCatch(() -> responseComponentManager
+            .getTemplateByID(templateRepository, id));
   }
 
   /**
@@ -115,16 +90,16 @@ public class ResponseComponentController {
    * @param id the ID of the component to delete
    */
   @DeleteMapping("api/templates/{id}")
-  public void deleteTemplate(@PathVariable int id) {
-    responseTemplateManager.deleteTemplateByID(templateRepository, id);
+  public ResponseEntity<?> deleteTemplate(@PathVariable int id) {
+    return ControllerUtility.tryAndCatch(() -> templateRepository.deleteById(id));
   }
 
   /**
    * Deletes all templates from the database.
    */
   @DeleteMapping("api/templates/all")
-  public void deleteAllTemplates() {
-    templateRepository.deleteAll();
+  public ResponseEntity<?> deleteAllTemplates() {
+    return ControllerUtility.tryAndCatch((Runnable) templateRepository::deleteAll);
   }
 
   /**
@@ -134,9 +109,10 @@ public class ResponseComponentController {
    * @param responseComponent Is the component itself.
    */
   @PutMapping("api/templates/{templateId}")
-  public void updateTemplate(@PathVariable int templateId,
+  public ResponseEntity<?> updateTemplate(@PathVariable int templateId,
                              @RequestBody ResponseComponent responseComponent) {
-    responseComponent.setComponentId(templateId);
-    templateRepository.save(responseComponent);
+    return ControllerUtility.tryAndCatch(() -> {
+      responseComponent.setComponentId(templateId);
+      templateRepository.save(responseComponent); });
   }
 }
