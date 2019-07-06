@@ -86,10 +86,9 @@ public class ComplaintManager {
    * @see ComplaintController#getComplaints(Optional, Optional, Optional, Optional, Optional,
    * Optional, Optional, Optional, Optional) getComplaints
    */
-  // TODO filter by state
   public synchronized List<Complaint> getComplaints(
       Optional<Integer> count, Optional<Integer> page, Optional<String[]> sortBy,
-      Optional<String> state, Optional<String> dateMin, Optional<String> dateMax,
+      Optional<String[]> state, Optional<String> dateMin, Optional<String> dateMax,
       Optional<String[]> sentiment, Optional<String[]> subject, Optional<String[]> keywords) {
 
     ArrayList<Complaint> result = new ArrayList<>();
@@ -97,6 +96,7 @@ public class ComplaintManager {
 
     Stream<Complaint> filteredResult =
         result.stream()
+            .filter(complaint -> ComplaintFilter.filterByState(complaint, state))
             .filter(complaint -> ComplaintFilter.filterByDate(complaint, dateMin, dateMax))
             .filter(complaint -> ComplaintFilter.filterBySentiment(complaint, sentiment))
             .filter(complaint -> ComplaintFilter.filterBySubject(complaint, subject))
@@ -220,7 +220,7 @@ public class ComplaintManager {
    * @see ComplaintController#countComplaints(Optional, Optional, Optional, Optional, Optional,
    * Optional)  countComplaints
    */
-  public synchronized int countComplaints(Optional<String> state, Optional<String> dateMin,
+  public synchronized int countComplaints(Optional<String[]> state, Optional<String> dateMin,
                                           Optional<String> dateMax, Optional<String[]> sentiment,
                                           Optional<String[]> subject, Optional<String[]> keywords
   ) {
@@ -242,8 +242,8 @@ public class ComplaintManager {
     if (!complaintEntities.contains(newEntity)) {
       complaintEntities.add(newEntity);
     } else {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität mit Label " + label +
-          "existiert bereits!", "Entität bereits vorhanden");
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität mit Label " + label
+          + "existiert bereits!", "Entität bereits vorhanden");
     }
     // TODO check entities ranges
     storeComplaint(complaint);

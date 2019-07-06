@@ -53,11 +53,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Complaint'
         400:
-          description: Üngültige Angabe von Parametern.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/IllegalParametersError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -123,11 +119,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Complaint'
         404:
-          description: Beschwerde mit gegebener Id existiert nicht.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -159,6 +151,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
+        404:
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -172,11 +166,7 @@ paths:
         204:
           description: Löschen erfolgreich.
         404:
-          description: Beschwerde mit gegebener Id existiert nicht.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -346,11 +336,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseSuggestion'
         404:
-          description: Es gibt keine Beschwerde mit der gegebenen ID.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -378,11 +364,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
         404:
-          description: Es gibt keine Beschwerde mit der gegebenen ID.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           description: Fehlerhaft konfigurierte Textbausteine/Aktionen, unerwarteter Serverfehler
           content:
@@ -409,11 +391,7 @@ paths:
               schema:
                 type: string
         404:
-          description: Es gibt keine Beschwerde mit der gegebenen ID.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -450,11 +428,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ResponseComponent'
         400:
-          description: Fehlerhafte Parameter.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/IllegalParametersError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -532,11 +506,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseComponent'
         404:
-          description: Der Antwortbaustein existiert nicht.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -550,11 +520,7 @@ paths:
         204:
           description: Der Antwortbaustein wurde gelöscht.
         404:
-          description: Der Antwortbaustein existiert nicht.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -578,9 +544,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseComponent'
         404:
-          description: Template mit der gegebenen ID ist nicht vorhanden.
+          $ref: '#/components/responses/NotFoundError'
         400:
           description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -603,11 +573,7 @@ paths:
                 format: int32
                 example: 48
         400:
-          description: Fehlerhafte Parameter.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/IllegalParametersError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -656,11 +622,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Action'
         400:
-          description: Üngültige Angabe von Parametern.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/IllegalParametersError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -711,11 +673,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Action'
         404:
-          description: Die Aktion existiert nicht.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -729,11 +687,7 @@ paths:
         204:
           description: Die Aktion wurde gelöscht.
         404:
-          description: Die Aktion existiert nicht.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -757,11 +711,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Action'
         404:
-          description: Aktion mit der gegebenen ID ist nicht vorhanden.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/NotFoundError'
         400:
           description: Die übergebene Aktion ist nicht gültig.
           content:
@@ -792,11 +742,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Action'
         400:
-          description: Üngültige Angabe von Parametern.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/IllegalParametersError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -842,11 +788,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/AnalyzerConfiguration'
         400:
-          description: Fehlerhafte Parameter.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+          $ref: '#/components/responses/IllegalParametersError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -866,6 +808,10 @@ paths:
       responses:
         201:
           description: Die Konfiguration ist gültig und wurde dem System hinzugefügt.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyzerConfiguration'
         400:
           description: Ungültige Konfiguration. Es werden ungültige Extraktoren, Klassifikatoren oder Sentiment-Analysierer verwendet.
           content:
@@ -893,7 +839,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
         404:
-          description: Die Konfiguration existiert nicht.
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -907,7 +853,7 @@ paths:
         204:
           description: Der Konfiguration wurde gelöscht.
         404:
-          description: Der Konfiguration existiert nicht.
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -931,9 +877,13 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
         404:
-          description: Konfiguration mit der gegebenen ID ist nicht vorhanden.
+          $ref: '#/components/responses/NotFoundError'
         400:
           description: Die übergebene Konfiguration ist ungültig.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -989,7 +939,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
         404:
-          description: Es existiert keine Konfiguration mit der gegebenen ID.
+          $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
 

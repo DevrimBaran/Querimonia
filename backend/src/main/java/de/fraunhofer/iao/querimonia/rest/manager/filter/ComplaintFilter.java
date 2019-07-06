@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -46,6 +47,20 @@ public class ComplaintFilter {
         .map(dateMax -> !complaint.getReceiveDate().isAfter(dateMax))
         // condition is true when no filter is given
         .orElse(true);
+  }
+
+  /**
+   * Checks if a complaint is in a certain state.
+   *
+   * @param complaint       the complaints which gets checked.
+   * @param optionalStates  contains possible states, that the complaint may be in. The states
+   *                        should match the {@link ComplaintState} names.
+   * @return true, if the complaint is one of the states given by the parameter, else false.
+   */
+  public static boolean filterByState(Complaint complaint, Optional<String[]> optionalStates) {
+    // get stream of optional
+    Stream<String> states = optionalStates.map(Stream::of).orElseGet(Stream::empty);
+    return states.anyMatch(complaint.getState().name()::equalsIgnoreCase);
   }
 
   /**

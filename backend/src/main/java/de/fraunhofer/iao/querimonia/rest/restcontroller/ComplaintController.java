@@ -82,7 +82,7 @@ public class ComplaintController {
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
       @RequestParam("sort_by") Optional<String[]> sortBy,
-      @RequestParam("state") Optional<String> state,
+      @RequestParam("state") Optional<String[]> state,
       @RequestParam("date_min") Optional<String> dateMin,
       @RequestParam("date_max") Optional<String> dateMax,
       @RequestParam("sentiment") Optional<String[]> sentiment,
@@ -257,7 +257,7 @@ public class ComplaintController {
    */
   @GetMapping("api/complaints/count")
   public ResponseEntity<?> countComplaints(
-      @RequestParam("state") Optional<String> state,
+      @RequestParam("state") Optional<String[]> state,
       @RequestParam("date_min") Optional<String> dateMin,
       @RequestParam("date_max") Optional<String> dateMax,
       @RequestParam("sentiment") Optional<String[]> sentiment,
