@@ -11,9 +11,12 @@ import java.util.LinkedHashMap;
  */
 public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
 
-
   public KiKuKoClassifier() {
     super("tool", "Beschwerde3Klassifikator2");
+  }
+
+  public KiKuKoClassifier(String domainName) {
+    super("tool", domainName);
   }
 
   /**

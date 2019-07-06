@@ -103,6 +103,7 @@ public class ComplaintProperty {
     if (!keepUserInformation || !isSetByUser) {
       this.value = ComplaintUtility.getEntryWithHighestProbability(valueProbabilities)
           .orElse("");
+      setSetByUser(false);
     }
   }
 

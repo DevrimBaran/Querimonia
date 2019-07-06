@@ -17,31 +17,42 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private int start;
   private int end;
   private boolean setByUser = false;
+  private String extractor;
 
   /**
    * Simple constructor for creating a new named entity object.
    *
-   * @param label the label of the entity, like name.
-   * @param start the start index of the entity.
-   * @param end   the end index of the entity.
+   * @param label     the label of the entity, like name.
+   * @param start     the start index of the entity.
+   * @param end       the end index of the entity.
+   * @param setByUser if the named entity was set by the user.
+   * @param extractor the name of the extractor that was used to find this entity.
    */
   @JsonCreator
   public NamedEntity(@JsonProperty String label, @JsonProperty("start") int start, @JsonProperty(
-      "end") int end, @JsonProperty boolean setByUser) {
+      "end") int end, @JsonProperty boolean setByUser, @JsonProperty String extractor) {
     this.label = label;
     this.start = start;
     this.end = end;
     this.setByUser = setByUser;
+    this.extractor = extractor;
   }
 
-  public NamedEntity(String label, int start, int end) {
-    this.label = label;
-    this.start = start;
-    this.end = end;
+  /**
+   * Simple constructor for creating a new named entity object which setByUser property is set to
+   * false.
+   *
+   * @param label     the label of the entity, like name.
+   * @param start     the start index of the entity.
+   * @param end       the end index of the entity.
+   * @param extractor the name of the extractor that was used to find this entity.
+   */
+  public NamedEntity(String label, int start, int end, String extractor) {
+    this(label, start, end, false, extractor);
   }
 
   public NamedEntity() {
-
+    // constructor for hibernate
   }
 
   public String getLabel() {
@@ -63,6 +74,10 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return setByUser;
   }
 
+  public String getExtractor() {
+    return extractor;
+  }
+
   @Override
   public String toString() {
     return "NamedEntity{"
@@ -76,19 +91,23 @@ public class NamedEntity implements Comparable<NamedEntity> {
   public boolean equals(Object obj) {
     if (obj instanceof NamedEntity) {
       NamedEntity other = (NamedEntity) obj;
-      return other.start == start && other.end == end && other.label.equals(label);
+      return other.start == start
+          && other.end == end
+          && other.label.equals(label)
+          && other.extractor.equals(extractor);
     }
     return false;
   }
 
   @Override
   public int compareTo(@NotNull NamedEntity o) {
-    if (start < o.start) {
-      return -1;
+    int compare = Integer.compare(this.start, o.start);
+    if (compare == 0) {
+      compare = Integer.compare(this.end, o.end);
     }
-    if (end < o.end) {
-      return -1;
+    if (compare == 0) {
+      compare = label.compareTo(o.label);
     }
-    return label.compareTo(o.label);
+    return compare;
   }
 }

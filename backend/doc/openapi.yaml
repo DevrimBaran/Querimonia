@@ -1443,13 +1443,47 @@ components:
           items:
             $ref: '#/components/schemas/Extractor'
         classifier:
-          type: string
-          description: Der Name eines vorhandenen Klassifizierers, der verwendet werden soll.
-          example: KIKuKoClassifier
+          $ref: '#/components/schemas/Classifier'
         sentimentAnalyzer:
+          $ref: '#/components/schemas/SentimentAnalyzer'
+
+    Classifier:
+      description: Ein Klassifizierer bestimmt die Kategorie (Subject) einer Beschwerde.
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: Der Name des Klassifizierers. Bei KIKuKo-Klassifizieren muss in KIKuKu ein Klassifizierer mit diesem Namen existieren.
+          example: 'QuerimoniaExtract'
           type: string
-          description: Der Name eines vorhandenen Sentiment-Analysierers, der verwendet werden soll.
-          example: DefaultSentimentAnalyzer
+        type:
+          type: string
+          enum:
+            - KIKUKO_CLASSIFIER
+            - NONE
+          description: Gibt den Typ des Klassifizieres an.
+          example: 'KIKUKO_CLASSIFIER'
+
+    SentimentAnalyzer:
+      description: Dient zur Analyse des Sentiments einer Beschwerde.
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: Der Name des Analysierers.
+          example: 'QuerimoniaExtract'
+          type: string
+        type:
+          type: string
+          enum:
+            - QUERIMONIA_SENTIMENT
+            - NONE
+          description: Gibt den Typ des Klassifizieres an.
+          example: 'QUERIMONIA_SENTIMENT'
 
     Extractor:
       description: Ein Extraktor hat einen **eindeutigen** Namen, einen Typ und eine zugeordnete Farbe für jede Entity für die Anzeige im Frontend.
@@ -1463,13 +1497,13 @@ components:
           type: string
           description: Der Name des Extraktors. Bei KIKuKo Extraktoren muss ein Extraktor mit diesem Namen konfiguriert sein.
           example: GeldbetragExtraktor
-        entityLabel:
-          type: string
-          description: Gibt das Lebel der Entitäten an, die mit diesem Extraktor gefunden werden.
-          example: Geldbetrag
         type:
           type: string
-          enum: [KIkukoTool]
+          enum:
+            - KIKUKO_TOOL
+            - KIKUKO_PIPELINE
+            - KIKUKO_DOMAIN
+            - NONE
           description: Eine Bezeichner für den Typ von Entraktor. KIkukoTool wird für Tools von KIkuko verwendet.
           example: KIKuKoTool
         colors:

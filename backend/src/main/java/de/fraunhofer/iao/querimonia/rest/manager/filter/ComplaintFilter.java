@@ -4,9 +4,9 @@ import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -58,8 +58,11 @@ public class ComplaintFilter {
    * @return true, if the complaint is one of the states given by the parameter, else false.
    */
   public static boolean filterByState(Complaint complaint, Optional<String[]> optionalStates) {
+    if (optionalStates.isEmpty()) {
+      return true;
+    }
     // get stream of optional
-    Stream<String> states = optionalStates.map(Stream::of).orElseGet(Stream::empty);
+    Stream<String> states = optionalStates.stream().flatMap(Stream::of);
     return states.anyMatch(complaint.getState().name()::equalsIgnoreCase);
   }
 
@@ -157,8 +160,8 @@ public class ComplaintFilter {
                   .compareTo(c2.getSubject().getValue());
               break;
             default:
-              throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                  "Illegal sorting paramter: " + rawSortAspect);
+              throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
+                  "Unbekannter Sortierparameter " + rawSortAspect, "Ungültige Anfrage");
           }
 
           // invert sorting if desc

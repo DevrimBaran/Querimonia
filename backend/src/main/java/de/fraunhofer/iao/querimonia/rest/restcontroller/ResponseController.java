@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRe
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,6 @@ import java.util.stream.Collectors;
  *
  * @author Simon Weiler
  */
-// TODO add patch endpoint and actions to responses
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ResponseController {
@@ -34,9 +34,10 @@ public class ResponseController {
                             ComplaintRepository complaintRepository,
                             TemplateRepository templateRepository,
                             CompletedResponseComponentRepository
-                                completedResponseComponentRepository) {
+                                completedResponseComponentRepository,
+                            ConfigurationManager configurationManager) {
     this.complaintManager = new ComplaintManager(fileStorageService, complaintRepository,
-        templateRepository, completedResponseComponentRepository);
+        templateRepository, completedResponseComponentRepository, configurationManager);
   }
 
   /**

@@ -21,7 +21,7 @@ public class QuerimoniaException extends ResponseStatusException {
   @JsonProperty
   private String title;
 
-  // to remove suppressed field from super class
+  // work around to remove the "suppressed"-field from the super class in the json object.
   @JsonIgnore
   private Object suppressed;
 
@@ -59,6 +59,13 @@ public class QuerimoniaException extends ResponseStatusException {
     return title;
   }
 
+  /**
+   * Returns the name of the java exception, that caused this exception. This can be set
+   * when using the constructor with the cause parameter. When not set, this will return
+   * {@link RuntimeException java.lang.RuntimeException}
+   *
+   * @return the name of the java exception, that caused this exception.
+   */
   @JsonProperty("exception")
   public String getException() {
     if (getCause() != null) {
