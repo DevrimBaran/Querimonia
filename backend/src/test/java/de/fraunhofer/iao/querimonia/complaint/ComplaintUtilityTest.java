@@ -1,3 +1,4 @@
+/*
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -14,11 +15,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+*/
 /**
  * Unit test class for ComplaintUtility
  *
  * @author Simon Weiler
- */
+ *//*
+
 public class ComplaintUtilityTest {
 
   @Test
@@ -196,3 +199,4 @@ public class ComplaintUtilityTest {
     ComplaintUtility.getEntityValueMap(text, entities);
   }
 }
+*/

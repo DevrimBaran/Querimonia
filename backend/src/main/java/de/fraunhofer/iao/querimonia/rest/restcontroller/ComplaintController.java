@@ -5,6 +5,7 @@ import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRe
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
@@ -41,10 +42,11 @@ public class ComplaintController {
       ComplaintRepository complaintRepository,
       TemplateRepository templateRepository,
       CompletedResponseComponentRepository
-          completedResponseComponentRepository
+          completedResponseComponentRepository,
+      ConfigurationManager configurationManager
   ) {
     complaintManager = new ComplaintManager(fileStorageService, complaintRepository,
-        templateRepository, completedResponseComponentRepository);
+        templateRepository, completedResponseComponentRepository, configurationManager);
   }
 
   /**
@@ -225,7 +227,7 @@ public class ComplaintController {
    *                                 not be accessed or some unexpected server error occurred.</li>
    *                                 </ul>
    */
-  @PatchMapping("api/complaint/{complaintId}/refresh")
+  @PatchMapping("api/complaints/{complaintId}/refresh")
   public ResponseEntity<?> refreshComplaint(
       @PathVariable int complaintId,
       @RequestParam Optional<Boolean> keepUserInformation,

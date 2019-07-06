@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class FlaskCalculations {
 
-
   public Map<String, Double> nearestNeighbour(String word, String corpus) {
 
     JSONObject jsonVector = new JSONObject();

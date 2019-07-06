@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
@@ -65,8 +66,7 @@ public class Complaint {
   @Column(length = 500)
   private String preview;
 
-  @Enumerated(EnumType.STRING)
-  @Column(length = 16)
+  @Enumerated(EnumType.ORDINAL)
   private ComplaintState state;
 
   /**
@@ -229,4 +229,28 @@ public class Complaint {
     this.wordList = wordList;
     return this;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Complaint complaint = (Complaint) o;
+    return text.equals(complaint.text)
+        && state == complaint.state
+        && Objects.equals(subject, complaint.subject)
+        && Objects.equals(sentiment, complaint.sentiment)
+        && Objects.equals(entities, complaint.entities)
+        && Objects.equals(responseSuggestion, complaint.responseSuggestion);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(text, state, subject, sentiment, entities, responseSuggestion);
+  }
+
+
 }

@@ -49,7 +49,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         }
         // create entity with label
         entityList.add(new NamedEntity(placeholderName, resultPosition,
-                                       resultPosition + textToAppend.length()));
+                                       resultPosition + textToAppend.length(), null));
       } else {
         // raw text that does not need to be replaced
         textToAppend = slice.getContent();

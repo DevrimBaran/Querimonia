@@ -40,7 +40,7 @@ public class ResponseComponentFilter {
             break;
           default:
             throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
-                "Ungültiger Sortier-Parameter: " + sortAspect, "Illegaler Parameter");
+                "Unbekannter Sortierparameter " + rawSortAspect, "Ungültige Anfrage");
         }
         // invert sorting if desc
         if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {

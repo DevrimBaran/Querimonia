@@ -12,8 +12,14 @@ import java.util.regex.Pattern;
 
 public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements EntityExtractor {
 
+  private static final String TEMP_NAME = "QuerimoniaExtract";
+
   public KikukoExtractor() {
     super("domain", "QuerimoniaExtract");
+  }
+
+  public KikukoExtractor(String domainType, String domainName) {
+    super(domainType, domainName);
   }
 
   @Override
@@ -24,29 +30,26 @@ public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements
     List<NamedEntity> entities = new LinkedList<>();
 
     allPipes.getFuzhaltestellen().forEach(e -> entities.add(new NamedEntity("Haltestelle",
-        e.getStartposition(),
-        e.getEndposition())));
+        e.getStartposition(), e.getEndposition(), TEMP_NAME)));
     allPipes.getLinienExtraktor().forEach(e -> entities.add(new NamedEntity("Linie",
         e.getStartposition() + matchesNumber(e.getText())[0],
-        e.getEndposition() - matchesNumber(e.getText())[1])));
+        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME)));
     allPipes.getExtdatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
-        e.getStartposition(),
-        e.getEndposition())));
+        e.getStartposition(), e.getEndposition(), TEMP_NAME)));
     allPipes.getExtgeldbetrag().forEach(e -> entities.add(new NamedEntity("Geldbetrag",
-        e.getStartposition(),
-        e.getEndposition())));
+        e.getStartposition(), e.getEndposition(), TEMP_NAME)));
     allPipes.getExttelefonnummer().forEach(e -> entities.add(new NamedEntity("Telefonnummer",
         e.getStartposition(),
-        e.getEndposition())));
+        e.getEndposition(), TEMP_NAME)));
     allPipes.getFuzortsnamen().forEach(e -> entities.add(new NamedEntity("Ortsname",
         e.getStartposition(),
-        e.getEndposition())));
+        e.getEndposition(), TEMP_NAME)));
     allPipes.getVorgangsnummer().forEach(e -> entities.add(new NamedEntity("Vorgangsnummer",
         e.getStartposition() + matchesNumber(e.getText())[0],
-        e.getEndposition() - matchesNumber(e.getText())[1])));
+        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME)));
     allPipes.getExtpersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
         e.getStartposition(),
-        e.getEndposition())));
+        e.getEndposition(), TEMP_NAME)));
     return entities;
   }
 

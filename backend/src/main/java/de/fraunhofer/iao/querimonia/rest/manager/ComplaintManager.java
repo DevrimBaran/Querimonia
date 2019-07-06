@@ -4,15 +4,14 @@ import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
+import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
-import de.fraunhofer.iao.querimonia.nlp.classifier.KiKuKoClassifier;
-import de.fraunhofer.iao.querimonia.nlp.extractor.KikukoExtractor;
-import de.fraunhofer.iao.querimonia.nlp.sentiment.FlaskSentiment;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
@@ -54,30 +53,30 @@ public class ComplaintManager {
   private final ComplaintRepository complaintRepository;
   private final CompletedResponseComponentRepository completedResponseComponentRepository;
   private final ComplaintFactory complaintFactory;
+  private final ConfigurationManager configurationManager;
 
   /**
-   * Constructor gets only called by spring. Sets up the complaint factory.
+   * Constructor gets only called by spring. Sets up the complaint manager.
    */
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
                           TemplateRepository templateRepository,
                           CompletedResponseComponentRepository
-                              completedResponseComponentRepository) {
+                              completedResponseComponentRepository,
+                          ConfigurationManager configurationManager) {
+
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
     this.completedResponseComponentRepository = completedResponseComponentRepository;
+    this.configurationManager = configurationManager;
 
-    complaintFactory = new ComplaintFactory()
-        .setClassifier(new KiKuKoClassifier())
-        .setEntityExtractor(new KikukoExtractor())
-        .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
-        .setStopWordFilter(new TokenAnalyzer())
-        .setSentimentAnalyzer(new FlaskSentiment());
+    complaintFactory = new ComplaintFactory(new DefaultResponseGenerator(templateRepository),
+        new TokenAnalyzer());
   }
 
   private static QuerimoniaException getNotFoundException(int complaintId) {
-    return new QuerimoniaException(HttpStatus.NOT_FOUND, "Es existiert keine Beschwerde mit der "
-        + "ID " + complaintId, "Ungültige ID");
+    return new NotFoundException("Es existiert keine Beschwerde mit der ID " + complaintId,
+        complaintId);
   }
 
   /**
@@ -146,9 +145,13 @@ public class ComplaintManager {
    * @see ComplaintController#uploadText(TextInput, Optional) uploadText
    */
   public Complaint uploadText(TextInput input, Optional<Integer> configId) {
-    // TODO use config id
-    Complaint complaint = complaintFactory.createComplaint(input.getText());
-    // save the components
+    Configuration configuration = configId
+        // if given use the configuration with that id
+        .map(configurationManager::getConfiguration)
+        // use the currently active configuration else
+        .orElseGet(configurationManager::getCurrentConfiguration);
+
+    Complaint complaint = complaintFactory.createComplaint(input.getText(), configuration);
     storeComplaint(complaint);
     return complaint;
   }
@@ -208,8 +211,15 @@ public class ComplaintManager {
       Optional<Integer> configId) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
-    // TODO work with config id
-    complaint = complaintFactory.analyzeComplaint(complaint, keepUserInformation.orElse(false));
+
+    Configuration configuration = configId
+        // if given use the configuration with that id
+        .map(configurationManager::getConfiguration)
+        // use the currently active configuration else
+        .orElseGet(configurationManager::getCurrentConfiguration);
+
+    complaint = complaintFactory.analyzeComplaint(complaint, configuration,
+        keepUserInformation.orElse(false));
     storeComplaint(complaint);
     return complaint;
   }
@@ -220,12 +230,12 @@ public class ComplaintManager {
    * @see ComplaintController#countComplaints(Optional, Optional, Optional, Optional, Optional,
    * Optional)  countComplaints
    */
-  public synchronized int countComplaints(Optional<String[]> state, Optional<String> dateMin,
+  public synchronized String countComplaints(Optional<String[]> state, Optional<String> dateMin,
                                           Optional<String> dateMax, Optional<String[]> sentiment,
                                           Optional<String[]> subject, Optional<String[]> keywords
   ) {
-    return getComplaints(Optional.empty(), Optional.empty(), Optional.empty(), state, dateMin,
-        dateMax, sentiment, subject, keywords).size();
+    return "" + (getComplaints(Optional.empty(), Optional.empty(), Optional.empty(), state, dateMin,
+        dateMax, sentiment, subject, keywords).size());
   }
 
   /**
@@ -236,7 +246,15 @@ public class ComplaintManager {
   public List<NamedEntity> addEntity(int complaintId, String label, int start,
                                      int end, String extractor) {
     Complaint complaint = getComplaint(complaintId);
-    NamedEntity newEntity = new NamedEntity(label, start, end, true);
+    NamedEntity newEntity = new NamedEntity(label, start, end, true, extractor);
+
+    // check validity of entity
+    if (start < 0 || end <= start || end >= complaint.getText().length()) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
+          + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
+          + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
+          + "Entität");
+    }
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
     if (!complaintEntities.contains(newEntity)) {
@@ -245,7 +263,7 @@ public class ComplaintManager {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität mit Label " + label
           + "existiert bereits!", "Entität bereits vorhanden");
     }
-    // TODO check entities ranges
+
     storeComplaint(complaint);
     return complaintEntities;
   }
@@ -258,7 +276,7 @@ public class ComplaintManager {
   public List<NamedEntity> removeEntity(int complaintId, String label, int start,
                                         int end, String extractor) {
     Complaint complaint = getComplaint(complaintId);
-    NamedEntity newEntity = new NamedEntity(label, start, end);
+    NamedEntity newEntity = new NamedEntity(label, start, end, extractor);
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
     boolean removed = complaintEntities.remove(newEntity);
@@ -296,8 +314,8 @@ public class ComplaintManager {
     complaint.getResponseSuggestion()
         .getResponseComponents()
         .forEach(completedResponseComponentRepository::save);
-    logger.info("Saved complaint with id {}", complaint.getComplaintId());
     complaintRepository.save(complaint);
+    logger.info("Saved complaint with id {}", complaint.getComplaintId());
   }
 
   private void checkState(Complaint complaint) {
@@ -347,7 +365,6 @@ public class ComplaintManager {
         docExtractor.close();
         break;
       default:
-        logger.error("Not a supported file format");
         throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Das Dateiformat " + suffix
             + " wird nicht unterstützt!", "Ungültiges Dateiformat");
     }
