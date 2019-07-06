@@ -56,7 +56,7 @@ public class ResponseSliceTest {
         }
     }
 
-    /*@Test(expected = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testSetTemplateTextMissingClosingBracket() {
         String templateText = "Guten Tag, Herr ${Name, wie geht es Ihnen?";
         ResponseSlice.createSlices(templateText);
@@ -71,14 +71,14 @@ public class ResponseSliceTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetTemplateTextMissingDollarSign() {
         String templateText = "Guten Tag, Herr {Name}, wie geht es Ihnen?";
-        List<ResponseSlice> responseSlices = ResponseSlice.createSlices(templateText);
+        ResponseSlice.createSlices(templateText);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetTemplateTextOnlyPlaceholdersIllegal() {
         String templateText = "${So}${viele}${Placeholder}";
         ResponseSlice.createSlices(templateText);
-    }*/
+    }
 
     @Test
     public void testSetTemplateTextNoPlaceholders() {

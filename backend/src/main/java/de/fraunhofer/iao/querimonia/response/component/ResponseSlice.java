@@ -36,6 +36,12 @@ public class ResponseSlice {
     // the current position in the text
     int templatePosition = 0;
 
+    // check if template text has correct placeholder formatting
+    if (!text.matches("[^${}]+(\\$\\{\\w*}[^${}]+)*")) {
+      throw new IllegalArgumentException("Illegal component format");
+    }
+
+
     // split on every placeholder
     String[] parts = text.split("\\$\\{\\w*}");
 
@@ -48,10 +54,6 @@ public class ResponseSlice {
       if (remainingText.length() >= 2) {
         // find closing bracket
         int endPosition = remainingText.indexOf('}');
-        // check if closing bracket is there
-        if (endPosition == -1) {
-          throw new IllegalArgumentException("Illegal component format");
-        }
         // find entity for placeholder
         String entityLabel = remainingText.substring(2, endPosition);
         // add label slice
