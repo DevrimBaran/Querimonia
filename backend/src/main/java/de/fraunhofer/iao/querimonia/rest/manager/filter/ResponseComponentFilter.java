@@ -14,8 +14,8 @@ import java.util.stream.Stream;
  */
 public class ResponseComponentFilter {
 
-  public static boolean filterByKeywords(ResponseComponent responseComponent,
-                                         Optional<String[]> optionalKeywords) {
+  public static boolean filterByKeywords(ResponseComponent responseComponent, Optional<String[]>
+      optionalKeywords) {
     // get stream of optional
     Stream<String> keywords = optionalKeywords.stream().flatMap(Stream::of);
     // look for all keywords

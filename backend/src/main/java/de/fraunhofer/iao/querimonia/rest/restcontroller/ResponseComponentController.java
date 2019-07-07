@@ -55,9 +55,10 @@ public class ResponseComponentController {
   /**
    * Pagination for templates (sort_by, page, count).
    *
-   * @param count  Counter for the templates.
-   * @param page   Page number.
-   * @param sortBy Sorts by name ascending or descending, priority ascending and descending.
+   * @param count     Counter for the templates.
+   * @param page      Page number.
+   * @param keyWords  Keywords of the template texts.
+   * @param sortBy    Sorts by name ascending or descending, priority ascending and descending.
    * @return Returns a list of sorted templates.
    */
   @GetMapping("api/templates")
