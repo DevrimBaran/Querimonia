@@ -6,9 +6,9 @@
 
 import React, { Component } from 'react';
 
-import Block from 'components/Block';
-import Select from 'components/Select';
-import Content from 'components/Content';
+import Block from './../components/Block';
+import Select from './../components/Select';
+import Content from './../components/Content';
 
 // TODO Api anpassen/backend ändern
 const Api = {

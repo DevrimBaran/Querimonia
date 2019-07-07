@@ -7,10 +7,10 @@
 import React, { Component } from 'react';
 // import randomColor from 'randomcolor';
 // import TagCloud from 'react-tag-cloud';
-import Block from 'components/Block';
-import Row from 'components/Row';
-import Content from 'components/Content';
-import Api from 'utility/Api';
+import Block from './../components/Block';
+import Row from './../components/Row';
+import Content from './../components/Content';
+import Api from './../utility/Api';
 import WordCloud from 'react-d3-cloud';
 
 class TagCloud extends Component {

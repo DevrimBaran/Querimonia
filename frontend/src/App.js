@@ -6,16 +6,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 
-import Home from 'views/Home';
-import Complaints from 'views/Complaints';
-import Import from 'views/Import';
-import WordVectors from 'views/WordVectors';
-import TagCloud from 'views/TagCloud';
-import Templates from 'views/Templates';
-
-// import OpenApi from 'components/OpenApi';
+import Home from './views/Home';
+import Complaints from './views/Complaints';
+import Import from './views/Import';
+import WordVectors from './views/WordVectors';
+import TagCloud from './views/TagCloud';
+import Templates from './views/Templates';
 
 import logo from './assets/img/StuproLogo2.svg';
+import OpenApi from './components/OpenApi';
 
 function App () {
   let basepath;
@@ -25,7 +24,7 @@ function App () {
   } catch (e) {
     basepath = '/';
   }
-  console.log('basepath', process.env.REACT_APP_BACKEND_PATH, basepath);
+
   return (
     <Router basename={basepath}>
       <nav id='menu'>
@@ -52,11 +51,8 @@ function App () {
             <Link to='/tagcloud'>Tag-Cloud</Link>
           </li>
           <li>
-            {/* wird nur in development und mock gerendered */
-            /*
+            { /* wird nur in development und mock gerendered */ }
             <OpenApi />
-            */
-            }
           </li>
         </ul>
       </nav>

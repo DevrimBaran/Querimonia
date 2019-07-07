@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 
 import { pd } from 'pretty-data';
 
-import Content from 'components/Content';
+import Content from './../components/Content';
 
 class Debug extends Component {
     static log = (...args) => {

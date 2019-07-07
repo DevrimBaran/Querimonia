@@ -6,15 +6,15 @@
 
 import React from 'react';
 
-import Block from 'components/Block';
-import Row from 'components/Row';
-import Content from 'components/Content';
+import Block from './../components/Block';
+import Row from './../components/Row';
+import Content from './../components/Content';
 import logo from './../assets/img/StuproLogo2.svg';
 import team from './../assets/img/Gruppenfoto.jpg';
 import iaoPartner from './../assets/img/iao.png';
 import iatPartner from './../assets/img/iat.png';
 
-import 'assets/scss/Home.scss';
+import './../assets/scss/Home.scss';
 
 function Home () {
   return (

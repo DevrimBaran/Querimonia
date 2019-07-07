@@ -9,11 +9,11 @@ import React, { Component } from 'react';
 
 // import Api from '../../utility/Api';
 
-import Collapsible from 'components/Collapsible';
-import Select from 'components/Select';
-import Row from 'components/Row';
-import Query from 'components/Query';
-import Input from 'components/Input';
+import Collapsible from './../components/Collapsible';
+import Select from './../components/Select';
+import Row from './../components/Row';
+import Query from './../components/Query';
+import Input from './../components/Input';
 
 // import RadioButton from '../RadioButton/RadioButton';
 // import Body from '../Body/Body';
@@ -31,14 +31,14 @@ import Input from 'components/Input';
 // import TextBuilder from '../TextBuilder/TextBuilder';
 // import Topbar from '../Topbar/Topbar';
 
-var filterTemplate = {
+let filterTemplate = {
   count: 'number',
   page: 'number',
   order_by: ['upload_date', 'subject', 'sentiment'],
   desc: 'checkbox',
   date_min: 'date',
   date_max: 'date',
-  sentiment: ['foo', 'faa'],
+  sentiment: ['Ekel', 'Freude', 'Furcht', 'Kummer', 'Verachtung', 'Wut', 'Überraschung'],
   subject: ['foo', 'faa'],
   text_contains: 'text'
 };
@@ -77,8 +77,8 @@ class Filter extends Component {
               </div>
               <div style={{ width: '2em' }} />
               <div>
-                <label htmlFor='text_contains'><strong>Text:</strong></label><br />
-                <QueryInput name='text_contains' type='text' />
+                <label htmlFor='keyword_contains'><strong>Stichwort:</strong></label><br />
+                <QueryInput name='keyword_contains' type='text' />
               </div>
               <div style={{ width: '2em' }} />
               <div>

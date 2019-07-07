@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-import Query from 'components/Query';
+import Query from './../components/Query';
 
 class Pagination extends Component {
   /*

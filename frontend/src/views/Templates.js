@@ -6,14 +6,14 @@
 
 import React, { Component } from 'react';
 
-import Api from 'utility/Api';
+import Api from './../utility/Api';
 
-import Block from 'components/Block';
-import Row from 'components/Row';
-import Content from 'components/Content';
-import Template from 'components/Template';
-import Filter from 'components/Filter';
-import Pagination from 'components/Pagination';
+import Block from './../components/Block';
+import Row from './../components/Row';
+import Content from './../components/Content';
+import Template from './../components/Template';
+import Filter from './../components/Filter';
+import Pagination from './../components/Pagination';
 
 import { pd } from 'pretty-data';
 import { withRouter } from 'react-router-dom';
