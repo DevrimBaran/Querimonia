@@ -14,16 +14,19 @@ import java.util.stream.Stream;
  */
 public class ResponseComponentFilter {
 
-  public static boolean filterByKeywords(ResponseComponent responseComponent, Optional<String[]> optionalKeywords) {
+  public static boolean filterByKeywords(ResponseComponent responseComponent, Optional<String[]>
+      optionalKeywords) {
     // get stream of optional
-    Stream<String> keywords = optionalKeywords.map(Stream::of).orElseGet(Stream::empty);
+    Stream<String> keywords = optionalKeywords.stream().flatMap(Stream::of);
     // look for all keywords
     return keywords
-            .allMatch(keyword -> StringUtils.containsIgnoreCase(responseComponent.getTemplateTexts().toString(), keyword));
+        .allMatch(keyword -> StringUtils.containsIgnoreCase(
+            responseComponent.getTemplateTexts().toString(), keyword));
   }
 
   /**
    * This methods sorts by name or priority of the component.
+   *
    * @param sortBy Is the variable of which aspect should be sorted.
    * @return Returns the sorted component.
    */

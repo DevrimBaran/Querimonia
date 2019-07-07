@@ -105,6 +105,7 @@ public class ResponseComponentManager {
    *
    * @param count  Counter for the templates.
    * @param page   Page number.
+   * @param keywords  Keywords of the template texts.
    * @param sortBy Sorts by name ascending or descending, priority ascending and descending.
    * @return Returns a list of sorted templates.
    */
@@ -119,7 +120,8 @@ public class ResponseComponentManager {
 
     Stream<ResponseComponent> filteredResult =
             result.stream()
-                    .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(responseComponent, keywords))
+                    .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(
+                        responseComponent, keywords))
                     .sorted(ResponseComponentFilter.createTemplateComparator(sortBy));
 
     if (count.isPresent()) {
