@@ -53,13 +53,15 @@ pre {
 
 #responseText {
   display: block;
-  border: 1px solid grey;
+  border: none;
+  //border: 1px solid grey;
   resize: none;
-  width: calc(100% - 60px);
-  height: calc(100% - 100px);
-  min-height: 100px;
-  margin: 30px;
-  padding: 10px;
+  width: calc(100% - #{$standardmarginleft} - #{$standardmarginright});
+  height: calc(100% - #{$standardmargintop} - #{$standardmarginbottom} - 45px);
+  min-height: 50px;
+  font-size: 1em;
+  //margin: 30px;
+  margin-top: 10px;
 }
 input[type=button] {
   margin: auto;

@@ -1,3 +1,10 @@
+@import 'variables';
+@import 'fonts';
+
+$inputMargin: 0.5% 0px 0.5% 0px;
+$inputBorderColor: $secondaryBackgroundColor $secondaryBackgroundColor $tertiaryBackgroundColor $secondaryBackgroundColor;
+$inputBorder: 2px solid;
+
 %inputs {
     @extend %font;
 }
@@ -5,12 +12,35 @@ label {
     @extend %inputs;
     font-weight: bold;
 }
-button {
-    @extend %inputs;
-    height: 30px;
-    margin: auto;
-    display: block;
+
+input[type=submit], button {
+    width: 10em;
+    height: 2em;
+    font-size: 1em;
+    background-color: $buttonColor;
+    color: $primaryTextColor;
+    outline: none;
+    border-color: $inputBorderColor;
+    margin: $inputMargin;
 }
+
+input[type=submit]:hover {
+    background-color: $buttonColorHover;
+}
+
+input[type=text], input[type=date], input[type=number] {
+    @extend %font;
+    width: 10em;
+    height: 2em;
+    padding-left: 5px;
+    font-size: 1em;
+    color: $primaryTextColor;
+    outline: none;
+    border: $inputBorder;
+    border-color: $inputBorderColor;
+    margin: $inputMargin;
+}
+
 textarea {
     @extend %inputs;
 }

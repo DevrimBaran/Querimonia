@@ -63,6 +63,7 @@ class Templates extends Component {
   newTemplate = withRouter(({ history }) => (
     <button
       type='button'
+      className="center"
       onClick={() => {
         history.push(window.location.pathname +
           (window.location.pathname.substr(-1) === '/' ? '0/' : '/0') +
@@ -138,10 +139,10 @@ class Templates extends Component {
     return (<Block>
       <Row vertical>
         <Filter onSubmit={this.fetchData} />
-        <div>
+        <div className="row flex-row height" >
           <this.newTemplate />
         </div>
-        <Content>
+        <Content className="padding">
           {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.templates.map ? this.state.templates.map(Template) : [])}
         </Content>
         <Pagination onClick={this.update} />

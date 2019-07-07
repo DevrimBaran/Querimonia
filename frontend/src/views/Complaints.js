@@ -30,18 +30,22 @@ class Complaints extends Component {
       issues: []
     };
   }
+  
     fetchData = (query) => {
       this.setState({ active: null, loading: true });
       Api.get('/api/complaints', query)
         .then(this.setData);
     }
+
     setData = (data) => {
       this.setState({ loading: false, issues: data });
     }
+
     activate = (issue) => {
       // console.log(issue);
       this.setState({ active: this.state.issues.filter((a) => a.id === issue.id)[0] });
     }
+
     componentDidMount = () => {
       let searchParams = new URLSearchParams(document.location.search);
       let query = {};
@@ -50,6 +54,7 @@ class Complaints extends Component {
       }
       this.fetchData(query);
     }
+
     renderSingle = (active) => {
       return (<React.Fragment>
         <Block>
@@ -71,7 +76,7 @@ class Complaints extends Component {
                 </div>
               </Tabbed>
             </Content>
-            <Collapsible label='Details' className='Content' style={{ minHeight: '130px' }}>
+            <Collapsible label='Details' style={{ minHeight: '130px' }}>
               <b>Eingangsdatum: </b>
               <TaggedText text={{
                 text: active.receiveDate,
@@ -88,7 +93,7 @@ class Complaints extends Component {
               <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
               <br />
             </Collapsible>
-            <Collapsible label='Entitäten' className='Content'>
+            <Collapsible label='Entitäten'>
               <ul>
                 {createEntityArray(active.text, active.entities)}
               </ul>
@@ -103,12 +108,14 @@ class Complaints extends Component {
         </Block>
       </React.Fragment>);
     }
+
     update = () => {
       this.setState({ loading: true });
       setTimeout(() => {
         this.componentDidMount();
       }, 10);
     }
+
     renderList = () => {
       return (<Block>
         <Row vertical>
@@ -120,6 +127,7 @@ class Complaints extends Component {
         </Row>
       </Block>);
     }
+
     render () {
       let active = false;
       if (this.props.match.params.id) {

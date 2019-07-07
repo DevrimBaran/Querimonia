@@ -80,8 +80,8 @@ class TextBuilder extends Component {
   render () {
     return (
       <React.Fragment>
-        <Content style={{ flexBasis: '100%' }}>
-          <textarea id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
+        <Content style={{ flexBasis: '10%' }}>
+          <textarea className="margin" id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
           <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>
