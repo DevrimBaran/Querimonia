@@ -38,7 +38,7 @@ let filterTemplate = {
   desc: 'checkbox',
   date_min: 'date',
   date_max: 'date',
-  sentiment: ['foo', 'faa'],
+  sentiment: ['Ekel', 'Freude', 'Furcht', 'Kummer', 'Verachtung', 'Wut', 'Überraschung'],
   subject: ['foo', 'faa'],
   text_contains: 'text'
 };
@@ -77,8 +77,8 @@ class Filter extends Component {
               </div>
               <div style={{ width: '2em' }} />
               <div>
-                <label htmlFor='text_contains'><strong>Text:</strong></label><br />
-                <QueryInput name='text_contains' type='text' />
+                <label htmlFor='keyword_contains'><strong>Stichwort:</strong></label><br />
+                <QueryInput name='keyword_contains' type='text' />
               </div>
               <div style={{ width: '2em' }} />
               <div>
