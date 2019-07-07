@@ -65,10 +65,11 @@ public class ResponseComponentController {
   public ResponseEntity<?> getAllTemplates(
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
-      @RequestParam("sort_by") Optional<String[]> sortBy
+      @RequestParam("sort_by") Optional<String[]> sortBy,
+      @RequestParam("keywords") Optional<String[]> keyWords
   ) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
-            .getAllTemplates(templateRepository, count, page, sortBy));
+            .getAllTemplates(templateRepository, count, page, sortBy, keyWords));
   }
 
 

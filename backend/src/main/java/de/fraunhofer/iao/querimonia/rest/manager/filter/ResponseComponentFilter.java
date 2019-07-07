@@ -2,15 +2,26 @@ package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * The filterclass for templates.
  */
 public class ResponseComponentFilter {
+
+  public static boolean filterByKeywords(ResponseComponent responseComponent, Optional<String[]> optionalKeywords) {
+    // get stream of optional
+    Stream<String> keywords = optionalKeywords.map(Stream::of).orElseGet(Stream::empty);
+    // look for all keywords
+    return keywords
+            .allMatch(keyword -> StringUtils.containsIgnoreCase(responseComponent.getTemplateTexts().toString(), keyword));
+  }
+
   /**
    * This methods sorts by name or priority of the component.
    * @param sortBy Is the variable of which aspect should be sorted.

@@ -112,12 +112,15 @@ public class ResponseComponentManager {
           TemplateRepository templateRepository,
           Optional<Integer> count,
           Optional<Integer> page,
-          Optional<String[]> sortBy) {
+          Optional<String[]> sortBy,
+          Optional<String[]> keywords) {
     ArrayList<ResponseComponent> result = new ArrayList<>();
     templateRepository.findAll().forEach(result::add);
 
-    Stream<ResponseComponent> filteredResult = result.stream().sorted(ResponseComponentFilter
-            .createTemplateComparator(sortBy));
+    Stream<ResponseComponent> filteredResult =
+            result.stream()
+                    .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(responseComponent, keywords))
+                    .sorted(ResponseComponentFilter.createTemplateComparator(sortBy));
 
     if (count.isPresent()) {
       if (page.isPresent()) {
