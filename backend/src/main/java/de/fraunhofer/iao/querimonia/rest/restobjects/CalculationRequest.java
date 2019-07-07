@@ -15,6 +15,7 @@ public class CalculationRequest {
   private final String operator2;
   private final String vector3;
 
+  // TODO add java doc comment
   @JsonCreator
   public CalculationRequest(@JsonProperty String vector1, @JsonProperty String operator1,
                             @JsonProperty String vector2, @JsonProperty String corpus,

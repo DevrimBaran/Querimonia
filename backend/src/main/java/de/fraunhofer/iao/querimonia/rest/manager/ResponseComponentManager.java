@@ -29,28 +29,28 @@ public class ResponseComponentManager {
 
   private static final QuerimoniaException NOT_FOUND_EXCEPTION
       = new QuerimoniaException(HttpStatus.NOT_FOUND,
-          "Component does not exist!",
-          "Missing component");
+      "Component does not exist!",
+      "Missing component");
 
   private static final QuerimoniaException JSON_PARSE_EXCEPTION
       = new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Contents of DefaultTemplates.json are not valid JSON code!",
-          "Invalid JSON code");
+      "Contents of DefaultTemplates.json are not valid JSON code!",
+      "Invalid JSON code");
 
   private static final QuerimoniaException JSON_MAPPING_EXCEPTION
       = new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Could not map contents of DefaultTemplates.json to an array of ResponseComponents!",
-          "Invalid JSON content");
+      "Could not map contents of DefaultTemplates.json to an array of ResponseComponents!",
+      "Invalid JSON content");
 
   private static final QuerimoniaException FILE_NOT_FOUND_EXCEPTION
       = new QuerimoniaException(HttpStatus.NOT_FOUND,
-          "Could not find DefaultTemplates.json!",
-          "Missing JSON file");
+      "Could not find DefaultTemplates.json!",
+      "Missing JSON file");
 
   private static final QuerimoniaException FILE_IO_EXCEPTION
       = new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Could not read DefaultTemplates.json!",
-          "Broken JSON file");
+      "Could not read DefaultTemplates.json!",
+      "Broken JSON file");
 
 
   /**
@@ -72,12 +72,12 @@ public class ResponseComponentManager {
    * @return the list of default templates
    */
   public synchronized List<ResponseComponent> addDefaultTemplates(
-          TemplateRepository templateRepository) {
+      TemplateRepository templateRepository) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
       Resource defaultTemplatesResource = defaultResourceLoader
-              .getResource("DefaultTemplates.json");
+          .getResource("DefaultTemplates.json");
 
       if (!defaultTemplatesResource.exists()) {
         throw FILE_NOT_FOUND_EXCEPTION;
@@ -86,7 +86,7 @@ public class ResponseComponentManager {
       InputStream defaultTemplatesStream = defaultTemplatesResource.getInputStream();
 
       List<ResponseComponent> defaultTemplates = Arrays.asList(objectMapper.readValue(
-              defaultTemplatesStream, ResponseComponent[].class));
+          defaultTemplatesStream, ResponseComponent[].class));
 
       defaultTemplates.forEach(templateRepository::save);
       return defaultTemplates;
@@ -109,24 +109,25 @@ public class ResponseComponentManager {
    * @return Returns a list of sorted templates.
    */
   public synchronized List<ResponseComponent> getAllTemplates(
-          TemplateRepository templateRepository,
-          Optional<Integer> count,
-          Optional<Integer> page,
-          Optional<String[]> sortBy,
-          Optional<String[]> keywords) {
+      TemplateRepository templateRepository,
+      Optional<Integer> count,
+      Optional<Integer> page,
+      Optional<String[]> sortBy,
+      Optional<String[]> keywords) {
     ArrayList<ResponseComponent> result = new ArrayList<>();
     templateRepository.findAll().forEach(result::add);
 
     Stream<ResponseComponent> filteredResult =
-            result.stream()
-                    .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(responseComponent, keywords))
-                    .sorted(ResponseComponentFilter.createTemplateComparator(sortBy));
+        result.stream()
+            .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(responseComponent,
+                keywords))
+            .sorted(ResponseComponentFilter.createTemplateComparator(sortBy));
 
     if (count.isPresent()) {
       if (page.isPresent()) {
         // skip pages
         filteredResult = filteredResult
-                .skip(page.get() * count.get());
+            .skip(page.get() * count.get());
       }
       // only take count amount of entries
       filteredResult = filteredResult.limit(count.get());

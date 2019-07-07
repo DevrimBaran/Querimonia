@@ -24,14 +24,14 @@ import java.util.stream.Collectors;
  * rules, when this component should be used.
  */
 @Entity
-@JsonPropertyOrder({
-                        "componentId",
-                        "name",
-                        "priority",
-                        "rulesXml",
-                        "requiredEntities",
-                        "templateTexts"
-                    })
+@JsonPropertyOrder(value = {
+    "componentId",
+    "name",
+    "priority",
+    "rulesXml",
+    "requiredEntities",
+    "templateTexts"
+})
 public class ResponseComponent {
 
   /**
@@ -97,10 +97,17 @@ public class ResponseComponent {
     // required for hibernate
   }
 
+  /**
+   * Returns the all placeholder/variable names that are required to fill out this response
+   * component.
+   *
+   * @return a list of all required placeholders, that occur in the texts of this response
+   * component.
+   */
   @Transient
   @JsonProperty("requiredEntities")
   public List<String> getRequiredEntities() {
-    return getTemplateSlices()
+    return getResponseSlices()
         .stream()
         // get all slices
         .flatMap(List::stream)
@@ -126,6 +133,12 @@ public class ResponseComponent {
     return rulesXml;
   }
 
+  /**
+   * Returns the rule of the response component. A response component can only be used, when this
+   * rule is respected.
+   *
+   * @return the rule of the component.
+   */
   public Rule getRootRule() {
     if (rootRule == null) {
       rootRule = parseRulesXml(rulesXml);
@@ -137,7 +150,12 @@ public class ResponseComponent {
     return priority;
   }
 
-  public List<List<ResponseSlice>> getTemplateSlices() {
+  /**
+   * Returns all response slices of the component.
+   */
+  @JsonIgnore
+  @Transient
+  public List<List<ResponseSlice>> getResponseSlices() {
     if (templateSlices == null) {
       templateSlices = createSlices();
     }

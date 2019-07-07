@@ -2,11 +2,15 @@ package de.fraunhofer.iao.querimonia.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierType;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerType;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -24,8 +28,19 @@ import java.util.List;
  * generators).
  */
 @Entity
+@JsonPropertyOrder(value = {
+    "configIg",
+    "name",
+    "extractors",
+    "classifier",
+    "sentimentAnalyzer"
+})
 public class Configuration {
 
+  /**
+   * This configuration is used as fallback, when the database does not contain any configurations.
+   * This contains to extractors, no classifier and no sentiment analyzer.
+   */
   @Transient
   @JsonIgnore
   public static final Configuration FALLBACK_CONFIGURATION = new Configuration()
@@ -68,7 +83,7 @@ public class Configuration {
     this.sentimentAnalyzer = sentimentAnalyzer;
   }
 
-  public Configuration() {
+  private Configuration() {
     // for hibernate
   }
 
@@ -120,4 +135,44 @@ public class Configuration {
     return this;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    Configuration that = (Configuration) o;
+
+    return new EqualsBuilder()
+        .append(name, that.name)
+        .append(extractors, that.extractors)
+        .append(classifier, that.classifier)
+        .append(sentimentAnalyzer, that.sentimentAnalyzer)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(name)
+        .append(extractors)
+        .append(classifier)
+        .append(sentimentAnalyzer)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("configId", configId)
+        .append("name", name)
+        .append("extractors", extractors)
+        .append("classifier", classifier)
+        .append("sentimentAnalyzer", sentimentAnalyzer)
+        .toString();
+  }
 }

@@ -1,3 +1,4 @@
+/*
 
 package de.fraunhofer.iao.querimonia.response.generation;
 
@@ -18,11 +19,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
+*/
 /**
  * Unit test class for DefaultResponseGenerator.
  *
  * @author Simon Weiler
- */
+ *//*
+
 
 public class DefaultResponseGeneratorTest {
 
@@ -241,3 +244,4 @@ public class DefaultResponseGeneratorTest {
     }
   }
 }
+*/

@@ -340,7 +340,7 @@ public class ComplaintManager {
     String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
     switch (suffix) {
       case ".txt":
-        text = new String(Files.readAllBytes(Paths.get(fullFilePath)), Charset.defaultCharset());
+        text = Files.readString(Paths.get(fullFilePath), Charset.defaultCharset());
         break;
       case ".pdf":
         PDDocument document = PDDocument.load(new File(fullFilePath));

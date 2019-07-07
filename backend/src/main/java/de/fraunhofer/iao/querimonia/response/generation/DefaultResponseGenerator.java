@@ -110,7 +110,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         if (currentComponent.getRootRule().isRespected(complaintData, generatedResponse)) {
           filteredComponents.remove(i);
           generatedResponse.add(
-              new CompletedResponseComponent(currentComponent.getTemplateSlices().stream()
+              new CompletedResponseComponent(currentComponent.getResponseSlices().stream()
                                                  .map(responseSlices -> fillResponseComponent(
                                                      responseSlices,
                                                      entityValueMap))

@@ -2,6 +2,9 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Embeddable;
@@ -79,24 +82,44 @@ public class NamedEntity implements Comparable<NamedEntity> {
   }
 
   @Override
-  public String toString() {
-    return "NamedEntity{"
-        + "label='" + label + '\''
-        + ", start=" + start
-        + ", end=" + end
-        + '}';
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    NamedEntity that = (NamedEntity) o;
+
+    return new EqualsBuilder()
+        .append(start, that.start)
+        .append(end, that.end)
+        .append(label, that.label)
+        .append(extractor, that.extractor)
+        .isEquals();
   }
 
   @Override
-  public boolean equals(Object obj) {
-    if (obj instanceof NamedEntity) {
-      NamedEntity other = (NamedEntity) obj;
-      return other.start == start
-          && other.end == end
-          && other.label.equals(label)
-          && other.extractor.equals(extractor);
-    }
-    return false;
+  public int hashCode() {
+    return new HashCodeBuilder(19, 37)
+        .append(label)
+        .append(start)
+        .append(end)
+        .append(extractor)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("label", label)
+        .append("start", start)
+        .append("end", end)
+        .append("setByUser", setByUser)
+        .append("extractor", extractor)
+        .toString();
   }
 
   @Override

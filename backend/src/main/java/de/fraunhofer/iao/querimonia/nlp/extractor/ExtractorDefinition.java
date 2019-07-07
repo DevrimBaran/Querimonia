@@ -1,6 +1,9 @@
 package de.fraunhofer.iao.querimonia.nlp.extractor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -37,6 +40,7 @@ public class ExtractorDefinition {
   @Column(name = "color")
   private Map<String, String> colors;
 
+  @SuppressWarnings("unused")
   public ExtractorDefinition() {
     // for hibernate
   }
@@ -63,5 +67,43 @@ public class ExtractorDefinition {
 
   public Map<String, String> getColors() {
     return colors;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ExtractorDefinition that = (ExtractorDefinition) o;
+
+    return new EqualsBuilder()
+        .append(name, that.name)
+        .append(type, that.type)
+        .append(colors, that.colors)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(name)
+        .append(type)
+        .append(colors)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("id", id)
+        .append("name", name)
+        .append("type", type)
+        .append("colors", colors)
+        .toString();
   }
 }

@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseCompone
 import org.springframework.lang.Nullable;
 
 import java.util.List;
+import java.util.Objects;
 
 public class EntityRule implements Rule {
 
@@ -31,6 +32,14 @@ public class EntityRule implements Rule {
 
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
+    // check for upload date and time
+    if (entityLabel.equals("UploadDatum")) {
+      return Objects.equals(complaint.getUploadTime().toLocalDate().toString(), expectedValue);
+    }
+    if (entityLabel.equals("UploadZeit")) {
+      return Objects.equals(complaint.getUploadTime().toLocalTime().toString(), expectedValue);
+    }
+
     return ComplaintUtility.getValueOfEntity(complaint.getText(),
                                              complaint.getEntities(),
                                              entityLabel)

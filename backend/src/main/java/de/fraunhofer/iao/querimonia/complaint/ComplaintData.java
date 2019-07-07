@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Parameter object for response generation.
+ * Parameter object for response generation. Contains the information of a {@link Complaint}.
  */
 public class ComplaintData {
   private final String text;

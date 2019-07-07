@@ -21,12 +21,12 @@ import java.util.List;
  * certain complaint.
  */
 @Entity
-@JsonPropertyOrder({
-                        "completedComponentId",
-                        "completedText",
-                        "entities",
-                        "component"
-                    })
+@JsonPropertyOrder(value = {
+    "completedComponentId",
+    "completedText",
+    "entities",
+    "component"
+})
 public class SingleCompletedComponent {
 
   @Id

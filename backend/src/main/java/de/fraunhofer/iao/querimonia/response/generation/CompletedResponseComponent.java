@@ -14,8 +14,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import java.util.List;
 
+/**
+ * A completed response component is a {@link ResponseComponent} where all the placeholders were
+ * replaced by the actual content of the entities in the complaint.
+ */
 @Entity
-@JsonPropertyOrder({"responsePartId", "alternatives", "component"})
+@JsonPropertyOrder(value = {"responsePartId", "alternatives", "component"})
 public class CompletedResponseComponent {
 
   @Id

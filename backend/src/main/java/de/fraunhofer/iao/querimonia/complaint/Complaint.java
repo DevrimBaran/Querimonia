@@ -55,7 +55,7 @@ public class Complaint {
   private int complaintId;
 
   /**
-   * The complaint message, is limited to 5000 characters.
+   * The complaint message, is limited to 10000 characters.
    */
   @Column(length = 10000)
   private String text;
@@ -66,6 +66,9 @@ public class Complaint {
   @Column(length = 500)
   private String preview;
 
+  /**
+   * The state of the complaint. A complaint is either new, in progress or closed.
+   */
   @Enumerated(EnumType.ORDINAL)
   private ComplaintState state;
 
@@ -219,8 +222,7 @@ public class Complaint {
     return this;
   }
 
-  public Complaint setResponseSuggestion(
-      ResponseSuggestion responseSuggestion) {
+  public Complaint setResponseSuggestion(ResponseSuggestion responseSuggestion) {
     this.responseSuggestion = responseSuggestion;
     return this;
   }
@@ -230,6 +232,14 @@ public class Complaint {
     return this;
   }
 
+  /**
+   * Checks if two complaints are considered equal. A complaint is equal to another if their
+   * text, state, subject, sentiment, entities and their response is equal.
+   *
+   * @param o the other complaint. Must be a complaint object.
+   * @return true, if the given object is a complaint object and the two complaint objects are
+   * equal.
+   */
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -252,5 +262,20 @@ public class Complaint {
     return Objects.hash(text, state, subject, sentiment, entities, responseSuggestion);
   }
 
-
+  @Override
+  public String toString() {
+    return "Complaint{"
+        + "complaintId=" + complaintId
+        + ", text='" + text + '\''
+        + ", preview='" + preview + '\''
+        + ", state=" + state
+        + ", subject=" + subject
+        + ", sentiment=" + sentiment
+        + ", entities=" + entities
+        + ", responseSuggestion=" + responseSuggestion
+        + ", wordList=" + wordList
+        + ", receiveDate=" + receiveDate
+        + ", receiveTime=" + receiveTime
+        + '}';
+  }
 }

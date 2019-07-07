@@ -2,6 +2,9 @@ package de.fraunhofer.iao.querimonia.complaint;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -103,12 +106,50 @@ public class ComplaintProperty {
     if (!keepUserInformation || !isSetByUser) {
       this.value = ComplaintUtility.getEntryWithHighestProbability(valueProbabilities)
           .orElse("");
-      setSetByUser(false);
+      this.isSetByUser = false;
     }
   }
 
   public ComplaintProperty setSetByUser(boolean setByUser) {
     isSetByUser = setByUser;
     return this;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ComplaintProperty that = (ComplaintProperty) o;
+
+    return new EqualsBuilder()
+        .append(isSetByUser, that.isSetByUser)
+        .append(value, that.value)
+        .append(probabilities, that.probabilities)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(value)
+        .append(probabilities)
+        .append(isSetByUser)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("id", id)
+        .append("value", value)
+        .append("probabilities", probabilities)
+        .append("isSetByUser", isSetByUser)
+        .toString();
   }
 }

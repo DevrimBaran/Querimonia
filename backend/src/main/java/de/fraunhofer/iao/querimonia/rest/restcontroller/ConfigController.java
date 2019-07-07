@@ -25,7 +25,7 @@ import java.util.Optional;
 @RestController()
 public class ConfigController {
 
-  private ConfigurationManager configurationManager;
+  private final ConfigurationManager configurationManager;
 
   public ConfigController(AnalyzerConfigProperties analyzerConfigProperties,
                           ConfigurationRepository configurationRepository) {

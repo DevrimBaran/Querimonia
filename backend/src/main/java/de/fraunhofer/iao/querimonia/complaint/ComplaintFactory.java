@@ -30,6 +30,11 @@ public class ComplaintFactory {
 
   /**
    * Creates a new complaint factory which is used to create complaint objects.
+   *
+   * @param responseGenerator the response generator generates a {@link ResponseSuggestion} for
+   *                          the complaints.
+   * @param stopWordFilter    the stop word filter is used to filter out stop words from the
+   *                          complaint text.
    */
   public ComplaintFactory(ResponseGenerator responseGenerator, StopWordFilter stopWordFilter) {
     this.responseGenerator = responseGenerator;
@@ -89,6 +94,13 @@ public class ComplaintFactory {
         .setWordList(words);
   }
 
+  /**
+   * Uses the response generator of the factory to generate a response suggestion.
+   *
+   * @param complaintData contains the necessary information about the complaint to generate the
+   *                      answer.
+   * @return a response suggestion for the complaint.
+   */
   public ResponseSuggestion createResponse(ComplaintData complaintData) {
     return responseGenerator.generateResponse(complaintData);
   }
@@ -122,6 +134,12 @@ public class ComplaintFactory {
     return entityStream.collect(Collectors.toList());
   }
 
+  /**
+   * Generates a small preview of the complaint text.
+   *
+   * @param text the full text of the complaint.
+   * @return the first two lines of the complaint, empty lines ignored, limited to 500 characters.
+   */
   private String makePreview(String text) {
     String preview = Arrays.stream(text.split("\n", 8))
         // don't use empty lines for the preview

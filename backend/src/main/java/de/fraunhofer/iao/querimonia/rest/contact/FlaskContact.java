@@ -16,7 +16,8 @@ public class FlaskContact {
 
   private static final String URL = "https://querimonia.iao.fraunhofer.de/python/";
 
-  public static Map<String, Double> recieveJSON(JSONObject body, String path) {
+  // TODO add javadoc comment
+  public static Map<String, Double> receiveJson(JSONObject body, String path) {
     HttpHeaders header = new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_JSON);
 

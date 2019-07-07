@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
@@ -69,15 +68,30 @@ public class ComplaintController {
    * @param sentiment If given, only complaints with this sentiment will be returned.
    * @param subject   If given, only complaints with this subject will be returned.
    * @param keywords  If given, only complaints that contain the keywords will returned.
-   * @return a response entity with status code 200, containing the filtered and sorted list of
-   * complaints as response body.
-   * @throws ResponseStatusException with
-   *                                 <ul>
-   *                                 <li>status code 400: with empty response body, if the
-   *                                 parameters are malformed.</li>
-   *                                 <li>status code 5XX: some unexpected server error
-   *                                 occurred.</li>
-   *                                 </ul>
+   *
+   * @return a response entity with the following contents:
+   * <table>
+   *   <tr>
+   *     <th><span style="font-weight:bold">Response Code</span></th>
+   *     <th><span style="font-weight:bold">Response Body</span></th>
+   *     <th><span style="font-weight:bold">Conditions</span></th>
+   *   </tr>
+   *   <tr>
+   *     <td>200</td>
+   *     <td>a list of the sorted, filtered complaints matching the pagination setting</td>
+   *     <td>success</td>
+   *   </tr>
+   *   <tr>
+   *     <td>400</td>
+   *     <td>querimonia exception body</td>
+   *     <td>illegal sorting parameters</td>
+   *   </tr>
+   *   <tr>
+   *     <td>500</td>
+   *     <td>querimonia exception body</td>
+   *     <td>unexpected server error</td>
+   *   </tr>
+   * </table>
    */
   @GetMapping("/api/complaints")
   public ResponseEntity<?> getComplaints(
@@ -101,15 +115,37 @@ public class ComplaintController {
    * configuration or the currently active configuration.
    *
    * @param file     the multipart file which gets transferred via http.
-   * @param configId the ID of the configuration that should be used to analyze the complaint.
-   * @return a response entity with status code 201, the response body is the new complaint object.
-   * @throws ResponseStatusException with
-   *                                 <ul>
-   *                                 <li>status code 400: with empty response body, if the file
-   *                                 could not be processed or the text is too long.</li>
-   *                                 <li>status code 5XX: Bad configuration, external services can
-   *                                 not be accessed or some unexpected server error occurred.</li>
-   *                                 </ul>
+   * @param configId the ID of the configuration that should be used to analyze the complaint. If
+   *    *            not given, the currently active configuration is used.
+   *
+   * @return a response entity with the following contents:
+   * <table>
+   *   <tr>
+   *     <th><span style="font-weight:bold">Response Code</span></th>
+   *     <th><span style="font-weight:bold">Response Body</span></th>
+   *     <th><span style="font-weight:bold">Conditions</span></th>
+   *   </tr>
+   *   <tr>
+   *     <td>201</td>
+   *     <td>the new created an analyzed complaint</td>
+   *     <td>success</td>
+   *   </tr>
+   *   <tr>
+   *     <td>400</td>
+   *     <td>querimonia exception body</td>
+   *     <td>the file has a illegal format or the text could not be extracted.</td>
+   *   </tr>
+   *   <tr>
+   *     <td>404</td>
+   *     <td>querimonia exception body</td>
+   *     <td>no config with the given id exists</td>
+   *   </tr>
+   *   <tr>
+   *     <td>500</td>
+   *     <td>querimonia exception body</td>
+   *     <td>unexpected server error</td>
+   *   </tr>
+   * </table>
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "multipart/form-data")
@@ -125,15 +161,37 @@ public class ComplaintController {
    * given configuration or the currently active configuration.
    *
    * @param input    the complaint text that should be imported.
-   * @param configId the ID of the configuration that should be used to analyze the complaint.
-   * @return a response entity with status code 201, the response body is the new complaint object.
-   * @throws ResponseStatusException with
-   *                                 <ul>
-   *                                 <li>status code 400: with empty response body, if the
-   *                                 text is too long.</li>
-   *                                 <li>status code 5XX: Bad configuration, external services can
-   *                                 not be accessed or some unexpected server error occurred.</li>
-   *                                 </ul>
+   * @param configId the ID of the configuration that should be used to analyze the complaint. If
+   *                 not given, the currently active configuration is used.
+   *
+   * @return a response entity with the following contents:
+   * <table>
+   *   <tr>
+   *     <th><span style="font-weight:bold">Response Code</span></th>
+   *     <th><span style="font-weight:bold">Response Body</span></th>
+   *     <th><span style="font-weight:bold">Conditions</span></th>
+   *   </tr>
+   *   <tr>
+   *     <td>201</td>
+   *     <td>the new created an analyzed complaint</td>
+   *     <td>success</td>
+   *   </tr>
+   *   <tr>
+   *     <td>400</td>
+   *     <td>querimonia exception body</td>
+   *     <td>the text is too long</td>
+   *   </tr>
+   *   <tr>
+   *     <td>404</td>
+   *     <td>querimonia exception body</td>
+   *     <td>no config with the given id exists</td>
+   *   </tr>
+   *   <tr>
+   *     <td>500</td>
+   *     <td>querimonia exception body</td>
+   *     <td>unexpected server error</td>
+   *   </tr>
+   * </table>
    */
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/json")
@@ -147,14 +205,30 @@ public class ComplaintController {
    * Returns a specific complaint with the given complaint complaintId.
    *
    * @param complaintId the if of the complaint.
-   * @return a response entity with the complaint as response body.
-   * @throws ResponseStatusException with
-   *                                 <ul>
-   *                                 <li>status code 404: no complaint with the given Id
-   *                                 exists.</li>
-   *                                 <li>status code 5XX: some unexpected server error
-   *                                 occurred.</li>
-   *                                 </ul>
+   *
+   * @return a response entity with the following contents:
+   * <table>
+   *   <tr>
+   *     <th><span style="font-weight:bold">Response Code</span></th>
+   *     <th><span style="font-weight:bold">Response Body</span></th>
+   *     <th><span style="font-weight:bold">Conditions</span></th>
+   *   </tr>
+   *   <tr>
+   *     <td>200</td>
+   *     <td>the complaint with the given id</td>
+   *     <td>success</td>
+   *   </tr>
+   *   <tr>
+   *     <td>404</td>
+   *     <td>querimonia exception body</td>
+   *     <td>no complaint with that id exists.</td>
+   *   </tr>
+   *   <tr>
+   *     <td>500</td>
+   *     <td>querimonia exception body</td>
+   *     <td>unexpected server error</td>
+   *   </tr>
+   * </table>
    */
   @GetMapping("/api/complaints/{complaintId}")
   public ResponseEntity<?> getComplaint(@PathVariable int complaintId) {
@@ -166,15 +240,35 @@ public class ComplaintController {
    *
    * @param complaintId   the id of the complaint that should be updated.
    * @param updateRequest the request body with the new values for the attributes.
-   * @return a response entity with response code 200 and the complaint that was updated
-   * successfully as response body.
-   * @throws ResponseStatusException with:
-   *                                 <ul>
-   *                                 <li>status code 404: no complaint with the given Id
-   *                                 exists.</li>
-   *                                 <li>status code 5XX: some unexpected server error
-   *                                 occurred.</li>
-   *                                 </ul>
+   *
+   * @return a response entity with the following contents:
+   * <table>
+   *   <tr>
+   *     <th><span style="font-weight:bold">Response Code</span></th>
+   *     <th><span style="font-weight:bold">Response Body</span></th>
+   *     <th><span style="font-weight:bold">Conditions</span></th>
+   *   </tr>
+   *   <tr>
+   *     <td>200</td>
+   *     <td>the updated complaint</td>
+   *     <td>success</td>
+   *   </tr>
+   *   <tr>
+   *     <td>400</td>
+   *     <td>querimonia exception body</td>
+   *     <td>the complaint is already closed</td>
+   *   </tr>
+   *   <tr>
+   *     <td>404</td>
+   *     <td>querimonia exception body</td>
+   *     <td>no complaint with the given id exists</td>
+   *   </tr>
+   *   <tr>
+   *     <td>500</td>
+   *     <td>querimonia exception body</td>
+   *     <td>unexpected server error</td>
+   *   </tr>
+   * </table>
    */
   @PatchMapping("/api/complaints/{complaintId}")
   public ResponseEntity<?> updateComplaint(
@@ -188,23 +282,35 @@ public class ComplaintController {
   /**
    * Deletes the complaint with the given id.
    *
-   * @return a response entity with status code 204: the complaint was deleted successfully.
-   * @throws ResponseStatusException with:
-   *                                 <ul>
-   *                                 <li>status code 404: no complaint with the given Id
-   *                                 exists.</li>
-   *                                 <li>status code 5XX: some unexpected server error
-   *                                 occurred.</li>
-   *                                 </ul>
+   * @param complaintId the id of the complaint that should be deleted.
+   *
+   * @return a response entity with the following contents:
+   * <table>
+   *   <tr>
+   *     <th><span style="font-weight:bold">Response Code</span></th>
+   *     <th><span style="font-weight:bold">Response Body</span></th>
+   *     <th><span style="font-weight:bold">Conditions</span></th>
+   *   </tr>
+   *   <tr>
+   *     <td>204</td>
+   *     <td>empty</td>
+   *     <td>success</td>
+   *   </tr>
+   *   <tr>
+   *     <td>404</td>
+   *     <td>querimonia exception body</td>
+   *     <td>no complaint with the given id exists</td>
+   *   </tr>
+   *   <tr>
+   *     <td>500</td>
+   *     <td>querimonia exception body</td>
+   *     <td>unexpected server error</td>
+   *   </tr>
+   * </table>
    */
   @DeleteMapping("/api/complaints/{complaintId}")
   public ResponseEntity<?> deleteComplaint(@PathVariable int complaintId) {
-    try {
-      complaintManager.deleteComplaint(complaintId);
-    } catch (QuerimoniaException e) {
-      return new ResponseEntity<>(e, e.getStatus());
-    }
-    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    return ControllerUtility.tryAndCatch(() -> complaintManager.deleteComplaint(complaintId));
   }
 
   /**

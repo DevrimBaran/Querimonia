@@ -26,7 +26,7 @@ public class FlaskSentiment implements SentimentAnalyzer {
       e.printStackTrace();
     }
 
-    Map<String, Double> flaskResult = FlaskContact.recieveJSON(jsonText, "sentiment_analyse");
+    Map<String, Double> flaskResult = FlaskContact.receiveJson(jsonText, "sentiment_analyse");
     double sentimentValue = flaskResult.getOrDefault("sentiment", 0.0);
     Map<String, Double> result = new HashMap<>();
 

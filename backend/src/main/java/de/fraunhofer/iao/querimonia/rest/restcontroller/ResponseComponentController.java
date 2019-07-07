@@ -35,8 +35,7 @@ public class ResponseComponentController {
    * @return the created component
    */
   @PostMapping("api/templates")
-  public ResponseEntity<?> addTemplate(
-          @RequestBody ResponseComponent responseComponent) {
+  public ResponseEntity<?> addTemplate(@RequestBody ResponseComponent responseComponent) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
                     .addTemplate(templateRepository, responseComponent));
   }

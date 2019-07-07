@@ -13,13 +13,13 @@ import java.time.LocalDateTime;
 public class QuerimoniaException extends ResponseStatusException {
 
   @JsonProperty
-  private LocalDateTime timestamp;
+  private final LocalDateTime timestamp;
   @JsonProperty
-  private int statusCode;
+  private final int statusCode;
   @JsonProperty
-  private String message;
+  private final String message;
   @JsonProperty
-  private String title;
+  private final String title;
 
   // work around to remove the "suppressed"-field from the super class in the json object.
   @JsonIgnore

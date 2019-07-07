@@ -2,8 +2,18 @@ package de.fraunhofer.iao.querimonia.nlp.extractor;
 
 import java.util.ArrayList;
 
+/**
+ * This factory is used to create {@link EntityExtractor EntityExtractors} from
+ * {@link ExtractorDefinition their definitions}.
+ */
 public class ExtractorFactory {
 
+  /**
+   * Creates an entity extractor from a definition.
+   *
+   * @param definition the definition of the extractor.
+   * @return an entity extractor as defined in the extractor definition.
+   */
   public static EntityExtractor getFromDefinition(ExtractorDefinition definition) {
     switch (definition.getType()) {
       case NONE:

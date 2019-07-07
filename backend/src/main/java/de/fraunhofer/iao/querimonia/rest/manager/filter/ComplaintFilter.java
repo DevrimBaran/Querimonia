@@ -76,7 +76,7 @@ public class ComplaintFilter {
    */
   public static boolean filterByKeywords(Complaint complaint, Optional<String[]> optionalKeywords) {
     // get stream of optional
-    Stream<String> keywords = optionalKeywords.map(Stream::of).orElseGet(Stream::empty);
+    Stream<String> keywords = optionalKeywords.stream().flatMap(Stream::of);
     // look for all keywords
     return keywords
         .allMatch(keyword -> StringUtils.containsIgnoreCase(complaint.getText(), keyword));
@@ -112,8 +112,7 @@ public class ComplaintFilter {
 
   private static boolean checkForParameters(ComplaintProperty complaintProperty,
                                             Optional<String[]> optionalParameters) {
-    //noinspection OptionalIsPresent
-    if (!optionalParameters.isPresent()) {
+    if (optionalParameters.isEmpty()) {
       // no filter is applied, then return true
       return true;
     }
