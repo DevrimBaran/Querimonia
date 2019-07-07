@@ -1,4 +1,3 @@
-
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
@@ -164,27 +163,27 @@ public class DefaultResponseGeneratorTest {
     sentimentMap.put("Trauer", 0.25);
 
     List<NamedEntity> entities = new ArrayList<>();
-    entities.add(new NamedEntity("Name", 8, 13));
-    entities.add(new NamedEntity("Haltestelle", 31, 43));
-    entities.add(new NamedEntity("Linie", 54, 56));
-    entities.add(new NamedEntity("Geldbetrag", 86, 89));
+    entities.add(new NamedEntity("Name", 8, 13,""));
+    entities.add(new NamedEntity("Haltestelle", 31, 43,""));
+    entities.add(new NamedEntity("Linie", 54, 56,""));
+    entities.add(new NamedEntity("Geldbetrag", 86, 89,""));
 
     SingleCompletedComponent testSingleComponentName = new SingleCompletedComponent("Hallo Peter!",
-            Collections.singletonList(new NamedEntity("Name", 6, 11)));
+            Collections.singletonList(new NamedEntity("Name", 6, 11,"")));
 
     SingleCompletedComponent testSingleComponentDate = new SingleCompletedComponent("Danke für deine " +
             "Beschwerde vom 20. Juni 2019.",
-            Collections.singletonList(new NamedEntity("UploadDatum", 31, 44)));
+            Collections.singletonList(new NamedEntity("UploadDatum", 31, 44,"")));
 
     SingleCompletedComponent testSingleComponentStopAndLines = new SingleCompletedComponent("Darin hast " +
             "du dich über die Haltestelle Hauptbahnhof der Linie U6 beschwert.",
             new ArrayList<>(Arrays.asList(
-                    new NamedEntity("Haltestelle", 40, 52),
-                    new NamedEntity("Linie", 63, 65))));
+                    new NamedEntity("Haltestelle", 40, 52,""),
+                    new NamedEntity("Linie", 63, 65,""))));
 
     SingleCompletedComponent testSingleComponentMoney = new SingleCompletedComponent("Dafür zahlen wir " +
             "dir 20€!",
-            Collections.singletonList(new NamedEntity("Geldbetrag", 21, 24)));
+            Collections.singletonList(new NamedEntity("Geldbetrag", 21, 24,"")));
 
     SingleCompletedComponent testSingleComponentFinish = new SingleCompletedComponent("Tschüss!",
             new ArrayList<>());
