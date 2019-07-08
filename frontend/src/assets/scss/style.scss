@@ -7,6 +7,8 @@
 @import 'helpers';
 @import 'TextBuilder';
 
+//grid-template-rows: repeat(2, minmax(min-content, auto));
+
 #root {
     display: flex;
     overflow: hidden;

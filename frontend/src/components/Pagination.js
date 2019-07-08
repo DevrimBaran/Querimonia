@@ -6,61 +6,44 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchData } from '../redux/actions';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-import Query from 'components/Query';
-
 class Pagination extends Component {
-  /*
-  constructor (props) {
-    super(props);
+  onClick = (e) => {
+    this.props.dispatch((dispatch, getState) => {
+      dispatch({
+        type: 'PAGINATION_CHANGE',
+        endpoint: this.props.endpoint,
+        name: e.target.name,
+        value: ~~e.target.value
+      });
+      dispatch(fetchData(this.props.endpoint));
+    });
   }
-  get(search, page, count) {
-
-  }
-  */
   render () {
-    let search = new URLSearchParams(document.location.search);
-    const page = parseInt(search.get('page')) || 0;
-    const QueryLink = Query(Link);
+    let pagelinks = [];
+    for (let i = -2; i <= 2; i++) {
+      let page = this.props.page + i;
+      if (page > 0 && page * this.props.count - this.props.max > 0) {
+        pagelinks.push(
+          <input key={page} type='button' name='page' onClick={this.onClick} value={page} />
+        );
+      }
+    }
     return (
       <div className='pagination center'>
-        {page > 0 &&
-          <QueryLink onClick={this.props.onClick} name='page' value={page - 1}>
-            &lt;
-          </QueryLink>
-        }
-        {page >= 2 && <QueryLink onClick={this.props.onClick} name='page' value={page - 2}>
-          {page - 2}
-        </QueryLink>
-        }
-        {page >= 1 && <QueryLink onClick={this.props.onClick} name='page' value={page - 1}>
-          {page - 1}
-        </QueryLink>
-        }
-        {page >= 0 && <QueryLink onClick={this.props.onClick} name='page' value={page}>
-          {page}
-        </QueryLink>
-        }
-        {<QueryLink onClick={this.props.onClick} name='page' value={page + 1}>
-          {page + 1}
-        </QueryLink>
-        }
-        {<QueryLink onClick={this.props.onClick} name='page' value={page + 2}>
-          {page + 2}
-        </QueryLink>
-        }
-        {<QueryLink onClick={this.props.onClick} name='page' value={page + 1}>
-            &gt;
-        </QueryLink>
-        }
-        {<QueryLink onClick={this.props.onClick} name='count' value='10'>10</QueryLink>}
-        {<QueryLink onClick={this.props.onClick} name='count' value='25'>25</QueryLink>}
-        {<QueryLink onClick={this.props.onClick} name='count' value='50'>50</QueryLink>}
+        {pagelinks}
+        <input type='button' name='count' onClick={this.onClick} value={10} />
+        <input type='button' name='count' onClick={this.onClick} value={25} />
+        <input type='button' name='count' onClick={this.onClick} value={50} />
       </div>
     );
   }
 }
 
-export default Pagination;
+const mapStateToProps = (state, props) => ({ ...state[props.endpoint].pagination });
+
+export default connect(mapStateToProps)(Pagination);

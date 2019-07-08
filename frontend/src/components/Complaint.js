@@ -22,9 +22,9 @@ function getMaxKey (obj) {
   return max > -1 ? value + ' ' + max + '%' : '';
 }
 
-function Complaint (data, index) {
+function Complaint (data) {
   return (
-    <React.Fragment key={index}>
+    <React.Fragment key={data.complaintId}>
       {
         data && (
           <Link to={'/complaints/' + data.complaintId}>

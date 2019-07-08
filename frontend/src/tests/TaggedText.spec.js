@@ -12,7 +12,6 @@ describe('prepareEntities', () => {
       {}
     ]);
   });
-
   test('Complete overlap', () => {
     expect(taggedText.prepareEntities([
       {

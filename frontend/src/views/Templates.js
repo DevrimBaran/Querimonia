@@ -5,8 +5,9 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import Api from 'utility/Api';
+import { fetchData } from '../redux/actions';
 
 import Block from 'components/Block';
 import Row from 'components/Row';
@@ -26,27 +27,8 @@ class Templates extends Component {
       loading: []
     };
   }
-  fetchData = (query) => {
-    this.setState({ active: null, loading: true });
-    Api.get('/api/templates', query)
-      .catch(() => [])
-      .then(this.setData);
-  }
-  setData = (data) => {
-    console.log(data);
-    this.setState({ loading: false, templates: data });
-  }
-  activate = (issue) => {
-    // console.log(issue);
-    this.setState({ active: this.state.templates.filter((a) => a.componentId === issue.id)[0] });
-  }
   componentDidMount = () => {
-    let searchParams = new URLSearchParams(document.location.search);
-    let query = {};
-    for (var key of searchParams.keys()) {
-      query[key] = searchParams.get(key);
-    }
-    this.fetchData(query);
+    this.props.dispatch(fetchData('templates', 'componentId'));
   }
   loadEditor = () => {
     console.log('load Editor');
@@ -137,25 +119,23 @@ class Templates extends Component {
   renderList = () => {
     return (<Block>
       <Row vertical>
-        <Filter onSubmit={this.fetchData} />
+        <Filter endpoint='templates' />
         <div>
           <this.newTemplate />
         </div>
         <Content>
-          {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.templates.map ? this.state.templates.map(Template) : [])}
+          {this.props.fetching
+            ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
+            : (this.props.data && this.props.data.ids.map(id => Template(this.props.data.byId[id])))
+          }
         </Content>
-        <Pagination onClick={this.update} />
+        <Pagination endpoint='templates' />
       </Row>
     </Block>);
   }
   render () {
-    let active = false;
-    if (this.props.match.params.id) {
-      active = this.state.templates.filter((a) => '' + a.componentId === this.props.match.params.id)[0];
-      if (active) {
-        setTimeout(this.loadEditor, 1000);
-      }
-    }
+    let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
+    console.log(active, this.props.match.params.id);
     return (
       <React.Fragment>
         {active ? (
@@ -168,4 +148,7 @@ class Templates extends Component {
     );
   }
 }
-export default Templates;
+
+const mapStateToProps = (state, props) => ({ ...state['templates'] });
+
+export default connect(mapStateToProps)(Templates);

@@ -11,7 +11,7 @@ import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 function Template (data, index) {
   return (
-    <React.Fragment key={index}>
+    <React.Fragment key={data.componentId}>
       {
         data && (
           <Link to={'/templates/' + data.componentId}>
