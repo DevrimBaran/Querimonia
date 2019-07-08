@@ -2,7 +2,9 @@ package de.fraunhofer.iao.querimonia.response.action;
 
 // TODO implement
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
@@ -11,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.persistence.*;
 import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @JsonPropertyOrder( {
@@ -66,6 +69,25 @@ public class Action {
   @JsonIgnore
   private Rule rootRule;
 
+  @JsonCreator
+  public Action(@JsonProperty String name,
+                @JsonProperty ActionCode actionCode,
+                @JsonProperty String rulesXml,
+                @JsonProperty HashMap<String, String> parameters) {
+    this.name = name;
+    this.actionCode = actionCode;
+    this.rulesXml = rulesXml;
+    this.parameters = parameters;
+  }
+
+  /**
+   * Empty default constructor (only used for hibernate).
+   */
+  @SuppressWarnings("unused")
+  public Action() {
+
+  }
+
   public String getRulesXml() {
     return rulesXml;
   }
@@ -89,7 +111,7 @@ public class Action {
     return actionCode;
   }
 
-  public HashMap<String, String> getParameters() {
+  public Map<String, String> getParameters() {
     return parameters;
   }
 
@@ -97,8 +119,8 @@ public class Action {
     return RuleParser.parseRules(rulesXml);
   }
 
-  public ResponseEntity<String> executeAction(){
-    switch (actionCode){
+  public ResponseEntity<String> executeAction() {
+    switch (actionCode) {
       case ATTACH_VOUCHER:
         //TODO Attach Voucher action
       case COMPENSATION:

@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import de.fraunhofer.iao.querimonia.response.action.ActionCode;
 import de.fraunhofer.iao.querimonia.rest.manager.ActionManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,13 +45,16 @@ public class ActionController {
 
   @PostMapping("api/actions")
   public ResponseEntity<Action> addAction(@RequestBody Action action) {
-
-    return new ResponseEntity<>(actionManager.addAction(action), HttpStatus.OK);
+    if (actionManager.addAction(action)) {
+      return new ResponseEntity<>(action, HttpStatus.OK);
+    } else {
+      return new ResponseEntity<>(action, HttpStatus.BAD_REQUEST);
+    }
   }
 
   @GetMapping("api/actions/{actionId}")
   public ResponseEntity<Action> getAction(@PathVariable int actionId) {
-    Optional<Action> possibleAction = actionManager.getActionbyId(actionId);
+    Optional<Action> possibleAction = actionManager.getActionById(actionId);
     return possibleAction
         .map(action -> new ResponseEntity<>(action, HttpStatus.OK))
         .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -59,24 +63,30 @@ public class ActionController {
 
   @DeleteMapping("api/actions/{actionId}")
   public ResponseEntity deleteAction(@PathVariable int actionId) {
-    return actionManager.deleteAction(actionId)?
-        new ResponseEntity(HttpStatus.NO_CONTENT):
+    return actionManager.deleteAction(actionId) ?
+        new ResponseEntity(HttpStatus.NO_CONTENT) :
         new ResponseEntity(HttpStatus.NOT_FOUND);
   }
 
   @PutMapping("api/actions/{actionId}")
   public ResponseEntity<Action> updateAction(@PathVariable int actionId,
                                              @RequestBody Action newAction) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    if (actionManager.updateAction(actionId, newAction)) {
+      return new ResponseEntity<>(newAction, HttpStatus.OK);
+    }
+    return new ResponseEntity<>(HttpStatus.NOT_FOUND);
   }
 
   @GetMapping("api/actions/count")
-  public ResponseEntity<Integer> countActions() {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+  public ResponseEntity<Integer> countActions(@RequestParam(name = "actionCode") Optional<ActionCode> actionCode,
+                                              @RequestParam(name = "keywords") Optional<String[]> keywords) {
+
+    return new ResponseEntity<>(actionManager.getCount(actionCode, keywords), HttpStatus.OK);
   }
 
   @DeleteMapping("api/actions/all")
   public ResponseEntity deleteAllActions(@PathVariable int actionId) {
-    return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    actionManager.deleteAll();
+    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
   }
 }

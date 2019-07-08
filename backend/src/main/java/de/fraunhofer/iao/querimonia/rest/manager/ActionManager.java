@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import de.fraunhofer.iao.querimonia.response.action.ActionCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,32 +46,74 @@ public class ActionManager {
       filteredResult = filteredResult.limit(count.get());
     }
 
+    logger.info("returning actions");
     return filteredResult.collect(Collectors.toList());
   }
 
 
-  public Action addAction(Action action){
-    actionRepository.save(action);
-    return action;
+  public boolean addAction(Action action) {
+    final boolean[] sameName = {false};
+    actionRepository.findAll().forEach(action1 -> sameName[0] = Boolean.logicalOr(sameName[0],
+        action.getName().equals(action1.getName())));
+    if (!sameName[0]) {
+      actionRepository.save(action);
+      return true;
+    }
+    logger.info("Action with id " + action.getActionId() + " added ");
+    return false;
   }
 
-  public Optional<Action> getActionbyId(int actionId){
+  public Optional<Action> getActionById(int actionId) {
+    logger.info("returning the Action with Id " + actionId);
     return actionRepository.findById(actionId);
   }
 
-  public boolean deleteAction(int actionId){
-    Optional<Action> possibleAction = actionRepository.findById(actionId);
-    if (possibleAction.isPresent()){
+  public boolean deleteAction(int actionId) {
+    if (actionRepository.existsById(actionId)) {
+      logger.info("deleted Action with Id " + actionId);
       actionRepository.deleteById(actionId);
       return true;
-    }else{
+    } else {
+      logger.info("Action with Id " + actionId + " is queried but not present in Database");
       return false;
     }
   }
 
-  public boolean updateAction(int actionId, Action action){
-    return false;
+  public boolean updateAction(int actionId, Action action) {
+    if (!actionRepository.existsById(actionId)) {
+      logger.info("Action with Id " + actionId + " is queried but not present in Database");
+      return false;
+    }
+    actionRepository.deleteById(actionId);
+    action.setActionId(actionId);
+    actionRepository.save(action);
+    logger.info("Action with Id " + actionId + " updated");
+    return true;
   }
+
+  /**
+   * gets the count of actions currently in the database with specific attributes
+   *
+   * @param actionCode only count actions with this Action Code
+   * @param keywords   only count Actions with these occurring keywords in them
+   * @return amount of Actions with these attributes
+   */
+  public int getCount(Optional<ActionCode> actionCode, Optional<String[]> keywords) {
+    ArrayList<Action> list = new ArrayList<>();
+    actionRepository.findAll().forEach(list::add);
+    int count = (int) list.stream()
+        .filter(action -> filterByKeywords(action, keywords))
+        .filter(action -> actionCode.map(code -> action.getActionCode().equals(code)).orElse(Boolean.TRUE))
+        .count();
+    logger.info("Returning the current count of Actions: " + count);
+    return count;
+  }
+
+  public void deleteAll() {
+    logger.info("deleted all Actions");
+    actionRepository.deleteAll();
+  }
+
   /**
    * filter action with an array of keywords
    */
@@ -130,5 +173,4 @@ public class ActionManager {
     };
 
   }
-
 }

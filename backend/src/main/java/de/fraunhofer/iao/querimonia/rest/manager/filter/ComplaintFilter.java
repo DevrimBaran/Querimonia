@@ -1,6 +1,5 @@
 package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
-
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import org.apache.commons.lang3.StringUtils;
@@ -102,8 +101,8 @@ public class ComplaintFilter {
     }
     return ComplaintUtility.getEntryWithHighestProbability(probabilityMap)
         .map(sentiment ->
-                 // check if the sentiment/subject of the complaint matches
-                 Arrays.asList(optionalParameters.get()).contains(sentiment))
+            // check if the sentiment/subject of the complaint matches
+            Arrays.asList(optionalParameters.get()).contains(sentiment))
         // if not present, complaint has no subject/sentiment
         .orElse(false);
   }
@@ -145,7 +144,7 @@ public class ComplaintFilter {
               break;
             default:
               throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                                "Illegal sorting paramter: " + rawSortAspect);
+                  "Illegal sorting paramter: " + rawSortAspect);
           }
 
           // invert sorting if desc
