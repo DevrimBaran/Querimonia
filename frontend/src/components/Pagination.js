@@ -27,7 +27,7 @@ class Pagination extends Component {
     let pagelinks = [];
     for (let i = -2; i <= 2; i++) {
       let page = this.props.page + i;
-      if (page > 0 && page * this.props.count - this.props.max > 0) {
+      if (page >= 0 && (page + 1) * this.props.count - this.props.max > 0) {
         pagelinks.push(
           <input key={page} type='button' name='page' onClick={this.onClick} value={page} />
         );

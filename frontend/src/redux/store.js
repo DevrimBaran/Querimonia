@@ -11,7 +11,6 @@ const initialState = {
     data: {
       byId: {},
       ids: [],
-      idKey: 'complaintId',
       fetching: false
     },
     filter: [],
@@ -25,7 +24,6 @@ const initialState = {
     data: {
       byId: {},
       ids: [],
-      idKey: 'componentId',
       fetching: false
     },
     filter: [],

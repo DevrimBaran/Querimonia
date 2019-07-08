@@ -11,14 +11,14 @@ import React from 'react';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 function Template (data, index) {
   return (
-    <React.Fragment key={data.componentId}>
+    <React.Fragment key={data.id}>
       {
         data && (
-          <Link to={'/templates/' + data.componentId}>
+          <Link to={'/templates/' + data.id}>
             <div className='Template'>
               <div className='floatLeft'>
                 <p className='h3'>{data.componentName}</p>
-                <p>ID: {data.componentId}</p>
+                <p>ID: {data.id}</p>
               </div>
               <div className='floatRight'>
                 <p>Antwortvariationen: {data.templateTexts.length}</p>

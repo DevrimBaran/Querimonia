@@ -24,13 +24,13 @@ function getMaxKey (obj) {
 
 function Complaint (data) {
   return (
-    <React.Fragment key={data.complaintId}>
+    <React.Fragment key={data.id}>
       {
         data && (
-          <Link to={'/complaints/' + data.complaintId}>
+          <Link to={'/complaints/' + data.id}>
             <div className='complaintSummary'>
               <div className='title'>
-                <h3><span>Anliegen {data.complaintId} -</span>
+                <h3><span>Anliegen {data.id} -</span>
                   <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
                     {getMaxKey(data.probableSentiment)}
                   </span>

@@ -48,12 +48,11 @@ function data (state = { data: {}, ids: [], idKey: 'id', fetching: false }, acti
       };
     }
     case 'FETCH_END': {
-      console.log(action.idKey);
       return {
         ...state,
         fetching: false,
-        byId: action.data.reduce((obj, item) => { obj[item[state.idKey]] = item; return obj; }, {}),
-        ids: action.data.map(item => item[state.idKey])
+        byId: action.data.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
+        ids: action.data.map(item => item.id)
       };
     }
     default:
