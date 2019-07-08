@@ -1312,7 +1312,7 @@ components:
       type: object
       description: Diese Datenstuktur modelliert eine Beschwerde (oder eine eingegangen Meldung von anderer Art). Eine Beschwerde besitzt eine eindeutige ID, einen Zustand (in Bearbeitung, geschlossen), den Meldetext, Eingangsdatum, eine Kategorie und Sentiment so wie eine Liste an erkannten Entitäten. Weiterhin ist zu jeder Beschwerde gespeichert mit welcher Konfigutartion sie analysiere wurde,
       properties:
-        complaintId:
+        id:
           type: integer
           format: int32
           minimum: 1
@@ -1434,7 +1434,7 @@ components:
         - classifier
         - sentimentAnalyzer
       properties:
-        configID:
+        id:
           type: integer
           format: int32
           description: Eindeutige ID der Konfiguration.
@@ -1530,7 +1530,7 @@ components:
         - templateTexts
         - rulesXml
       properties:
-        componentId:
+        id:
           type: integer
           format: int32
           description: Die eindeutige ID des Antwortbausteins.
@@ -1568,7 +1568,7 @@ components:
         - alternatives
         - component
       properties:
-        responsePartId:
+        id:
           type: integer
           format: int32
           minimum: 1
@@ -1630,7 +1630,7 @@ components:
         - rulesXml
         - parameters
       properties:
-        actionId:
+        id:
           description: Die eindeutige ID der Aktion.
           type: integer
           format: int32
