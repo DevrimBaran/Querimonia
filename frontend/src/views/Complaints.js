@@ -30,130 +30,131 @@ class Complaints extends Component {
       issues: []
     };
   }
-  
-    fetchData = (query) => {
-      this.setState({ active: null, loading: true });
-      Api.get('/api/complaints', query)
-        .then(this.setData);
-    }
 
-    setData = (data) => {
-      this.setState({ loading: false, issues: data });
-    }
+  createEntityArray = (txt, ar) => {
+    return ar.map((entity, i) => {
+      return <li key={i}> { entity['label'] } :
+        <TaggedText text={{
+          text: ' ' + txt.substring(entity['startIndex'], entity['endIndex']),
+          entities: [{ label: entity['label'], startIndex: 1, endIndex: entity['endIndex'] - entity['startIndex'] + 1 }]
+        }} />
+      </li>;
+    });
+  }
 
-    activate = (issue) => {
-      // console.log(issue);
-      this.setState({ active: this.state.issues.filter((a) => a.complaintId === issue.complaintId)[0] });
-    }
+  fetchData = (query) => {
+    this.setState({ active: null, loading: true });
+    Api.get('/api/complaints', query)
+      .then(this.setData);
+  }
 
-    componentDidMount = () => {
-      let searchParams = new URLSearchParams(document.location.search);
-      let query = {};
-      for (const key of searchParams.keys()) {
-        query[key] = searchParams.get(key);
-      }
-      this.fetchData(query);
-    }
+  setData = (data) => {
+    this.setState({ loading: false, issues: data });
+  }
 
-    renderSingle = (active) => {
-      return (<React.Fragment>
-        <Block>
-          <Row vertical>
-            <h6 className='center'>Antwort</h6>
-            <TextBuilder complaintId={active.complaintId} />
-          </Row>
-        </Block>
-        <Block>
-          <Row vertical>
-            <h6 className='center'>Meldetext</h6>
-            <Content style={{ flexBasis: '100%' }}>
-              <Tabbed className='padding' style={{ height: '100%' }}>
-                <div label='Überarbeitet'>
-                  <TaggedText text={{ text: active.text, entities: active.entities }} />
-                </div>
-                <div label='Original'>
-                  {active.text}
-                </div>
-              </Tabbed>
-            </Content>
-            <Collapsible label='Details' style={{ minHeight: '130px' }}>
-              <b>Eingangsdatum: </b>
-              <TaggedText text={{
-                text: active.receiveDate,
-                entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
-              }} />
-              <br />
-              <b> ID: </b>
-              {active.complaintId}
-              <br />
-              <b> Kategorie: </b>
-              <i data-tip data-for='subjects'>{active.subject.value}</i>
-              <br />
-              <b> Sentiment: </b>
-              <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
-              <br />
-            </Collapsible>
-            <Collapsible label='Entitäten'>
-              <ul>
-                {createEntityArray(active.text, active.entities)}
-              </ul>
-              <ReactTooltip id='subjects' aria-haspopup='true'>
-                {Object.keys(active.subject.probabilities).map(subject => `${subject}: ${active.subject.probabilities[subject]}`)}
-              </ReactTooltip>
-              <ReactTooltip id='sentiments' aria-haspopup='true'>
-                {Object.keys(active.sentiment.probabilities).map(sentiment => `${sentiment}: ${active.sentiment.probabilities[sentiment]}`)}
-              </ReactTooltip>
-            </Collapsible>
-          </Row>
-        </Block>
-      </React.Fragment>);
-    }
+  activate = (issue) => {
+    // console.log(issue);
+    this.setState({ active: this.state.issues.filter((a) => a.complaintId === issue.complaintId)[0] });
+  }
 
-    update = () => {
-      this.setState({ loading: true });
-      setTimeout(() => {
-        this.componentDidMount();
-      }, 10);
+  componentDidMount = () => {
+    let searchParams = new URLSearchParams(document.location.search);
+    let query = {};
+    for (const key of searchParams.keys()) {
+      query[key] = searchParams.get(key);
     }
+    this.fetchData(query);
+  }
 
-    renderList = () => {
-      return (<Block>
+  renderSingle = (active) => {
+    return (<React.Fragment>
+      <Block>
         <Row vertical>
-          <Filter onSubmit={this.fetchData} />
-          <Content>
-            {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.issues.map(Complaint))}
-          </Content>
-          <Pagination onClick={this.update} />
+          <h6 className='center'>Antwort</h6>
+          <TextBuilder complaintId={active.complaintId} />
         </Row>
-      </Block>);
-    }
+      </Block>
+      <Block>
+        <Row vertical>
+          <h6 className='center'>Meldetext</h6>
+          <Content style={{ flexBasis: '100%' }}>
+            <Tabbed className='padding' style={{ height: '100%' }}>
+              <div label='Überarbeitet'>
+                <TaggedText text={{ text: active.text, entities: active.entities }} editable />
+              </div>
+              <div label='Original'>
+                {active.text}
+              </div>
+            </Tabbed>
+          </Content>
+          <Collapsible label='Details' style={{ minHeight: '130px' }}>
+            <b>Eingangsdatum: </b>
+            <TaggedText text={{
+              text: active.receiveDate,
+              entities: [{ label: 'Eingangsdatum', startIndex: 0, endIndex: active.receiveDate.length }]
+            }} />
+            <br />
+            <b> ID: </b>
+            {active.complaintId}
+            <br />
+            <b> Kategorie: </b>
+            <i data-tip data-for='subjects'>{active.subject.value}</i>
+            <br />
+            <b> Sentiment: </b>
+            <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
+            <br />
+            <ReactTooltip id='subjects' aria-haspopup='true'>
+              {Object.keys(active.subject.probabilities).map(subject => <div>{`${subject}: ${active.subject.probabilities[subject]}`} <br /> </div>)}
+            </ReactTooltip>
+            <ReactTooltip id='sentiments' aria-haspopup='true'>
+              {Object.keys(active.sentiment.probabilities).map(sentiment => <div>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /> </div>)}
+            </ReactTooltip>
+          </Collapsible>
+          <Collapsible label='Entitäten'>
+            <ul>
+              {this.createEntityArray(active.text, active.entities)}
+            </ul>
+          </Collapsible>
+        </Row>
+      </Block>
+    </React.Fragment>);
+  }
 
-    render () {
-      let active = false;
-      if (this.props.match.params.id) {
-        active = this.state.issues.filter((a) => '' + a.complaintId === this.props.match.params.id)[0];
-      }
-      return (
-        <React.Fragment>
-          { active ? (
-            this.renderSingle(active)
-          ) : (
-            this.renderList()
-          ) }
+  update = () => {
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.componentDidMount();
+    }, 10);
+  }
 
-        </React.Fragment>
-      );
+  renderList = () => {
+    return (<Block>
+      <Row vertical>
+        <Filter onSubmit={this.fetchData} />
+        <Content>
+          {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.issues.map(Complaint))}
+        </Content>
+        <Pagination onClick={this.update} />
+      </Row>
+    </Block>);
+  }
+
+  render () {
+    let active = false;
+    if (this.props.match.params.id) {
+      active = this.state.issues.filter((a) => '' + a.complaintId === this.props.match.params.id)[0];
     }
+    return (
+      <React.Fragment>
+        { active ? (
+          this.renderSingle(active)
+        ) : (
+          this.renderList()
+        ) }
+
+      </React.Fragment>
+    );
+  }
 }
-// creates an Array of Entity-Strings
-function createEntityArray (txt, ar) {
-  return ar.map((entity, i) => {
-    return <li key={i}> { entity['label'] } :
-      <TaggedText text={{
-        text: ' ' + txt.substring(entity['start'], entity['end']),
-        entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
-      }} />
-    </li>;
-  });
-}
+
 export default Complaints;

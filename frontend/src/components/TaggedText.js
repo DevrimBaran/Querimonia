@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 
 const LABEL_COLORS = {
   Datum: 'blue',
-  Upload_Datum: 'red',
+  Eingangsdatum: 'red',
   Name: 'violet',
   Geldbetrag: 'turquoise',
   Bushaltestelle: 'orange',
@@ -19,8 +19,6 @@ const LABEL_COLORS = {
   Linie: 'pink',
   default: 'green'
 };
-
-let createdTooltips = [];
 
 class TaggedText extends Component {
   constructor (props) {
@@ -39,10 +37,10 @@ class TaggedText extends Component {
     if (Array.isArray(text.entities)) {
       this.prepareEntities(text.entities);
       for (const tag of text.entities) {
-        !text.text.substring(cpos, tag.start) || p.push(<span key={p.length}>{text.text.substring(cpos, tag.start)}</span>);
-        p.push(<span data-tip data-for={tag.label} key={p.length} className='tag' label={tag.label} style={this.createBackground(tag.label)}>{text.text.substring(tag.start, tag.end)}</span>);
+        !text.text.substring(cpos, tag.startIndex) || p.push(<span key={p.length}>{text.text.substring(cpos, tag.startIndex)}</span>);
+        p.push(<span data-tip data-for={tag.label} key={p.length} className='tag' label={tag.label} style={this.createBackground(tag.label)}>{text.text.substring(tag.startIndex, tag.endIndex)}</span>);
         p.push(this.createTooltip(tag.label));
-        cpos = tag.end;
+        cpos = tag.endIndex;
       }
     }
     p.push(<span key={p.length}>{text.text.substring(cpos, text.text.length)}</span>);
@@ -54,14 +52,14 @@ class TaggedText extends Component {
     if (entities.length === 0) return;
 
     let i = 0;
-    const compare = (a, b) => { return a.start - b.start || a.end - b.end; };
+    const compare = (a, b) => { return a.startIndex - b.startIndex || a.endIndex - b.endIndex; };
     while (i < entities.length - 1) {
       entities.sort(compare);
       const entityA = entities[i];
       const entityB = entities[i + 1];
 
-      if (entityA.start === entityB.start) {
-        if (entityA.end === entityB.end) {
+      if (entityA.startIndex === entityB.startIndex) {
+        if (entityA.endIndex === entityB.endIndex) {
           if (!entityA.label.includes(entityB.label)) {
             entityA.label += ' ' + entityB.label;
           }
@@ -70,31 +68,31 @@ class TaggedText extends Component {
           if (!entityA.label.includes(entityB.label)) {
             entityA.label += ' ' + entityB.label;
           }
-          entityB.start = entityA.end;
+          entityB.startIndex = entityA.endIndex;
         }
-      } else if (entityA.end === entityB.end) {
+      } else if (entityA.endIndex === entityB.endIndex) {
         if (!entityB.label.includes(entityA.label)) {
           entityB.label += ' ' + entityA.label;
         }
-        entityA.end = entityB.start;
-      } else if (entityA.end > entityB.end) {
+        entityA.endIndex = entityB.startIndex;
+      } else if (entityA.endIndex > entityB.endIndex) {
         entities.push({
           label: entityA.label,
-          start: entityB.end,
-          end: entityA.end
+          startIndex: entityB.endIndex,
+          endIndex: entityA.endIndex
         });
         if (!entityB.label.includes(entityA.label)) {
           entityB.label += ' ' + entityA.label;
         }
-        entityA.end = entityB.start;
-      } else if (entityA.end < entityB.end && entityA.end > entityB.start) {
+        entityA.endIndex = entityB.startIndex;
+      } else if (entityA.endIndex < entityB.endIndex && entityA.endIndex > entityB.startIndex) {
         entities.push({
           label: !entityA.label.includes(entityB.label) ? entityA.label + ' ' + entityB.label : entityA.label,
-          start: entityB.start,
-          end: entityA.end
+          startIndex: entityB.startIndex,
+          endIndex: entityA.endIndex
         });
-        entityA.end = entityB.start;
-        entityB.start = entityA.end;
+        entityA.endIndex = entityB.startIndex;
+        entityB.startIndex = entityA.endIndex;
       } else {
         i++;
       }
@@ -122,15 +120,13 @@ class TaggedText extends Component {
 
   createTooltip = (labels) => {
     let labelArray = labels.split(' ').map((label, i) => {
-      return <div key={i}>{label}<span className='dot' style={{ backgroundColor: LABEL_COLORS[label] || LABEL_COLORS['default'],
+      return <div key={i}><span className='dot' style={{ backgroundColor: LABEL_COLORS[label] || LABEL_COLORS['default'],
         height: '10px',
         width: '10px',
         borderRadius: '50%',
         display: 'inline-block',
-        marginLeft: '5px' }}> </span> <br /> </div>;
+        marginLeft: '5px' }}> </span> {label} {this.props.editable ? <button>Löschen</button> : ''} <br /> </div>;
     });
-    if (createdTooltips.includes(labels)) return;
-    createdTooltips.push(labels);
     return <ReactTooltip key={labels} id={labels} aria-haspopup='true'>
       {
         labelArray
@@ -145,10 +141,6 @@ class TaggedText extends Component {
       });
     }
   };
-
-  componentWillUnmount = () => {
-    createdTooltips = [];
-  }
 
   render () {
     return (
