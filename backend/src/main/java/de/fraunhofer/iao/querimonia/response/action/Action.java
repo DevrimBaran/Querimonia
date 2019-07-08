@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
+import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -23,7 +24,7 @@ import java.util.Map;
     "rulesXml",
     "parameters"
 })
-public class Action {
+public class Action implements RuledInterface {
 
   /**
    * The unique primary key of the action
@@ -92,6 +93,7 @@ public class Action {
     return rulesXml;
   }
 
+  @Override
   public Rule getRootRule() {
     if (rootRule == null) {
       rootRule = parseRulesXml(rulesXml);

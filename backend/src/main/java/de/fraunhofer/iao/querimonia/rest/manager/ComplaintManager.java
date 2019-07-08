@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
+import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
@@ -56,6 +57,7 @@ public class ComplaintManager {
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
                           TemplateRepository templateRepository,
+                          ActionRepository actionRepository,
                           CompletedResponseComponentRepository
                               completedResponseComponentRepository) {
     this.fileStorageService = fileStorageService;
@@ -65,7 +67,7 @@ public class ComplaintManager {
     complaintFactory = new ComplaintFactory()
         .setClassifier(new KiKuKoClassifier())
         .setEntityExtractor(new KikukoExtractor())
-        .setResponseGenerator(new DefaultResponseGenerator(templateRepository))
+        .setResponseGenerator(new DefaultResponseGenerator(templateRepository, actionRepository))
         .setStopWordFilter(new TokenAnalyzer())
         .setSentimentAnalyzer(new FlaskSentiment());
   }
