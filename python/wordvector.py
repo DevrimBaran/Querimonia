@@ -3,17 +3,50 @@ from gensim.models.wrappers import FastText
 import numpy as np
 import pdb
 
-# Standard Model
+# Pfad zu den Modellen
 basepath = "../wortvektoren/fastText/models/"
+
+# Lade Modelle
 model_beschwerden3kPolished = FastText.load_fasttext_format( basepath + "beschwerden3kPolished.bin")
+model_cc_de_300 = FastText.load_fasttext_format(basepath + "cc.de.300.bin")
+model_ngram_ger = FastText.load_fasttext_format(basepath + "ngram_ger.bin")
+model_beschwerden_CAT_leipzig = FastText.load_fasttext_format(basepath + "BeschwerdenCATLeipzig.bin")
+model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format(basepath + "leipzigCorporaCollection1M.bin")
+
+# Standardmodell
 model = model_beschwerden3kPolished
 
-#model_cc_de_300 = FastText.load_fasttext_format("cc.de.300.bin")
-#model_ngram_ger = FastText.load_fasttext_format("ngram_ger.bin")
-#model_beschwerden_CAT_leipzig = FastText.load_fasttext_format("BeschwerdenCATLeipzig.bin")
-#model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format("leipzigCorporaCollection1M.bin")
-
 class Calc:
+
+    @staticmethod
+    def set_model(modelName):
+        if modelName == "beschwerden3kPolished.bin":
+            return model_beschwerden3kPolished
+        elif modelName == "cc.de.300.bin":
+            return model_cc_de_300
+        elif modelName == "ngram_ger.bin":
+            model = model_ngram_ger
+        elif modelName == "BeschwerdenCATLeipzig.bin":
+            return model_beschwerden_CAT_leipzig
+        elif modelName == "leipzigCorporaCollection1M.bin":
+            return model_leipzig_Corpora_collection_1M
+        else:
+            print("Modell nicht erkannt.")
+        return model_beschwerden3kPolished
+
+
+    @staticmethod
+    def getword(vec, modelName):
+        model = Calc.set_model(modelName)
+        return model.similar_by_vector(vec)
+
+    @staticmethod
+    def vectorize( word, modelName):
+        model = Calc.set_model(modelName)
+        return np.array(model[word])
+
+    # Alles Folgende ist obsolet weil die Logik im Frontend gerechnet wird
+
     @staticmethod
     def calculate(operation1, vec1, vec2, operation2=None, vec3=None):
         # TODO better strucure
@@ -42,20 +75,9 @@ class Calc:
         return result_multiple
 
     @staticmethod
-    def getword(vec, modelName=None):
-        if modelName != None:
-            model = FastText.load_fasttext_format( basepath + modelName )
-        return model.similar_by_vector(vec)
-
-    @staticmethod
     def normalize( vec ):
         return vec / np.sqrt(np.sum(vec**2))
     
-    @staticmethod
-    def vectorize( word, modelName=None):
-        if modelName != None:
-            model = FastText.load_fasttext_format( basepath + modelName )
-        return np.array(model[word])
     
     @staticmethod
     def add(vec1, vec2):
