@@ -17,7 +17,7 @@ function Template (data, index) {
           <Link to={'/templates/' + data.componentId}>
             <div className='Template'>
               <div className='floatLeft'>
-                <p className='h2'>{data.componentName}</p>
+                <p className='h3'>{data.componentName}</p>
                 <p>ID: {data.componentId}</p>
               </div>
               <div className='floatRight'>

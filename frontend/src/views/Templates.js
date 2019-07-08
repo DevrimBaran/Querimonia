@@ -41,11 +41,12 @@ class Templates extends Component {
     } else {
       console.log('no editor');
     }
-  }
+  };
+
   newTemplate = withRouter(({ history }) => (
     <button
       type='button'
-      className='center'
+      //className='center'
       onClick={() => {
         history.push(window.location.pathname +
           (window.location.pathname.substr(-1) === '/' ? '0/' : '/0') +
@@ -67,9 +68,11 @@ class Templates extends Component {
       }
       }>Neues Template</button>
   ));
+
   saveTemplate = withRouter(({ history }) => (
     <button
       type='button'
+      className='important'
       onClick={() => {
         history.push('/templates/' +
           window.location.search);
@@ -84,10 +87,12 @@ class Templates extends Component {
       }}
     >Speichern</button>
   ));
+
   // Creates an enumeration of words in an array
   renderEnumeration = (word, index) => {
     return (<li key={index}>{word}</li>);
-  }
+  };
+
   renderSingle = (active) => {
     return (<React.Fragment>
       <Block>
@@ -99,24 +104,26 @@ class Templates extends Component {
       <Block>
         <Row vertical>
           <h6 className='center'>Antworvariationen</h6>
-          <Content>
+          <Content className='margin'>
             {active.templateTexts.map((text, index) => {
-              return <textarea key={index} value={text} onChange={() => {}} />;
+              return <textarea className="p visible" key={index} value={text} onChange={() => {}} />;
             })}
           </Content>
-          <div>
+          <div className='center margin'>
             <this.saveTemplate />
           </div>
         </Row>
       </Block>
     </React.Fragment>);
-  }
+  };
+
   update = () => {
     this.setState({ loading: true });
     setTimeout(() => {
       this.componentDidMount();
     }, 10);
-  }
+  };
+
   renderList = () => {
     return (<Block>
       <Row vertical>
@@ -133,7 +140,8 @@ class Templates extends Component {
         <Pagination endpoint='templates' />
       </Row>
     </Block>);
-  }
+  };
+
   render () {
     let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
     console.log(active, this.props.match.params.id);
