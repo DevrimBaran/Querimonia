@@ -62,11 +62,11 @@ paths:
       tags:
         - complaints
       summary: Läd eine neue Beschwerde in die Datenbank.
-      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 5000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Die Beschwerde wird beim Upload analysiert und eine Antwort wird generiert. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
+      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 10000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Die Beschwerde wird beim Upload analysiert und eine Antwort wird generiert. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
       parameters:
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
       requestBody:
-        description: Die Datei, die hochgeladen werden soll.
+        description: Die Datei/der Text, die hochgeladen werden soll.
         content:
           multipart/form-data:
             schema:
@@ -191,11 +191,17 @@ paths:
       operationId: refreshComplaint
       responses:
         200:
-          description: Beschwerde wurde erfolgreich aktualisiert
+          description: Beschwerde wurde erfolgreich aktualisiert.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
+        400:
+          description: Beschwerde wurde bereits geschlossen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         404:
           description: Eine Konfiguration oder eine Beschwerde mit der gegebenen ID existiert nicht.
           content:
@@ -358,7 +364,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseSuggestion'
         400:
-          description: Die Beschwerde wurde bereits abgeschlossen.
+          description: Die Beschwerde wurde bereits geschlossen.
           content:
             application/json:
               schema:

@@ -88,7 +88,7 @@ public class Complaint {
   /**
    * The list of all named entities in the complaint text.
    */
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "entity_table", joinColumns = @JoinColumn(name = "complaintId"))
   private List<NamedEntity> entities;
 

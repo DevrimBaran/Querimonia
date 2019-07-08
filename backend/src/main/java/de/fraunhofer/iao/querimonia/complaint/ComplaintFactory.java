@@ -83,6 +83,7 @@ public class ComplaintFactory {
     Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
     complaint.getSubject().updateValueProbabilities(subjectMap, keepUserInformation);
     complaint.getSentiment().updateValueProbabilities(sentimentMap, keepUserInformation);
+    complaint.setEntities(entities);
 
     // generate response
     ComplaintData complaintData = new ComplaintData(complaintText, subjectMap, sentimentMap,
