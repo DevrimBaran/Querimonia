@@ -9,10 +9,11 @@ import { connect } from 'react-redux';
 
 import { fetchData } from '../redux/actions';
 
+import Template from './partials/Template';
+
 import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
-import Template from './../components/Template';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
 

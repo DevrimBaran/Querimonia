@@ -118,6 +118,72 @@ const initialState = {
       page: 0,
       max: 0
     }
+  },
+  actions: {
+    data: {
+      byId: {},
+      ids: [],
+      fetching: false
+    },
+    filter: [
+      {
+        label: 'Stichwort',
+        name: 'keywords',
+        multiple: true,
+        type: 'text'
+      },
+      {
+        label: 'Aktion',
+        name: 'action_code',
+        multiple: true,
+        type: 'select',
+        values: [
+          { label: 'E-Mail', value: 'SEND_MAIL' },
+          { label: 'Gutschein', value: 'ATTACH_VOUCHER' }
+        ]
+      },
+      {
+        label: 'Sortieren nach',
+        name: 'sort_by',
+        type: 'select',
+        values: [
+          { label: 'ID (absteigend)', value: 'id_desc' },
+          { label: 'ID (aufsteigend)', value: 'id_asc' },
+          { label: 'Name (absteigend)', value: 'name_desc' },
+          { label: 'Name (aufsteigend)', value: 'name_asc' }
+        ]
+      }
+    ],
+    pagination: {
+      count: 10,
+      page: 0,
+      max: 0
+    }
+  },
+  config: {
+    data: {
+      byId: {},
+      ids: [],
+      fetching: false
+    },
+    filter: [
+      {
+        label: 'Sortieren nach',
+        name: 'sort_by',
+        type: 'select',
+        values: [
+          { label: 'ID (absteigend)', value: 'id_desc' },
+          { label: 'ID (aufsteigend)', value: 'id_asc' },
+          { label: 'Name (absteigend)', value: 'name_desc' },
+          { label: 'Name (aufsteigend)', value: 'name_asc' }
+        ]
+      }
+    ],
+    pagination: {
+      count: 10,
+      page: 0,
+      max: 0
+    }
   }
 };
 

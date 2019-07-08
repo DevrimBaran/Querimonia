@@ -17,9 +17,8 @@ class Debug extends Component {
       return args[0];
     }
     render () {
-      console.log(this.props);
       return (<Content style={{ flexBasis: '100%' }}><pre>
-        {pd.json(JSON.stringify(this.props.data))}
+        {this.props.data ? pd.json(JSON.stringify(this.props.data)) : ('NO DATA')}
       </pre></Content>);
     }
 }

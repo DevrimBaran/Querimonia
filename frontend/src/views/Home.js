@@ -14,8 +14,6 @@ import team from './../assets/img/Gruppenfoto.jpg';
 import iaoPartner from './../assets/img/iao.png';
 import iatPartner from './../assets/img/iat.png';
 
-import './../assets/scss/Home.scss';
-
 function Home () {
   return (
     <React.Fragment>

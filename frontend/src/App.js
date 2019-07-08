@@ -12,6 +12,9 @@ import Import from './views/Import';
 import WordVectors from './views/WordVectors';
 import TagCloud from './views/TagCloud';
 import Templates from './views/Templates';
+import Actions from './views/Actions';
+import Config from './views/Config';
+import Impressum from './views/Impressum';
 
 import logo from './assets/img/StuproLogo2.svg';
 import OpenApi from './components/OpenApi';
@@ -42,7 +45,13 @@ function App () {
             <Link to='/import'>Import</Link>
           </li>
           <li>
-            <Link to='/templates'>Templates</Link>
+            <Link to='/templates'>Textbausteine</Link>
+          </li>
+          <li>
+            <Link to='/actions'>Aktionen</Link>
+          </li>
+          <li>
+            <Link to='/config'>Konfiguration</Link>
           </li>
           <li>
             <Link to='/wordvectors'>Wortvektoren</Link>
@@ -55,11 +64,18 @@ function App () {
             <OpenApi />
           </li>
         </ul>
+        <ul style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
+          <li>
+            <Link to='/impressum'>Impressum</Link>
+          </li>
+        </ul>
       </nav>
 
       <Route exact path='/' component={Home} />
       <Route path='/complaints/:id?' component={Complaints} />
       <Route path='/templates/:id?' component={Templates} />
+      <Route path='/actions/:id?' component={Actions} />
+      <Route path='/config/:id?' component={Config} />
       <Route path='/import' component={Import} />
       {/*
       <Route path='/export' component={Export} />
@@ -67,6 +83,7 @@ function App () {
       */}
       <Route path='/wordvectors' component={WordVectors} />
       <Route path='/tagcloud' component={TagCloud} />
+      <Route path='/impressum' component={Impressum} />
     </Router>
   );
 }

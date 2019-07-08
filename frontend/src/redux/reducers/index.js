@@ -60,7 +60,12 @@ function fetchable (state = { data: {}, filter: [], pagination: {} }, action, en
 }
 
 const rootReducer = function (state, action) {
-  return { complaints: fetchable(state.complaints, action, 'complaints'), templates: fetchable(state.templates, action, 'templates') };
+  return {
+    complaints: fetchable(state.complaints, action, 'complaints'),
+    actions: fetchable(state.actions, action, 'actions'),
+    config: fetchable(state.config, action, 'config'),
+    templates: fetchable(state.templates, action, 'templates')
+  };
 };
 
 export default rootReducer;
