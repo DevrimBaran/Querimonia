@@ -235,7 +235,7 @@ public class DefaultResponseGeneratorTest {
       for (int j = 0; j < correctEntities.size(); j++) {
         NamedEntity correctEntity = correctEntities.get(j);
         NamedEntity testEntity = testEntities.get(j);
-        assertEquals(correctEntity.toString(), testEntity.toString());
+        assertEquals(correctEntity, testEntity);
       }
     }
   }
