@@ -302,6 +302,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/NamedEntity'
+                example:
+                  - label: 'Geldbetrag'
+                    start: 5
+                    end: 10
+                    setByUser: true
+                    extractor: 'QuerimoniaExtract'
         404:
           description: Die gegebene Entität ist nicht vorhanden.
           content:
@@ -1424,7 +1430,9 @@ components:
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
         extractor:
-          $ref: '#/components/schemas/Extractor'
+          type: string
+          description: The name of the extractor that es used to find this entity.
+          example: 'QuerimoniaExtract'
 
     AnalyzerConfiguration:
       description: In der Konfiguration ist festgelegt, welche Extraktoren, welcher Klassifikator und Sentiment-Analysierer verwerdet wird.
