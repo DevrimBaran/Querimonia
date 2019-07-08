@@ -89,6 +89,7 @@ class Filter extends Component {
               <div>
                 <label htmlFor='desc'><strong>Absteigend:</strong></label><br />
                 <QueryInput name='desc' type='checkbox' />
+                <label></label>
               </div>
             </Row>
             <br />

@@ -30,7 +30,7 @@ class Complaints extends Component {
       issues: []
     };
   }
-  
+
     fetchData = (query) => {
       this.setState({ active: null, loading: true });
       Api.get('/api/complaints', query)

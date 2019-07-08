@@ -103,7 +103,7 @@ class WordVectors extends Component {
     // return new Promise(function (resolve, reject) {
     //  resolve([parseInt(data), parseInt(data)]);
     // })
-    return Api.post('/word_to_vec', { word: word, corpora: this.state.corpora });
+    return Api.post('/word_to_vec', { word: word, model: this.state.corpora });
     // .then((response) => {
     //  if (data.sign !== '-') return response;
     //  return response.map(a => -a);
@@ -112,7 +112,7 @@ class WordVectors extends Component {
   vec2word = (vec) => {
     // console.log('result: ' + vec[0]);
     // return vec;
-    return Api.post('/vec_to_word', { vector: vec, corpora: this.state.corpora })
+    return Api.post('/vec_to_word', { vector: vec, model: this.state.corpora })
       .then((response) => {
         return {
           result: response.map(function (arr, index) {
@@ -126,7 +126,7 @@ class WordVectors extends Component {
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
       return x.map(a => a / len);
-    }
+    };
     if (this.state.error) return;
     // this.analogy is postfix expression
     let words = this.analogy.filter((token) => {
@@ -186,16 +186,16 @@ class WordVectors extends Component {
       <React.Fragment>
         <Block>
           <h1 className='center'>Wortvektoren</h1>
-          <Content className="center"style={{ flexBasis: '100%' }}>
-            <div className="smallmargin">
+          <Content className='center'style={{ flexBasis: '100%' }}>
+            <div className='smallmargin'>
               <label htmlFor='textkorpora'>Textkorpus: </label>
               <Select required id='textkorpora' name='textkorpora' value={this.state.corpora} values={['beschwerden3kPolished.bin', 'cc.de.300.bin', 'ger.bin', 'zig.bin', 'n1M.bin']} onChange={this.changeCorpora} />
             </div>
-            <div className="smallmargin">
+            <div className='smallmargin'>
               <label htmlFor='analogy'>Anfrage: </label>
               <input id='analogy' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
-              <div className="smallmargin">
-                <input type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
+              <div className='smallmargin'>
+                <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>
             </div>
             <ul>

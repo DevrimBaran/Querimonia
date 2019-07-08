@@ -25,21 +25,25 @@ class Templates extends Component {
     this.state = {
       loading: []
     };
-  }
+  };
+
   fetchData = (query) => {
     this.setState({ active: null, loading: true });
     Api.get('/api/templates', query)
       .catch(() => [])
       .then(this.setData);
-  }
+  };
+
   setData = (data) => {
     console.log(data);
     this.setState({ loading: false, templates: data });
-  }
+  };
+
   activate = (issue) => {
     // console.log(issue);
     this.setState({ active: this.state.templates.filter((a) => a.componentId === issue.id)[0] });
-  }
+  };
+
   componentDidMount = () => {
     let searchParams = new URLSearchParams(document.location.search);
     let query = {};
@@ -47,7 +51,8 @@ class Templates extends Component {
       query[key] = searchParams.get(key);
     }
     this.fetchData(query);
-  }
+  };
+
   loadEditor = () => {
     console.log('load Editor');
     if (document.getElementById('editor')) {
@@ -59,11 +64,12 @@ class Templates extends Component {
     } else {
       console.log('no editor');
     }
-  }
+  };
+
   newTemplate = withRouter(({ history }) => (
     <button
       type='button'
-      className="center"
+      //className='center'
       onClick={() => {
         history.push(window.location.pathname +
           (window.location.pathname.substr(-1) === '/' ? '0/' : '/0') +
@@ -85,9 +91,11 @@ class Templates extends Component {
       }
       }>Neues Template</button>
   ));
+
   saveTemplate = withRouter(({ history }) => (
     <button
       type='button'
+      className='important'
       onClick={() => {
         history.push('/templates/' +
           window.location.search);
@@ -102,10 +110,12 @@ class Templates extends Component {
       }}
     >Speichern</button>
   ));
+
   // Creates an enumeration of words in an array
   renderEnumeration = (word, index) => {
     return (<li key={index}>{word}</li>);
-  }
+  };
+
   renderSingle = (active) => {
     return (<React.Fragment>
       <Block>
@@ -117,38 +127,41 @@ class Templates extends Component {
       <Block>
         <Row vertical>
           <h6 className='center'>Antworvariationen</h6>
-          <Content>
+          <Content className='margin'>
             {active.templateTexts.map((text, index) => {
-              return <textarea key={index} value={text} onChange={() => {}} />;
+              return <textarea className="p visible" key={index} value={text} onChange={() => {}} />;
             })}
           </Content>
-          <div>
+          <div className='center margin'>
             <this.saveTemplate />
           </div>
         </Row>
       </Block>
     </React.Fragment>);
-  }
+  };
+
   update = () => {
     this.setState({ loading: true });
     setTimeout(() => {
       this.componentDidMount();
     }, 10);
-  }
+  };
+
   renderList = () => {
     return (<Block>
       <Row vertical>
         <Filter onSubmit={this.fetchData} />
-        <div className="row flex-row height" >
+        <div className='row flex-row height' >
           <this.newTemplate />
         </div>
-        <Content className="padding">
+        <Content className='padding'>
           {this.state.loading ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>) : (this.state.templates.map ? this.state.templates.map(Template) : [])}
         </Content>
         <Pagination onClick={this.update} />
       </Row>
     </Block>);
-  }
+  };
+
   render () {
     let active = false;
     if (this.props.match.params.id) {

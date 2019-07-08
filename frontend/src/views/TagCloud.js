@@ -125,7 +125,7 @@ class TagCloud extends Component {
       <React.Fragment>
         <Block>
           <Row vertical>
-            <h6 className='center'>Wortliste</h6>
+            <h1 className='center'>Wortliste</h1>
             <br />
             <div>
               <Row vertical={false} style={{ justifyContent: 'space-around' }}>
