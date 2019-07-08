@@ -6,9 +6,9 @@
 
 import React, { Component } from 'react';
 
-import Block from 'components/Block';
-import Select from 'components/Select';
-import Content from 'components/Content';
+import Block from './../components/Block';
+import Select from './../components/Select';
+import Content from './../components/Content';
 
 // TODO Api anpassen/backend ändern
 const Api = {
@@ -24,6 +24,7 @@ const Api = {
       .then(response => { return response.ok ? response.json() : []; });
   }
 };
+
 class WordVectors extends Component {
   constructor () {
     super();
@@ -32,7 +33,8 @@ class WordVectors extends Component {
       error: false,
       corpora: 'beschwerden3kPolished.bin'
     };
-  }
+  };
+
   parseText = (e) => {
     const precedence = (o) => {
       if (o === '*' || o === '/') {
@@ -89,12 +91,14 @@ class WordVectors extends Component {
 
     this.setState({ error: null });
     this.analogy = outputQueue;
-  }
+  };
+
   calculateOnEnter = (e) => {
     if (e.keyCode === 13) {
       this.calculate();
     }
-  }
+  };
+
   word2vec = (word) => {
     // return new Promise(function (resolve, reject) {
     //  resolve([parseInt(data), parseInt(data)]);
@@ -117,11 +121,12 @@ class WordVectors extends Component {
         };
       });
   };
+
   calculate = () => {
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
       return x.map(a => a / len);
-    };
+    }
     if (this.state.error) return;
     // this.analogy is postfix expression
     let words = this.analogy.filter((token) => {
@@ -170,21 +175,29 @@ class WordVectors extends Component {
       .then(result => {
         this.setState(result);
       });
-  }
+  };
+
   changeCorpora = (e) => {
     this.setState({ corpora: e.target.value });
-  }
+  };
+
   render () {
     return (
       <React.Fragment>
         <Block>
-          <h6 className='center'>Wortvektoren</h6>
-          <Content style={{ flexBasis: '100%' }}>
-            <label htmlFor='textkorpora'>Textkorpora: </label>
-            <Select required id='textkorpora' name='textkorpora' value={this.state.corpora} values={['beschwerden3kPolished.bin', 'cc.de.300.bin', 'ger.bin', 'zig.bin', 'n1M.bin']} onChange={this.changeCorpora} />
-            <label htmlFor='analogy'>Analogie: </label>
-            <input id='analogy' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
-            <input type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
+          <h1 className='center'>Wortvektoren</h1>
+          <Content className="center"style={{ flexBasis: '100%' }}>
+            <div className="smallmargin">
+              <label htmlFor='textkorpora'>Textkorpus: </label>
+              <Select required id='textkorpora' name='textkorpora' value={this.state.corpora} values={['beschwerden3kPolished.bin', 'cc.de.300.bin', 'ger.bin', 'zig.bin', 'n1M.bin']} onChange={this.changeCorpora} />
+            </div>
+            <div className="smallmargin">
+              <label htmlFor='analogy'>Anfrage: </label>
+              <input id='analogy' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
+              <div className="smallmargin">
+                <input type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
+              </div>
+            </div>
             <ul>
               {this.state.result.map((word, index) => {
                 return (<li key={index}>{word}</li>);

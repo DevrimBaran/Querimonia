@@ -9,12 +9,12 @@ import { connect } from 'react-redux';
 
 import { fetchData } from '../redux/actions';
 
-import Block from 'components/Block';
-import Row from 'components/Row';
-import Content from 'components/Content';
-import Template from 'components/Template';
-import Filter from 'components/Filter';
-import Pagination from 'components/Pagination';
+import Block from './../components/Block';
+import Row from './../components/Row';
+import Content from './../components/Content';
+import Template from './../components/Template';
+import Filter from './../components/Filter';
+import Pagination from './../components/Pagination';
 
 import { pd } from 'pretty-data';
 import { withRouter } from 'react-router-dom';
@@ -45,6 +45,7 @@ class Templates extends Component {
   newTemplate = withRouter(({ history }) => (
     <button
       type='button'
+      className='center'
       onClick={() => {
         history.push(window.location.pathname +
           (window.location.pathname.substr(-1) === '/' ? '0/' : '/0') +
@@ -119,11 +120,11 @@ class Templates extends Component {
   renderList = () => {
     return (<Block>
       <Row vertical>
-        <Filter endpoint='templates' />
-        <div>
+        <Filter onSubmit={this.fetchData} />
+        <div className='row flex-row height' >
           <this.newTemplate />
         </div>
-        <Content>
+        <Content className='padding'>
           {this.props.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
             : (this.props.data && this.props.data.ids.map(id => Template(this.props.data.byId[id])))

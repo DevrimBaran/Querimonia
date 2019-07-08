@@ -16,10 +16,14 @@ function Template (data, index) {
         data && (
           <Link to={'/templates/' + data.componentId}>
             <div className='Template'>
-              <p>Id: {data.componentId}</p>
-              <p>Name: {data.componentName}</p>
-              <p>Antwortvariationen: {data.templateTexts.length}</p>
-              <p>Entitäten: {data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p>
+              <div className='floatLeft'>
+                <p className='h2'>{data.componentName}</p>
+                <p>ID: {data.componentId}</p>
+              </div>
+              <div className='floatRight'>
+                <p>Antwortvariationen: {data.templateTexts.length}</p>
+                <p>Entitäten: {data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p>
+              </div>
             </div>
           </Link>
         )

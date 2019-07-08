@@ -9,10 +9,10 @@ import React, { Component } from 'react';
 
 import Api from '../utility/Api';
 
-import Debug from 'components/Debug';
-import Collapsible from 'components/Collapsible';
-import TaggedText from 'components/TaggedText';
-import Content from 'components/Content';
+import Debug from './../components/Debug';
+import Collapsible from './../components/Collapsible';
+import TaggedText from './../components/TaggedText';
+import Content from './../components/Content';
 
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
@@ -80,8 +80,8 @@ class TextBuilder extends Component {
   render () {
     return (
       <React.Fragment>
-        <Content style={{ flexBasis: '100%' }}>
-          <textarea id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
+        <Content style={{ flexBasis: '10%' }}>
+          <textarea className="margin" id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
           <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>

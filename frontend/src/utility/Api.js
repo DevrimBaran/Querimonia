@@ -1,8 +1,16 @@
+
 const fetchJson = function (action, options) {
   console.log(process.env.NODE_ENV);
-  if ((process.env.NODE_ENV === 'development' || process.env.REACT_APP_BACKEND_PATH === 'mock')) {
-    return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
-      .then(response => { return response.ok ? response.json() : []; });
+  if ((process.env.NODE_ENV === 'development')) {
+    const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
+    if (useMockInDev) {
+      console.log('Application is using mock backend!');
+      return fetch('https://querimonia.iao.fraunhofer.de/mock' + action, options)
+        .then(response => { return response.ok ? response.json() : []; });
+    } else {
+      return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
+        .then(response => { return response.ok ? response.json() : []; });
+    }
   } else {
     return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
       .then(response => { return response.ok ? response.json() : []; });

@@ -5,6 +5,7 @@ stages:
   - build
   - test
   - deploy
+  - admin
 
 variables:
   DOCKER_HOST: tcp://docker:2375
@@ -21,7 +22,6 @@ build-frontend-dev: &base-frontend
   artifacts:
     paths:
       - frontend/build/
-    expire_in: 5 mins
   allow_failure: true
   only:
     - /^frontend.*$/
@@ -37,7 +37,6 @@ build-frontend-mock:
   artifacts:
     paths:
       - frontend/mock/
-    expire_in: 5 mins
 
 build-frontend-master:
   <<: *base-frontend
@@ -58,7 +57,6 @@ test-frontend:
     paths:
       - frontend/build/
       - frontend/mock/
-    expire_in: 5 mins
   allow_failure: false
   only:
     - /^frontend.*$/
@@ -97,7 +95,6 @@ build-backend-dev: &base-backend
     paths:
       - backend/target/*.jar
       - backend/doc/openapi.yaml
-    expire_in: 5 mins
   allow_failure: true
   only:
     - /^backend.*$/
@@ -127,11 +124,10 @@ deploy-backend-dev:
     - echo 'start server in background'
     - sudo systemctl restart stuprojavaserver_dev
     - echo 'copy current openapi to destination'
-    - chmod +x backend/doc/openapi.yaml
+    - chmod +rx backend/doc/openapi.yaml
     - sudo cp backend/doc/openapi.yaml /home/beschwerdemanagement/export/data/
-    - cd /home/beschwerdemanagement/export/data/
-    - cat openapi.yaml | yq -j . > openapi.json
-    - chmod +x openapi.json
+    - cd /home/gitlab-runner/
+    - ./convert.sh
   allow_failure: true
   only:
     - backend
@@ -152,3 +148,10 @@ master:
     - sudo systemctl restart stuprojavaserver
   only:
     - master
+
+last:
+  stage: admin
+  tags:
+    - shell
+  script:
+    - sudo systemctl restart stuproadmin

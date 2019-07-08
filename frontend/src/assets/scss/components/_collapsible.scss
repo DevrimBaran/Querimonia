@@ -1,0 +1,52 @@
+@import '../variables';
+
+.collapsible {
+    position: relative;
+    overflow: hidden;
+    .handle {
+        position: relative;
+        display: block;
+        line-height: 15px;
+        width: 100%;
+        height: 40px;
+        cursor: pointer;
+        color: $primaryTextColor;
+        font-size: 15px;      
+        //padding: 10px 0;
+        z-index: 1;
+        &::before {
+            position: relative;
+            display: block;
+            content: '';
+            top: 7px;
+            border-top: 1px solid $tertiaryBackgroundColor;
+        }
+        i {
+            position: relative;
+            padding: 0 5px 0 10px;
+            margin-left: 10px;
+            background-color: $primaryBackgroundColor;
+        }
+        span {
+            position: relative;
+            padding-right: 10px;
+            background-color: $primaryBackgroundColor;
+        }
+    }
+    .content {
+        overflow: auto;
+        height: 100%;
+        //padding-top: 10px;
+    }
+    &.Content .content {
+        height: calc(100% - 40px);
+        //padding: 0 30px;
+    }
+}
+
+.collapsible[data-collapse=true] { 
+    min-height: 30px !important;
+    .content {
+        display: none;
+    }
+}

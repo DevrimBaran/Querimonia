@@ -9,16 +9,16 @@ import { connect } from 'react-redux';
 
 import { fetchData } from '../redux/actions';
 
-import Block from 'components/Block';
-import Row from 'components/Row';
-import Content from 'components/Content';
-import Complaint from 'components/Complaint';
-import Collapsible from 'components/Collapsible';
-import Filter from 'components/Filter';
-import Tabbed from 'components/Tabbed';
-import TaggedText from 'components/TaggedText';
-import TextBuilder from 'components/TextBuilder';
-import Pagination from 'components/Pagination';
+import Block from './../components/Block';
+import Row from './../components/Row';
+import Content from './../components/Content';
+import Complaint from './../components/Complaint';
+import Collapsible from './../components/Collapsible';
+import Filter from './../components/Filter';
+import Tabbed from './../components/Tabbed';
+import TaggedText from './../components/TaggedText';
+import TextBuilder from './../components/TextBuilder';
+import Pagination from './../components/Pagination';
 import ReactTooltip from 'react-tooltip';
 
 class Complaints extends Component {
@@ -28,9 +28,10 @@ class Complaints extends Component {
       active: null
     };
   }
-    componentDidMount = () => {
-      this.props.dispatch(fetchData('complaints', 'complaintId'));
-    }
+  componentDidMount = () => {
+    this.props.dispatch(fetchData('complaints', 'complaintId'));
+  }
+
     renderSingle = (active) => {
       return (<React.Fragment>
         <Block>
@@ -52,7 +53,7 @@ class Complaints extends Component {
                 </div>
               </Tabbed>
             </Content>
-            <Collapsible label='Details' className='Content' style={{ minHeight: '130px' }}>
+            <Collapsible label='Details' style={{ minHeight: '130px' }}>
               <b>Eingangsdatum: </b>
               <TaggedText text={{
                 text: active.receiveDate,
@@ -63,33 +64,35 @@ class Complaints extends Component {
               {active.complaintId}
               <br />
               <b> Kategorie: </b>
-              <i data-tip data-for='subjects'>{active.probableSubject}</i>
+              <i data-tip data-for='subjects'>{active.subject.value}</i>
               <br />
               <b> Sentiment: </b>
-              <i data-tip data-for='sentiments'>{active.probableSentiment}</i>
+              <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
               <br />
             </Collapsible>
-            <Collapsible label='Entitäten' className='Content'>
+            <Collapsible label='Entitäten'>
               <ul>
                 {createEntityArray(active.text, active.entities)}
               </ul>
               <ReactTooltip id='subjects' aria-haspopup='true'>
-                {Object.keys(active.subject).map(s => 's: ' + active.subject[s])}
+                {Object.keys(active.subject.probabilities).map(subject => `${subject}: ${active.subject.probabilities[subject]}`)}
               </ReactTooltip>
               <ReactTooltip id='sentiments' aria-haspopup='true'>
-                {Object.keys(active.subject).map(s => 's: ' + active.subject[s])}
+                {Object.keys(active.sentiment.probabilities).map(sentiment => `${sentiment}: ${active.sentiment.probabilities[sentiment]}`)}
               </ReactTooltip>
             </Collapsible>
           </Row>
         </Block>
       </React.Fragment>);
     }
+
     update = () => {
       this.setState({ loading: true });
       setTimeout(() => {
         this.componentDidMount();
       }, 10);
     }
+
     renderList = () => {
       return (<Block>
         <Row vertical>
@@ -104,6 +107,7 @@ class Complaints extends Component {
         </Row>
       </Block>);
     }
+
     render () {
       let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
       return (
