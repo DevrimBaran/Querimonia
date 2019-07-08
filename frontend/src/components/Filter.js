@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import { fetchData } from '../redux/actions';
 import { connect } from 'react-redux';
 import Collapsible from '../components/Collapsible';
+import Input from '../components/Input';
 
 class Filter extends Component {
   submit = (e) => {
@@ -23,12 +24,9 @@ class Filter extends Component {
       value: e.target.value
     });
   }
-  renderInput = (input, index) => {
+  renderInput = (input) => {
     return (
-      <React.Fragment key={index}>
-        <label htmlFor={input.name}>{input.label}: </label>
-        <input type={input.type} id={input.name} name={input.name} onChange={this.onChange} value={input.value} />
-      </React.Fragment>
+      <Input key={input.name} label={input.label} type={input.type} id={input.name} name={input.name} onChange={this.onChange} value={input.value} values={input.values} />
     );
   }
   render () {

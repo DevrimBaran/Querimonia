@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 
 import Block from './../components/Block';
-import Select from './../components/Select';
+import Input from '../components/Input';
 import Content from './../components/Content';
 
 // TODO Api anpassen/backend ändern
@@ -28,10 +28,17 @@ const Api = {
 class WordVectors extends Component {
   constructor () {
     super();
+    this.corpora = [
+      { label: 'beschwerden3kPolished', value: 'beschwerden3kPolished.bin' },
+      { label: 'cc.de.300', value: 'cc.de.300.bin' },
+      { label: 'ger', value: 'ger.bin' },
+      { label: 'zig', value: 'zig.bin' },
+      { label: 'n1M', value: 'n1M.bin' }
+    ];
     this.state = {
       result: [],
       error: false,
-      corpora: 'beschwerden3kPolished.bin'
+      corpora: this.corpora[0].value
     };
   };
 
@@ -189,7 +196,7 @@ class WordVectors extends Component {
           <Content className='center'style={{ flexBasis: '100%' }}>
             <div className='smallmargin'>
               <label htmlFor='textkorpora'>Textkorpus: </label>
-              <Select required id='textkorpora' name='textkorpora' value={this.state.corpora} values={['beschwerden3kPolished.bin', 'cc.de.300.bin', 'ger.bin', 'zig.bin', 'n1M.bin']} onChange={this.changeCorpora} />
+              <Input type='select' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
             </div>
             <div className='smallmargin'>
               <label htmlFor='analogy'>Anfrage: </label>
