@@ -47,8 +47,11 @@ export const api = {
     //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
     return fetchJson(endpoint + (query ? '?' + query : ''), options('get'));
   },
-  delete: function (endpoint) {
-    return fetchJson(endpoint, options('delete'));
+  delete: function (endpoint, query) {
+    query = Object.keys(query).filter((name) => query[name]).map((name) => {
+      return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
+    }).join('&');
+    return fetchJson(endpoint + (query ? '?' + query : ''), options('delete'));
   },
   post: function (endpoint, data) {
     return fetchJson(endpoint, options('post', data));
