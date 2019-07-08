@@ -29,6 +29,14 @@ public class QuerimoniaException extends ResponseStatusException {
     this(status, cause.getMessage(), cause, title);
   }
 
+  /**
+   * Creates a new Querimonia Exception.
+   *
+   * @param status  the http status code that gets returned to the client.
+   * @param message the exception message.
+   * @param cause   the exception that caused an error.
+   * @param title   a title for a dialog window.
+   */
   public QuerimoniaException(HttpStatus status, String message, Throwable cause,
                              String title) {
     super(status, message, cause);

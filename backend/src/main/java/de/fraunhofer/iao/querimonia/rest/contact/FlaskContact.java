@@ -1,11 +1,14 @@
 package de.fraunhofer.iao.querimonia.rest.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -22,8 +25,14 @@ public class FlaskContact {
     header.setContentType(MediaType.APPLICATION_JSON);
 
     HttpEntity<String> request = new HttpEntity<>(body.toString(), header);
-    String response =
-        new RestTemplate().exchange(URL + path, HttpMethod.POST, request, String.class).getBody();
+    String response = null;
+    try {
+      response = new RestTemplate()
+          .exchange(URL + path, HttpMethod.POST, request, String.class).getBody();
+    } catch (RestClientException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Flask-Server konnte nicht"
+          + " erreicht werden", e, "Flask-Server nicht erreichbar");
+    }
 
 
     ObjectMapper mapper = new ObjectMapper();

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -51,17 +52,23 @@ public class KiKuKoContact<T> {
         .basicAuthentication("admin", "KIKuKoPass2018")
         .build();
 
-    // get response
-    String returnValue = template.exchange(URL, HttpMethod.POST,
-        request, String.class).getBody();
-    // map string to json
-    ObjectMapper mapper = new ObjectMapper();
-    T[] responses;
     // exception for illegal answers
     QuerimoniaException kikukoException =
         new QuerimoniaException(HttpStatus.CONFLICT,
             "Keine Antwort von KIKiKo verfügbar", "KIKuKo nicht "
             + "erreichbar");
+
+    // get response
+    String returnValue;
+    try {
+      returnValue = template.exchange(URL, HttpMethod.POST,
+          request, String.class).getBody();
+    } catch (RestClientException e) {
+      throw kikukoException;
+    }
+    // map string to json
+    ObjectMapper mapper = new ObjectMapper();
+    T[] responses;
 
     try {
       responses = mapper.readValue(returnValue, type);
