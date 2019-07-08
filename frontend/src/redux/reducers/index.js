@@ -1,14 +1,11 @@
 function filter (state = [], action, endpoint) {
-  console.log(endpoint, action.endpoint);
   if (endpoint !== action.endpoint) return state;
   switch (action.type) {
     case 'FILTER_CHANGE': {
-      return state[action.endpoint].filter.map((input) => {
+      return state.map((input) => {
         if (input.name === action.name) {
           return {
-            label: input.label,
-            name: input.name,
-            type: input.type,
+            ...input,
             value: action.value
           };
         }
@@ -21,7 +18,6 @@ function filter (state = [], action, endpoint) {
 }
 
 function pagination (state = { count: 0, limit: 10, max: 0 }, action, endpoint) {
-  console.log(endpoint, action.endpoint);
   if (endpoint !== action.endpoint) return state;
   switch (action.type) {
     case 'PAGINATION_CHANGE': {
@@ -36,7 +32,6 @@ function pagination (state = { count: 0, limit: 10, max: 0 }, action, endpoint) 
 };
 
 function data (state = { data: {}, ids: [], idKey: 'id', fetching: false }, action, endpoint) {
-  console.log(endpoint, action.endpoint);
   if (endpoint !== action.endpoint) return state;
   switch (action.type) {
     case 'FETCH_START': {

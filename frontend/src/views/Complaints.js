@@ -37,7 +37,7 @@ class Complaints extends Component {
         <Block>
           <Row vertical>
             <h6 className='center'>Antwort</h6>
-            <TextBuilder complaintId={active.complaintId} />
+            <TextBuilder complaintId={active.id} />
           </Row>
         </Block>
         <Block>
@@ -61,7 +61,7 @@ class Complaints extends Component {
               }} />
               <br />
               <b> ID: </b>
-              {active.complaintId}
+              {active.id}
               <br />
               <b> Kategorie: </b>
               <i data-tip data-for='subjects'>{active.subject.value}</i>

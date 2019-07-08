@@ -41,9 +41,13 @@ const options = function (method, data) {
 export const api = {
   get: function (endpoint, query) {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {
+      if (Array.isArray(query[name])) {
+        return query[name].map(element => {
+          return encodeURIComponent(name) + '=' + encodeURIComponent(element);
+        }).join('&');
+      }
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
-    console.log(query, !((document.location.search !== query) || (document.location.search !== '?' + query)));
     //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
     return fetchJson(endpoint + (query ? '?' + query : ''), options('get'));
   },
