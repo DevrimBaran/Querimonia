@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierType;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 @Entity
 @JsonPropertyOrder(value = {
-    "configIg",
+    "id",
     "name",
     "extractors",
     "classifier",
@@ -52,6 +53,7 @@ public class Configuration {
 
   @Id
   @GeneratedValue
+  @JsonProperty("id")
   private int configId;
 
   @Column(name = "config_name", unique = true)

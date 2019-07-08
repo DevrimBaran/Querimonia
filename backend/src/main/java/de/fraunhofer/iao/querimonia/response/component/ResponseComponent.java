@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  */
 @Entity
 @JsonPropertyOrder(value = {
-    "componentId",
+    "id",
     "name",
     "priority",
     "rulesXml",
@@ -39,6 +39,7 @@ public class ResponseComponent {
    */
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonProperty("id")
   private int componentId;
 
   public void setComponentId(int componentId) {

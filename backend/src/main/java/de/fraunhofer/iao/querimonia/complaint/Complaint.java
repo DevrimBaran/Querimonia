@@ -35,7 +35,7 @@ import java.util.Objects;
  */
 @Entity
 @JsonPropertyOrder(value = {
-    "complaintId",
+    "id",
     "text",
     "preview",
     "state",
@@ -51,6 +51,7 @@ public class Complaint {
    * The primary key for the complaints in the database.
    */
   @Id
+  @JsonProperty("id")
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int complaintId;
 
