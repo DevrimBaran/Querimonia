@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { fetchData } from '../redux/actions';
 import { connect } from 'react-redux';
-import Collapsible from 'components/Collapsible';
+import Collapsible from '../components/Collapsible';
 
 class Filter extends Component {
   submit = (e) => {

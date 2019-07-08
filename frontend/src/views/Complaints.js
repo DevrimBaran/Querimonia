@@ -29,7 +29,7 @@ class Complaints extends Component {
     };
   }
   componentDidMount = () => {
-    this.props.dispatch(fetchData('complaints', 'complaintId'));
+    this.props.dispatch(fetchData('complaints'));
   }
 
     renderSingle = (active) => {

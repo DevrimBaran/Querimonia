@@ -28,7 +28,7 @@ class Templates extends Component {
     };
   }
   componentDidMount = () => {
-    this.props.dispatch(fetchData('templates', 'componentId'));
+    this.props.dispatch(fetchData('templates'));
   }
   loadEditor = () => {
     console.log('load Editor');
@@ -46,7 +46,6 @@ class Templates extends Component {
   newTemplate = withRouter(({ history }) => (
     <button
       type='button'
-      //className='center'
       onClick={() => {
         history.push(window.location.pathname +
           (window.location.pathname.substr(-1) === '/' ? '0/' : '/0') +
@@ -106,7 +105,7 @@ class Templates extends Component {
           <h6 className='center'>Antworvariationen</h6>
           <Content className='margin'>
             {active.templateTexts.map((text, index) => {
-              return <textarea className="p visible" key={index} value={text} onChange={() => {}} />;
+              return <textarea className='p visible' key={index} value={text} onChange={() => {}} />;
             })}
           </Content>
           <div className='center margin'>
@@ -127,7 +126,7 @@ class Templates extends Component {
   renderList = () => {
     return (<Block>
       <Row vertical>
-        <Filter onSubmit={this.fetchData} />
+        <Filter endpoint='templates' />
         <div className='row flex-row height' >
           <this.newTemplate />
         </div>
