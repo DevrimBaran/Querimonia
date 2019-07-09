@@ -436,8 +436,12 @@ public class ComplaintController {
   /**
    * Deletes all complaints in the database.
    *
-   * @return a response entity with status code 204.
-   * @throws ResponseStatusException on some unexpected server error.
+   * @return a response entity with
+   * <ul>
+   *   <li>status code 204 on success</li>
+   *   <li>status code 500 on a unexpected server error with the querimonia exception as
+   *   response body.</li>
+   * </ul>
    */
   @DeleteMapping("/api/complaints/all")
   public ResponseEntity<?> deleteAllComplaints() {

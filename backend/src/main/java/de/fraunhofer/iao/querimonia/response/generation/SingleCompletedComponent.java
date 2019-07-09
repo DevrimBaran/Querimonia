@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Entity
 @JsonPropertyOrder(value = {
-    "completedComponentId",
+    "id",
     "completedText",
     "entities",
     "component"
@@ -31,6 +31,7 @@ public class SingleCompletedComponent {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonProperty("id")
   private int completedComponentId;
 
   @Column(length = 5000)

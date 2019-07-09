@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 
@@ -24,6 +25,7 @@ public class CompletedResponseComponent {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
+  @JsonProperty("id")
   private int responsePartId;
 
   @OneToMany(cascade = CascadeType.ALL)
