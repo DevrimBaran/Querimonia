@@ -1,12 +1,16 @@
 import string
 import sys
 import nltk
-
+from pathlib import Path
 
 # Sarcasm, Irony not detected. For example: 'Ich hasse dich und liebe dich nicht' has value > 0
 # created by phuszár
 
 # ToDo: Respect to Frequency in Dictionary!
+
+# Variables
+datafolder = Path("data/")
+
 
 def positive_sentiment(query):
     sentiment = analyze(query, 'SentiWS_v2.0_Positive.txt')
@@ -21,6 +25,7 @@ def negative_sentiment(query):
 # Check for matches in Dictionaries
 def analyze(query, dict):
     tokens = filter_query(query)
+    dict = datafolder / dict
     sentiment_value = 0
     for j in tokens:
         with open(dict, 'r', encoding='utf-8') as sentis:
@@ -66,9 +71,9 @@ if __name__ == '__main__':
     print('In cmd " python sentiment_analyse.py *query* \n or use examples in comments')
 
     # for example
-    test_pos = 'liebe ist was schönes'
-    test_neg = 'Ich hasse Zerstörung und Gewalt'
-    print(main(test_neg))
+    # test_pos = 'liebe ist was schönes'
+    # test_neg = 'Ich hasse Zerstörung und Gewalt'
+    # print(main(test_neg))
 
     # for cmd
-    #   print("Sentiment Value is: " + (str)(parse_arg()))
+    # print("Sentiment Value is: " + (str)(parse_arg()))
