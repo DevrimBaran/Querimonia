@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
+import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
@@ -13,6 +14,7 @@ import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
@@ -61,6 +63,7 @@ public class ComplaintManager {
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
                           TemplateRepository templateRepository,
+                          ActionRepository actionRepository,
                           CompletedResponseComponentRepository
                               completedResponseComponentRepository,
                           ConfigurationManager configurationManager) {

@@ -15,12 +15,12 @@ public class ResponseSuggestion {
 
   @ElementCollection
   @CollectionTable(name = "completed_response_components",
-                   joinColumns = @JoinColumn(name = "component_id"))
+      joinColumns = @JoinColumn(name = "component_id"))
   private List<CompletedResponseComponent> responseComponents;
 
   @ElementCollection
-  @CollectionTable(name = "response_actions",
-                   joinColumns = @JoinColumn(name = "action_id"))
+  @CollectionTable(name = "actions",
+      joinColumns = @JoinColumn(name = "action_id"))
   private List<Action> actions;
 
   @JsonCreator

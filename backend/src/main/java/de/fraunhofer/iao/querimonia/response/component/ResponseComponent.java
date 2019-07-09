@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
+import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -140,6 +141,7 @@ public class ResponseComponent {
    *
    * @return the rule of the component.
    */
+  @Override
   public Rule getRootRule() {
     if (rootRule == null) {
       rootRule = parseRulesXml(rulesXml);
