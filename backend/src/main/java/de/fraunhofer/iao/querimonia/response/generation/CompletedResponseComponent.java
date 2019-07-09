@@ -33,7 +33,7 @@ public class CompletedResponseComponent {
   private List<SingleCompletedComponent> alternatives;
 
   @JoinColumn(name = "component_id")
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   private ResponseComponent component;
 
   @JsonCreator
