@@ -303,7 +303,8 @@ public class ComplaintManager {
    */
   public ResponseSuggestion refreshResponse(int complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    complaintFactory.createResponse(new ComplaintData(complaint));
+    var suggestion = complaintFactory.createResponse(new ComplaintData(complaint));
+    complaint.setResponseSuggestion(suggestion);
     storeComplaint(complaint);
     return complaint.getResponseSuggestion();
   }
