@@ -41,7 +41,6 @@ function Home () {
                 <h3>Beispiel:</h3>
                 <br />
                 <h6>Beschwerdenachricht</h6>
-                style="color:white"
                 <p>
                 Die Buslinie 637 ist am 01.03.2019 an der
                 Gartenheimstr. in Langenberg(Schule!) um 13.46 Uhr
