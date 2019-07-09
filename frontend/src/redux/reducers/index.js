@@ -39,14 +39,14 @@ function pagination (state = { count: 0, limit: 10, max: 0 }, action, endpoint) 
   }
 };
 
-function data (state = { data: {}, ids: [], idKey: 'id', fetching: false }, action, endpoint) {
+function data (state = { byId: {}, active: false, ids: [], fetching: false }, action, endpoint) {
   if (endpoint !== action.endpoint) return state;
   switch (action.type) {
     case 'FETCH_START': {
       return {
         ...state,
         fetching: true,
-        active: {},
+        active: false,
         byId: {},
         ids: []
       };
@@ -67,10 +67,29 @@ function data (state = { data: {}, ids: [], idKey: 'id', fetching: false }, acti
         }
       };
     }
+    case 'SAVE_START': {
+      return {
+        ...state,
+        active: {
+          ...state.active,
+          saving: true
+        }
+      };
+    }
+    case 'SAVE_END': {
+      return {
+        ...state,
+        active: {
+          ...state.active,
+          saving: false
+        }
+      };
+    }
     case 'FETCH_END': {
       return {
         ...state,
         fetching: false,
+        active: false,
         byId: action.data.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
         ids: action.data.map(item => item.id)
       };

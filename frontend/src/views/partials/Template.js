@@ -7,6 +7,8 @@
 
 import React from 'react';
 
+import { saveActive } from '../../redux/actions';
+
 import CodeMirror from '../../components/CodeMirror';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
@@ -38,24 +40,26 @@ function List (data, index) {
   );
 }
 
-function Single (active, onSave) {
-  const save = withRouter(({ history }) => (
+function Single (active, dispatch) {
+  const Save = withRouter(({ history }) => (
     <button
       type='button'
       className='important'
-      onClick={() => {
-        history.push('../');
+      disabled={active.saving}
+      onClick={(e) => {
+        dispatch(saveActive('templates'));
       }}
     >Speichern</button>
   ));
   const modify = (key, value) => {
+    let modified;
     if (key === 'rulesXml') {
-      active = {
+      modified = {
         ...active,
         rulesXml: value
       };
     } else {
-      active = {
+      modified = {
         ...active,
         templateTexts: active.templateTexts.map((text, index) => {
           if (index === key) {
@@ -65,6 +69,11 @@ function Single (active, onSave) {
         })
       };
     }
+    dispatch({
+      type: 'MODIFY_ACTIVE',
+      endpoint: 'templates',
+      data: modified
+    });
   };
   return (
     <React.Fragment>
@@ -85,7 +94,7 @@ function Single (active, onSave) {
             })}
           </Content>
           <div className='center margin'>
-            <save />
+            <Save />
           </div>
         </Row>
       </Block>

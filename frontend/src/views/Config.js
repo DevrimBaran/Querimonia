@@ -16,21 +16,20 @@ import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
+import Input from './../components/Input';
 
 class Config extends Component {
   componentDidMount = () => {
     this.props.dispatch(fetchData('config'));
   }
-  renderSingle = (active) => {
-    return (<React.Fragment>
-      {ConfigPartial.List(active)}
-    </React.Fragment>);
-  };
 
   renderList = () => {
     return (<Block>
       <Row vertical>
         <Filter endpoint='config' />
+        <div className='row flex-row height' >
+          <Input type='button' />
+        </div>
         <Content className='padding'>
           {this.props.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
@@ -43,11 +42,24 @@ class Config extends Component {
   };
 
   render () {
-    let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
+    const id = parseInt(this.props.match.params.id);
+    if (id) {
+      if (!this.props.data.active || id !== this.props.data.active.id) {
+        if (!this.props.data.fetching) {
+          console.log(this.props.data.active.id, id, this.props.data.fetching);
+          this.props.dispatch({
+            type: 'SET_ACTIVE',
+            endpoint: 'config',
+            id: id
+          });
+        }
+      }
+    }
+    let single = id && this.props.data.active;
     return (
       <React.Fragment>
-        {active ? (
-          this.renderSingle(active)
+        {single ? (
+          ConfigPartial.Single(this.props.data.active, this.props.dispatch)
         ) : (
           this.renderList()
         )}
