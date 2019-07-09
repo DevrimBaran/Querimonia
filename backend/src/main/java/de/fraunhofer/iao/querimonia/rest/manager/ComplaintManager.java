@@ -3,18 +3,19 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
-import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.SingleCompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
+import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
@@ -29,7 +30,9 @@ import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -48,6 +51,7 @@ import java.util.stream.Stream;
 /**
  * Manager class for complaints.
  */
+@Service
 public class ComplaintManager {
 
   private static final Logger logger = LoggerFactory.getLogger(ComplaintManager.class);
@@ -56,25 +60,32 @@ public class ComplaintManager {
   private final CompletedResponseComponentRepository completedResponseComponentRepository;
   private final ComplaintFactory complaintFactory;
   private final ConfigurationManager configurationManager;
+  private final ResponseComponentRepository responseComponentRepository;
+  private final SingleCompletedComponentRepository singleCompletedComponentRepository;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint manager.
    */
+  @Autowired
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
-                          TemplateRepository templateRepository,
+                          ResponseComponentRepository templateRepository,
                           ActionRepository actionRepository,
                           CompletedResponseComponentRepository
                               completedResponseComponentRepository,
-                          ConfigurationManager configurationManager) {
+                          ConfigurationManager configurationManager,
+                          SingleCompletedComponentRepository singleCompletedComponentRepository) {
 
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
     this.completedResponseComponentRepository = completedResponseComponentRepository;
     this.configurationManager = configurationManager;
+    this.responseComponentRepository = templateRepository;
+    this.singleCompletedComponentRepository = singleCompletedComponentRepository;
 
-    complaintFactory = new ComplaintFactory(new DefaultResponseGenerator(templateRepository, actionRepository),
-        new TokenAnalyzer());
+    complaintFactory =
+        new ComplaintFactory(new DefaultResponseGenerator(templateRepository, actionRepository),
+            new TokenAnalyzer());
   }
 
   private static QuerimoniaException getNotFoundException(int complaintId) {
@@ -86,7 +97,7 @@ public class ComplaintManager {
    * Returns the complaints of the database with filtering and sorting.
    *
    * @see ComplaintController#getComplaints(Optional, Optional, Optional, Optional, Optional,
-   * Optional, Optional, Optional, Optional) getComplaints
+   *     Optional, Optional, Optional, Optional) getComplaints
    */
   public synchronized List<Complaint> getComplaints(
       Optional<Integer> count, Optional<Integer> page, Optional<String[]> sortBy,
@@ -231,11 +242,11 @@ public class ComplaintManager {
    * Counts the complaints.
    *
    * @see ComplaintController#countComplaints(Optional, Optional, Optional, Optional, Optional,
-   * Optional)  countComplaints
+   *     Optional)  countComplaints
    */
   public synchronized String countComplaints(Optional<String[]> state, Optional<String> dateMin,
-                                          Optional<String> dateMax, Optional<String[]> sentiment,
-                                          Optional<String[]> subject, Optional<String[]> keywords
+                                             Optional<String> dateMax, Optional<String[]> sentiment,
+                                             Optional<String[]> subject, Optional<String[]> keywords
   ) {
     return "" + (getComplaints(Optional.empty(), Optional.empty(), Optional.empty(), state, dateMin,
         dateMax, sentiment, subject, keywords).size());
@@ -314,9 +325,13 @@ public class ComplaintManager {
 
   private synchronized void storeComplaint(Complaint complaint) {
     // save the components
-    complaint.getResponseSuggestion()
-        .getResponseComponents()
-        .forEach(completedResponseComponentRepository::save);
+    for (CompletedResponseComponent completedResponseComponent : complaint.getResponseSuggestion()
+        .getResponseComponents()) {
+      responseComponentRepository.save(completedResponseComponent.getComponent());
+      completedResponseComponentRepository.save(completedResponseComponent);
+
+      singleCompletedComponentRepository.saveAll(completedResponseComponent.getAlternatives());
+    }
     configurationManager.storeConfiguration(complaint.getConfiguration());
     complaintRepository.save(complaint);
     logger.info("Saved complaint with id {}", complaint.getComplaintId());
@@ -334,6 +349,7 @@ public class ComplaintManager {
    *
    * @param fullFilePath    the file path
    * @param fileInputStream a input stream of that file
+   *
    * @return the extracted complaint text.
    * @throws IOException on an io-error.
    */
