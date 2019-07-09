@@ -324,6 +324,13 @@ public class ComplaintManager {
 
   private synchronized void storeComplaint(Complaint complaint) {
     // save the components
+
+    try {
+      configurationManager.storeConfiguration(complaint.getConfiguration());
+    } catch (Exception e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
+          + "Konfiguration", e, "Konfiguration");
+    }
     try {
       complaintRepository.save(complaint);
     } catch (Exception e) {
