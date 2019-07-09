@@ -325,15 +325,30 @@ public class ComplaintManager {
 
   private synchronized void storeComplaint(Complaint complaint) {
     // save the components
-    for (CompletedResponseComponent completedResponseComponent : complaint.getResponseSuggestion()
-        .getResponseComponents()) {
-      responseComponentRepository.save(completedResponseComponent.getComponent());
-      completedResponseComponentRepository.save(completedResponseComponent);
+    try {
+      for (CompletedResponseComponent completedResponseComponent : complaint.getResponseSuggestion()
+          .getResponseComponents()) {
+        responseComponentRepository.save(completedResponseComponent.getComponent());
+        completedResponseComponentRepository.save(completedResponseComponent);
 
-      singleCompletedComponentRepository.saveAll(completedResponseComponent.getAlternatives());
+        singleCompletedComponentRepository.saveAll(completedResponseComponent.getAlternatives());
+      }
+    } catch (Exception e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
+          + "Attribute", e, "Attribute");
     }
-    configurationManager.storeConfiguration(complaint.getConfiguration());
-    complaintRepository.save(complaint);
+    try {
+      configurationManager.storeConfiguration(complaint.getConfiguration());
+    } catch (Exception e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
+          + "Konfiguration", e, "Konfiguration");
+    }
+    try {
+      complaintRepository.save(complaint);
+    } catch (Exception e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
+          + "Beschwerde", e, "Beschwerde");
+    }
     logger.info("Saved complaint with id {}", complaint.getComplaintId());
   }
 
