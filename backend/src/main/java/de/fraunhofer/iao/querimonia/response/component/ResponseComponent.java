@@ -90,6 +90,7 @@ public class ResponseComponent implements RuledInterface {
   @JsonIgnore
   private List<List<ResponseSlice>> templateSlices;
 
+  @JsonCreator
   public ResponseComponent(String componentName, List<String> templateTexts,
                            String rulesXml) {
     setComponentName(componentName);
