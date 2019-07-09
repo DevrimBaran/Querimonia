@@ -1,8 +1,10 @@
 package de.fraunhofer.iao.querimonia.response.component;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
 import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
     "requiredEntities",
     "templateTexts"
 })
-public class ResponseComponent implements RuledInterface{
+public class ResponseComponent implements RuledInterface {
 
   /**
    * The unique primary key of the component.
@@ -93,6 +95,14 @@ public class ResponseComponent implements RuledInterface{
     setComponentName(componentName);
     setTemplateTexts(templateTexts);
     setRulesXml(rulesXml);
+  }
+
+  @JsonCreator
+  public ResponseComponent(@JsonProperty String componentName,
+                           @JsonProperty List<String> templateTexts,
+                           @JsonProperty String rulesXml,
+                           @JsonProperty List<NamedEntity> requiredEntities) {
+    this(componentName, templateTexts, rulesXml);
   }
 
   public ResponseComponent() {

@@ -125,6 +125,7 @@ public class ResponseComponentController {
     return ControllerUtility.tryAndCatch(() -> {
       responseComponent.setComponentId(componentId);
       componentRepository.save(responseComponent);
+      return responseComponent;
     });
   }
 }
