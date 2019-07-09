@@ -88,8 +88,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
         .withLocale(Locale.GERMAN)
         .format(complaintData.getUploadTime().toLocalTime());
-    entityValueMap.put(new NamedEntity("Upload_Datum", 0, 0, false, null), formattedDate);
-    entityValueMap.put(new NamedEntity("Upload_Zeit", 0, 0, false, null), formattedTime);
+    entityValueMap.put(new NamedEntity("UploadDatum", 0, 0, false, null), formattedDate);
+    entityValueMap.put(new NamedEntity("UploadZeit", 0, 0, false, null), formattedTime);
 
     return getResponseSuggestion(complaintData, responseComponentsFiltered, entityValueMap);
   }
