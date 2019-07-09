@@ -34,9 +34,9 @@ class Complaints extends Component {
   createEntityArray = (txt, ar) => {
     return ar.map((entity, i) => {
       return <li key={i}> { entity['label'] } :
-        <TaggedText text={{
-          text: ' ' + txt.substring(entity['startIndex'], entity['endIndex']),
-          entities: [{ label: entity['label'], startIndex: 1, endIndex: entity['endIndex'] - entity['startIndex'] + 1 }]
+        <TaggedText taggedText={{
+          text: ' ' + txt.substring(entity['start'], entity['end']),
+          entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
         }} />
       </li>;
     });
@@ -80,7 +80,7 @@ class Complaints extends Component {
           <Content style={{ flexBasis: '100%' }}>
             <Tabbed className='padding' style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <TaggedText text={{ text: active.text, entities: active.entities }} editable />
+                <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} editable />
               </div>
               <div label='Original'>
                 {active.text}
@@ -89,9 +89,9 @@ class Complaints extends Component {
           </Content>
           <Collapsible label='Details' style={{ minHeight: '130px' }}>
             <b>Eingangsdatum: </b>
-            <TaggedText text={{
+            <TaggedText taggedText={{
               text: active.receiveDate,
-              entities: [{ label: 'Eingangsdatum', startIndex: 0, endIndex: active.receiveDate.length }]
+              entities: [{ label: 'Eingangsdatum', start: 0, end: active.receiveDate.length }]
             }} />
             <br />
             <b> ID: </b>
@@ -104,10 +104,10 @@ class Complaints extends Component {
             <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
             <br />
             <ReactTooltip id='subjects' aria-haspopup='true'>
-              {Object.keys(active.subject.probabilities).map(subject => <div>{`${subject}: ${active.subject.probabilities[subject]}`} <br /> </div>)}
+              {Object.keys(active.subject.probabilities).map((subject, i) => <div key={i}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /> </div>)}
             </ReactTooltip>
             <ReactTooltip id='sentiments' aria-haspopup='true'>
-              {Object.keys(active.sentiment.probabilities).map(sentiment => <div>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /> </div>)}
+              {Object.keys(active.sentiment.probabilities).map((sentiment, i) => <div key={i}>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /> </div>)}
             </ReactTooltip>
           </Collapsible>
           <Collapsible label='Entitäten'>

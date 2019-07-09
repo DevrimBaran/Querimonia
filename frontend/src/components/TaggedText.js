@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 import Api from '../utility/Api';
 
 const LABEL_COLORS = {
-  Datum: 'lightBlue',
+  Datum: 'green',
   Eingangsdatum: 'red',
   Name: 'violet',
   Geldbetrag: 'turquoise',
@@ -26,31 +26,33 @@ class TaggedText extends Component {
     super(props);
 
     this.state = {
-      text: '',
-      originalLabels: new Map()
+      taggedText: '',
+      originalLabels: new Map(),
+      id: null
     };
   }
 
-  parseText (text) {
-    if (!text) return '';
-    if (!text.text) return text;
+  parseText (taggedText) {
+    if (!taggedText) return '';
+    if (!taggedText.text) return taggedText;
     let html = [];
     let cpos = 0;
-    if (Array.isArray(text.entities)) {
-      this.prepareEntities(text.entities);
-      for (const tag of text.entities) {
+    if (Array.isArray(taggedText.entities)) {
+      this.prepareEntities(taggedText.entities);
+      for (const tag of taggedText.entities) {
+        // TODO: uuid
         const id = String(Math.floor(Math.random() * (50)));
         // String before next entity
-        !text.text.substring(cpos, tag.startIndex) || html.push(<span key={html.length}>{text.text.substring(cpos, tag.startIndex)}</span>);
+        !taggedText.text.substring(cpos, tag.start) || html.push(<span key={html.length} data-key={html.length}>{taggedText.text.substring(cpos, tag.start)}</span>);
         // String that is entity
-        html.push(<span data-tip data-for={id} key={html.length} className='tag' label={tag.label} style={this.createBackground(tag.label)}>{text.text.substring(tag.startIndex, tag.endIndex)}</span>);
+        html.push(<span data-tip data-for={id} key={html.length} data-key={html.length} className='tag' style={this.createBackground(tag.label)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
         // Tooltip for that entity
         html.push(this.createTooltip(tag.label, id));
-        cpos = tag.endIndex;
+        cpos = tag.end;
       }
     }
     // String from last entity to end of text or complete text if there are no entities
-    html.push(<span key={html.length}>{text.text.substring(cpos, text.text.length)}</span>);
+    html.push(<span key={html.length} data-key={html.length}>{taggedText.text.substring(cpos, taggedText.text.length)}</span>);
     return html;
   };
 
@@ -58,48 +60,49 @@ class TaggedText extends Component {
   prepareEntities = (entities) => {
     if (entities.length === 0) return;
     entities.forEach((entity) => {
+      // TODO: uuid
       const id = String(Math.floor(Math.random() * (50)));
+      this.state.originalLabels.set(id, JSON.parse(JSON.stringify(entity)));
       entity.label = [{
         label: entity.label,
         id: id
       }];
-      this.state.originalLabels.set(id, entity);
     });
 
     let i = 0;
-    const compare = (a, b) => { return a.startIndex - b.startIndex || a.endIndex - b.endIndex; };
+    const compare = (a, b) => { return a.start - b.start || a.end - b.end; };
     while (i < entities.length - 1) {
       entities.sort(compare);
       const entityA = entities[i];
       const entityB = entities[i + 1];
 
-      if (entityA.startIndex === entityB.startIndex) {
-        if (entityA.endIndex === entityB.endIndex) {
+      if (entityA.start === entityB.start) {
+        if (entityA.end === entityB.end) {
           entityA.label = [...entityA.label, ...entityB.label];
           entities.splice(i + 1, 1);
         } else {
           entityA.label = [...entityA.label, ...entityB.label];
-          entityB.startIndex = entityA.endIndex;
+          entityB.start = entityA.end;
         }
-      } else if (entityA.endIndex === entityB.endIndex) {
+      } else if (entityA.end === entityB.end) {
         entityB.label = [...entityA.label, ...entityB.label];
-        entityA.endIndex = entityB.startIndex;
-      } else if (entityA.endIndex > entityB.endIndex) {
+        entityA.end = entityB.start;
+      } else if (entityA.end > entityB.end) {
         entities.push({
           label: entityA.label,
-          startIndex: entityB.endIndex,
-          endIndex: entityA.endIndex
+          start: entityB.end,
+          end: entityA.end
         });
         entityB.label = [...entityA.label, ...entityB.label];
-        entityA.endIndex = entityB.startIndex;
-      } else if (entityA.endIndex < entityB.endIndex && entityA.endIndex > entityB.startIndex) {
+        entityA.end = entityB.start;
+      } else if (entityA.end < entityB.end && entityA.end > entityB.start) {
         entities.push({
           label: [...entityA.label, ...entityB.label],
-          startIndex: entityB.startIndex,
-          endIndex: entityA.endIndex
+          start: entityB.start,
+          end: entityA.end
         });
-        entityA.endIndex = entityB.startIndex;
-        entityB.startIndex = entityA.endIndex;
+        entityA.end = entityB.start;
+        entityB.start = entityA.end;
       } else {
         i++;
       }
@@ -121,7 +124,7 @@ class TaggedText extends Component {
         '%' +
         (i !== labels.length - 1 ? ',' : '');
     });
-    return { cursor: 'pointer', backgroundImage: 'linear-gradient(' + linearGradient + ')' };
+    return { backgroundImage: 'linear-gradient(' + linearGradient + ')' };
   };
 
   createTooltip = (labels, id) => {
@@ -131,9 +134,11 @@ class TaggedText extends Component {
         width: '10px',
         borderRadius: '50%',
         display: 'inline-block',
-        marginLeft: '5px' }}> </span> {label.label} {this.props.editable ? <button onClick={this.deleteEntity(label.id)}>Löschen</button> : null} <br /> </div>;
+        marginLeft: '5px' }}> </span> {label.label} {this.props.editable
+        ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
+        : null} <br /> </div>;
     });
-    return <ReactTooltip effect='solid' event='' globalEventOff='click' key={labels} id={id} aria-haspopup='true'>
+    return <ReactTooltip effect='solid' delayHide={500} clickable key={labels} id={id} aria-haspopup='true'>
       {
         labelArray
       }
@@ -141,33 +146,126 @@ class TaggedText extends Component {
   };
 
   deleteEntity = (id) => {
+    console.log('id', id);
     const originalLabel = this.state.originalLabels.get(id);
     let query = {};
     query['label'] = originalLabel.label;
-    query['start'] = originalLabel.startIndex;
-    query['end'] = originalLabel.endIndex;
-    query['extractor'] = originalLabel.name;
-    Api.delete('api/complaints/' + this.state.text.complaintId + '/entities', query);
+    query['start'] = originalLabel.start;
+    query['end'] = originalLabel.end;
+    query['extractor'] = originalLabel.extractor;
+    console.log(query);
+    Api.delete('/api/complaints/' + this.state.id + '/entities', query)
+      .then((data) => {
+        this.setState({
+          taggedText: this.parseText({ text: this.props.taggedText.text, entities: data })
+        });
+      });
+  };
+
+  startEdit = () => {
+    if (this.state.editFormActive) return;
+    if (this.state.editActive) {
+      window.removeEventListener('mouseup', this.handleMouseUp);
+    } else {
+      window.addEventListener('mouseup', this.handleMouseUp);
+    }
+
+    this.setState({
+      editActive: !this.state.editActive
+    });
+  };
+
+  handleMouseUp = (e) => {
+    e.stopPropagation();
+    const selectedText = window.getSelection();
+    if (selectedText && selectedText.baseNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
+      const baseOffset = selectedText.anchorOffset;
+      const extentOffset = selectedText.focusOffset;
+      const baseKey = selectedText.anchorNode.parentNode.attributes['data-key'].value;
+      const extentKey = selectedText.focusNode.parentNode.attributes['data-key'].value;
+      let globalOffsetStart = 0;
+      let globalOffsetEnd = 0;
+      Array.from(selectedText.focusNode.parentNode.parentNode.childNodes)
+        .filter((htmlElement) => {
+          return htmlElement.tagName === 'SPAN';
+        }).map((spanElement) => {
+          return {
+            key: spanElement.attributes['data-key'].value,
+            text: spanElement.innerHTML
+          };
+        }).forEach((element, i, thisArray) => {
+          if (element.key === baseKey) {
+            for (let j = 0; j < i; j++) {
+              globalOffsetStart += thisArray[j].text.length;
+            }
+            globalOffsetStart += baseOffset;
+          }
+          if (element.key === extentKey) {
+            for (let j = 0; j < i; j++) {
+              globalOffsetEnd += thisArray[j].text.length;
+            }
+            globalOffsetEnd += extentOffset;
+          }
+        });
+      let query = {};
+      query['start'] = globalOffsetStart;
+      query['end'] = globalOffsetEnd;
+      this.startEdit();
+      this.setState({
+        editFormActive: true,
+        newEntityQuery: query
+      });
+    }
+  };
+
+  abortEdit = () => {
+    this.setState({
+      editFormActive: false
+    });
+  };
+
+  addEntity = () => {
+    Api.post('/api/complaints/' + this.state.id + '/entities', this.state.newEntityQuery)
+      .then((data) => {
+        this.setState({
+          taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
+          editFormActive: false
+        });
+      });
   };
 
   componentWillUpdate = (props) => {
-    if (props.text !== this.props.text) {
+    if (props.taggedText !== this.props.taggedText) {
       this.setState({
-        text: this.parseText(JSON.parse(JSON.stringify(props.text)))
+        taggedText: this.parseText(JSON.parse(JSON.stringify(props.taggedText)))
       });
     }
   };
 
   componentDidMount () {
     this.setState({
-      text: this.parseText(JSON.parse(JSON.stringify(this.props.text)))
+      taggedText: this.parseText(JSON.parse(JSON.stringify(this.props.taggedText))),
+      id: this.props.id || null
     });
   }
+
+  renderAddButton = () => {
+    return <div style={{ display: 'block', paddingTop: '10px', margin: 'auto', textAlign: 'center', borderTop: '1px solid lightGrey', width: '90%', marginTop: '10px' }}>
+      <i style={this.state.editActive ? { color: 'rgb(31, 130, 191)', cursor: 'pointer' } : { color: 'rgb(9, 101, 158)', cursor: 'pointer' }}
+        className='fas fa-plus-circle fa-2x'
+        onClick={this.startEdit} />
+      {this.state.editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}
+      {this.state.editFormActive ? <div> <input type={'text'} placeholder={'Label'} onChange={(event) => { this.state.newEntityQuery['label'] = event.target.value; }} /> <input type={'text'} placeholder={'Extractor'} onChange={(event) => { this.state.newEntityQuery['extractor'] = event.target.value; }} /> <br />
+        <i style={{ color: 'green', cursor: 'pointer', padding: '5px' }} onClick={this.addEntity} className='far fa-check-circle fa-2x' />
+        <i style={{ color: 'red', cursor: 'pointer', padding: '5px' }} onClick={this.abortEdit} className='far fa-times-circle fa-2x' /> </div> : null}
+    </div>;
+  };
 
   render () {
     return (
       <span className='tagged-text'>
-        {this.state.text}
+        {this.state.taggedText}
+        {this.props.editable ? this.renderAddButton() : null}
       </span>
     );
   };

@@ -2,6 +2,7 @@
 @import 'reset';
 @import 'font-awesome/fontawesome';
 @import "font-awesome/solid";
+@import "font-awesome/regular";
 @import 'fonts';
 @import 'inputs';
 @import 'helpers';
@@ -174,7 +175,7 @@
         height: 40px;
         cursor: pointer;
         color: $black;
-        font-size: 15px;      
+        font-size: 15px;
         //padding: 10px 0;
         z-index: 1;
         &::before {
@@ -206,7 +207,7 @@
         //padding: 0 30px;
     }
 }
-.collapsible[data-collapse=true] { 
+.collapsible[data-collapse=true] {
     min-height: 30px !important;
     .content {
         display: none;
