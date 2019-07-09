@@ -1,0 +1,53 @@
+.center {
+    text-align: center;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+.Block {
+    position: relative;
+}
+.has-tooltip {
+    position: relative;
+    .tooltip {
+        position: absolute;
+        left: 50%;
+        bottom: 100%;
+        border: 1px solid $grey;
+        background-color: $white;
+        padding: 10px;
+        transform: translateX(-50%); 
+        display: none;
+        z-index: 99999;
+        &::after {
+            content: '';
+            display: block;
+            position: relative;
+            transform-origin: center center;
+            transform: rotate(45deg);
+            background-color: $white;
+            border-bottom: 1px solid $grey;
+            border-right: 1px solid $grey;
+            width: 14px;
+            height: 14px;
+            top: 18px;
+            left: calc(50% - 7px);
+        }
+    }
+    &:hover {
+        .tooltip {
+            display: block;
+        }
+    }
+}

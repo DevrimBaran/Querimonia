@@ -1,0 +1,57 @@
+{
+  "name": "querimonia",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "./",
+  "config": {
+    "backend": "https://querimonia.iao.fraunhofer.de/"
+  },
+  "dependencies": {
+    "express": "^4.16.4",
+    "node-sass": "^4.12.0",
+    "randomcolor": "^0.5.4",
+    "react": "^16.8.6",
+    "react-d3-cloud": "^0.7.0",
+    "react-dom": "^16.8.6",
+    "react-router-dom": "^5.0.1",
+    "react-scripts": "3.0.1",
+    "react-tooltip": "^3.10.0",
+    "typescript": "^3.5.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build-prod": "REACT_APP_BACKEND_PATH=$npm_package_config_backend react-scripts build",
+    "build-dev": "REACT_APP_BACKEND_PATH=$npm_package_config_backend/dev react-scripts build",
+    "build-mock": "REACT_APP_BACKEND_PATH=mock react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "eslint": "./node_modules/.bin/eslint src --fix"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "eslint-config-standard": "^12.0.0",
+    "eslint-config-standard-react": "^7.0.2",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-react": "^7.13.0",
+    "eslint-plugin-standard": "^4.0.0",
+    "husky": "^2.3.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm run eslint"
+    }
+  }
+}
