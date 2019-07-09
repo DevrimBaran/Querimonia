@@ -78,7 +78,7 @@ public class ResponseComponentController {
       @RequestParam("keywords") Optional<String[]> keyWords) {
     return ControllerUtility.tryAndCatch(() ->
         responseComponentManager.getAllTemplates(componentRepository, Optional.empty(),
-            Optional.empty(), Optional.empty(), keyWords));
+            Optional.empty(), Optional.empty(), keyWords).size());
   }
 
 
