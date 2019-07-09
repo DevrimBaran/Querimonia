@@ -122,7 +122,7 @@ public class Complaint {
   /**
    * The configuration which was used to analyze the configuration.
    */
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.MERGE)
   private Configuration configuration;
 
   /**

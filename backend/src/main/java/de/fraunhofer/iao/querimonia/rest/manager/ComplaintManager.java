@@ -314,6 +314,7 @@ public class ComplaintManager {
     complaint.getResponseSuggestion()
         .getResponseComponents()
         .forEach(completedResponseComponentRepository::save);
+    configurationManager.storeConfiguration(complaint.getConfiguration());
     complaintRepository.save(complaint);
     logger.info("Saved complaint with id {}", complaint.getComplaintId());
   }

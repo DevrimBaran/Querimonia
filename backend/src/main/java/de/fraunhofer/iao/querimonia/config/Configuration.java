@@ -45,7 +45,6 @@ public class Configuration {
   @Transient
   @JsonIgnore
   public static final Configuration FALLBACK_CONFIGURATION = new Configuration()
-      .setConfigId(0)
       .setName("Default")
       .setExtractors(Collections.emptyList())
       .setClassifier(new ClassifierDefinition(ClassifierType.NONE, "Default"))
@@ -56,7 +55,7 @@ public class Configuration {
   @JsonProperty("id")
   private int configId;
 
-  @Column(name = "config_name", unique = true)
+  @Column(name = "config_name")
   private String name;
 
   @OneToMany(cascade = CascadeType.ALL)

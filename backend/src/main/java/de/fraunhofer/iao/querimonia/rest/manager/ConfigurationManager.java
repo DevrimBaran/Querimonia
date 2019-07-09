@@ -108,6 +108,10 @@ public class ConfigurationManager {
     analyzerConfigProperties.setId(0);
   }
 
+  synchronized void storeConfiguration(Configuration configuration) {
+    configurationRepository.save(configuration);
+  }
+
   /**
    * Returns a comparator for the configurations.
    * TODO generify comparators
