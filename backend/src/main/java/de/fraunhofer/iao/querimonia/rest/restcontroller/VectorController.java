@@ -20,16 +20,18 @@ public class VectorController {
 
 
   @PostMapping(value = "/api/vector/nearest_neighbour")
-  public Map<String, Double> nearestNeighbor(@RequestBody TextInput input,
-                                             @RequestParam(value = "corpus",
-                                                 defaultValue = "beschwerden3kPolished.bin") String corpus) {
+  public Map<String, Double> nearestNeighbor(
+      @RequestBody TextInput input,
+      @RequestParam(value = "corpus",
+                    defaultValue = "beschwerden3kPolished.bin")
+          String corpus) {
     FlaskCalculations calculator = new FlaskCalculations();
     logger.info("Recieved: " + input.getText());
     return calculator.nearestNeighbour(input.getText(), corpus);
   }
 
   @PostMapping(value = "/api/vector/calculation", produces = "application/json",
-      consumes = "application/json")
+               consumes = "application/json")
   public Map<String, Double> calculation(@RequestBody CalculationRequest request) {
     FlaskCalculations calculator = new FlaskCalculations();
     if (!(request.getVector3() == null)) {

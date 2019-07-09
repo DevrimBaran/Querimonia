@@ -1,15 +1,14 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Helper methods for working with complaints.
@@ -32,44 +31,19 @@ public class ComplaintUtility {
    * This methods returns the value of a named entity that occurs in this complaint.
    *
    * @param text        the complaint text
-   * @param entities    the named entities in the complaint text.
-   * @param entityLabel the label of the named entity, like "date".
-   * @return the value of the named entity or an empty optional if the entity is not present. If
-   * there are multiple occurrences, it will return the first one.
-   */
-  public static Optional<String> getValueOfEntity(String text,
-                                                   List<NamedEntity> entities,
-                                                   String entityLabel) {
-    return getAllValuesOfEntity(text, entities, entityLabel).stream().findFirst();
-  }
-
-  /**
-   * Finds all entities with the given label in the complaint text and returns their value as a
-   * list.
    *
-   * @param text        the complaint text.
-   * @param entities    the named entities in the complaint text
-   * @param entityLabel the entity label to look for, like "date".
-   * @return a list of all values of the named entities with the given label.
+   * @return the value of the named entity.
    */
-  private static List<String> getAllValuesOfEntity(String text, List<NamedEntity> entities,
-                                                   String entityLabel) {
-    return entities.stream()
-        // only use entities that label match the given one.
-        .filter(namedEntity -> namedEntity.getLabel().equalsIgnoreCase(entityLabel))
-        // find their value in the text
-        .map(namedEntity -> {
-          try {
-            return text.substring(namedEntity.getStartIndex(),
-                                  namedEntity.getEndIndex());
-          } catch (IndexOutOfBoundsException e) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,
-                                              "Entity error: " + namedEntity.getLabel()
-                                                  + " in:\n " + text
-                                                  + "\n " + e.getMessage());
-          }
-        })
-        .collect(Collectors.toList());
+  public static String getValueOfEntity(String text, NamedEntity namedEntity) {
+    try {
+      return text.substring(namedEntity.getStartIndex(),
+          namedEntity.getEndIndex());
+    } catch (IndexOutOfBoundsException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Entity error: " + namedEntity.getLabel()
+              + " in:\n " + text
+              + "\n " + e.getMessage(), "Fehlerhafte Entity");
+    }
   }
 
   /**
@@ -78,14 +52,10 @@ public class ComplaintUtility {
    * @param text     the complaint text.
    * @param entities the named entities in the complaint text.
    */
-  public static Map<String, String> getEntityValueMap(String text,
-                                                      List<NamedEntity> entities) {
-    HashMap<String, String> result = new HashMap<>();
-    entities.stream()
-        .map(NamedEntity::getLabel)
-        .forEach(label -> result.put(label,
-                                     getValueOfEntity(text, entities, label)
-                                         .orElseThrow(IllegalStateException::new)));
+  public static Map<NamedEntity, String> getEntityValueMap(String text,
+                                                           List<NamedEntity> entities) {
+    HashMap<NamedEntity, String> result = new HashMap<>();
+    entities.forEach(entity -> result.put(entity, getValueOfEntity(text, entity)));
 
     return result;
   }

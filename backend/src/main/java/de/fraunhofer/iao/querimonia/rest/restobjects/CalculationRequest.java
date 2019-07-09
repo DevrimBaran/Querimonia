@@ -4,17 +4,18 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * simple wrapper vor Requests for vector calculations
+ * simple wrapper vor Requests for vector calculations.
  */
 public class CalculationRequest {
-  private String vector1;
-  private String operator1;
-  private String vector2;
-  private String corpus;
+  private final String vector1;
+  private final String operator1;
+  private final String vector2;
+  private final String corpus;
 
-  private String operator2;
-  private String vector3;
+  private final String operator2;
+  private final String vector3;
 
+  // TODO add java doc comment
   @JsonCreator
   public CalculationRequest(@JsonProperty String vector1, @JsonProperty String operator1,
                             @JsonProperty String vector2, @JsonProperty String corpus,

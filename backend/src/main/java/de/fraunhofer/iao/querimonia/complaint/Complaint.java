@@ -4,54 +4,62 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.Transient;
+import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
  * subject, the sentiment and the date of the complaint.
  */
 @Entity
-@JsonPropertyOrder({
-                        "complaintId",
-                        "text",
-                        "preview",
-                        "receiveDate",
-                        "receiveTime",
-                        "subject",
-                        "probableSubject",
-                        "sentiment",
-                        "probableSentiment",
-                        "entities"
-                    })
+@JsonPropertyOrder(value = {
+    "id",
+    "text",
+    "preview",
+    "state",
+    "configuration",
+    "receiveDate",
+    "receiveTime",
+    "subject",
+    "sentiment",
+    "entities"
+})
 public class Complaint {
 
   /**
    * The primary key for the complaints in the database.
    */
   @Id
+  @JsonProperty("id")
   @GeneratedValue(strategy = GenerationType.AUTO)
   private int complaintId;
 
   /**
-   * The complaint message, is limited to 5000 characters.
+   * The complaint message, is limited to 10000 characters.
    */
   @Column(length = 10000)
   private String text;
@@ -63,37 +71,34 @@ public class Complaint {
   private String preview;
 
   /**
-   * This map contains the possible sentiment of the complaint message mapped to their probabilities
-   * according to the machine learning algorithms.
+   * The state of the complaint. A complaint is either new, in progress or closed.
    */
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "sentiment_table", joinColumns = @JoinColumn(name = "complaintId"))
-  @MapKeyColumn(name = "sentiment")
-  @Column(name = "probability")
-  private Map<String, Double> sentiment;
+  @Enumerated(EnumType.ORDINAL)
+  private ComplaintState state;
 
   /**
-   * This map contains the possible subject of the complaint message mapped to their probabilities
-   * according to the machine learning algorithms.
+   * The category of the complaint.
    */
-  @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "subject_table", joinColumns = @JoinColumn(name = "complaintId"))
-  @MapKeyColumn(name = "subject")
-  @Column(name = "probability")
-  private Map<String, Double> subject;
+  @OneToOne(cascade = CascadeType.ALL)
+  private ComplaintProperty subject;
+
+  /**
+   * The sentiment of the complaint.
+   */
+  @OneToOne(cascade = CascadeType.ALL)
+  private ComplaintProperty sentiment;
 
   /**
    * The list of all named entities in the complaint text.
    */
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "entity_table", joinColumns = @JoinColumn(name = "complaintId"))
   private List<NamedEntity> entities;
 
   /**
    * The response for the complaint.
    */
-  @JoinColumn(name = "complaint_id")
-  @JsonIgnore
+  @OneToOne(cascade = CascadeType.ALL)
   private ResponseSuggestion responseSuggestion;
 
   /**
@@ -114,17 +119,25 @@ public class Complaint {
   private LocalTime receiveTime;
 
   /**
+   * The configuration which was used to analyze the configuration.
+   */
+  @ManyToOne(cascade = CascadeType.MERGE)
+  private Configuration configuration;
+
+  /**
    * Creates a new complaint. This constructor is only used for JSON deserialization. Use a {@link
    * ComplaintFactory} to create complaints instead.
    */
   @JsonCreator
   public Complaint(@JsonProperty String text,
                    @JsonProperty String preview,
-                   @JsonProperty Map<String, Double> sentiment,
-                   @JsonProperty Map<String, Double> subject,
+                   @JsonProperty ComplaintState state,
+                   @JsonProperty ComplaintProperty sentiment,
+                   @JsonProperty ComplaintProperty subject,
                    @JsonProperty LocalDate receiveDate,
                    @JsonProperty LocalTime receiveTime,
-                   @JsonProperty List<NamedEntity> entities) {
+                   @JsonProperty List<NamedEntity> entities,
+                   @JsonProperty Configuration configuration) {
     this.text = text;
     this.preview = preview;
     this.sentiment = sentiment;
@@ -132,6 +145,8 @@ public class Complaint {
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
     this.entities = entities;
+    this.state = state;
+    this.configuration = configuration;
   }
 
   /**
@@ -139,22 +154,18 @@ public class Complaint {
    */
   Complaint(String text,
             String preview,
-            Map<String, Double> sentiment,
-            Map<String, Double> subject,
-            List<NamedEntity> entities,
             LocalDate receiveDate,
-            LocalTime receiveTime,
-            ResponseSuggestion responseSuggestion,
-            Map<String, Integer> wordList) {
+            LocalTime receiveTime) {
     this.text = text;
+    this.state = ComplaintState.NEW;
     this.preview = preview;
-    this.sentiment = sentiment;
-    this.subject = subject;
-    this.entities = entities;
-    this.responseSuggestion = responseSuggestion;
+    this.sentiment = new ComplaintProperty();
+    this.subject = new ComplaintProperty();
+    this.entities = new ArrayList<>();
+    this.responseSuggestion = new ResponseSuggestion();
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
-    this.wordList = wordList;
+    this.wordList = new HashMap<>();
   }
 
   /**
@@ -163,24 +174,6 @@ public class Complaint {
   @SuppressWarnings("unused")
   public Complaint() {
 
-  }
-
-  /**
-   * Returns the sentiment with the highest probability.
-   *
-   * @return the sentiment with the highest probability or an empty optional, if no sentiment is
-   * given.
-   */
-  @Transient
-  @JsonProperty("probableSentiment")
-  public Optional<String> getBestSentiment() {
-    return ComplaintUtility.getEntryWithHighestProbability(sentiment);
-  }
-
-  @Transient
-  @JsonProperty("probableSubject")
-  public Optional<String> getBestSubject() {
-    return ComplaintUtility.getEntryWithHighestProbability(subject);
   }
 
   public int getComplaintId() {
@@ -195,7 +188,7 @@ public class Complaint {
     return preview;
   }
 
-  public Map<String, Double> getSentiment() {
+  public ComplaintProperty getSentiment() {
     return sentiment;
   }
 
@@ -207,7 +200,7 @@ public class Complaint {
     return receiveTime;
   }
 
-  public Map<String, Double> getSubject() {
+  public ComplaintProperty getSubject() {
     return subject;
   }
 
@@ -225,5 +218,84 @@ public class Complaint {
     return responseSuggestion;
   }
 
+  public ComplaintState getState() {
+    return state;
+  }
 
+  public Configuration getConfiguration() {
+    return configuration;
+  }
+
+  public Complaint setState(ComplaintState state) {
+    this.state = state;
+    return this;
+  }
+
+  public Complaint setEntities(
+      List<NamedEntity> entities) {
+    this.entities = entities;
+    return this;
+  }
+
+  public Complaint setResponseSuggestion(ResponseSuggestion responseSuggestion) {
+    this.responseSuggestion = responseSuggestion;
+    return this;
+  }
+
+  public Complaint setWordList(Map<String, Integer> wordList) {
+    this.wordList = wordList;
+    return this;
+  }
+
+  public Complaint setConfiguration(Configuration configuration) {
+    this.configuration = configuration;
+    return this;
+  }
+
+  /**
+   * Checks if two complaints are considered equal. A complaint is equal to another if their
+   * text, state, subject, sentiment, entities and their response is equal.
+   *
+   * @param o the other complaint. Must be a complaint object.
+   * @return true, if the given object is a complaint object and the two complaint objects are
+   * equal.
+   */
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    Complaint complaint = (Complaint) o;
+    return text.equals(complaint.text)
+        && state == complaint.state
+        && Objects.equals(subject, complaint.subject)
+        && Objects.equals(sentiment, complaint.sentiment)
+        && Objects.equals(entities, complaint.entities)
+        && Objects.equals(responseSuggestion, complaint.responseSuggestion);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(text, state, subject, sentiment, entities, responseSuggestion);
+  }
+
+  @Override
+  public String toString() {
+    return "Complaint{"
+        + "complaintId=" + complaintId
+        + ", text='" + text + '\''
+        + ", preview='" + preview + '\''
+        + ", state=" + state
+        + ", subject=" + subject
+        + ", sentiment=" + sentiment
+        + ", entities=" + entities
+        + ", responseSuggestion=" + responseSuggestion
+        + ", wordList=" + wordList
+        + ", receiveDate=" + receiveDate
+        + ", receiveTime=" + receiveTime
+        + '}';
+  }
 }

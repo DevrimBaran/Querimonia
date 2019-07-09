@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
-import de.fraunhofer.iao.querimonia.contact.KiKuKoContact;
+import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
 import java.util.LinkedHashMap;
@@ -11,9 +11,12 @@ import java.util.LinkedHashMap;
  */
 public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
 
-
   public KiKuKoClassifier() {
     super("tool", "Beschwerde3Klassifikator2");
+  }
+
+  public KiKuKoClassifier(String domainName) {
+    super("tool", domainName);
   }
 
   /**

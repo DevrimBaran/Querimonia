@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
+@JsonPropertyOrder(value = {
                         "[Fuzzy] Haltestellen",
                         "Linien Extraktor",
                         "[Extern] Personen Extraktor",
@@ -27,37 +27,38 @@ public class ExtractorPipelines {
   private List<TempPipeline> exttelefonnummer;
   private List<TempPipeline> fuzortsnamen;
   private List<TempPipeline> vorgangsnummer;
+
   /**
    * Extractorpipelines from Kikuko.
    *
-   * @param fuzhaltestellen   Results from bus information pipeline.
-   * @param linienExtraktor     Results from datum extractor pipeline.
+   * @param fuzhaltestellen    Results from bus information pipeline.
+   * @param linienExtraktor    Results from datum extractor pipeline.
    * @param extpersonExtraktor Results from ext person extractor pipeline.
    * @param extdatumExtraktor  Results from ext datum extractor pipeline.
    * @param extgeldbetrag      Results from  money amount pipeline.
-   * @param exttelefonnummer      Results from  money amount pipeline.
+   * @param exttelefonnummer   Results from  money amount pipeline.
    * @param fuzortsnamen       Results from fuzzy location extractor pipeline.
    * @param vorgangsnummer     Results from operation-number extractor pipeline.
    */
-  @SuppressWarnings("CheckStyle")
-  public ExtractorPipelines(@JsonProperty("[Fuzzy] Haltestellen") List<TempPipeline> fuzhaltestellen,
-                            @JsonProperty("Linien Extraktor") List<TempPipeline> linienExtraktor,
-                            @JsonProperty("[Extern] Personen Extraktor") List<TempPipeline>
-                                extpersonExtraktor,
-                            @JsonProperty("[Extern] Datum Extraktor") List<TempPipeline>
-                                extdatumExtraktor,
-                            @JsonProperty("[Extern] Geldbetrag") List<TempPipeline> extgeldbetrag,
-                            @JsonProperty("[Extern] Telefonnummer") List<TempPipeline> exttelefonnummer,
-                            @JsonProperty("[Fuzzy] Ortsnamen") List<TempPipeline> fuzortsnamen,
-                            @JsonProperty("Vorgangsnummer") List<TempPipeline> vorgangsnummer) {
+  public ExtractorPipelines(
+      @JsonProperty("[Fuzzy] Haltestellen") List<TempPipeline> fuzhaltestellen,
+      @JsonProperty("Linien Extraktor") List<TempPipeline> linienExtraktor,
+      @JsonProperty("[Extern] Personen Extraktor") List<TempPipeline>
+          extpersonExtraktor,
+      @JsonProperty("[Extern] Datum Extraktor") List<TempPipeline>
+          extdatumExtraktor,
+      @JsonProperty("[Extern] Geldbetrag") List<TempPipeline> extgeldbetrag,
+      @JsonProperty("[Extern] Telefonnummer") List<TempPipeline> exttelefonnummer,
+      @JsonProperty("[Fuzzy] Ortsnamen") List<TempPipeline> fuzortsnamen,
+      @JsonProperty("Vorgangsnummer") List<TempPipeline> vorgangsnummer) {
     this.fuzhaltestellen = fuzhaltestellen;
-    this.linienExtraktor=linienExtraktor;
+    this.linienExtraktor = linienExtraktor;
     this.extpersonExtraktor = extpersonExtraktor;
     this.extdatumExtraktor = extdatumExtraktor;
     this.extgeldbetrag = extgeldbetrag;
     this.exttelefonnummer = exttelefonnummer;
     this.fuzortsnamen = fuzortsnamen;
-    this.vorgangsnummer=vorgangsnummer;
+    this.vorgangsnummer = vorgangsnummer;
   }
 
   public List<TempPipeline> getFuzhaltestellen() {

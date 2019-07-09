@@ -72,6 +72,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:8080/api/responses/plain/47
+
+###
+
 PUT http://localhost:8080/api/template/1
 Content-Type: application/json
 
@@ -88,15 +92,16 @@ Content-Type: application/json
 
 ###
 
-POST https://kikuko.iao.fraunhofer.de/apitext
+GET http://localhost:8080/api/complaints/1
 
 ###
 
-POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
+POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"}
+  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"
+}
 
 ###
 
@@ -196,9 +201,21 @@ Content-Type: application/json
 
 ###
 
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/4
+POST http://localhost:8080/api/actions
+Content-Type: application/json
 
+{
+  "name": "GutscheinFreifahr",
+  "actionCode": "ATTACH_VOUCHER",
+  "rulesXml": "<Rules><Subject value=\"Fahrt nicht erfolgt\"/></Rules>",
+  "parameters": {
+    "E-Mail": "beispiel@gmail.com",
+    "Wert": "5"
+  }
+}
 ###
+GET http://localhost:8080/api/actions
+
 
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/5
 
@@ -209,5 +226,9 @@ DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
 ###
 
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/stats/tagcloud
+
+### Standard Templates local tests
+
+GET http://localhost:8080/api/templates
 
 ###

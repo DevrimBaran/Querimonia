@@ -2,6 +2,10 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Embeddable;
 
@@ -10,29 +14,48 @@ import javax.persistence.Embeddable;
  * "Date", "Org") and the indices where the entity starts and ends in the text.
  */
 @Embeddable
-public class NamedEntity {
+public class NamedEntity implements Comparable<NamedEntity> {
 
   private String label;
   private int start;
   private int end;
+  private boolean setByUser = false;
+  private String extractor;
 
   /**
    * Simple constructor for creating a new named entity object.
    *
-   * @param label the label of the entity, like name.
-   * @param start the start index of the entity.
-   * @param end   the end index of the entity.
+   * @param label     the label of the entity, like name.
+   * @param start     the start index of the entity.
+   * @param end       the end index of the entity.
+   * @param setByUser if the named entity was set by the user.
+   * @param extractor the name of the extractor that was used to find this entity.
    */
   @JsonCreator
   public NamedEntity(@JsonProperty String label, @JsonProperty("start") int start, @JsonProperty(
-      "end") int end) {
+      "end") int end, @JsonProperty boolean setByUser, @JsonProperty String extractor) {
     this.label = label;
     this.start = start;
     this.end = end;
+    this.setByUser = setByUser;
+    this.extractor = extractor;
+  }
+
+  /**
+   * Simple constructor for creating a new named entity object which setByUser property is set to
+   * false.
+   *
+   * @param label     the label of the entity, like name.
+   * @param start     the start index of the entity.
+   * @param end       the end index of the entity.
+   * @param extractor the name of the extractor that was used to find this entity.
+   */
+  public NamedEntity(String label, int start, int end, String extractor) {
+    this(label, start, end, false, extractor);
   }
 
   public NamedEntity() {
-
+    // constructor for hibernate
   }
 
   public String getLabel() {
@@ -49,14 +72,65 @@ public class NamedEntity {
     return end;
   }
 
-  @Override
-  public String toString() {
-    return "NamedEntity{"
-        + "label='" + label + '\''
-        + ", start=" + start
-        + ", end=" + end
-        + '}';
+  @JsonProperty("setByUser")
+  public boolean isSetByUser() {
+    return setByUser;
   }
 
-  
+  public String getExtractor() {
+    return extractor;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    NamedEntity that = (NamedEntity) o;
+
+    return new EqualsBuilder()
+        .append(start, that.start)
+        .append(end, that.end)
+        .append(label, that.label)
+        .append(extractor, that.extractor)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(19, 37)
+        .append(label)
+        .append(start)
+        .append(end)
+        .append(extractor)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("label", label)
+        .append("start", start)
+        .append("end", end)
+        .append("setByUser", setByUser)
+        .append("extractor", extractor)
+        .toString();
+  }
+
+  @Override
+  public int compareTo(@NotNull NamedEntity o) {
+    int compare = Integer.compare(this.start, o.start);
+    if (compare == 0) {
+      compare = Integer.compare(this.end, o.end);
+    }
+    if (compare == 0) {
+      compare = label.compareTo(o.label);
+    }
+    return compare;
+  }
 }
