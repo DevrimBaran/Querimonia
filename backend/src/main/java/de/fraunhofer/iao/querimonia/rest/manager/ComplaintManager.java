@@ -8,12 +8,10 @@ import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.SingleCompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
-import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
@@ -29,9 +27,7 @@ import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -68,7 +64,8 @@ public class ComplaintManager {
   @Autowired
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
-                          ResponseComponentRepository templateRepository,
+                          TemplateRepository templateRepository,
+                          ActionRepository actionRepository,
                           CompletedResponseComponentRepository
                               completedResponseComponentRepository,
                           ConfigurationManager configurationManager,
@@ -81,7 +78,7 @@ public class ComplaintManager {
     this.responseComponentRepository = templateRepository;
     this.singleCompletedComponentRepository = singleCompletedComponentRepository;
 
-    complaintFactory = new ComplaintFactory(new DefaultResponseGenerator(templateRepository),
+    complaintFactory = new ComplaintFactory(new DefaultResponseGenerator(templateRepository, actionRepository),
         new TokenAnalyzer());
   }
 

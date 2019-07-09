@@ -137,9 +137,9 @@ public class ComplaintFilter {
         int compareValue = 0;
 
         for (String sortAspect : sortBy.get()) {
-          // get index where prefix starts
+          // get index where suffix starts
           int indexOfPrefix = sortAspect.lastIndexOf('_');
-          // get aspect without prefix
+          // get aspect without suffix
           String rawSortAspect = sortAspect.substring(0, indexOfPrefix);
 
           switch (rawSortAspect) {
