@@ -137,11 +137,16 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         // find first respected rule, use the component and remove it from the list
         if (currentRuledObject.getRootRule().isRespected(complaintData, generatedResponse)) {
           filteredComponents.remove(i);
-          generatedResponse.add(
-              new CompletedResponseComponent(currentComponent.getResponseSlices().stream()
-                  .map(responseSlices -> fillResponseComponent(
-                      responseSlices, entityValueMap))
-                  .collect(Collectors.toList()), currentComponent));
+          if (currentRuledObject instanceof ResponseComponent) {
+            ResponseComponent currentComponent = (ResponseComponent) currentRuledObject;
+            generatedResponse.add(
+                new CompletedResponseComponent(currentComponent.getResponseSlices().stream()
+                    .map(responseSlices -> fillResponseComponent(
+                        responseSlices, entityValueMap))
+                    .collect(Collectors.toList()), currentComponent));
+          } else if (currentRuledObject instanceof Action){
+            validActions.add((Action) currentRuledObject);
+          }
           continue outer;
         }
       }

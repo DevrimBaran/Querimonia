@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
     "requiredEntities",
     "templateTexts"
 })
-public class ResponseComponent {
+public class ResponseComponent implements RuledInterface{
 
   /**
    * The unique primary key of the component.
@@ -165,18 +165,18 @@ public class ResponseComponent {
     return templateSlices;
   }
 
-  public ResponseComponent setComponentName(String componentName) {
+  private ResponseComponent setComponentName(String componentName) {
     this.componentName = componentName;
     return this;
   }
 
-  public ResponseComponent setTemplateTexts(List<String> templateTexts) {
+  private ResponseComponent setTemplateTexts(List<String> templateTexts) {
     this.templateTexts = templateTexts;
     this.templateSlices = createSlices();
     return this;
   }
 
-  public ResponseComponent setRulesXml(String rulesXml) {
+  private ResponseComponent setRulesXml(String rulesXml) {
     this.rulesXml = rulesXml;
     rootRule = parseRulesXml(rulesXml);
     return this;
