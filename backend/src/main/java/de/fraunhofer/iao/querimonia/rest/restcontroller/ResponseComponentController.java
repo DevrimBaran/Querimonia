@@ -72,6 +72,13 @@ public class ResponseComponentController {
             .getAllTemplates(templateRepository, count, page, sortBy, keyWords));
   }
 
+  @GetMapping("api/templates/count")
+  public ResponseEntity<?> getTemplateCount(@RequestParam("keywords") Optional<String[]> keyWords) {
+    return ControllerUtility.tryAndCatch(() ->
+        responseComponentManager.getAllTemplates(templateRepository, Optional.empty(),
+            Optional.empty(), Optional.empty(), keyWords));
+  }
+
 
   /**
    * Find the component with the given ID.
