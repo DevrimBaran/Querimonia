@@ -84,7 +84,7 @@ function Impressum () {
             <p>
               Grafische Veränderungen an Bildmotiven - außer zum Freistellen des Hauptmotivs - sind nicht gestattet. Es ist stets die Quellenangabe und Übersendung von zwei kostenlosen Belegexemplaren an die oben genannte Adresse erforderlich. Die Verwendung ist honorarfrei.
             </p>
-              <h3>Haftungshinweis</h3>
+            <h3>Haftungshinweis</h3>
             <p>
             Wir übernehmen keine Haftung für die Inhalte externer Links. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.
             </p>

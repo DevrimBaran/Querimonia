@@ -7,22 +7,19 @@
 
 import React from 'react';
 
+import Block from './../../components/Block';
+import Row from './../../components/Row';
+import Content from './../../components/Content';
+import TaggedText from './../../components/TaggedText';
+import Collapsible from './../../components/Collapsible';
+import Tabbed from './../../components/Tabbed';
+import TextBuilder from './../../components/TextBuilder';
+import ReactTooltip from 'react-tooltip';
+
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-function getMaxKey (obj) {
-  let max = -1;
-  let value = '';
-  for (let key in obj) {
-    if (obj[key] > max) {
-      max = obj[key];
-      value = key;
-    }
-  }
-  return max > -1 ? value + ' ' + max + '%' : '';
-}
-
-function Complaint (data) {
+function List (data) {
   return (
     <React.Fragment key={data.id}>
       {
@@ -30,12 +27,13 @@ function Complaint (data) {
           <Link to={'/complaints/' + data.id}>
             <div className='complaintSummary'>
               <div className='title'>
-                <h3><span>Anliegen {data.id} -</span>
+                <h3><span>Anliegen {data.id} - </span>
                   <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
-                    {getMaxKey(data.probableSentiment)}
+                    {data.sentiment.value + ' ' + (data.sentiment.probabilities[data.sentiment.value] * 100) + '%'}
                   </span>
+                  &nbsp;
                   <span className='small' style={{ fontWeight: 'normal' }}>
-                    {getMaxKey(data.probableSubject)}
+                    {data.subject.value + ' ' + (data.subject.probabilities[data.subject.value] * 100) + '%'}
                   </span>
                 </h3>
               </div>
@@ -48,5 +46,69 @@ function Complaint (data) {
     </React.Fragment>
   );
 }
+function Single (active) {
+  return (
+    <React.Fragment>
+      <Block>
+        <Row vertical>
+          <h6 className='center'>Antwort</h6>
+          <TextBuilder complaintId={active.id} />
+        </Row>
+      </Block>
+      <Block>
+        <Row vertical>
+          <h6 className='center'>Meldetext</h6>
+          <Content style={{ flexBasis: '100%' }}>
+            <Tabbed className='padding' style={{ height: '100%' }}>
+              <div label='Überarbeitet'>
+                <TaggedText text={{ text: active.text, entities: active.entities }} />
+              </div>
+              <div label='Original'>
+                {active.text}
+              </div>
+            </Tabbed>
+          </Content>
+          <Collapsible label='Details' style={{ minHeight: '130px' }}>
+            <b>Eingangsdatum: </b>
+            <TaggedText text={{
+              text: active.receiveDate,
+              entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+            }} />
+            <br />
+            <b> ID: </b>
+            {active.id}
+            <br />
+            <b> Kategorie: </b>
+            <i data-tip data-for='subjects'>{active.subject.value}</i>
+            <br />
+            <b> Sentiment: </b>
+            <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
+            <br />
+          </Collapsible>
+          <Collapsible label='Entitäten'>
+            <ul>
+              {
+                active.entities.map((entity, i) => {
+                  return <li key={i}> {entity['label']} :
+                    <TaggedText text={{
+                      text: ' ' + active.text.substring(entity['start'], entity['end']),
+                      entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
+                    }} />
+                  </li>;
+                })
+              }
+            </ul>
+            <ReactTooltip id='subjects' aria-haspopup='true'>
+              {Object.keys(active.subject.probabilities).map(subject => `${subject}: ${active.subject.probabilities[subject]}`)}
+            </ReactTooltip>
+            <ReactTooltip id='sentiments' aria-haspopup='true'>
+              {Object.keys(active.sentiment.probabilities).map(sentiment => `${sentiment}: ${active.sentiment.probabilities[sentiment]}`)}
+            </ReactTooltip>
+          </Collapsible>
+        </Row>
+      </Block>
+    </React.Fragment>
+  );
+}
 
-export default Complaint;
+export default { List, Single };
