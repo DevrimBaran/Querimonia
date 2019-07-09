@@ -54,8 +54,8 @@ function Impressum () {
             <p>
               Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: DE 129515865
             </p>
+            <h3>Registergericht</h3>
             <p>
-              <h3>Registergericht</h3>
             Amtsgericht München
             Eingetragener Verein
             Register-Nr. VR 4461
@@ -67,8 +67,8 @@ function Impressum () {
             Prof. Dr. Alexander Kurz, Personal, Recht und Verwertung
             Dipl.-Kfm. Andreas Meuer, Controlling und Digitale Geschäftsprozesse
             </p>
+            <h3>Nutzungsrechte</h3>
             <p>
-              <h3>Nutzungsrechte</h3>
             Copyright © by Fraunhofer-Gesellschaft
             </p>
             <p>

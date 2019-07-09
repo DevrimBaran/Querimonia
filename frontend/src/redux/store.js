@@ -10,6 +10,7 @@ const initialState = {
   complaints: {
     data: {
       byId: {},
+      active: false,
       ids: [],
       fetching: false
     },
@@ -35,8 +36,9 @@ const initialState = {
         type: 'select',
         multiple: true,
         values: [
-          { label: 'Foo', value: 'foo' },
-          { label: 'Faa', value: 'faa' }
+          { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
+          { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
+          { label: 'Sonstiges', value: 'Sonstiges' }
         ]
       },
       {
@@ -90,6 +92,7 @@ const initialState = {
     data: {
       byId: {},
       ids: [],
+      active: false,
       fetching: false
     },
     filter: [
@@ -123,6 +126,7 @@ const initialState = {
     data: {
       byId: {},
       ids: [],
+      active: false,
       fetching: false
     },
     filter: [
@@ -164,6 +168,7 @@ const initialState = {
     data: {
       byId: {},
       ids: [],
+      active: false,
       fetching: false
     },
     filter: [

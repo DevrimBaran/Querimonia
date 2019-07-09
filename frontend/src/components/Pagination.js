@@ -27,7 +27,7 @@ class Pagination extends Component {
     let pagelinks = [];
     let lastPage = Math.ceil(this.props.max / this.props.count) - 1;
     pagelinks.push(
-      <li key={'previous'} className={this.props.page > 0 ? 'previous' : 'previous disabled'} type='button' name='page' onClick={() => this.onClick('page', this.props.page - 1)}>
+      <li key={'previous'} className={this.props.page > 0 ? 'previous' : 'previous disabled'} type='button' name='page' onClick={this.props.page > 0 && (() => this.onClick('page', this.props.page - 1))}>
         <i className='fa fa-backward' />
       </li>
     );
@@ -56,7 +56,7 @@ class Pagination extends Component {
       );
     }
     pagelinks.push(
-      <li key={'next'} className={this.props.page < lastPage ? 'next' : 'next disabled'} onClick={() => this.onClick('page', this.props.page + 1)} >
+      <li key={'next'} className={this.props.page < lastPage ? 'next' : 'next disabled'} onClick={this.props.page < lastPage && (() => this.onClick('page', this.props.page + 1))} >
         <i className='fa fa-forward' />
       </li>
     );

@@ -21,10 +21,18 @@ function pagination (state = { count: 0, limit: 10, max: 0 }, action, endpoint) 
   if (endpoint !== action.endpoint) return state;
   switch (action.type) {
     case 'PAGINATION_CHANGE': {
-      return {
-        ...state,
-        [action.name]: action.value
-      };
+      if (action.name === 'count') {
+        return {
+          ...state,
+          count: action.value,
+          page: 0
+        };
+      } else {
+        return {
+          ...state,
+          [action.name]: action.value
+        };
+      }
     }
     default:
       return state;
@@ -38,8 +46,25 @@ function data (state = { data: {}, ids: [], idKey: 'id', fetching: false }, acti
       return {
         ...state,
         fetching: true,
+        active: {},
         byId: {},
         ids: []
+      };
+    }
+    case 'SET_ACTIVE': {
+      return {
+        ...state,
+        active: {
+          ...state.byId[action.id]
+        }
+      };
+    }
+    case 'MODIFY_ACTIVE': {
+      return {
+        ...state,
+        active: {
+          ...action.data
+        }
       };
     }
     case 'FETCH_END': {
@@ -56,7 +81,11 @@ function data (state = { data: {}, ids: [], idKey: 'id', fetching: false }, acti
 };
 
 function fetchable (state = { data: {}, filter: [], pagination: {} }, action, endpoint) {
-  return { data: data(state.data, action, endpoint), filter: filter(state.filter, action, endpoint), pagination: pagination(state.pagination, action, endpoint) };
+  return {
+    data: data(state.data, action, endpoint),
+    filter: filter(state.filter, action, endpoint),
+    pagination: pagination(state.pagination, action, endpoint)
+  };
 }
 
 const rootReducer = function (state, action) {

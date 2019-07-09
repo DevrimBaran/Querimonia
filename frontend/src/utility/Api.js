@@ -26,7 +26,7 @@ const options = function (method, data) {
       'Content-Type': 'application/json'
     }
   };
-  if (method === 'post') {
+  if (method === 'post' || method === 'put') {
     if (data instanceof FormData) {
       delete options.headers['Content-Type'];
       options.body = data;
@@ -56,6 +56,9 @@ export const api = {
   },
   post: function (endpoint, data) {
     return fetchJson(endpoint, options('post', data));
+  },
+  put: function (endpoint, data) {
+    return fetchJson(endpoint, options('put', data));
   }
 };
 

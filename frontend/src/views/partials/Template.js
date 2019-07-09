@@ -71,7 +71,9 @@ function Single (active, onSave) {
       <Block>
         <Row vertical>
           <h6 ref='editor' className='center'>Regeln</h6>
-          <CodeMirror onChange={(value) => modify('rulesXml', value)} value={active.rulesXml} />
+          <Content style={{ flexBasis: '100%' }}>
+            <CodeMirror onChange={(value) => modify('rulesXml', value)} value={active.rulesXml} />
+          </Content>
         </Row>
       </Block>
       <Block>

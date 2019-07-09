@@ -17,7 +17,17 @@ function List (data) {
       {
         data && (
           <Link to={'/config/' + data.id}>
-            <Debug data={data} />
+            <div className='Template'>
+              <div className='floatLeft'>
+                <p className='h3'>{data.name}</p>
+                <p>ID: {data.id}</p>
+              </div>
+              <div className='floatRight'>
+                <p>Extraktoren: {data.extractors.length}</p>
+                <p>Klassifikator: {data.classifier.name}</p>
+                <p>Stimmungsanalysator: {data.sentimentAnalyzer.name}</p>
+              </div>
+            </div>
           </Link>
         )
       }

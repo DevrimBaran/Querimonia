@@ -16,7 +16,7 @@ function List (data) {
       {
         data && (
           <Link to={'/actions/' + data.id}>
-            <div className='Action'>
+            <div className='Template'>
               <div className='floatLeft'>
                 <p className='h3'>{data.name}</p>
                 <p>ID: {data.id}</p>
