@@ -1,12 +1,11 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class EntityRule implements Rule {
 
@@ -34,10 +33,12 @@ public class EntityRule implements Rule {
   public boolean isPotentiallyRespected(ComplaintData complaint) {
     // check for upload date and time
     if (entityLabel.equals("UploadDatum")) {
-      return Objects.equals(complaint.getUploadTime().toLocalDate().toString(), expectedValue);
+      return expectedValue == null
+          || complaint.getUploadTime().toLocalDate().toString().equals(expectedValue);
     }
     if (entityLabel.equals("UploadZeit")) {
-      return Objects.equals(complaint.getUploadTime().toLocalTime().toString(), expectedValue);
+      return expectedValue == null
+          || complaint.getUploadTime().toLocalTime().toString().equals(expectedValue);
     }
 
     return ComplaintUtility.getValueOfEntity(complaint.getText(),

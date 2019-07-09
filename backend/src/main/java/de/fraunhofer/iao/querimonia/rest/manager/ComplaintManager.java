@@ -284,7 +284,6 @@ public class ComplaintManager {
       throw new QuerimoniaException(HttpStatus.NOT_FOUND, "Die gegebene Entität existiert nicht "
           + "in der Beschwerde.", "Ungültige Entity");
     }
-    // TODO check entities ranges
     storeComplaint(complaint);
     return complaintEntities;
   }
