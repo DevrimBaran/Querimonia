@@ -1,13 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
-import de.fraunhofer.iao.querimonia.service.FileStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,14 +25,8 @@ public class ResponseController {
 
   private final ComplaintManager complaintManager;
 
-  public ResponseController(FileStorageService fileStorageService,
-                            ComplaintRepository complaintRepository,
-                            ResponseComponentRepository templateRepository,
-                            CompletedResponseComponentRepository
-                                completedResponseComponentRepository,
-                            ConfigurationManager configurationManager) {
-    this.complaintManager = new ComplaintManager(fileStorageService, complaintRepository,
-        templateRepository, completedResponseComponentRepository, configurationManager);
+  public ResponseController(ComplaintManager complaintManager) {
+    this.complaintManager = complaintManager;
   }
 
   /**

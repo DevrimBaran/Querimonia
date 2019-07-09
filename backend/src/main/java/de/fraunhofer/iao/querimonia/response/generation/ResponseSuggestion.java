@@ -7,18 +7,19 @@ import de.fraunhofer.iao.querimonia.response.action.Action;
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import java.util.List;
 
 @Embeddable
 public class ResponseSuggestion {
 
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "completed_response_components",
                    joinColumns = @JoinColumn(name = "component_id"))
   private List<CompletedResponseComponent> responseComponents;
 
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "response_actions",
                    joinColumns = @JoinColumn(name = "action_id"))
   private List<Action> actions;
