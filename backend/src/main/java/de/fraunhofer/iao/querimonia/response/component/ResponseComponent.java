@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
 import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
@@ -91,19 +90,12 @@ public class ResponseComponent implements RuledInterface {
   private List<List<ResponseSlice>> templateSlices;
 
   @JsonCreator
-  public ResponseComponent(String componentName, List<String> templateTexts,
-                           String rulesXml) {
+  public ResponseComponent(@JsonProperty String componentName,
+                           @JsonProperty List<String> templateTexts,
+                           @JsonProperty String rulesXml) {
     setComponentName(componentName);
     setTemplateTexts(templateTexts);
     setRulesXml(rulesXml);
-  }
-
-  @JsonCreator
-  public ResponseComponent(@JsonProperty String componentName,
-                           @JsonProperty List<String> templateTexts,
-                           @JsonProperty String rulesXml,
-                           @JsonProperty List<NamedEntity> requiredEntities) {
-    this(componentName, templateTexts, rulesXml);
   }
 
   public ResponseComponent() {
@@ -118,7 +110,7 @@ public class ResponseComponent implements RuledInterface {
    * component.
    */
   @Transient
-  @JsonProperty("requiredEntities")
+  @JsonIgnore
   public List<String> getRequiredEntities() {
     return getResponseSlices()
         .stream()
