@@ -22,6 +22,11 @@ class TagCloud extends Component {
       cloudActive: true
     };
   }
+  toggleChange = () => {
+    this.setState({
+      cloudActive: !this.state.cloudActive,
+    });
+  }
 
   exportSvg = () => {
     let svgElement = document.getElementById('TagCloud').firstChild.firstChild;
@@ -66,7 +71,19 @@ class TagCloud extends Component {
   };
 
   calculateSize = (size) => {
-    return 130 * (size / this.state.maxOccurrence);
+    const tmax = this.state.maxOccurrence;
+    const tmin = 5; //mindest Anzahl an Wörter
+    const fmax = 130; // maximale Schriftgröße
+    const fmin = 20; // minimale Schriftgröße
+    const t = size;
+    if(t>tmin){
+    return  (fmax*(t - tmin))/(tmax-tmin);
+   }
+   else{
+     return fmin;
+   }
+    //(130 * (size / this.state.maxOccurrence));
+    //((fmax - fmin)*((size-tmin)/(this.state.maxOccurrence-tmin))+ fmin);
     // TODO: caclitlate size
   };
 
@@ -75,6 +92,7 @@ class TagCloud extends Component {
     this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
     this.refs.maxDate.value && (query.date_max = this.refs.maxDate.value);
     this.refs.onlyWords.checked && (query.words_only = this.refs.onlyWords.checked);
+    this.refs.activeMode.checked && (this.state.cloudActive = this.refs.activeMode.checked);
     this.refs.count.value && this.refs.count.value > 0 && (query.count = this.refs.count.value);
     Api.get('/api/stats/tagcloud', query)
       .then(data => {
@@ -120,8 +138,12 @@ class TagCloud extends Component {
                   <input type='date' id='maxDate' ref='maxDate' />
                 </div>
                 <div>
-                  <label htmlFor='onlyWords'>Nur Wörter anzeigen:</label><br />
+                  <label htmlFor='cloudActive'>Nur Wörter anzeigen:</label><br />
                   <input type='checkbox' id='onlyWords' ref='onlyWords' defaultChecked />
+                </div>
+                <div>
+                  <label htmlFor='cloudActive'>Listenansicht</label><br />
+                  <input type='checkbox' id='activeMode' ref='activeMode' checked = {!this.state.cloudActive}  onChange={this.toggleChange} />
                 </div>
                 <div>
                   <label htmlFor='count'>Wortanzahl:</label><br />
@@ -142,12 +164,14 @@ class TagCloud extends Component {
                   height={window.innerHeight - 190}
                   padding={0.5}
                   font={'Impact'}
+              //    onWordClick = {()=>{console.log()}}
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
                 <ul>
+                  <li><h4>Wort : Anzahl</h4></li>
                   {this.createWordArray(this.state.words).map((element) => {
-                    return (<li><h3>{element['text']}</h3></li>);
+                    return (<li>{element['text'] + ' : '+ element['value']}</li>);
                   })}
                 </ul>
               </Content>)}
