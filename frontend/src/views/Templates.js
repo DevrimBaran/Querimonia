@@ -16,8 +16,6 @@ import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
-
-import { pd } from 'pretty-data';
 import { withRouter } from 'react-router-dom';
 
 class Templates extends Component {
@@ -69,52 +67,13 @@ class Templates extends Component {
       }>Neues Template</button>
   ));
 
-  saveTemplate = withRouter(({ history }) => (
-    <button
-      type='button'
-      className='important'
-      onClick={() => {
-        history.push('/templates/' +
-          window.location.search);
-        let template = this.state.templates.filter((a) => '' + a.componentId === this.props.match.params.id)[0];
-        template.rulesXml = pd.xmlmin(template.rulesXml);
-        delete template.componentId;
-        delete template.requiredEntites;
-        console.log(template);
-        /* Api.post('/api/templates', template)
-          .then(this.componentDidMount);
-        */
-      }}
-    >Speichern</button>
-  ));
-
   // Creates an enumeration of words in an array
   renderEnumeration = (word, index) => {
     return (<li key={index}>{word}</li>);
   };
 
   renderSingle = (active) => {
-    return (<React.Fragment>
-      <Block>
-        <Row vertical>
-          <h6 ref='editor' className='center'>Regeln</h6>
-          <div id='editor'>{pd.xml(active.rulesXml)}</div>
-        </Row>
-      </Block>
-      <Block>
-        <Row vertical>
-          <h6 className='center'>Antworvariationen</h6>
-          <Content className='margin'>
-            {active.templateTexts.map((text, index) => {
-              return <textarea className='p visible' key={index} value={text} onChange={() => {}} />;
-            })}
-          </Content>
-          <div className='center margin'>
-            <this.saveTemplate />
-          </div>
-        </Row>
-      </Block>
-    </React.Fragment>);
+    return (Template.Single(active));
   };
 
   update = () => {
@@ -134,7 +93,7 @@ class Templates extends Component {
         <Content className='padding'>
           {this.props.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => Template(this.props.data.byId[id])))
+            : (this.props.data && this.props.data.ids.map(id => Template.List(this.props.data.byId[id])))
           }
         </Content>
         <Pagination endpoint='templates' />

@@ -9,8 +9,6 @@
 @import 'components/select';
 @import 'components/templates';
 
-//grid-template-rows: repeat(2, minmax(min-content, auto));
-
 #root {
     display: flex;
     overflow: hidden;
@@ -84,6 +82,10 @@
         padding-top: 0;
         margin: 0;
     }
+}
+
+.CodeMirror {
+    width: 100%;
 }
 
 .pagination {
@@ -224,16 +226,13 @@
     }
     .content {
         overflow: auto;
-        height: 100%;
-        //padding-top: 10px;
-    }
-    &.Content .content {
         height: calc(100% - 40px);
-        //padding: 0 30px;
+        //padding-top: 10px;
     }
 }
 .collapsible[data-collapse=true] { 
     min-height: 30px !important;
+    max-height: 30px !important;
     .content {
         display: none;
     }

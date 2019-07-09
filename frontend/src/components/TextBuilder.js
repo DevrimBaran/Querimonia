@@ -66,16 +66,17 @@ class TextBuilder extends Component {
   setData = (data) => {
     const components = data.components.reduce((obj, component) => {
       component.currentAlternative = 0;
-      obj[component.responsePartId] = component;
-      obj.ids.push(component.responsePartId);
+      obj[component.id] = component;
+      obj.ids.push(component.id);
       return obj;
     }, { ids: [] });
     const actions = data.actions.reduce((obj, component) => {
-      obj[component.actionId] = component;
-      obj.ids.push(component.actionId);
+      obj[component.id] = component;
+      obj.ids.push(component.id);
       return obj;
     }, { ids: [] });
     this.setState({ components, actions });
+    console.log({ components, actions });
   };
 
   fetch = () => {
@@ -96,8 +97,10 @@ class TextBuilder extends Component {
         <Content style={{ flexBasis: '10%' }}>
           <textarea className='margin' id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
-          <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>
+        <div>
+          <Input type='button' onClick={this.delete} value='Abschließen (löschen)' />
+        </div>
         <Collapsible className='Content' label='Aktionen' collapse={false} id='actions'>
           {
             this.state.actions.ids.map((id) => {
