@@ -179,6 +179,7 @@ class TaggedText extends Component {
     e.stopPropagation();
     const selectedText = window.getSelection();
     if (selectedText && selectedText.baseNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
+      const newLabelString = selectedText.toString();
       const baseOffset = selectedText.anchorOffset;
       const extentOffset = selectedText.focusOffset;
       const baseKey = selectedText.anchorNode.parentNode.attributes['data-key'].value;
@@ -213,7 +214,8 @@ class TaggedText extends Component {
       this.startEdit();
       this.setState({
         editFormActive: true,
-        newEntityQuery: query
+        newEntityQuery: query,
+        newEntityString: newLabelString
       });
     }
   };
@@ -221,6 +223,18 @@ class TaggedText extends Component {
   abortEdit = () => {
     this.setState({
       editFormActive: false
+    });
+  };
+
+  handleLabelChange = (event) => {
+    this.setState({
+      newEntityQuery: { ...this.state.newEntityQuery, label: event.target.value }
+    });
+  };
+
+  handleExtractorChange = (event) => {
+    this.setState({
+      newEntityQuery: { ...this.state.newEntityQuery, extractor: event.target.value }
     });
   };
 
@@ -255,7 +269,8 @@ class TaggedText extends Component {
         className='fas fa-plus-circle fa-2x'
         onClick={this.startEdit} />
       {this.state.editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}
-      {this.state.editFormActive ? <div> <input type={'text'} placeholder={'Label'} onChange={(event) => { this.state.newEntityQuery['label'] = event.target.value; }} /> <input type={'text'} placeholder={'Extractor'} onChange={(event) => { this.state.newEntityQuery['extractor'] = event.target.value; }} /> <br />
+      {this.state.editFormActive ? <div style={{ marginTop: '5px' }}> <div>{this.state.newEntityString}</div>
+        <input type={'text'} placeholder={'Label'} onChange={this.handleLabelChange} /> <input type={'text'} placeholder={'Extractor'} onChange={this.handleExtractorChange} /> <br />
         <i style={{ color: 'green', cursor: 'pointer', padding: '5px' }} onClick={this.addEntity} className='far fa-check-circle fa-2x' />
         <i style={{ color: 'red', cursor: 'pointer', padding: '5px' }} onClick={this.abortEdit} className='far fa-times-circle fa-2x' /> </div> : null}
     </div>;
