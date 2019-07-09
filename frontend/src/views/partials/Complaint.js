@@ -95,10 +95,10 @@ function Single (active) {
             <ul>
               {
                 active.entities.map((entity, i) => {
-                  return <li key={i}> {entity['label']} :
+                  return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: '' + active.text.substring(entity['start'], entity['end']),
-                      entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
+                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'] }]
                     }} />
                   </li>;
                 })
