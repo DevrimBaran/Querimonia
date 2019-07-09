@@ -165,12 +165,12 @@ public class ResponseComponent implements RuledInterface{
     return templateSlices;
   }
 
-  private ResponseComponent setComponentName(String componentName) {
+  public ResponseComponent setComponentName(String componentName) {
     this.componentName = componentName;
     return this;
   }
 
-  private ResponseComponent setTemplateTexts(List<String> templateTexts) {
+  public ResponseComponent setTemplateTexts(List<String> templateTexts) {
     this.templateTexts = templateTexts;
     this.templateSlices = createSlices();
     return this;
@@ -187,11 +187,11 @@ public class ResponseComponent implements RuledInterface{
     return this;
   }
 
-  private Rule parseRulesXml(String rulesXml) {
+  public Rule parseRulesXml(String rulesXml) {
     return RuleParser.parseRules(rulesXml);
   }
 
-  private List<List<ResponseSlice>> createSlices() {
+  public List<List<ResponseSlice>> createSlices() {
     return templateTexts.stream()
         .map(ResponseSlice::createSlices)
         .collect(Collectors.toList());
