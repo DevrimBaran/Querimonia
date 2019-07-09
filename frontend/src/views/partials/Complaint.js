@@ -61,7 +61,7 @@ function Single (active) {
           <Content style={{ flexBasis: '100%' }}>
             <Tabbed className='padding' style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <TaggedText text={{ text: active.text, entities: active.entities }} />
+                <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} editable />
               </div>
               <div label='Original'>
                 {active.text}
@@ -70,9 +70,9 @@ function Single (active) {
           </Content>
           <Collapsible label='Details' style={{ minHeight: '130px' }}>
             <b>Eingangsdatum: </b>
-            <TaggedText text={{
+            <TaggedText taggedText={{
               text: active.receiveDate,
-              entities: [{ label: 'Upload_Datum', start: 0, end: active.receiveDate.length }]
+              entities: [{ label: 'Eingangsdatum', start: 0, end: active.receiveDate.length }]
             }} />
             <br />
             <b> ID: </b>
@@ -84,26 +84,26 @@ function Single (active) {
             <b> Sentiment: </b>
             <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
             <br />
+            <ReactTooltip id='subjects' aria-haspopup='true'>
+              {Object.keys(active.subject.probabilities).map(subject => <div>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
+            </ReactTooltip>
+            <ReactTooltip id='sentiments' aria-haspopup='true'>
+              {Object.keys(active.sentiment.probabilities).map(sentiment => <div>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
+            </ReactTooltip>
           </Collapsible>
           <Collapsible label='Entitäten'>
             <ul>
               {
                 active.entities.map((entity, i) => {
                   return <li key={i}> {entity['label']} :
-                    <TaggedText text={{
-                      text: ' ' + active.text.substring(entity['start'], entity['end']),
+                    <TaggedText taggedText={{
+                      text: '' + active.text.substring(entity['start'], entity['end']),
                       entities: [{ label: entity['label'], start: 1, end: entity['end'] - entity['start'] + 1 }]
                     }} />
                   </li>;
                 })
               }
             </ul>
-            <ReactTooltip id='subjects' aria-haspopup='true'>
-              {Object.keys(active.subject.probabilities).map(subject => `${subject}: ${active.subject.probabilities[subject]}`)}
-            </ReactTooltip>
-            <ReactTooltip id='sentiments' aria-haspopup='true'>
-              {Object.keys(active.sentiment.probabilities).map(sentiment => `${sentiment}: ${active.sentiment.probabilities[sentiment]}`)}
-            </ReactTooltip>
           </Collapsible>
         </Row>
       </Block>

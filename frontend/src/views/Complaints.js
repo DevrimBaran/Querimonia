@@ -28,45 +28,45 @@ class Complaints extends Component {
     this.props.dispatch(fetchData('complaints'));
   }
 
-    renderSingle = (active) => {
-      return (Complaint.Single(active));
-    }
+  renderSingle = (active) => {
+    return (Complaint.Single(active));
+  }
 
-    update = () => {
-      this.setState({ loading: true });
-      setTimeout(() => {
-        this.componentDidMount();
-      }, 10);
-    }
+  update = () => {
+    this.setState({ loading: true });
+    setTimeout(() => {
+      this.componentDidMount();
+    }, 10);
+  }
 
-    renderList = () => {
-      return (<Block>
-        <Row vertical>
-          <Filter endpoint='complaints' />
-          <Content>
-            {this.props.fetching
-              ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-              : (this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id])))
-            }
-          </Content>
-          <Pagination endpoint='complaints' />
-        </Row>
-      </Block>);
-    }
+  renderList = () => {
+    return (<Block>
+      <Row vertical>
+        <Filter endpoint='complaints' />
+        <Content>
+          {this.props.fetching
+            ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
+            : (this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id])))
+          }
+        </Content>
+        <Pagination endpoint='complaints' />
+      </Row>
+    </Block>);
+  }
 
-    render () {
-      let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
-      return (
-        <React.Fragment>
-          { active ? (
-            this.renderSingle(active)
-          ) : (
-            this.renderList()
-          ) }
+  render () {
+    let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
+    return (
+      <React.Fragment>
+        { active ? (
+          this.renderSingle(active)
+        ) : (
+          this.renderList()
+        ) }
 
-        </React.Fragment>
-      );
-    }
+      </React.Fragment>
+    );
+  }
 }
 
 const mapStateToProps = (state, props) => ({ ...state['complaints'] });

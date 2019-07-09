@@ -119,7 +119,7 @@ class TextBuilder extends Component {
               return (
                 <div className='response' key={id}>
                   <span className='content'>
-                    <TaggedText text={{ text: answer.completedText, entities: answer.entities }} />
+                    <TaggedText taggedText={{ text: answer.completedText, entities: answer.entities }} />
                     <div className='part'>{component.component.componentName}</div>
                   </span>
                   <i className='fa fa-check add' onClick={() => { this.add(id); }} />
