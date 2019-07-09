@@ -65,22 +65,25 @@ class TagCloud extends Component {
   createWordArray = (wordsObject) => {
     let wordArray = [];
     Object.keys(wordsObject).forEach((element) => {
-      wordArray.push({ text: element, value: this.calculateSize(wordsObject[element]) });
+      wordArray.push({ text: element, value: this.calculateSize(wordsObject[element]), size: wordsObject[element]});
     });
     return wordArray;
   };
 
   calculateSize = (size) => {
-    const tmax = this.state.maxOccurrence;
-    const tmin = 5; //mindest Anzahl an Wörter
+    const tmax = this.state.maxOccurrence; //Höchste Anzahl
+    const tmin = 1; //mindest Anzahl an Wörter
     const fmax = 130; // maximale Schriftgröße
-    const fmin = 20; // minimale Schriftgröße
-    const t = size;
+    const fmin = 10; // minimale Schriftgröße
+    const t = size; // value
     if(t>tmin){
-    return  (fmax*(t - tmin))/(tmax-tmin);
+    return ((fmax*(t - tmin))/(tmax-tmin))
+    //(130 * (size / this.state.maxOccurrence));
+    // ((fmax*(t - tmin))/(tmax-tmin));
    }
    else{
      return fmin;
+      //fmin;
    }
     //(130 * (size / this.state.maxOccurrence));
     //((fmax - fmin)*((size-tmin)/(this.state.maxOccurrence-tmin))+ fmin);
@@ -142,10 +145,6 @@ class TagCloud extends Component {
                   <input type='checkbox' id='onlyWords' ref='onlyWords' defaultChecked />
                 </div>
                 <div>
-                  <label htmlFor='cloudActive'>Listenansicht</label><br />
-                  <input type='checkbox' id='activeMode' ref='activeMode' checked = {!this.state.cloudActive}  onChange={this.toggleChange} />
-                </div>
-                <div>
                   <label htmlFor='count'>Wortanzahl:</label><br />
                   <input type='number' id='count' ref='count' defaultValue='70' min='0' />
                 </div>
@@ -171,11 +170,15 @@ class TagCloud extends Component {
                 <ul>
                   <li><h4>Wort : Anzahl</h4></li>
                   {this.createWordArray(this.state.words).map((element) => {
-                    return (<li>{element['text'] + ' : '+ element['value']}</li>);
+                    return (<li>{element['text'] + ' : '+ (element['size'])}</li>);
                   })}
                 </ul>
               </Content>)}
             <div>
+            <div>
+                  <label htmlFor='cloudActive'>Listenansicht</label><br/>
+                  <input type='checkbox' id='activeMode' ref='activeMode' checked = {!this.state.cloudActive}  onChange={this.toggleChange} />
+                </div>
               <Row vertical={false} style={{ justifyContent: 'center' }}>
                 <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
                   onClick={this.exportCsv} />

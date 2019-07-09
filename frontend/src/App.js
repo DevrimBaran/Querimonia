@@ -43,7 +43,7 @@ function App () {
             <Link to='/templates'>Templates</Link>
           </li>
           <li>
-            <Link to='/wordvectors'>Wortvektoren</Link>
+            <Link to='/wordvectors'>Worthäufigkeiten</Link>
           </li>
           <li>
             <Link to='/tagcloud'>Tag-Cloud</Link>
