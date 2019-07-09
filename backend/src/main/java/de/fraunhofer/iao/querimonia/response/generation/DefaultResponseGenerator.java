@@ -2,7 +2,7 @@ package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import de.fraunhofer.iao.querimonia.response.component.ResponseSlice;
@@ -22,9 +22,9 @@ import java.util.stream.Collectors;
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
-  private final TemplateRepository templateRepository;
+  private final ResponseComponentRepository templateRepository;
 
-  public DefaultResponseGenerator(TemplateRepository templateRepository) {
+  public DefaultResponseGenerator(ResponseComponentRepository templateRepository) {
     this.templateRepository = templateRepository;
   }
 

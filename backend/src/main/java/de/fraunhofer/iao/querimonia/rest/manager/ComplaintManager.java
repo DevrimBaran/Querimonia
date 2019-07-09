@@ -7,7 +7,7 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -60,7 +60,7 @@ public class ComplaintManager {
    */
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
-                          TemplateRepository templateRepository,
+                          ResponseComponentRepository templateRepository,
                           CompletedResponseComponentRepository
                               completedResponseComponentRepository,
                           ConfigurationManager configurationManager) {

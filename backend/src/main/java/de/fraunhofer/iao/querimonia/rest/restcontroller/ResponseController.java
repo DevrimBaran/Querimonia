@@ -3,7 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
@@ -32,7 +32,7 @@ public class ResponseController {
 
   public ResponseController(FileStorageService fileStorageService,
                             ComplaintRepository complaintRepository,
-                            TemplateRepository templateRepository,
+                            ResponseComponentRepository templateRepository,
                             CompletedResponseComponentRepository
                                 completedResponseComponentRepository,
                             ConfigurationManager configurationManager) {

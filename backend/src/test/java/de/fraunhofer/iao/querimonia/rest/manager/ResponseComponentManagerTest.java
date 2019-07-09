@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.manager;
 
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,11 +11,11 @@ import static org.mockito.Mockito.*;
 public class ResponseComponentManagerTest {
 
     private ResponseComponentManager responseComponentManager = new ResponseComponentManager();
-    private TemplateRepository templateRepository;
+    private ResponseComponentRepository templateRepository;
 
     @Before
     public void setup() {
-        templateRepository = mock(TemplateRepository.class);
+        templateRepository = mock(ResponseComponentRepository.class);
         when(templateRepository.save(any(ResponseComponent.class))).thenReturn(new ResponseComponent());
     }
 
