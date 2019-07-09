@@ -189,6 +189,9 @@ const initialState = {
       page: 0,
       max: 0
     }
+  },
+  currentConfig: {
+    extractors: []
   }
 };
 

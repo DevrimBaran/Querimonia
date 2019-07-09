@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { saveActive } from '../../redux/actions';
+import { saveActive, setCurrentConfig } from '../../redux/actions';
 
 import merge from 'deepmerge';
 
@@ -18,7 +18,7 @@ import Input from '../../components/Input';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-function List (data) {
+function List (data, currentConfig) {
   return (
     <React.Fragment key={data.id}>
       {
@@ -27,6 +27,7 @@ function List (data) {
             <div className='Template'>
               <div className='floatLeft'>
                 <p className='h3'>{data.name}</p>
+                {data.id === currentConfig.id && (<strong>Aktiv</strong>)}
                 <p>ID: {data.id}</p>
               </div>
               <div className='floatRight'>
@@ -42,7 +43,7 @@ function List (data) {
   );
 }
 
-function Single (active, dispatch) {
+function Single (active, dispatch, currentConfig) {
   const modifyLabel = (index, label, change) => {
     dispatch({
       type: 'MODIFY_ACTIVE',
@@ -197,6 +198,16 @@ function Single (active, dispatch) {
                 dispatch(saveActive('config'));
               }}
             >Speichern</button>
+          </div>
+          <div className='center margin'>
+            <button
+              type='button'
+              className='important'
+              disabled={active.id === currentConfig.id}
+              onClick={(e) => {
+                dispatch(setCurrentConfig(active.id));
+              }}
+            >Aktivieren</button>
           </div>
         </Row>
       </Block>

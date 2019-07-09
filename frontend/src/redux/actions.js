@@ -26,6 +26,9 @@ export function saveActive (endpoint) {
     dispatch((dispatch) => {
       Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + active.id, active)
         .then(data => {
+          if (data.status && data.status === 500) {
+            alert(data.message);
+          }
           dispatch({
             type: 'SAVE_END',
             endpoint: endpoint
@@ -69,5 +72,31 @@ export function fetchData (endpoint) {
         });
     }
     );
+  };
+}
+export function fetchCurrentConfig () {
+  return function (dispatch) {
+    dispatch((dispatch) => {
+      Api.get('/api/config/current', {})
+        .then(data => {
+          dispatch({
+            type: 'CURRENT_CONFIG',
+            data: data
+          });
+        });
+    });
+  };
+}
+export function setCurrentConfig (id) {
+  return function (dispatch) {
+    dispatch((dispatch) => {
+      Api.put('/api/config/current?configId=' + id, {})
+        .then(data => {
+          dispatch({
+            type: 'CURRENT_CONFIG',
+            id: id
+          });
+        });
+    });
   };
 }

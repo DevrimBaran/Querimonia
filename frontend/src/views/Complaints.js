@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchData } from '../redux/actions';
+import { fetchData, fetchCurrentConfig } from '../redux/actions';
 
 import Complaint from './partials/Complaint';
 
@@ -26,6 +26,7 @@ class Complaints extends Component {
   }
   componentDidMount = () => {
     this.props.dispatch(fetchData('complaints'));
+    this.props.dispatch(fetchCurrentConfig());
   }
 
   renderSingle = (active) => {
@@ -69,6 +70,8 @@ class Complaints extends Component {
   }
 }
 
-const mapStateToProps = (state, props) => ({ ...state['complaints'] });
+const mapStateToProps = (state, props) => ({
+  ...state.complaints
+});
 
 export default connect(mapStateToProps)(Complaints);

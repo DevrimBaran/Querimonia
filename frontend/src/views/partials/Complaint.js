@@ -85,10 +85,10 @@ function Single (active) {
             <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
             <br />
             <ReactTooltip id='subjects' aria-haspopup='true'>
-              {Object.keys(active.subject.probabilities).map(subject => <div>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
+              {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
             </ReactTooltip>
             <ReactTooltip id='sentiments' aria-haspopup='true'>
-              {Object.keys(active.sentiment.probabilities).map(sentiment => <div>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
+              {Object.keys(active.sentiment.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
             </ReactTooltip>
           </Collapsible>
           <Collapsible label='Entitäten'>

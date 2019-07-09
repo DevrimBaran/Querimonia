@@ -9,6 +9,10 @@ import React, { Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import Api from '../utility/Api';
 
+import merge from 'deepmerge';
+
+import { connect } from 'react-redux';
+
 const LABEL_COLORS = {
   Datum: 'green',
   Eingangsdatum: 'red',
@@ -37,22 +41,24 @@ class TaggedText extends Component {
     if (!taggedText.text) return taggedText;
     let html = [];
     let cpos = 0;
+    let key = 0;
     if (Array.isArray(taggedText.entities)) {
       this.prepareEntities(taggedText.entities);
       for (const tag of taggedText.entities) {
         // TODO: uuid
         const id = String(Math.floor(Math.random() * (50000)));
         // String before next entity
-        !taggedText.text.substring(cpos, tag.start) || html.push(<span key={html.length} data-key={html.length}>{taggedText.text.substring(cpos, tag.start)}</span>);
+        !taggedText.text.substring(cpos, tag.start) || html.push(<span key={key++} data-key={html.length}>{taggedText.text.substring(cpos, tag.start)}</span>);
         // String that is entity
-        html.push(<span data-tip data-for={id} key={html.length} data-key={html.length} className='tag' style={this.createBackground(tag.label)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
+        html.push(<span data-tip data-for={id} key={key++} data-key={html.length} className='tag' style={this.createBackground(tag)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
         // Tooltip for that entity
-        html.push(this.createTooltip(tag.label, id));
+        html.push(this.createTooltip(tag, id, key++));
+        key += tag.label.length + 1;
         cpos = tag.end;
       }
     }
     // String from last entity to end of text or complete text if there are no entities
-    html.push(<span key={html.length} data-key={html.length}>{taggedText.text.substring(cpos, taggedText.text.length)}</span>);
+    html.push(<span key={key++} data-key={html.length}>{taggedText.text.substring(cpos, taggedText.text.length)}</span>);
     return html;
   };
 
@@ -61,7 +67,7 @@ class TaggedText extends Component {
     if (entities.length === 0) return;
     entities.forEach((entity) => {
       // TODO: uuid
-      const id = String(Math.floor(Math.random() * (50000)));
+      const id = String(Math.floor(Math.random() * (10000000)));
       this.state.originalLabels.set(id, JSON.parse(JSON.stringify(entity)));
       entity.label = [{
         label: entity.label,
@@ -111,11 +117,12 @@ class TaggedText extends Component {
   };
 
   // calculates the proper background colors for the given labels
-  createBackground = (labels) => {
+  createBackground = (tag) => {
+    let labels = tag.label;
     const individualHeightPercentage = 100 / labels.length;
     let linearGradient = '';
     labels.forEach((label, i) => {
-      const color = LABEL_COLORS[label.label] || LABEL_COLORS['default'];
+      const color = (tag.extractor && this.props.colors[tag.extractor] ? this.props.colors[tag.extractor][label.label] : this.props.defaultColors[label.label]) || LABEL_COLORS['default'];
       linearGradient += color +
         (i !== 0 ? ' ' + String(individualHeightPercentage * (i)) + '%,' : ',') +
         color +
@@ -127,9 +134,11 @@ class TaggedText extends Component {
     return { backgroundImage: 'linear-gradient(' + linearGradient + ')' };
   };
 
-  createTooltip = (labels, id) => {
+  createTooltip = (tag, id, key) => {
+    let labels = tag.label;
     let labelArray = labels.map((label, i) => {
-      return <div key={i}><span className='dot' style={{ backgroundColor: LABEL_COLORS[label.label] || LABEL_COLORS['default'],
+      const color = (tag.extractor && this.props.colors[tag.extractor] ? this.props.colors[tag.extractor][label.label] : this.props.defaultColors[label.label]) || LABEL_COLORS['default'];
+      return <div key={key + i}><span className='dot' style={{ backgroundColor: color,
         height: '10px',
         width: '10px',
         borderRadius: '50%',
@@ -138,7 +147,7 @@ class TaggedText extends Component {
         ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
         : null} <br /> </div>;
     });
-    return <ReactTooltip effect='solid' delayHide={500} clickable key={labels} id={id} aria-haspopup='true'>
+    return <ReactTooltip effect='solid' delayHide={500} clickable key={key + labels.length + 1} id={id} aria-haspopup='true'>
       {
         labelArray
       }
@@ -284,4 +293,14 @@ class TaggedText extends Component {
   };
 }
 
-export default TaggedText;
+const mapStateToProps = (state) => ({
+  colors: state.currentConfig.extractors.reduce((obj, extractor) => {
+    obj[extractor.name] = extractor.colors;
+    return obj;
+  }, {}),
+  defaultColors: state.currentConfig.extractors.reduce((obj, extractor) => {
+    return merge(obj, extractor.colors);
+  }, {})
+});
+
+export default connect(mapStateToProps)(TaggedText);

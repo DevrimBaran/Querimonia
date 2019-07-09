@@ -59,8 +59,8 @@ class TextBuilder extends Component {
       }
     );
   }
-  delete = () => {
-    Api.delete('/api/complaints/' + this.props.complaintId);
+  finish = (mailto) => {
+    document.location.href = mailto;
     document.location.href = document.location.origin + '/complaints';
   }
   setData = (data) => {
@@ -92,6 +92,15 @@ class TextBuilder extends Component {
     this.fetch();
   }
   render () {
+    const mail = 'querimonia@g-laber.de';
+    const subject = 'Querimonia Beschwerdeabschluss ' + this.props.complaintId;
+    const message = `Die Beschwerde mit der ID: ${this.props.complaintId} wurde mit folgender Nachricht abgeschlossen:
+
+    ${this.state.text}
+
+    `;
+    const link = 'Link: https://querimonia.iao.fraunhofer.de/complaints/' + this.props.complaintId;
+    const mailto = 'mailto:' + encodeURIComponent(mail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message) + link;
     return (
       <React.Fragment>
         <Content style={{ flexBasis: '10%' }}>
@@ -99,7 +108,7 @@ class TextBuilder extends Component {
             onChange={this.onChange} />
         </Content>
         <div>
-          <Input type='button' onClick={this.delete} value='Abschließen (löschen)' />
+          <Input type='button' value='Abschließen' onClick={() => this.finish(mailto)} />
         </div>
         <Collapsible className='Content' label='Aktionen' collapse={false} id='actions'>
           {

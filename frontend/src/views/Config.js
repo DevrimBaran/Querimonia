@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchData } from '../redux/actions';
+import { fetchData, fetchCurrentConfig } from '../redux/actions';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import Input from './../components/Input';
@@ -22,6 +22,7 @@ import Pagination from './../components/Pagination';
 class Config extends Component {
   componentDidMount = () => {
     this.props.dispatch(fetchData('config'));
+    this.props.dispatch(fetchCurrentConfig());
   }
 
   renderList = () => {
@@ -34,7 +35,7 @@ class Config extends Component {
         <Content className='padding'>
           {this.props.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => ConfigPartial.List(this.props.data.byId[id])))
+            : (this.props.data && this.props.data.ids.map(id => ConfigPartial.List(this.props.data.byId[id], this.props.currentConfig)))
           }
         </Content>
         <Pagination endpoint='config' />
@@ -60,7 +61,7 @@ class Config extends Component {
     return (
       <React.Fragment>
         {single ? (
-          ConfigPartial.Single(this.props.data.active, this.props.dispatch)
+          ConfigPartial.Single(this.props.data.active, this.props.dispatch, this.props.currentConfig)
         ) : (
           this.renderList()
         )}
@@ -70,6 +71,6 @@ class Config extends Component {
   }
 }
 
-const mapStateToProps = (state, props) => ({ ...state['config'] });
+const mapStateToProps = (state, props) => ({ ...state['config'], currentConfig: state.currentConfig });
 
 export default connect(mapStateToProps)(Config);

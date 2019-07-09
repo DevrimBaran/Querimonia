@@ -136,6 +136,18 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       return state;
   }
 };
+function currentConfig (state = {}, action) {
+  switch (action.type) {
+    case 'CURRENT_CONFIG': {
+      return {
+        ...action.data
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
 
 function fetchable (state = { data: {}, filter: [], pagination: {} }, action, endpoint) {
   return {
@@ -150,7 +162,8 @@ const rootReducer = function (state, action) {
     complaints: fetchable(state.complaints, action, 'complaints'),
     actions: fetchable(state.actions, action, 'actions'),
     config: fetchable(state.config, action, 'config'),
-    templates: fetchable(state.templates, action, 'templates')
+    templates: fetchable(state.templates, action, 'templates'),
+    currentConfig: currentConfig(state.currentConfig, action)
   };
 };
 

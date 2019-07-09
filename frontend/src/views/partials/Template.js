@@ -9,6 +9,8 @@ import React from 'react';
 
 import { saveActive } from '../../redux/actions';
 
+import merge from 'deepmerge';
+
 import CodeMirror from '../../components/CodeMirror';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
@@ -76,6 +78,26 @@ function Single (active, dispatch) {
       data: modified
     });
   };
+  const addText = () => {
+    dispatch({
+      type: 'MODIFY_ACTIVE',
+      endpoint: 'templates',
+      data: {
+        ...active,
+        templateTexts: merge(active.templateTexts, [''])
+      }
+    });
+  };
+  const removeText = (index) => {
+    dispatch({
+      type: 'MODIFY_ACTIVE',
+      endpoint: 'templates',
+      data: {
+        ...active,
+        templateTexts: active.templateTexts.filter((e, i) => i !== index)
+      }
+    });
+  };
   return (
     <React.Fragment>
       <Block>
@@ -93,8 +115,14 @@ function Single (active, dispatch) {
           <h6 className='center'>Antworvariationen</h6>
           <Content className='margin'>
             {active.templateTexts.map((text, index) => {
-              return <textarea className='p visible' key={index} value={text} onChange={(e) => modify(index, e.target.value)} />;
+              return (
+                <div key={index}>
+                  <textarea className='p visible' value={text} onChange={(e) => modify(index, e.target.value)} />
+                  <i className='fa fa-trash' onClick={() => removeText(index)} />
+                </div>
+              );
             })}
+            <i className='fa fa-plus' onClick={addText} />
           </Content>
           <div className='center margin'>
             <button
