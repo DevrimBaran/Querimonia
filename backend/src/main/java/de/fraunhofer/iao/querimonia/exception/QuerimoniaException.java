@@ -120,7 +120,7 @@ public class QuerimoniaException extends ResponseStatusException {
   }
 
   @Override
-  @JsonIgnore
+  //@JsonIgnore
   public StackTraceElement[] getStackTrace() {
     return super.getStackTrace();
   }
