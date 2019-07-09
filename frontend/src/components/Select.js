@@ -22,7 +22,7 @@ class Select extends Component {
       };
       console.log('required', this.props.required);
       return (
-        <select {...injectedProp} {...passThroughProps} className="select-wrapper">
+        <select {...injectedProp} {...passThroughProps} className='select-wrapper'>
           {this.props.required || <option key='null' value=''>-</option>}
           {
             this.props.values.map((value) => {

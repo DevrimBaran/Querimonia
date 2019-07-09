@@ -55,14 +55,14 @@ class TextBuilder extends Component {
     document.location.href = document.location.origin + '/complaints';
   }
   setData = (data) => {
-    /* this.data = data;
+    this.data = data;
     const categories = data.map(block => block.component.componentName);
     let state = categories.reduce((obj, category) => {
       obj[category] = 0;
       return obj;
     }, {});
     state.categories = categories;
-    this.setState(state); */
+    this.setState(state);
   };
 
   fetch = () => {
@@ -81,7 +81,7 @@ class TextBuilder extends Component {
     return (
       <React.Fragment>
         <Content style={{ flexBasis: '10%' }}>
-          <textarea className="margin" id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
+          <textarea className='margin' id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
           <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>

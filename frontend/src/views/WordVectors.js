@@ -126,7 +126,7 @@ class WordVectors extends Component {
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
       return x.map(a => a / len);
-    }
+    };
     if (this.state.error) return;
     // this.analogy is postfix expression
     let words = this.analogy.filter((token) => {
@@ -186,15 +186,15 @@ class WordVectors extends Component {
       <React.Fragment>
         <Block>
           <h1 className='center'>Wortvektoren</h1>
-          <Content className="center"style={{ flexBasis: '100%' }}>
-            <div className="smallmargin">
+          <Content className='center'style={{ flexBasis: '100%' }}>
+            <div className='smallmargin'>
               <label htmlFor='textkorpora'>Textkorpus: </label>
               <Select required id='textkorpora' name='textkorpora' value={this.state.corpora} values={['beschwerden3kPolished.bin', 'cc.de.300.bin', 'ger.bin', 'zig.bin', 'n1M.bin']} onChange={this.changeCorpora} />
             </div>
-            <div className="smallmargin">
+            <div className='smallmargin'>
               <label htmlFor='analogy'>Anfrage: </label>
               <input id='analogy' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
-              <div className="smallmargin">
+              <div className='smallmargin'>
                 <input type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>
             </div>
