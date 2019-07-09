@@ -255,14 +255,13 @@ public class ComplaintManager {
   /**
    * Adds a named entity to a complaint.
    *
-   * @see ComplaintController#addEntity(int, String, int, int, String) addEntity
+   * @see ComplaintController#addEntity(int, NamedEntity) addEntity
    */
-  public List<NamedEntity> addEntity(int complaintId, String label, int start,
-                                     int end, String extractor) {
+  public List<NamedEntity> addEntity(int complaintId, NamedEntity entity) {
     Complaint complaint = getComplaint(complaintId);
-    NamedEntity newEntity = new NamedEntity(label, start, end, true, extractor);
-
     // check validity of entity
+    int start = entity.getStartIndex();
+    int end = entity.getEndIndex();
     if (start < 0 || end <= start || end >= complaint.getText().length()) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
           + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
@@ -271,10 +270,11 @@ public class ComplaintManager {
     }
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
-    if (!complaintEntities.contains(newEntity)) {
-      complaintEntities.add(newEntity);
+    if (!complaintEntities.contains(entity)) {
+      complaintEntities.add(entity);
     } else {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität mit Label " + label
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
+          "Die Entität mit Label " + entity.getLabel()
           + "existiert bereits!", "Entität bereits vorhanden");
     }
 

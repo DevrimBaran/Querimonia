@@ -256,11 +256,12 @@ paths:
         - complaints
       summary: Fügt eine neue Named Entity hinzu.
       description: Eine neue Named Entity wird der Liste der Entitäten der Beschwerde hinzugefügt.
-      parameters:
-        - $ref: '#/components/parameters/LabelParameter'
-        - $ref: '#/components/parameters/StartParameter'
-        - $ref: '#/components/parameters/EndParameter'
-        - $ref: '#/components/parameters/ExtractorParameter'
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NamedEntity'
 
       operationId: addEntity
       responses:
