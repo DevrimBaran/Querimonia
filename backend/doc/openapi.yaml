@@ -1324,10 +1324,6 @@ components:
           minimum: 1
           example: 1
           description: Die eindeutige ID der Beschwerde.
-        state:
-          $ref: '#/components/schemas/ComplaintState'
-        configuration:
-          $ref: '#/components/schemas/AnalyzerConfiguration'
         text:
           type: string
           description: Der volle Beschwerdetext.
@@ -1336,6 +1332,10 @@ components:
           type: string
           description: Die ersten zwei Zeilen der Beschwerde.
           example: "Guten Tag,\nMein Bus kam heute viel zu spät!"
+        state:
+          $ref: '#/components/schemas/ComplaintState'
+        configuration:
+          $ref: '#/components/schemas/AnalyzerConfiguration'
         receiveDate:
           type: string
           format: date
@@ -1408,19 +1408,19 @@ components:
       type: object
       required:
         - label
-        - startIndex
-        - endIndex
+        - start
+        - end
       properties:
         label:
           type: string
           description: Die Kategorie der Entität.
           example: Datum
-        startIndex:
+        start:
           type: integer
           format: int32
           description: Der Index des Zeichens im Text, mit dem die Named Entity beginnt.
           example: 24
-        endIndex:
+        end:
           type: integer
           format: int32
           description: Der Index des Zeichens im Text, ab dem der Text *nicht* mehr diese Named Entity ist.

@@ -91,6 +91,7 @@ public class ComplaintFactory {
     ResponseSuggestion responseSuggestion = createResponse(complaintData);
 
     return complaint
+        .setConfiguration(configuration)
         .setResponseSuggestion(responseSuggestion)
         .setWordList(words);
   }

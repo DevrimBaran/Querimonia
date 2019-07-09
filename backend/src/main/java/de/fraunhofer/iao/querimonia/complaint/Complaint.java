@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 
@@ -39,6 +40,7 @@ import java.util.Objects;
     "text",
     "preview",
     "state",
+    "configuration",
     "receiveDate",
     "receiveTime",
     "subject",
@@ -117,6 +119,11 @@ public class Complaint {
   private LocalTime receiveTime;
 
   /**
+   * The configuration which was used to analyze the configuration.
+   */
+  private Configuration configuration;
+
+  /**
    * Creates a new complaint. This constructor is only used for JSON deserialization. Use a {@link
    * ComplaintFactory} to create complaints instead.
    */
@@ -128,7 +135,8 @@ public class Complaint {
                    @JsonProperty ComplaintProperty subject,
                    @JsonProperty LocalDate receiveDate,
                    @JsonProperty LocalTime receiveTime,
-                   @JsonProperty List<NamedEntity> entities) {
+                   @JsonProperty List<NamedEntity> entities,
+                   @JsonProperty Configuration configuration) {
     this.text = text;
     this.preview = preview;
     this.sentiment = sentiment;
@@ -137,6 +145,7 @@ public class Complaint {
     this.receiveTime = receiveTime;
     this.entities = entities;
     this.state = state;
+    this.configuration = configuration;
   }
 
   /**
@@ -212,6 +221,10 @@ public class Complaint {
     return state;
   }
 
+  public Configuration getConfiguration() {
+    return configuration;
+  }
+
   public Complaint setState(ComplaintState state) {
     this.state = state;
     return this;
@@ -230,6 +243,11 @@ public class Complaint {
 
   public Complaint setWordList(Map<String, Integer> wordList) {
     this.wordList = wordList;
+    return this;
+  }
+
+  public Complaint setConfiguration(Configuration configuration) {
+    this.configuration = configuration;
     return this;
   }
 
