@@ -19,10 +19,6 @@ public class EntityRule implements Rule {
     this.expectedValue = expectedValue;
   }
 
-  public EntityRule(String entityLabel) {
-    this.entityLabel = entityLabel;
-  }
-
   @Override
   public boolean isRespected(ComplaintData complaint,
                              List<CompletedResponseComponent> currentResponseState) {
@@ -41,11 +37,12 @@ public class EntityRule implements Rule {
           || complaint.getUploadTime().toLocalTime().toString().equals(expectedValue);
     }
 
-    return ComplaintUtility.getValueOfEntity(complaint.getText(),
-                                             complaint.getEntities(),
-                                             entityLabel)
-        .map(entityValue -> expectedValue == null || entityValue.equals(expectedValue))
-        // if not present, the entity was not given.
-        .orElse(false);
+    return expectedValue == null
+        || complaint.getEntities().stream()
+        // find matching entities
+        .filter(namedEntity -> namedEntity.getLabel().equals(entityLabel))
+        // map to entity values
+        .map(namedEntity -> ComplaintUtility.getValueOfEntity(complaint.getText(), namedEntity))
+        .anyMatch(value -> value.equals(expectedValue));
   }
 }
