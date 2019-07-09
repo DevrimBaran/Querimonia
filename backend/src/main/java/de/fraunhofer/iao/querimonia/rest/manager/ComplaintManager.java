@@ -303,9 +303,9 @@ public class ComplaintManager {
    */
   public ResponseSuggestion refreshResponse(int complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    ResponseSuggestion suggestion = complaintFactory.createResponse(new ComplaintData(complaint));
+    complaintFactory.createResponse(new ComplaintData(complaint));
     storeComplaint(complaint);
-    return suggestion;
+    return complaint.getResponseSuggestion();
   }
 
   private synchronized void storeComplaint(Complaint complaint) {
