@@ -98,8 +98,7 @@ public class Complaint {
   /**
    * The response for the complaint.
    */
-  @JoinColumn(name = "complaint_id")
-  @JsonIgnore
+  @OneToOne(cascade = CascadeType.ALL)
   private ResponseSuggestion responseSuggestion;
 
   /**

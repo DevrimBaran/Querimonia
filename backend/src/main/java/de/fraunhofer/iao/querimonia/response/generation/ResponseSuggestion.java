@@ -1,26 +1,29 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.JoinColumn;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 
-@Embeddable
+@Entity
 public class ResponseSuggestion {
 
-  @ElementCollection
-  @CollectionTable(name = "completed_response_components",
-      joinColumns = @JoinColumn(name = "component_id"))
+  @Id
+  @GeneratedValue
+  @JsonIgnore
+  private int id;
+
+  @OneToMany(cascade = CascadeType.ALL)
   private List<CompletedResponseComponent> responseComponents;
 
-  @ElementCollection
-  @CollectionTable(name = "actions",
-      joinColumns = @JoinColumn(name = "action_id"))
+  @OneToMany(cascade = CascadeType.ALL)
   private List<Action> actions;
 
   @JsonCreator

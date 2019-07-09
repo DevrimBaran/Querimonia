@@ -14,7 +14,6 @@ import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
-import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
@@ -325,24 +324,6 @@ public class ComplaintManager {
 
   private synchronized void storeComplaint(Complaint complaint) {
     // save the components
-    try {
-      for (CompletedResponseComponent completedResponseComponent : complaint.getResponseSuggestion()
-          .getResponseComponents()) {
-        responseComponentRepository.save(completedResponseComponent.getComponent());
-        completedResponseComponentRepository.save(completedResponseComponent);
-
-        singleCompletedComponentRepository.saveAll(completedResponseComponent.getAlternatives());
-      }
-    } catch (Exception e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
-          + "Attribute", e, "Attribute");
-    }
-    try {
-      configurationManager.storeConfiguration(complaint.getConfiguration());
-    } catch (Exception e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
-          + "Konfiguration", e, "Konfiguration");
-    }
     try {
       complaintRepository.save(complaint);
     } catch (Exception e) {
