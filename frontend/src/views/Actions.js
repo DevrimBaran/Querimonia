@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 
 import { fetchData } from '../redux/actions';
 
-import Action from './partials/Action';
+// import Action from './partials/Action';
 import DebugPartial from './partials/Debug';
 
 import Block from './../components/Block';

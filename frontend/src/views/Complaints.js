@@ -15,7 +15,6 @@ import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
-import TaggedText from './../components/TaggedText';
 import Pagination from './../components/Pagination';
 
 class Complaints extends Component {

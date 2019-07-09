@@ -13,6 +13,7 @@ import Debug from './../components/Debug';
 import Collapsible from './../components/Collapsible';
 import TaggedText from './../components/TaggedText';
 import Content from './../components/Content';
+import Input from './../components/Input';
 
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
@@ -21,31 +22,39 @@ class TextBuilder extends Component {
 
     this.state = {
       text: '',
-      categories: []
+      components: { ids: [] },
+      actions: { ids: [] }
     };
     this.data = {};
   }
 
-  add = (index) => {
-    const category = this.state.categories[index];
-    const answers = this.data[index].alternatives;
-    const answer = answers[this.state[category] % answers.length];
-    this.setState((state) => {
-      return {
-        text: state.text + answer.completedText + '\r\n',
-        categories: state.categories.filter(cat => cat !== category)
-      };
-    });
+  add = (id) => {
+    this.setState(
+      (state) => {
+        return {
+          text: state.text + state.components[id].alternatives[state.components[id].currentAlternative].completedText + '\r\n',
+          components: {
+            ...state.components,
+            ids: state.components.ids.filter(componentid => id !== componentid)
+          }
+        };
+      }
+    );
   };
   onChange = () => {
     this.setState({ text: this.refs.responseText.value });
   }
-  cycle = (index) => {
-    const category = this.state.categories[index];
+  cycle = (id) => {
     this.setState(
       (state) => {
         return {
-          [category]: state[category] + 1
+          components: {
+            ...state.components,
+            [id]: {
+              ...state.components[id],
+              currentAlternative: (state.components[id].currentAlternative + 1) % state.components[id].alternatives.length
+            }
+          }
         };
       }
     );
@@ -55,14 +64,18 @@ class TextBuilder extends Component {
     document.location.href = document.location.origin + '/complaints';
   }
   setData = (data) => {
-    this.data = data.components;
-    const categories = this.data.map(block => block.component.componentName);
-    let state = categories.reduce((obj, category) => {
-      obj[category] = 0;
+    const components = data.components.reduce((obj, component) => {
+      component.currentAlternative = 0;
+      obj[component.responsePartId] = component;
+      obj.ids.push(component.responsePartId);
       return obj;
-    }, {});
-    state.categories = categories;
-    this.setState(state);
+    }, { ids: [] });
+    const actions = data.actions.reduce((obj, component) => {
+      obj[component.actionId] = component;
+      obj.ids.push(component.actionId);
+      return obj;
+    }, { ids: [] });
+    this.setState({ components, actions });
   };
 
   fetch = () => {
@@ -85,19 +98,29 @@ class TextBuilder extends Component {
             onChange={this.onChange} />
           <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>
-        <Collapsible style={{ minHeight: this.state.categories.length > 0 ? '150px' : '0' }} className='Content' label='Antworten' collapse={false} id='responses'>
+        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions'>
           {
-            this.state.categories.map((category, index) => {
-              const answers = this.data[index].alternatives;
-              const answer = answers[this.state[category] % answers.length];
+            this.state.actions.ids.map((id) => {
+              const action = this.state.actions[id];
               return (
-                <div className='response' key={index}>
+                <Input key={id} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
+              );
+            })
+          }
+        </Collapsible>
+        <Collapsible className='Content' label='Antworten' collapse={false} id='responses'>
+          {
+            this.state.components.ids.map((id) => {
+              const component = this.state.components[id];
+              const answer = component.alternatives[component.currentAlternative];
+              return (
+                <div className='response' key={id}>
                   <span className='content'>
                     <TaggedText text={{ text: answer.completedText, entities: answer.entities }} />
-                    <div className='part'>{category}</div>
+                    <div className='part'>{component.component.componentName}</div>
                   </span>
-                  <i className='fa fa-check add' onClick={() => { this.add(index); }} />
-                  <i className='fa fa-sync remove' data-category={category} onClick={() => this.cycle(index)} />
+                  <i className='fa fa-check add' onClick={() => { this.add(id); }} />
+                  <i className='fa fa-sync remove' onClick={() => this.cycle(id)} />
                 </div>
               );
             })
