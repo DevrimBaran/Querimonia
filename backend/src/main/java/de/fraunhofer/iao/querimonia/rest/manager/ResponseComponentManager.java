@@ -3,7 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ResponseComponentFilter;
@@ -59,7 +59,7 @@ public class ResponseComponentManager {
    * @param templateRepository the component repository to use
    * @return the created component
    */
-  public synchronized ResponseComponent addTemplate(TemplateRepository templateRepository,
+  public synchronized ResponseComponent addTemplate(ResponseComponentRepository templateRepository,
                                                     ResponseComponent responseComponent) {
     templateRepository.save(responseComponent);
     return responseComponent;
@@ -72,7 +72,7 @@ public class ResponseComponentManager {
    * @return the list of default templates
    */
   public synchronized List<ResponseComponent> addDefaultTemplates(
-      TemplateRepository templateRepository) {
+      ResponseComponentRepository templateRepository) {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
@@ -110,7 +110,7 @@ public class ResponseComponentManager {
    * @return Returns a list of sorted templates.
    */
   public synchronized List<ResponseComponent> getAllTemplates(
-      TemplateRepository templateRepository,
+      ResponseComponentRepository templateRepository,
       Optional<Integer> count,
       Optional<Integer> page,
       Optional<String[]> sortBy,
@@ -143,8 +143,9 @@ public class ResponseComponentManager {
    * @param id                 the ID to look for
    * @return the response component with the given ID
    */
-  public synchronized ResponseComponent getTemplateByID(TemplateRepository templateRepository,
-                                                        int id) {
+  public synchronized ResponseComponent getTemplateByID(
+      ResponseComponentRepository templateRepository,
+      int id) {
     return templateRepository.findById(id)
         .orElseThrow(() -> NOT_FOUND_EXCEPTION);
   }

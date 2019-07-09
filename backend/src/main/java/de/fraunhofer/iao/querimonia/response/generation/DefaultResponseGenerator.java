@@ -4,6 +4,7 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
@@ -27,6 +28,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
   private final TemplateRepository templateRepository;
   private final ActionRepository actionRepository;
+  private final ResponseComponentRepository templateRepository;
 
   public DefaultResponseGenerator(TemplateRepository templateRepository, ActionRepository actionRepository) {
     this.templateRepository = templateRepository;

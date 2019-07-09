@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
-import de.fraunhofer.iao.querimonia.db.repositories.TemplateRepository;
+import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
 import org.junit.Before;
@@ -143,7 +143,7 @@ public class DefaultResponseGeneratorTest {
 
   @Before
   public void setup() {
-    TemplateRepository templateRepository = mock(TemplateRepository.class);
+    ResponseComponentRepository templateRepository = mock(ResponseComponentRepository.class);
     defaultResponseGenerator = new DefaultResponseGenerator(templateRepository);
     when(templateRepository.findAll()).thenReturn(testTemplates);
   }

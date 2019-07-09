@@ -37,6 +37,11 @@ public class EntityRule implements Rule {
           || complaint.getUploadTime().toLocalTime().toString().equals(expectedValue);
     }
 
+    if (complaint.getEntities()
+        .stream()
+        .noneMatch(namedEntity -> namedEntity.getLabel().equals(entityLabel))) {
+      return false;
+    }
     return expectedValue == null
         || complaint.getEntities().stream()
         // find matching entities

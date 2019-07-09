@@ -234,8 +234,8 @@ public class ComplaintManager {
    * Optional)  countComplaints
    */
   public synchronized String countComplaints(Optional<String[]> state, Optional<String> dateMin,
-                                             Optional<String> dateMax, Optional<String[]> sentiment,
-                                             Optional<String[]> subject, Optional<String[]> keywords
+                                          Optional<String> dateMax, Optional<String[]> sentiment,
+                                          Optional<String[]> subject, Optional<String[]> keywords
   ) {
     return "" + (getComplaints(Optional.empty(), Optional.empty(), Optional.empty(), state, dateMin,
         dateMax, sentiment, subject, keywords).size());
