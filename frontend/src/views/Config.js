@@ -8,7 +8,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchData } from '../redux/actions';
-
+// eslint-disable-next-line
+import { BrowserRouter as Router, Link } from 'react-router-dom';
+import Input from './../components/Input';
 import ConfigPartial from './partials/Config';
 
 import Block from './../components/Block';
@@ -16,7 +18,6 @@ import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
-import Input from './../components/Input';
 
 class Config extends Component {
   componentDidMount = () => {
@@ -28,7 +29,7 @@ class Config extends Component {
       <Row vertical>
         <Filter endpoint='config' />
         <div className='row flex-row height' >
-          <Input type='button' />
+          <Link to='/config/0'><Input type='button' value='Neue Konfiguration' /></Link>
         </div>
         <Content className='padding'>
           {this.props.fetching
@@ -43,7 +44,7 @@ class Config extends Component {
 
   render () {
     const id = parseInt(this.props.match.params.id);
-    if (id) {
+    if (this.props.match.params.id) {
       if (!this.props.data.active || id !== this.props.data.active.id) {
         if (!this.props.data.fetching) {
           console.log(this.props.data.active.id, id, this.props.data.fetching);
@@ -55,7 +56,7 @@ class Config extends Component {
         }
       }
     }
-    let single = id && this.props.data.active;
+    let single = this.props.match.params.id && this.props.data.active;
     return (
       <React.Fragment>
         {single ? (

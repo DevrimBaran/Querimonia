@@ -1,3 +1,33 @@
+const defaults = {
+  templates: {
+    id: 0,
+    priority: 0,
+    componentName: '',
+    templateTexts: [],
+    rulesXml: ''
+  },
+  config: {
+    id: 0,
+    name: '',
+    extractors: [],
+    classifier: {
+      name: 'DEFAULT',
+      type: 'NONE'
+    },
+    sentimentAnalyzer: {
+      name: 'DEFAULT',
+      type: 'NONE'
+    }
+  },
+  actions: {
+    id: 0,
+    name: '',
+    actionCode: '',
+    rulesXml: '',
+    parameters: {}
+  }
+};
+
 function filter (state = [], action, endpoint) {
   if (endpoint !== action.endpoint) return state;
   switch (action.type) {
@@ -52,6 +82,14 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       };
     }
     case 'SET_ACTIVE': {
+      if (action.id === 0) {
+        return {
+          ...state,
+          active: {
+            ...defaults[action.endpoint]
+          }
+        };
+      }
       return {
         ...state,
         active: {

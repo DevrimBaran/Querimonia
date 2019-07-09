@@ -7,6 +7,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+// eslint-disable-next-line
+import { BrowserRouter as Router, Link } from 'react-router-dom';
+
 import { fetchData } from '../redux/actions';
 
 import Template from './partials/Template';
@@ -22,13 +25,12 @@ class Templates extends Component {
   componentDidMount = () => {
     this.props.dispatch(fetchData('templates'));
   }
-
   renderList = () => {
     return (<Block>
       <Row vertical>
         <Filter endpoint='templates' />
         <div className='row flex-row height' >
-          <Input type='button' />
+          <Link to='/templates/0'><Input type='button' value='Neues Template' /></Link>
         </div>
         <Content className='padding'>
           {this.props.fetching
@@ -43,7 +45,7 @@ class Templates extends Component {
 
   render () {
     const id = parseInt(this.props.match.params.id);
-    if (id) {
+    if (this.props.match.params.id) {
       if (!this.props.data.active || id !== this.props.data.active.id) {
         if (!this.props.data.fetching) {
           console.log(this.props.data.active.id, id, this.props.data.fetching);
@@ -55,7 +57,7 @@ class Templates extends Component {
         }
       }
     }
-    let single = id && this.props.data.active;
+    let single = this.props.match.params.id && this.props.data.active;
     return (
       <React.Fragment>
         {single ? (

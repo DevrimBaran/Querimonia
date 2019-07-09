@@ -8,9 +8,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { fetchData } from '../redux/actions';
-
-// import Action from './partials/Action';
-import DebugPartial from './partials/Debug';
+// eslint-disable-next-line
+import { BrowserRouter as Router, Link } from 'react-router-dom';
+import Input from './../components/Input';
+import Action from './partials/Action';
 
 import Block from './../components/Block';
 import Row from './../components/Row';
@@ -22,20 +23,18 @@ class Actions extends Component {
   componentDidMount = () => {
     this.props.dispatch(fetchData('actions'));
   }
-  renderSingle = (active) => {
-    return (<React.Fragment>
-      {DebugPartial.List(active)}
-    </React.Fragment>);
-  };
 
   renderList = () => {
     return (<Block>
       <Row vertical>
         <Filter endpoint='actions' />
+        <div className='row flex-row height' >
+          <Link to='/actions/0'><Input type='button' value='Neue Aktion' /></Link>
+        </div>
         <Content className='padding'>
           {this.props.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => DebugPartial.List(this.props.data.byId[id])))
+            : (this.props.data && this.props.data.ids.map(id => Action.List(this.props.data.byId[id])))
           }
         </Content>
         <Pagination endpoint='actions' />
@@ -44,11 +43,24 @@ class Actions extends Component {
   };
 
   render () {
-    let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
+    const id = parseInt(this.props.match.params.id);
+    if (this.props.match.params.id) {
+      if (!this.props.data.active || id !== this.props.data.active.id) {
+        if (!this.props.data.fetching) {
+          console.log(this.props.data.active.id, id, this.props.data.fetching);
+          this.props.dispatch({
+            type: 'SET_ACTIVE',
+            endpoint: 'actions',
+            id: id
+          });
+        }
+      }
+    }
+    let single = this.props.match.params.id && this.props.data.active;
     return (
       <React.Fragment>
-        {active ? (
-          this.renderSingle(active)
+        {single ? (
+          Action.Single(this.props.data.active, this.props.dispatch)
         ) : (
           this.renderList()
         )}

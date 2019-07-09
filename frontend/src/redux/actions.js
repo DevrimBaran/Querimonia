@@ -24,7 +24,7 @@ export function saveActive (endpoint) {
       endpoint: endpoint
     });
     dispatch((dispatch) => {
-      Api.put('/api/' + endpoint + '/' + active.id, active)
+      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + active.id, active)
         .then(data => {
           dispatch({
             type: 'SAVE_END',

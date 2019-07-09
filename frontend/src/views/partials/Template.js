@@ -13,6 +13,7 @@ import CodeMirror from '../../components/CodeMirror';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
+import Input from '../../components/Input';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
@@ -41,22 +42,22 @@ function List (data, index) {
 }
 
 function Single (active, dispatch) {
-  const Save = withRouter(({ history }) => (
-    <button
-      type='button'
-      className='important'
-      disabled={active.saving}
-      onClick={(e) => {
-        dispatch(saveActive('templates'));
-      }}
-    >Speichern</button>
-  ));
   const modify = (key, value) => {
     let modified;
     if (key === 'rulesXml') {
       modified = {
         ...active,
         rulesXml: value
+      };
+    } else if (key === 'componentName') {
+      modified = {
+        ...active,
+        componentName: value
+      };
+    } else if (key === 'priority') {
+      modified = {
+        ...active,
+        priority: value
       };
     } else {
       modified = {
@@ -80,6 +81,8 @@ function Single (active, dispatch) {
       <Block>
         <Row vertical>
           <h6 ref='editor' className='center'>Regeln</h6>
+          <Input type='text' value={active.componentName} onChange={(e) => { modify('componentName', e.value); }} />
+          <Input type='number' min='0' max='100' value={active.priority} onChange={(e) => { modify('priority', e.value); }} />
           <Content style={{ flexBasis: '100%' }}>
             <CodeMirror onChange={(value) => modify('rulesXml', value)} value={active.rulesXml} />
           </Content>
@@ -94,7 +97,14 @@ function Single (active, dispatch) {
             })}
           </Content>
           <div className='center margin'>
-            <Save />
+            <button
+              type='button'
+              className='important'
+              disabled={active.saving}
+              onClick={(e) => {
+                dispatch(saveActive('templates'));
+              }}
+            >Speichern</button>
           </div>
         </Row>
       </Block>
