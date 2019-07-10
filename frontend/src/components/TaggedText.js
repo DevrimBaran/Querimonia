@@ -144,6 +144,7 @@ class TaggedText extends Component {
         borderRadius: '50%',
         display: 'inline-block',
         marginLeft: '5px' }}> </span> {label.label} {this.props.editable
+        // eslint-disable-next-line
         ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
         : null} <br /> </div>;
     });
