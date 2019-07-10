@@ -54,7 +54,7 @@ function App () {
             <Link to='/config'>Konfiguration</Link>
           </li>
           <li>
-            <Link to='/wordvectors'>Wortvektoren</Link>
+            <Link to='/wordvectors'>Worthäufigkeiten</Link>
           </li>
           <li>
             <Link to='/tagcloud'>Tag-Cloud</Link>

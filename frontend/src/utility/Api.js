@@ -57,6 +57,9 @@ export const api = {
     }).join('&');
     return fetchJson(endpoint + (query ? '?' + query : ''), options('delete'));
   },
+  patch: function (endpoint) {
+    return fetchJson(endpoint, options('PATCH'));
+  },
   post: function (endpoint, data) {
     return fetchJson(endpoint, options('post', data));
   },

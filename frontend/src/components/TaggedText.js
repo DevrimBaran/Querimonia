@@ -167,6 +167,8 @@ class TaggedText extends Component {
           taggedText: this.parseText({ text: this.props.taggedText.text, entities: data })
         });
       });
+
+    Api.patch('/api/responses/' + this.state.id + '/refresh');
   };
 
   startEdit = () => {
@@ -253,6 +255,7 @@ class TaggedText extends Component {
           editFormActive: false
         });
       });
+    Api.patch('/api/responses/' + this.state.id + '/refresh');
   };
 
   componentWillUpdate = (props) => {

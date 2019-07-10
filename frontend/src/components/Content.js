@@ -8,7 +8,7 @@
 import React from 'react';
 
 const Content = (props) => (
-  <div {...props} className={'Content ' + props.className}>
+  <div {...props} className={'content ' + props.className}>
     {props.children}
   </div>
 );

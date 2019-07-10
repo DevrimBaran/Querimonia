@@ -1,0 +1,18 @@
+@import '../variables';
+
+.pagination {
+    padding: 10px;
+    position: relative;
+    bottom: 0px;
+    margin: 0px auto;
+
+    input[type=button] {
+        border: 0px none;
+        width: auto;
+        height: auto;
+        background-color: $primaryBackgroundColor;
+        float: left;
+        margin: 10px;
+        color: $secondaryAccentColor;
+    }
+}

@@ -1,0 +1,40 @@
+@import '../variables';
+
+
+.Filter {
+    min-height: fit-content;
+
+    .Block {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-content: center;
+        margin: 10px 15px;
+
+    }
+    Select.relation {
+        background-color: $primaryBackgroundColor;
+        color: white;
+    }
+    input, select, option {
+        color: black;
+    }
+    .remove {
+        &::after {
+            display: block;
+            content: 'X';
+        }
+    }
+    .relation > .remove {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+    }
+    .clause {
+        flex-wrap: nowrap;
+    }
+    .sort,.relation {
+        flex-direction: column;
+    }
+}
