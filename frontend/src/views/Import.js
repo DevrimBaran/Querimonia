@@ -8,8 +8,9 @@ import React, { Component } from 'react';
 
 import api from './../utility/Api';
 
+import Complaint from './partials/Complaint';
+
 import Block from './../components/Block';
-import Complaint from './../components/Complaint';
 import Content from './../components/Content';
 import Row from './../components/Row';
 
