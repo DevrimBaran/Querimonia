@@ -26,12 +26,13 @@ function List (data, index) {
           <Link to={'/templates/' + data.id}>
             <div className='Template'>
               <div className='floatLeft'>
-                <p className='h3'>{data.componentName}</p>
-                <p>ID: {data.id}</p>
+                <p className='h3'>{data.name}</p>
+                <p>ID: {data.actionId}</p>
               </div>
               <div className='floatRight'>
-                <p>Antwortvariationen: {data.templateTexts.length}</p>
-                <p>Entitäten: {data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p>
+                <p>Aktionscode: {data.actionCode}</p>
+                <p>E-Mail: {data.parameters['E-Mail']}</p>
+                <p>Wert: {data.parameters['Wert']}</p>
               </div>
             </div>
           </Link>

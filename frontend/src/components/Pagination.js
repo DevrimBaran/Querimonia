@@ -26,6 +26,14 @@ class Pagination extends Component {
   render () {
     let pagelinks = [];
     let lastPage = Math.ceil(this.props.max / this.props.count) - 1;
+    if (lastPage > this.props.page) {
+      this.props.dispatch({
+        type: 'PAGINATION_CHANGE',
+        endpoint: this.props.endpoint,
+        name: 'page',
+        value: 0
+      });
+    }
     pagelinks.push(
       <li key={'previous'} className={this.props.page > 0 ? 'previous' : 'previous disabled'} type='button' name='page' onClick={this.props.page > 0 ? () => this.onClick('page', this.props.page - 1) : null}>
         <i className='fa fa-backward' />

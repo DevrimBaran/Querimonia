@@ -61,14 +61,8 @@ export function fetchData (endpoint) {
           });
         });
     });
-    dispatch({
-      type: 'PAGINATION_CHANGE',
-      endpoint: endpoint,
-      name: 'page',
-      value: 0
-    });
     dispatch((dispatch, getState) => {
-      Api.get('/api/' + endpoint, { count: pagination.count, page: 0, ...query })
+      Api.get('/api/' + endpoint, { count: pagination.count, page: pagination.page, ...query })
         .then(data => {
           dispatch({
             type: 'FETCH_END',
