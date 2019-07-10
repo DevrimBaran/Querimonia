@@ -81,8 +81,8 @@ function Home () {
               <br />
               <div className='footer'>
                 <br />
-                <img src={iaoPartner} className='iaoPartner' alt='logo' width='20%' />
-                <img src={iatPartner} className='iatPartner' alt='logo' width='20%' />
+                <a href="https://www.iao.fraunhofer.de/" target='_blank' ><img src={iaoPartner} className='iaoPartner' alt='logo' width='20%' /></a>
+                <a href="https://www.iat.uni-stuttgart.de/" target='_blank' ><img src={iatPartner} className='iatPartner' alt='logo' width='20%' /></a>
               </div>
             </center>
           </Content>
