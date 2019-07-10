@@ -1,4 +1,5 @@
-import TaggedText from '../TaggedText.js/index.js';
+/* eslint no-undef:0 */
+import TaggedText from '../components/TaggedText';
 
 describe('prepareEntities', () => {
   let taggedText;
@@ -11,7 +12,6 @@ describe('prepareEntities', () => {
       {}
     ]);
   });
-
   test('Complete overlap', () => {
     expect(taggedText.prepareEntities([
       {

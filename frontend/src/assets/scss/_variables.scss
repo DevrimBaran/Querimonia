@@ -1,9 +1,46 @@
+/* Diese Farben nicht benutzen
+**/
 $black: #202124;
 $white: #fff;
 $lightgrey: rgba(0, 0, 0, 0.04);
 $grey: rgba(0,0,0,.12);
 $primary: #179c7d;
 $secondary: rgb(31, 130, 191);
+
+/*Benutzt diese Farben!
+**/
+$primaryTextColor: #202124;
+$secondaryTextColor: #272727;
+$inverseTextColor: white;
+/* Die Primaere Akzentfarbe ist das Fraunhofer-Gruen */
+$primaryAccentColor: #179c7d;
+$primaryAccentColorActive: rgb(66, 194, 164);
+/* Die Sekundaere Akzentfarbe stammt von der Fraunhofer-Website, ein gedecktes Blau */
+$secondaryAccentColor: rgb(31, 130, 191);
+$secondaryAccentColorActive: rgb(9, 101, 158);
+$buttonColor: #F3F3F3;
+$buttonColorHover: #E5E5E5;
+$primaryBackgroundColor: #FFFFFF;
+$secondaryBackgroundColor: #F3F3F3;
+$tertiaryBackgroundColor: #E5E5E5;
+
+
+$standardpadding: 5%;
+$standardpaddingtop: $standardpadding;
+$standardpaddingright: $standardpadding;
+$standardpaddingbottom: $standardpadding;
+$standardpaddingleft: $standardpadding;
+
+$smallmargin: 1%;
+
+$contentMargin: 1em;
+
+$standardmargin: 5%;
+$standardmargintop: 0%;
+$standardmarginright: $standardmargin;
+$standardmarginbottom: $standardmargin / 2;
+$standardmarginleft: $standardmargin;
+
 .black {
     color: $black;
 }
@@ -22,3 +59,16 @@ $secondary: rgb(31, 130, 191);
 .secondary {
     color: $secondary;
 }
+
+.primaryTextColor {color: $primaryTextColor;}
+.secondaryTextColor {color: $secondaryTextColor;}
+.inverseTextColor {color: $inverseTextColor}
+.primaryBackgroundColor {color: $primaryBackgroundColor;}
+.secondaryBackgroundColor { color: $secondaryBackgroundColor;}
+.tertiaryBackgroundColor { color: $tertiaryBackgroundColor;}
+.primaryAccentColor {color: $primaryAccentColor}
+.primaryAccentColorActive {color: $primaryAccentColorActive}
+.secondaryAccentColor {color: $secondaryAccentColor}
+.secondaryAccentColorActive {color: $secondaryAccentColorActive}
+.buttonColor {color: $buttonColor}
+.buttonColorHover {color: $buttonColorHover}

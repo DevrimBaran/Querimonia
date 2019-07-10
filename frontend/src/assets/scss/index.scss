@@ -31,7 +31,7 @@
 }
 /* Diese Farben werden im "Light-Theme" verwendet */
 .light {
-    --primaryTextColor: black;
+    $primaryTextColor: black;
     --secondaryTextColor: #272727;
     --inverseTextColor: white;
     /* Die Primaere Akzentfarbe ist das Fraunhofer-Gruen */
@@ -99,7 +99,7 @@
 */
 div.content{
     background-color: var(--primaryBackgroundColor);
-    padding:  1.3em var(--contentMargin) 0em var(--contentMargin);
+    //padding:  1.3em var(--contentMargin) 0em var(--contentMargin);
     overflow: auto;
 }
 /* Groesste Ueberschrift */
