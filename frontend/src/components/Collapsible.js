@@ -21,7 +21,7 @@ class Collapsible extends Component {
             <i className={this.state.collapse ? 'fa fa-caret-right' : 'fa fa-caret-down'} />
             <span className='h6'>{this.props.label}</span>
           </span>
-          <div className='content'>{this.props.children}</div>
+          <div className='content margin'>{this.props.children}</div>
         </div>
       );
     }

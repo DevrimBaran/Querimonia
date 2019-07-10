@@ -31,9 +31,9 @@ class WordVectors extends Component {
     this.corpora = [
       { label: 'beschwerden3kPolished', value: 'beschwerden3kPolished.bin' },
       { label: 'cc.de.300', value: 'cc.de.300.bin' },
-      { label: 'ger', value: 'ger.bin' },
-      { label: 'zig', value: 'zig.bin' },
-      { label: 'n1M', value: 'n1M.bin' }
+      { label: 'ngram_ger', value: 'ngram_ger.bin' },
+      { label: 'BeschwerdenCATLeipzig', value: 'BeschwerdenCATLeipzig.bin' },
+      { label: 'leipzigCorporaCollection1M', value: 'leipzigCorporaCollection1M.bin' }
     ];
     this.state = {
       result: [],

@@ -33,10 +33,12 @@ $standardpaddingleft: $standardpadding;
 
 $smallmargin: 1%;
 
+$contentMargin: 1em;
+
 $standardmargin: 5%;
 $standardmargintop: 0%;
 $standardmarginright: $standardmargin;
-$standardmarginbottom: $standardmargin;
+$standardmarginbottom: $standardmargin / 2;
 $standardmarginleft: $standardmargin;
 
 .black {

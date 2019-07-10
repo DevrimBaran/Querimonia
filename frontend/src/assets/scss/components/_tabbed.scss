@@ -1,0 +1,34 @@
+@import '../variables';
+
+.tabbed {
+    position: relative;
+    display: grid;
+    grid-row-gap: -1px;
+    grid-template-columns: auto;
+    grid-template-rows: 2em 1fr;
+    grid-auto-columns: auto;
+    grid-auto-flow: column;
+    background-color: inherit;
+    & > .tab {
+        grid-row: 1 / 2;
+        margin: 0em;
+        cursor: pointer;
+        white-space: nowrap;
+        text-align: center;
+    }
+    & > .tab.active, & > .tab:hover {
+        background-color: var(--primaryBackgroundColor);
+    }
+    & > .tab.active + [label] {
+        display: block;
+    }
+    & > [label] {
+        grid-column-start: 1;
+        grid-column-end: var(--tabCount);
+        grid-row: 2 / 3;
+        background-color: var(--primaryBackgroundColor);
+        padding: 1.3em var(--contentMargin) 0em var(--contentMargin);
+        overflow: auto;
+        display: none;
+    }
+}
