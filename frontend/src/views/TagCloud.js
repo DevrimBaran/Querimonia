@@ -24,7 +24,7 @@ class TagCloud extends Component {
   }
   toggleChange = () => {
     this.setState({
-      cloudActive: !this.state.cloudActive,
+      cloudActive: !this.state.cloudActive
     });
   }
 
@@ -65,28 +65,27 @@ class TagCloud extends Component {
   createWordArray = (wordsObject) => {
     let wordArray = [];
     Object.keys(wordsObject).forEach((element) => {
-      wordArray.push({ text: element, value: this.calculateSize(wordsObject[element]), size: wordsObject[element]});
+      wordArray.push({ text: element, value: this.calculateSize(wordsObject[element]), size: wordsObject[element] });
     });
     return wordArray;
   };
 
   calculateSize = (size) => {
-    const tmax = this.state.maxOccurrence; //Höchste Anzahl
-    const tmin = 1; //mindest Anzahl an Wörter
+    const tmax = this.state.maxOccurrence; // Höchste Anzahl
+    const tmin = 1; // mindest Anzahl an Wörter
     const fmax = 130; // maximale Schriftgröße
     const fmin = 10; // minimale Schriftgröße
     const t = size; // value
-    if(t>tmin){
-    return ((fmax*(t - tmin))/(tmax-tmin))
-    //(130 * (size / this.state.maxOccurrence));
+    if (t > tmin) {
+      return ((fmax * (t - tmin)) / (tmax - tmin));
+    // (130 * (size / this.state.maxOccurrence));
     // ((fmax*(t - tmin))/(tmax-tmin));
-   }
-   else{
-     return fmin;
-      //fmin;
-   }
-    //(130 * (size / this.state.maxOccurrence));
-    //((fmax - fmin)*((size-tmin)/(this.state.maxOccurrence-tmin))+ fmin);
+    } else {
+      return fmin;
+      // fmin;
+    }
+    // (130 * (size / this.state.maxOccurrence));
+    // ((fmax - fmin)*((size-tmin)/(this.state.maxOccurrence-tmin))+ fmin);
     // TODO: caclitlate size
   };
 
@@ -95,7 +94,7 @@ class TagCloud extends Component {
     this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
     this.refs.maxDate.value && (query.date_max = this.refs.maxDate.value);
     this.refs.onlyWords.checked && (query.words_only = this.refs.onlyWords.checked);
-    this.refs.activeMode.checked && (this.state.cloudActive = this.refs.activeMode.checked);
+    this.refs.activeMode.checked && (this.setState({ cloudActive: this.refs.activeMode.checked }));
     this.refs.count.value && this.refs.count.value > 0 && (query.count = this.refs.count.value);
     Api.get('/api/stats/tagcloud', query)
       .then(data => {
@@ -163,22 +162,22 @@ class TagCloud extends Component {
                   height={window.innerHeight - 190}
                   padding={0.5}
                   font={'Impact'}
-              //    onWordClick = {()=>{console.log()}}
+                  //    onWordClick = {()=>{console.log()}}
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
                 <ul>
                   <li><h4>Wort : Anzahl</h4></li>
                   {this.createWordArray(this.state.words).map((element) => {
-                    return (<li>{element['text'] + ' : '+ (element['size'])}</li>);
+                    return (<li>{element['text'] + ' : ' + (element['size'])}</li>);
                   })}
                 </ul>
               </Content>)}
             <div>
-            <div>
-                  <label htmlFor='cloudActive'>Listenansicht</label><br/>
-                  <input type='checkbox' id='activeMode' ref='activeMode' checked = {!this.state.cloudActive}  onChange={this.toggleChange} />
-                </div>
+              <div>
+                <label htmlFor='cloudActive'>Listenansicht</label><br />
+                <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
+              </div>
               <Row vertical={false} style={{ justifyContent: 'center' }}>
                 <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
                   onClick={this.exportCsv} />
