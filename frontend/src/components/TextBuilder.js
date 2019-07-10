@@ -61,7 +61,7 @@ class TextBuilder extends Component {
   }
   finish = (mailto) => {
     document.location.href = mailto;
-    document.location.href = document.location.origin + '/complaints';
+    // document.location.href = document.location.origin + '/complaints';
   }
   setData = (data) => {
     const components = data.components.reduce((obj, component) => {

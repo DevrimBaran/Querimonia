@@ -79,7 +79,7 @@ function Single (active, dispatch) {
       <Block>
         <Row vertical>
           <h6 ref='editor' className='center'>Regeln</h6>
-          <Input type='text' value={active.name} onChange={(e) => { modify('name', e.value); }} />
+          <Input label='Name' type='text' value={active.name} onChange={(e) => { modify('name', e.value); }} />
           <Content style={{ flexBasis: '100%' }}>
             <CodeMirror onChange={(value) => modify('rulesXml', value)} value={active.rulesXml} />
           </Content>
@@ -87,7 +87,7 @@ function Single (active, dispatch) {
       </Block>
       <Block>
         <Row vertical>
-          <Input type='select' required values={[{ label: 'ATTACH_VOUCHER', value: 'ATTACH_VOUCHER' }, { label: 'SEND_MAIL', value: 'SEND_MAIL' }]} value={active.actionCode} onChange={(e) => { modify('actionCode', e.value); }} />
+          <Input type='select' label='Aktionscode' required values={[{ label: 'ATTACH_VOUCHER', value: 'ATTACH_VOUCHER' }, { label: 'SEND_MAIL', value: 'SEND_MAIL' }]} value={active.actionCode} onChange={(e) => { modify('actionCode', e.value); }} />
           <Input type='text' value={active.parameters['E-Mail']} label='E-Mail' onChange={(e) => { modify('E-Mail', e.value); }} />
           <Input type='text' value={active.parameters['Wert']} label='Wert' onChange={(e) => { modify('Wert', e.value); }} />
           <div className='center margin'>

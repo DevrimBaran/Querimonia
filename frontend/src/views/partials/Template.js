@@ -103,8 +103,8 @@ function Single (active, dispatch) {
       <Block>
         <Row vertical>
           <h6 ref='editor' className='center'>Regeln</h6>
-          <Input type='text' value={active.componentName} onChange={(e) => { modify('componentName', e.value); }} />
-          <Input type='number' min='0' max='100' value={active.priority} onChange={(e) => { modify('priority', e.value); }} />
+          <Input type='text' label='Name' value={active.componentName} onChange={(e) => { modify('componentName', e.value); }} />
+          <Input type='number' label='Priotität' min='0' max='100' value={active.priority} onChange={(e) => { modify('priority', e.value); }} />
           <Content style={{ flexBasis: '100%' }}>
             <CodeMirror onChange={(value) => modify('rulesXml', value)} value={active.rulesXml} />
           </Content>

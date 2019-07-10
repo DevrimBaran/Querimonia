@@ -30,26 +30,26 @@ class CodeMirror extends Component {
                 var tags = {
                     "!top": ["top"],
                     "!attrs": {
-                    id: null,
-                    class: ["A", "B", "C"]
+                        id: null,
+                        class: ["A", "B", "C"]
                     },
                     top: {
-                    attrs: {
-                        lang: ["en", "de", "fr", "nl"],
-                        freeform: null
-                    },
-                    children: ["animal", "plant"]
+                        attrs: {
+                            lang: ["en", "de", "fr", "nl"],
+                            freeform: null
+                        },
+                        children: ["animal", "plant"]
                     },
                     animal: {
-                    attrs: {
-                        name: null,
-                        isduck: ["yes", "no"]
-                    },
-                    children: ["wings", "feet", "body", "head", "tail"]
+                        attrs: {
+                            name: null,
+                            isduck: ["yes", "no"]
+                        },
+                        children: ["wings", "feet", "body", "head", "tail"]
                     },
                     plant: {
-                    attrs: {name: null},
-                    children: ["leaves", "stem", "flowers"]
+                        attrs: {name: null},
+                        children: ["leaves", "stem", "flowers"]
                     },
                     wings: dummy, feet: dummy, body: dummy, head: dummy, tail: dummy,
                     leaves: dummy, stem: dummy, flowers: dummy
