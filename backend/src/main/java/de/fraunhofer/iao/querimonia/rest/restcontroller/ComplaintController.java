@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
@@ -369,12 +370,7 @@ public class ComplaintController {
    * Adds a new named entity to a complaint.
    *
    * @param complaintId the id of the complaint.
-   * @param label       the label of the entity.
-   * @param start       the start index of the entity. Must not be negative and in the bounds of the
-   *                    complaint text.
-   * @param end         the end index of the entity. Must be greater than start and in the bounds of
-   *                    the complaint text.
-   * @param extractor   the name of the extractor, that should have found the entity.
+   * @param namedEntity the entity that should be added to the complaint.
    *
    * @return a response entity with status code 201 and a list of the named entities of the
    *     complaint as response body.
@@ -388,12 +384,9 @@ public class ComplaintController {
   @PostMapping("api/complaints/{complaintId}/entities")
   public ResponseEntity<?> addEntity(
       @PathVariable int complaintId,
-      @RequestParam String label,
-      @RequestParam int start,
-      @RequestParam int end,
-      @RequestParam String extractor) {
+      @RequestBody NamedEntity namedEntity) {
     return ControllerUtility.tryAndCatch(() ->
-        complaintManager.addEntity(complaintId, label, start, end, extractor), HttpStatus.CREATED);
+        complaintManager.addEntity(complaintId, namedEntity), HttpStatus.CREATED);
   }
 
   /**

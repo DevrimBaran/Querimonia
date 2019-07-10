@@ -60,7 +60,7 @@ public class ResponseController {
   }
 
   @PatchMapping("api/responses/{complaintId}/refresh")
-  public ResponseEntity<ResponseSuggestion> refreshResponse(@PathVariable int complaintId) {
-    return new ResponseEntity<>(complaintManager.refreshResponse(complaintId), HttpStatus.OK);
+  public ResponseEntity<?> refreshResponse(@PathVariable int complaintId) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.refreshResponse(complaintId));
   }
 }
