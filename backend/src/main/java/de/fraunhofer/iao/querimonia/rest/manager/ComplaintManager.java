@@ -261,7 +261,7 @@ public class ComplaintManager {
     // check validity of entity
     int start = entity.getStartIndex();
     int end = entity.getEndIndex();
-    if (start < 0 || end <= start || end >= complaint.getText().length()) {
+    if (start < 0 || end <= start || end > complaint.getText().length()) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
           + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
           + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
