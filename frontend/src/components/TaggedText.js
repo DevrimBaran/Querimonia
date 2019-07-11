@@ -208,7 +208,7 @@ class TaggedText extends Component {
   handleMouseUp = (e) => {
     e.stopPropagation();
     const selectedText = window.getSelection();
-    if (selectedText && selectedText.baseNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
+    if (selectedText && selectedText.anchorNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
       const newLabelString = selectedText.toString();
       const baseOffset = selectedText.anchorOffset;
       const extentOffset = selectedText.focusOffset;
