@@ -143,12 +143,20 @@ class TaggedText extends Component {
         width: '10px',
         borderRadius: '50%',
         display: 'inline-block',
-        marginLeft: '5px' }}> </span> {label.label} {this.props.editable
+        marginLeft: '5px' }}> </span> {label.label} <br />
+        {this.props.editable
+        ? <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
+        : null}
+        {this.props.editable
+        ? <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+        : null}
+        {this.props.editable
         // eslint-disable-next-line
-        ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
-        : null} <br /> </div>;
+        ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', padding: '8px' }} />
+        : null}
+      </div>;
     });
-    return <ReactTooltip effect='solid' delayHide={500} clickable key={key + labels.length + 1} id={id} aria-haspopup='true'>
+    return <ReactTooltip effect='solid' delayHide={200} clickable key={key + labels.length + 1} id={id} aria-haspopup='true'>
       {
         labelArray
       }
@@ -170,6 +178,18 @@ class TaggedText extends Component {
       });
 
     Api.patch('/api/responses/' + this.state.id + '/refresh');
+  };
+
+  // edit or copy the Entity
+  editEntity = (id, deleteEnabled) => {
+    const originalLabel = this.state.originalLabels.get(id);
+    this.setState({
+      newEntityQuery: { ...this.state.newEntityQuery, label: originalLabel.label, extractor: originalLabel.extractor },
+      editEntity: true });
+    this.startEdit();
+    if (deleteEnabled) {
+      this.deleteEntity(id);
+    }
   };
 
   startEdit = () => {
@@ -222,11 +242,18 @@ class TaggedText extends Component {
       query['start'] = globalOffsetStart;
       query['end'] = globalOffsetEnd;
       this.startEdit();
-      this.setState({
-        editFormActive: true,
-        newEntityQuery: query,
-        newEntityString: newLabelString
-      });
+      if (this.state.editEntity) {
+        this.setState({
+          newEntityQuery: { ...this.state.newEntityQuery, start: globalOffsetStart, end: globalOffsetEnd }
+        });
+        this.addEntity();
+      } else {
+        this.setState({
+          editFormActive: true,
+          newEntityQuery: query,
+          newEntityString: newLabelString
+        });
+      };
     }
   };
 
@@ -253,7 +280,8 @@ class TaggedText extends Component {
       .then((data) => {
         this.setState({
           taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
-          editFormActive: false
+          editFormActive: false,
+          editEntity: false
         });
       });
     Api.patch('/api/responses/' + this.state.id + '/refresh');
