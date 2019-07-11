@@ -52,7 +52,7 @@ export const api = {
     return fetchJson(endpoint + (query ? '?' + query : ''), options('get'));
   },
   delete: function (endpoint, query) {
-    query = Object.keys(query).filter((name) => query[name]).map((name) => {
+    query = Object.keys(query).filter((name) => query[name] || query[name] === 0).map((name) => {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
     return fetchJson(endpoint + (query ? '?' + query : ''), options('delete'));

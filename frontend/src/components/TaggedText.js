@@ -208,7 +208,7 @@ class TaggedText extends Component {
   handleMouseUp = (e) => {
     e.stopPropagation();
     const selectedText = window.getSelection();
-    if (selectedText && selectedText.anchorNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
+    if (selectedText && selectedText.anchorNode.parentNode.parentNode.className === 'tagged-text' && selectedText.focusNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
       const newLabelString = selectedText.toString();
       const baseOffset = selectedText.anchorOffset;
       const extentOffset = selectedText.focusOffset;
@@ -241,10 +241,11 @@ class TaggedText extends Component {
       let query = {};
       query['start'] = globalOffsetStart;
       query['end'] = globalOffsetEnd;
+      query['setByUser'] = true;
       this.startEdit();
       if (this.state.editEntity) {
         this.setState({
-          newEntityQuery: { ...this.state.newEntityQuery, start: globalOffsetStart, end: globalOffsetEnd }
+          newEntityQuery: { ...this.state.newEntityQuery, start: globalOffsetStart, end: globalOffsetEnd, setByUser: true }
         });
         this.addEntity();
       } else {
