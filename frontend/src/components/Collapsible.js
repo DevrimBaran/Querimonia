@@ -19,9 +19,9 @@ class Collapsible extends Component {
         <div id={this.props.id} className={'collapsible ' + this.props.className} data-collapse={this.state.collapse} style={this.props.style || {}}>
           <span onClick={this.handleClick} className='handle'>
             <i className={this.state.collapse ? 'fa fa-caret-right' : 'fa fa-caret-down'} />
-            <span>{this.props.label}</span>
+            <span className='h6'>{this.props.label}</span>
           </span>
-          <div className='content'>{this.props.children}</div>
+          <div className='content margin'>{this.props.children}</div>
         </div>
       );
     }

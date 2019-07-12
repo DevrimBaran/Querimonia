@@ -4,25 +4,31 @@
   "private": true,
   "homepage": "./",
   "config": {
-    "backend": "https://querimonia.iao.fraunhofer.de/"
+    "backend": "https://querimonia.iao.fraunhofer.de"
   },
   "dependencies": {
+    "deepmerge": "^4.0.0",
     "express": "^4.16.4",
     "node-sass": "^4.12.0",
+    "pretty-data": "^0.40.0",
     "randomcolor": "^0.5.4",
     "react": "^16.8.6",
     "react-d3-cloud": "^0.7.0",
     "react-dom": "^16.8.6",
+    "react-redux": "^7.1.0",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-tooltip": "^3.10.0",
+    "redux": "^4.0.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
     "typescript": "^3.5.2"
   },
   "scripts": {
     "start": "react-scripts start",
     "build-prod": "REACT_APP_BACKEND_PATH=$npm_package_config_backend react-scripts build",
     "build-dev": "REACT_APP_BACKEND_PATH=$npm_package_config_backend/dev react-scripts build",
-    "build-mock": "REACT_APP_BACKEND_PATH=mock react-scripts build",
+    "build-mock": "REACT_APP_BACKEND_PATH=$npm_package_config_backend/mock react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "eslint": "./node_modules/.bin/eslint src --fix"

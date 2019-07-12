@@ -9,10 +9,11 @@ import React, { Component } from 'react';
 
 import Api from '../utility/Api';
 
-import Collapsible from 'components/Collapsible';
-
-import TaggedText from 'components/TaggedText';
-import Content from 'components/Content';
+import Debug from './../components/Debug';
+import Collapsible from './../components/Collapsible';
+import TaggedText from './../components/TaggedText';
+import Content from './../components/Content';
+import Input from './../components/Input';
 
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
@@ -21,48 +22,61 @@ class TextBuilder extends Component {
 
     this.state = {
       text: '',
-      categories: []
+      components: { ids: [] },
+      actions: { ids: [] }
     };
     this.data = {};
   }
 
-  add = (index) => {
-    const category = this.state.categories[index];
-    const answers = this.data[index].answers;
-    const answer = answers[this.state[category] % answers.length];
-    this.setState((state) => {
-      return {
-        text: state.text + answer.completedText + '\r\n',
-        categories: state.categories.filter(cat => cat !== category)
-      };
-    });
+  add = (id) => {
+    this.setState(
+      (state) => {
+        return {
+          text: state.text + state.components[id].alternatives[state.components[id].currentAlternative].completedText + '\r\n',
+          components: {
+            ...state.components,
+            ids: state.components.ids.filter(componentid => id !== componentid)
+          }
+        };
+      }
+    );
   };
   onChange = () => {
     this.setState({ text: this.refs.responseText.value });
   }
-  cycle = (index) => {
-    const category = this.state.categories[index];
+  cycle = (id) => {
     this.setState(
       (state) => {
         return {
-          [category]: state[category] + 1
+          components: {
+            ...state.components,
+            [id]: {
+              ...state.components[id],
+              currentAlternative: (state.components[id].currentAlternative + 1) % state.components[id].alternatives.length
+            }
+          }
         };
       }
     );
   }
-  delete = () => {
-    Api.delete('/api/complaints/' + this.props.complaintId);
-    document.location.href = document.location.origin + '/complaints';
+  finish = (mailto) => {
+    document.location.href = mailto;
+    // document.location.href = document.location.origin + '/complaints';
   }
   setData = (data) => {
-    this.data = data;
-    const categories = data.map(block => block.category);
-    let state = categories.reduce((obj, category) => {
-      obj[category] = 0;
+    const components = data.components.reduce((obj, component) => {
+      component.currentAlternative = 0;
+      obj[component.id] = component;
+      obj.ids.push(component.id);
       return obj;
-    }, {});
-    state.categories = categories;
-    this.setState(state);
+    }, { ids: [] });
+    const actions = data.actions.reduce((obj, component) => {
+      obj[component.id] = component;
+      obj.ids.push(component.id);
+      return obj;
+    }, { ids: [] });
+    this.setState({ components, actions });
+    console.log({ components, actions });
   };
 
   fetch = () => {
@@ -70,60 +84,55 @@ class TextBuilder extends Component {
       .catch(() => {
         return { status: 404 };
       })
-      .then((response) => {
-        console.log(response);
-        return [
-          {
-            category: 'Begrüßung',
-            answers: [
-              { completedText: 'foo', entities: [] },
-              { completedText: 'faa', entities: [] }
-            ]
-          },
-          {
-            category: 'Lorem',
-            answers: [
-              { completedText: 'foo', entities: [] },
-              { completedText: 'faa', entities: [] }
-            ]
-          },
-          {
-            category: 'Ipsum',
-            answers: [
-              { completedText: 'foo', entities: [] },
-              { completedText: 'faa', entities: [] }
-            ]
-          }
-        ];
-      })
+      .then(Debug.log)
       .then((response) => this.setData(response));
   };
 
   componentDidMount () {
     this.fetch();
   }
-
   render () {
+    const mail = 'querimonia@g-laber.de';
+    const subject = 'Querimonia Beschwerdeabschluss ' + this.props.complaintId;
+    const message = `Die Beschwerde mit der ID: ${this.props.complaintId} wurde mit folgender Nachricht abgeschlossen:
+
+    ${this.state.text}
+
+    `;
+    const link = 'Link: https://querimonia.iao.fraunhofer.de/complaints/' + this.props.complaintId;
+    const mailto = 'mailto:' + encodeURIComponent(mail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message) + link;
     return (
       <React.Fragment>
-        <Content style={{ flexBasis: '100%' }}>
-          <textarea id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken sie ihre Antwort zusammen :)'
+        <Content style={{ flexBasis: '10%' }}>
+          <textarea className='margin' id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
-          <input type='button' onClick={this.delete} value='Abschließen (löschen)' />
         </Content>
-        <Collapsible style={{ minHeight: this.state.categories.length > 0 ? '150px' : '0' }} className='Content' label='Antworten' collapse={false} id='responses'>
+        <div>
+          <Input type='button' value='Abschließen' onClick={() => this.finish(mailto)} />
+        </div>
+        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions'>
           {
-            this.state.categories.map((category, index) => {
-              const answers = this.data[index].answers;
-              const answer = answers[this.state[category] % answers.length];
+            this.state.actions.ids.map((id) => {
+              const action = this.state.actions[id];
               return (
-                <div className='response' key={index}>
+                <Input key={id} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
+              );
+            })
+          }
+        </Collapsible>
+        <Collapsible className='Content' label='Antworten' collapse={false} id='responses'>
+          {
+            this.state.components.ids.map((id) => {
+              const component = this.state.components[id];
+              const answer = component.alternatives[component.currentAlternative];
+              return (
+                <div className='response' key={id}>
                   <span className='content'>
-                    <TaggedText text={{ text: answer.completedText, entities: answer.entities }} />
-                    <div className='part'>{category}</div>
+                    <TaggedText taggedText={{ text: answer.completedText, entities: answer.entities }} />
+                    <div className='part'>{component.component.componentName}</div>
                   </span>
-                  <i className='fa fa-check add' onClick={() => { this.add(index); }} />
-                  <i className='fa fa-sync remove' data-category={category} onClick={() => this.cycle(index)} />
+                  <i className='fa fa-check add' onClick={() => { this.add(id); }} />
+                  <i className='fa fa-sync remove' onClick={() => this.cycle(id)} />
                 </div>
               );
             })

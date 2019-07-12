@@ -1,5 +1,27 @@
 .center {
     text-align: center;
+    justify-content: center;
+    margin: 0px auto;
+}
+
+.padding {
+    padding: $standardpadding;
+}
+
+.paddingVertical {
+    padding-top: $standardpadding;
+    padding-bottom: $standardpadding;
+}
+
+.smallmargin {
+    margin: $smallmargin;
+}
+
+.margin {
+    margin-top: $standardmargintop;
+    margin-right: $standardmarginright;
+    margin-bottom: $standardmarginbottom;
+    margin-left: $standardmarginleft;
 }
 
 .flex-row {
@@ -15,9 +37,29 @@
 .flex-grow {
     flex-grow: 1;
 }
+
+.floatLeft {
+    float: left;
+    overflow: auto;
+}
+
+.floatRight{
+    float: right;
+    overflow: auto;
+}
+
+.hover{
+    background-color: $primaryBackgroundColor;
+}
+
+.hover:hover{
+    background-color: $secondaryBackgroundColor;
+}
+
 .Block {
     position: relative;
 }
+
 .has-tooltip {
     position: relative;
     .tooltip {
