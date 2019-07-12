@@ -72,6 +72,10 @@ Content-Type: application/json
 
 ###
 
+GET http://localhost:8080/api/responses/plain/47
+
+###
+
 PUT http://localhost:8080/api/template/1
 Content-Type: application/json
 
@@ -88,7 +92,7 @@ Content-Type: application/json
 
 ###
 
-POST https://kikuko.iao.fraunhofer.de/apitext
+GET http://localhost:8080/api/complaints/1
 
 ###
 
@@ -96,7 +100,7 @@ POST http://localhost:8080/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Der Fahrer war sehr unfreundlich!"
+  "text": "Sehr geehrte Damen und Herren, kann es sein, dass die 621, die ich in Stuttgart nutze, öfter ausfällt. Ich stand jetzt einige Male an der Station \"Universität\" und mußte mehr als 20 Minuten auf den Bus warten - nicht so schön bei der derzeitigen Kälte. Wenn ich wüßte, dass der Bus seltener fährt, aber vor allem wann, könnte ich mich ja darauf einstellen. Mit freundliche Grüßen, Nadja Meier"
 }
 
 ###
@@ -154,22 +158,24 @@ DELETE http://localhost:8080/api/templates/10
 ###
 
 # Returns all complaints in the database
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/complaints
+GET https://beschwerdemanagement.iao.fraunhofer.de/api/complaints
 
 ###
 
 # Posts a new complaint text into the database
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/complaints/import
+POST https://querimonia.iao.fraunhofer.de/dev/api/complaints/import
 Content-Type: application/json
 
 {
-  "text": "Fahrt ist leider nicht erfolgt!"
+  "text": "Sehr geehrte Damen und Herren, also ich würde mich gerne über den Busfahrer der am 31.10.2018 um 14:13 den Bus 622 Richtung Oberbarmen Bahnhof gefahren ist beschweren. Ich weiß nicht ob ich hier richtig bin oder nicht, was mir aber wirklich egal ist, denn sowas hat mich wirklich sehr verärgert. Es fing schon damit an, dass er einen Mann am Hauptbahnhof (Elberfeld) nicht rein gelassen hat obwohl er da noch eine weile stand. Dann an der Heusner Straße ist ein kleiner Junge ausgestiegen und hat direkt vorne an der Scheibe angeklopft und der Busfahrer hat es ignoriert. Der kleine Junge ist dem Bus bis zur Schönebecker Straße hinterher gelaufen und genau als er da ankam hat der Busfahrer die Tür zugemacht (wie immer Sie es auch nennen) den Jungen ein zweites Mal ignoriert und ist einfach weggefahren. Ich habe dort dem Busfahrer gesagt er solle die Tür doch bitte öffnen, dies hat er vielleicht nicht gehört oder ignoriert. Dann haben zwei Jungs die Tasche des anderen Jungen nach vorne zum Busfahrer gebracht, wo er leicht verärgert über sein Verhalten war, was ich wirklich sehr hoffe. Was ich aber nicht verstehe ist, dass der Busfahrer einer jungen Dame die Türe öffnen konnte und die Jungs/Männer ignoriert hat. Es gibt sowas wie Gleichberechtigung. Ich weiß leider nicht wie es bei Ihnen abläuft, ich will nicht, dass er Stress hat aber ich will, das was er getan hat auch nicht ignorieren. Ich hoffe Sie können verstehen warum ich verärgert war oder es heute noch bin. Ich wünsche Ihnen einen wunderschönen Tag."
 }
 
 ###
 
+###
+
 # get a single complaint
-GET https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/84
+GET https://beschwerdemanagement.iao.fraunhofer.de/api/responses/61
 
 ###
 
@@ -195,9 +201,21 @@ Content-Type: application/json
 
 ###
 
-POST https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/new/4
+POST http://localhost:8080/api/actions
+Content-Type: application/json
 
+{
+  "name": "GutscheinFreifahr",
+  "actionCode": "ATTACH_VOUCHER",
+  "rulesXml": "<Rules><Subject value=\"Fahrt nicht erfolgt\"/></Rules>",
+  "parameters": {
+    "E-Mail": "beispiel@gmail.com",
+    "Wert": "5"
+  }
+}
 ###
+GET http://localhost:8080/api/actions
+
 
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/responses/5
 
@@ -208,5 +226,9 @@ DELETE https://beschwerdemanagement-dev.iao.fraunhofer.de/api/responses/73
 ###
 
 GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/stats/tagcloud
+
+### Standard Templates local tests
+
+GET http://localhost:8080/api/templates
 
 ###

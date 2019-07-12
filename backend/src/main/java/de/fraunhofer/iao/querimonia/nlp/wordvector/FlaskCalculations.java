@@ -1,13 +1,12 @@
 package de.fraunhofer.iao.querimonia.nlp.wordvector;
 
-import de.fraunhofer.iao.querimonia.nlp.FlaskContact;
+import de.fraunhofer.iao.querimonia.rest.contact.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.util.Map;
 
 public class FlaskCalculations {
-
 
   public Map<String, Double> nearestNeighbour(String word, String corpus) {
 
@@ -19,7 +18,7 @@ public class FlaskCalculations {
       e.printStackTrace();
     }
 
-    return FlaskContact.recieveJSON(jsonVector, "word_nn");
+    return FlaskContact.receiveJson(jsonVector, "word_nn");
 
   }
 
@@ -39,7 +38,7 @@ public class FlaskCalculations {
       e.printStackTrace();
     }
 
-    return FlaskContact.recieveJSON(jsonVectors, "vector_calculation");
+    return FlaskContact.receiveJson(jsonVectors, "vector_calculation");
   }
 
   public Map<String, Double> vectorCalculations(String vector1, String operator1, String vector2,
@@ -56,6 +55,6 @@ public class FlaskCalculations {
       e.printStackTrace();
     }
 
-    return FlaskContact.recieveJSON(jsonVectors, "vector_calculation");
+    return FlaskContact.receiveJson(jsonVectors, "vector_calculation");
   }
 }

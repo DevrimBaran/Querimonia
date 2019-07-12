@@ -9,9 +9,9 @@ import java.util.List;
 
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder( {
-                        "TempPipeline"
-                    })
+@JsonPropertyOrder(value = {
+    "TempPipeline"
+})
 public class Pipelines {
 
   private List<TempPipeline> tempPipeline = null;

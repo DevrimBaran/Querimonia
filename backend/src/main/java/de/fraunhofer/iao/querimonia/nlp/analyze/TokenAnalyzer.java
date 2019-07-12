@@ -74,7 +74,7 @@ public class TokenAnalyzer implements StopWordFilter {
 
     //List of Stopwords
     List<String> stopwords = Arrays.asList(stopwordsString.replaceAll("\\s+", "")
-                                               .split(","));
+        .split(","));
 
 
     Annotation germanAnnotation = new Annotation(complaintText);
@@ -100,7 +100,8 @@ public class TokenAnalyzer implements StopWordFilter {
       } else {
         tokenString = gt.tag(token.word()).get(0).getLemma().toLowerCase();
       }
-      if (stopwords.contains(tokenString) || punctuations.contains(tokenString) || brackets.contains(tokenString)) {
+      if (stopwords.contains(tokenString) || punctuations.contains(tokenString)
+          || brackets.contains(tokenString)) {
         continue;
       }
       countByWords.merge(tokenString, 1, Integer::sum);
