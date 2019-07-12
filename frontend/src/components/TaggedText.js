@@ -262,7 +262,10 @@ class TaggedText extends Component {
       } else {
         Api.get('/api/config/current', {})
           .then((data) => {
-            let extractorList = Object.keys(data.extractors[0].colors).map(extractor => extractor + ' (' + data.extractors[0].name + ')');
+            let extractorList = [];
+            for (let i = 0; i < data.extractors.length; i++) {
+              extractorList = extractorList.concat(Object.keys(data.extractors[i].colors).map(extractor => extractor + ' (' + data.extractors[i].name + ')'));
+            }
             this.setState({
               editFormActive: true,
               newEntityQuery: query,
