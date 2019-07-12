@@ -2,7 +2,6 @@ package de.fraunhofer.iao.querimonia.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -125,10 +124,4 @@ public class QuerimoniaException extends ResponseStatusException {
   public StackTraceElement[] getStackTrace() {
     return super.getStackTrace();
   }
-
-  @JsonProperty("stacktrace")
-  public String stacktraceString() {
-    return ExceptionUtils.getStackTrace(this);
-  }
-
 }

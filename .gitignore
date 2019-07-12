@@ -20,7 +20,10 @@
 *.rar
 
 # idea files
+/.idea/*
+.idea/httpRequests/*
 .idea/*
+../.idea/*
 *.iml
 build/
 .gradle/

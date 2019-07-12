@@ -435,29 +435,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
 
-  /api/responses/plain/{complaintId}:
-    parameters:
-      - $ref: '#/components/parameters/ComplaintIdParameter'
-
-    get:
-      tags:
-        - responses
-      summary: Gibt die generierte Antwort als String zurück.
-      deprecated: true
-      description: Gibt den vollen Text einer generierten Antwort als String zurück.  Sollte nur zum Testen verwendet werden.
-      operationId: getPlainResponse
-      responses:
-        200:
-          description: Die Antwort der Beschwerde als Gesamttext wird zurückgegeben.
-          content:
-            text/plain:
-              schema:
-                type: string
-        404:
-          $ref: '#/components/responses/NotFoundError'
-        500:
-          $ref: '#/components/responses/UnexpectedError'
-
   /api/components:
     get:
       tags:
@@ -517,7 +494,11 @@ paths:
               schema:
                 $ref: '#/components/schemas/ResponseComponent'
         400:
-          description: Der Textbaustein enthält ungültige Formatierungen, die Regelbeschreibung ist ungültig oder überschreitet das Zeichenlimit von 5000 Zeichen.
+          description: Der Textbaustein enthält ungültige Formatierungen oder überschreitet das Zeichenlimit von 5000 Zeichen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/XmlException'
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -888,96 +869,6 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
-  /api/vector/nearest_neighbour:
-    post:
-      tags:
-        - vector
-      summary: Berechnet die nächsten Nachbern des Wortes als Vektor.
-      description: Berechnet eine Map aus Wörtern die dem gegebenen Wort in der Vektordartellung am ehesten übereinstimmen.
-      parameters:
-        - name: corpus
-          in: query
-          required: false
-          description: Es kann angegeben werden aus welchem Textkorpus die Vektoren zur Berechnung stammen.
-          schema:
-            type: string
-      requestBody:
-        description: Enthält das Wort von dem der nearest-neighbour berechnet wird
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                text:
-                  type: string
-                  example: "Busfahrer"
-      operationId: getNearestNeighbour
-      responses:
-        200:
-          description: Die nächstligensten Wörter werden in einer Map mit ihrer prozentualen Übereinstimmung
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: number
-                description: Enthält die möglichen Wörter mit ihrer Übereinstimmung
-        400:
-          $ref: '#/components/responses/IllegalParametersError'
-        500:
-          $ref: '#/components/responses/UnexpectedError'
-
-  /api/vector/calculation:
-    post:
-      tags:
-        - vector
-      summary: Berechnet diverse Rechnungen mit meheren Wörtern al Vektoren
-      description: Wandelt die angegebenen Wörter in Vektoren um und führt die angegeben Operationen aus und gibt mögliche Ergebnisse in einer Map zurück
-      requestBody:
-        description: Enthält die auszuführende Berechnung
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - vector1
-                - operator1
-                - vector2
-                - corpus
-              properties:
-                vector1:
-                  type: string
-                  description: Erstes Word der Berechnung
-                operator1:
-                  type: string
-                  description: Erster Operator zwischen dem ersten und zweiten Vektor
-                  example: "+"
-                vector2:
-                  type: string
-                  description: Zweites Word der Berechnung
-                corpus:
-                  type: string
-                  description: Auswahl des Textkorpus für die Berechnung
-                operator2:
-                  type: string
-                  description: Optionaler zweiter Operator für erweiterte Berechnungen
-                vector3:
-                  type: string
-                  description: Drittes optionales Word der Berechnung
-      operationId: calculateVector
-      responses:
-        200:
-          description: Die nächstligensten Wörter nach Berechnung werden in einer Map mit ihrer prozentualen Übereinstimmung
-          content:
-            application/json:
-              schema:
-                type: object
-                additionalProperties:
-                  type: number
-                description: Enthält die möglichen Wörter mit ihrer Übereinstimmung zu der Berechnung
-        500:
-          $ref: '#/components/responses/UnexpectedError'
-
 components:
   parameters:
     ComplaintIdParameter:
@@ -1009,17 +900,6 @@ components:
       in: path
       required: true
       description: Die eindeutige ID einer Konfiguration
-      schema:
-        type: integer
-        format: int32
-        minimum: 1
-        example: 1
-
-    ActionIdParameter:
-      name: actionId
-      in: path
-      required: true
-      description: Die eindeutige ID einer Aktion
       schema:
         type: integer
         format: int32
@@ -1594,6 +1474,25 @@ components:
           description: Falls verfügbar, der Name der Java-Exception, die beim Fehler geworfen wurde.
           type: string
           example: "IOException"
+
+    XmlException:
+      description: Ein Xml-Parse-Fehler
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/QuerimoniaException'
+      properties:
+        line:
+          type: integer
+          format: int32
+          example: 1
+          minimum: 1
+          description: Die Liniennummer des Fehlers, beginnend bei 1
+        column:
+          type: integer
+          format: int32
+          example: 0
+          minimum: 0
+          description: Der Zeichenindex des Fehlers, beginnend bei 0.
 
   responses:
     UnexpectedError:

@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.exception.XmlException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;
@@ -52,8 +53,7 @@ public class RuleParser {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Unerwarter Fehler: "
           + "XML-Parser falsch konfiguriert.", "XML Error");
     } catch (SAXParseException e) {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Zeile: " + e.getLineNumber() + "; "
-          + "Index " + (e.getColumnNumber() - 1) + ": XML-Fehler: " + e.getMessage(), "XML Error");
+      throw new XmlException(HttpStatus.BAD_REQUEST, "Fehler beim Parsen der Regeln!", e);
     } catch (SAXException e) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
           "Unbekannter XML-Fehler: " + e.getMessage(), "XML Error");

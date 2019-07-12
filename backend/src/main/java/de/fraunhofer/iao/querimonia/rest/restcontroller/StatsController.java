@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,7 +56,7 @@ public class StatsController {
    * @return a map with the most common words and their frequency.
    */
   @GetMapping("/api/stats/tagcloud")
-  public Map<String, Integer> getMostCommonWords(
+  public ResponseEntity<?> getMostCommonWords(
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("date_min") Optional<String> dateMin,
       @RequestParam("date_max") Optional<String> dateMax,
@@ -63,33 +64,35 @@ public class StatsController {
       @RequestParam("subject") Optional<String[]> subject,
       @RequestParam("words_only") Optional<Boolean> wordsOnly) {
 
-    int maxComplaintCount = count.orElse(Integer.MAX_VALUE);
-    LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
+    return ControllerUtility.tryAndCatch(() -> {
+      int maxComplaintCount = count.orElse(Integer.MAX_VALUE);
+      LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
 
-    // create stream of all complaints
-    StreamSupport.stream(complaintRepository.findAll().spliterator(),
-                         false)
-        // filter complaints
-        .filter(compl -> ComplaintFilter.filterByDate(compl, dateMin, dateMax))
-        .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
-        .filter(compl -> ComplaintFilter.filterBySentiment(compl, sentiment))
-        // get their word lists
-        .map(Complaint::getWordList)
-        // combine all count maps together
-        .reduce(new HashMap<>(), StatsController::combineCountMaps)
-        .entrySet()
-        .stream()
-        // filter out numbers of wordsOnly is true
-        .filter(entry -> !wordsOnly.orElse(false)
-            || entry.getKey().matches(".*[a-zA-Z].*"))
-        // sort by count descending
-        .sorted((entry1, entry2) -> -Integer.compare(entry1.getValue(), entry2.getValue()))
-        // only take the most common words when count is given
-        .limit(maxComplaintCount)
-        // create new map from the results
-        .forEach(entry -> result.put(entry.getKey(), entry.getValue()));
+      // create stream of all complaints
+      StreamSupport.stream(complaintRepository.findAll().spliterator(),
+          false)
+          // filter complaints
+          .filter(compl -> ComplaintFilter.filterByDate(compl, dateMin, dateMax))
+          .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
+          .filter(compl -> ComplaintFilter.filterBySentiment(compl, sentiment))
+          // get their word lists
+          .map(Complaint::getWordList)
+          // combine all count maps together
+          .reduce(new HashMap<>(), StatsController::combineCountMaps)
+          .entrySet()
+          .stream()
+          // filter out numbers of wordsOnly is true
+          .filter(entry -> !wordsOnly.orElse(false)
+              || entry.getKey().matches(".*[a-zA-Z].*"))
+          // sort by count descending
+          .sorted((entry1, entry2) -> -Integer.compare(entry1.getValue(), entry2.getValue()))
+          // only take the most common words when count is given
+          .limit(maxComplaintCount)
+          // create new map from the results
+          .forEach(entry -> result.put(entry.getKey(), entry.getValue()));
 
-    return result;
+      return result;
+    });
   }
 
 }
