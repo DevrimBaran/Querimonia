@@ -84,12 +84,6 @@ public class Complaint {
   private List<ComplaintProperty> properties;
 
   /**
-   * The emotion of the complaint.
-   */
-  @OneToOne(cascade = CascadeType.ALL)
-  private ComplaintProperty emotion;
-
-  /**
    * A value that represents the sentiment of the text. Negative values represent negative
    * sentiment, positive value means positive sentiment.
    */
@@ -140,13 +134,13 @@ public class Complaint {
     this.text = text;
     this.state = ComplaintState.NEW;
     this.preview = preview;
-    this.emotion = new ComplaintProperty();
     this.entities = new ArrayList<>();
     this.configuration = Configuration.FALLBACK_CONFIGURATION;
     this.responseSuggestion = new ResponseSuggestion();
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
     this.wordList = new HashMap<>();
+    this.properties = new ArrayList<>();
   }
 
   /**
@@ -159,7 +153,7 @@ public class Complaint {
 
   @JsonProperty("subject")
   public ComplaintProperty getSubject() {
-    return ComplaintUtility.getSubjectOfComplaint(this);
+    return ComplaintUtility.getPropertyOfComplaint(new ComplaintData(this), "Kategorie");
   }
 
   public long getComplaintId() {
@@ -174,8 +168,9 @@ public class Complaint {
     return preview;
   }
 
+  @JsonProperty("emotion")
   public ComplaintProperty getEmotion() {
-    return emotion;
+    return ComplaintUtility.getPropertyOfComplaint(new ComplaintData(this), "Emotion");
   }
 
   public LocalDate getReceiveDate() {
@@ -243,11 +238,6 @@ public class Complaint {
     return this;
   }
 
-  public Complaint setEmotion(ComplaintProperty emotion) {
-    this.emotion = emotion;
-    return this;
-  }
-
   public double getSentiment() {
     return sentiment;
   }
@@ -282,7 +272,6 @@ public class Complaint {
         .append(text, complaint.text)
         .append(state, complaint.state)
         .append(properties, complaint.properties)
-        .append(emotion, complaint.emotion)
         .append(entities, complaint.entities)
         .append(responseSuggestion, complaint.responseSuggestion)
         .append(wordList, complaint.wordList)
@@ -298,7 +287,6 @@ public class Complaint {
         .append(text)
         .append(state)
         .append(properties)
-        .append(emotion)
         .append(sentiment)
         .append(entities)
         .append(responseSuggestion)

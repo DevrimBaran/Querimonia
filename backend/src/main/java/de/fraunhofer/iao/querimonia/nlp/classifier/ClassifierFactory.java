@@ -19,7 +19,7 @@ public class ClassifierFactory {
    * @return a classifier.
    * @throws IllegalArgumentException if the definition is invalid.
    */
-  public static Classifier getFromDefinition(ClassifierDefinition definition) {
+  private static Classifier getFromDefinition(ClassifierDefinition definition) {
     switch (definition.getClassifierType()) {
       case NONE:
         var baseMap = new HashMap<String, Double>();

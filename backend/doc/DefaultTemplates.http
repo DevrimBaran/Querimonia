@@ -24,7 +24,7 @@ Content-Type: application/json
   "successorParts": [
     "Eingangsdatum"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -38,7 +38,7 @@ Content-Type: application/json
   "successorParts": [
     "Eingangsdatum"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -52,7 +52,7 @@ Content-Type: application/json
   "successorParts": [
     "Eingangsdatum"
   ],
-  "subject": null
+  "name": null
 }
 
 ###### Begrüßung - Ohne Name
@@ -66,7 +66,7 @@ Content-Type: application/json
   "successorParts": [
     "Eingangsdatum"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -80,7 +80,7 @@ Content-Type: application/json
   "successorParts": [
     "Eingangsdatum"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -94,7 +94,7 @@ Content-Type: application/json
   "successorParts": [
     "Eingangsdatum"
   ],
-  "subject": null
+  "name": null
 }
 
 ###### Eingangsdatum - Mit Datum
@@ -108,7 +108,7 @@ Content-Type: application/json
   "successorParts": [
     "Problembeschreibung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -122,7 +122,7 @@ Content-Type: application/json
   "successorParts": [
     "Problembeschreibung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -136,7 +136,7 @@ Content-Type: application/json
   "successorParts": [
     "Problembeschreibung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###### Eingangsdatum - Ohne Datum
@@ -150,7 +150,7 @@ Content-Type: application/json
   "successorParts": [
     "Problembeschreibung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -164,7 +164,7 @@ Content-Type: application/json
   "successorParts": [
     "Problembeschreibung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -178,7 +178,7 @@ Content-Type: application/json
   "successorParts": [
     "Problembeschreibung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###### Problembeschreibung - Fahrer unfreundlich - Formulierung 1
@@ -193,7 +193,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -208,7 +208,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -223,7 +223,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -238,7 +238,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###### Problembeschreibung - Fahrer unfreundlich - Formulierung 2
@@ -253,7 +253,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -268,7 +268,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -283,7 +283,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -298,7 +298,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###### Problembeschreibung - Fahrer unfreundlich - Formulierung 3
@@ -313,7 +313,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -328,7 +328,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -343,7 +343,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -358,7 +358,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###### Problembeschreibung - Fahrt nicht erfolgt - Formulierung 1
@@ -373,7 +373,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -388,7 +388,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -403,7 +403,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -418,7 +418,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###### Problembeschreibung - Fahrt nicht erfolgt - Formulierung 2
@@ -433,7 +433,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -448,7 +448,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -463,7 +463,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -478,7 +478,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###### Problembeschreibung - Fahrt nicht erfolgt - Formulierung 3
@@ -493,7 +493,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -508,7 +508,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -523,7 +523,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -538,7 +538,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ### Problembeschreibung - Sonstiges - Formulierung 1
@@ -553,7 +553,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -568,7 +568,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -583,7 +583,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -598,7 +598,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###### Problembeschreibung - Sonstiges - Formulierung 2
@@ -613,7 +613,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -628,7 +628,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -643,7 +643,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -658,7 +658,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###### Problembeschreibung - Sonstiges - Formulierung 3
@@ -673,7 +673,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -688,7 +688,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -703,7 +703,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -718,7 +718,7 @@ Content-Type: application/json
     "Entschuldigung",
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###### Entschuldigung - Fahrer unfreundlich
@@ -732,7 +732,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -746,7 +746,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -760,7 +760,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###### Entschuldigung - Fahrt nicht erfolgt
@@ -774,7 +774,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -788,7 +788,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -802,7 +802,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###### Entschuldigung - Sonstiges
@@ -816,7 +816,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -830,7 +830,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -844,7 +844,7 @@ Content-Type: application/json
   "successorParts": [
     "Lösungsvorschlag"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###### Lösungsvorschlag - Fahrer unfreundlich
@@ -859,7 +859,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -874,7 +874,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###
@@ -889,7 +889,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Fahrer unfreundlich"
+  "name": "Fahrer unfreundlich"
 }
 
 ###### Lösungsvorschlag - Fahrt nicht erfolgt
@@ -904,7 +904,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -919,7 +919,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###
@@ -934,7 +934,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Fahrt nicht erfolgt"
+  "name": "Fahrt nicht erfolgt"
 }
 
 ###### Lösungsvorschlag - Sonstiges
@@ -949,7 +949,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -964,7 +964,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###
@@ -979,7 +979,7 @@ Content-Type: application/json
     "Schluss",
     "Erstattung"
   ],
-  "subject": "Sonstiges"
+  "name": "Sonstiges"
 }
 
 ###### Erstattung - Mit Geldbetrag
@@ -993,7 +993,7 @@ Content-Type: application/json
   "successorParts": [
     "Schluss"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -1007,7 +1007,7 @@ Content-Type: application/json
   "successorParts": [
     "Schluss"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -1021,7 +1021,7 @@ Content-Type: application/json
   "successorParts": [
     "Schluss"
   ],
-  "subject": null
+  "name": null
 }
 
 ###### Erstattung - Ohne Geldbetrag
@@ -1035,7 +1035,7 @@ Content-Type: application/json
   "successorParts": [
     "Schluss"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -1049,7 +1049,7 @@ Content-Type: application/json
   "successorParts": [
     "Schluss"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -1063,7 +1063,7 @@ Content-Type: application/json
   "successorParts": [
     "Schluss"
   ],
-  "subject": null
+  "name": null
 }
 
 ###### Schluss
@@ -1075,7 +1075,7 @@ Content-Type: application/json
   "templateText": "Wir hoffen, damit in Ihrem Sinne gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen alles Gute.\n",
   "responsePart": "Schluss",
   "successorParts": [],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -1087,7 +1087,7 @@ Content-Type: application/json
   "templateText": "Wir hoffen Ihnen damit behilflich gewesen sein zu können.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten.\n",
   "responsePart": "Schluss",
   "successorParts": [],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -1099,7 +1099,7 @@ Content-Type: application/json
   "templateText": "Wir hoffen in Ihrem Interesse gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten mit unseren Verkehrsmitteln.\n",
   "responsePart": "Schluss",
   "successorParts": [],
-  "subject": null
+  "name": null
 }
 
 ###

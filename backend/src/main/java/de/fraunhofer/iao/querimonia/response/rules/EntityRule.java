@@ -12,11 +12,11 @@ public class EntityRule implements Rule {
   private final String entityLabel;
   // if this is null, only check if entity is available
   @Nullable
-  private String expectedValue;
+  private String expectedRegex;
 
-  public EntityRule(String entityLabel, @Nullable String expectedValue) {
+  public EntityRule(String entityLabel, @Nullable String expectedRegex) {
     this.entityLabel = entityLabel;
-    this.expectedValue = expectedValue;
+    this.expectedRegex = expectedRegex;
   }
 
   @Override
@@ -28,13 +28,13 @@ public class EntityRule implements Rule {
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
     // check for upload date and time
-    if (entityLabel.equals("UploadDatum")) {
-      return expectedValue == null
-          || complaint.getUploadTime().toLocalDate().toString().equals(expectedValue);
+    if (entityLabel.equals("Eingangsdatum")) {
+      return expectedRegex == null
+          || complaint.getUploadTime().toLocalDate().toString().equals(expectedRegex);
     }
-    if (entityLabel.equals("UploadZeit")) {
-      return expectedValue == null
-          || complaint.getUploadTime().toLocalTime().toString().equals(expectedValue);
+    if (entityLabel.equals("Eingangszeit")) {
+      return expectedRegex == null
+          || complaint.getUploadTime().toLocalTime().toString().equals(expectedRegex);
     }
 
     if (complaint.getEntities()
@@ -42,12 +42,12 @@ public class EntityRule implements Rule {
         .noneMatch(namedEntity -> namedEntity.getLabel().equals(entityLabel))) {
       return false;
     }
-    return expectedValue == null
+    return expectedRegex == null
         || complaint.getEntities().stream()
         // find matching entities
         .filter(namedEntity -> namedEntity.getLabel().equals(entityLabel))
         // map to entity values
         .map(namedEntity -> ComplaintUtility.getValueOfEntity(complaint.getText(), namedEntity))
-        .anyMatch(value -> value.equals(expectedValue));
+        .anyMatch(value -> value.matches(expectedRegex));
   }
 }

@@ -7,10 +7,12 @@ import java.util.List;
 
 public class SentimentRule implements Rule {
 
-  private final String sentiment;
+  private final double min;
+  private final double max;
 
-  public SentimentRule(String sentiment) {
-    this.sentiment = sentiment;
+  public SentimentRule(double min, double max) {
+    this.min = min;
+    this.max = max;
   }
 
   @Override
@@ -21,9 +23,6 @@ public class SentimentRule implements Rule {
 
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
-    return complaint
-        .getSentiment()
-        .getValue()
-        .equals(sentiment);
+    return complaint.getSentiment() >= min && complaint.getSentiment() <= max;
   }
 }

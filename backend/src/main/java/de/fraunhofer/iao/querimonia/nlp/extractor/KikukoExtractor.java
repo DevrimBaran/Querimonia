@@ -30,26 +30,26 @@ public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements
     List<NamedEntity> entities = new LinkedList<>();
 
     allPipes.getFuzhaltestellen().forEach(e -> entities.add(new NamedEntity("Haltestelle",
-        e.getStartposition(), e.getEndposition(), TEMP_NAME)));
+        e.getStartposition(), e.getEndposition(), TEMP_NAME, e.getText())));
     allPipes.getLinienExtraktor().forEach(e -> entities.add(new NamedEntity("Linie",
         e.getStartposition() + matchesNumber(e.getText())[0],
-        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME)));
+        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME, e.getText())));
     allPipes.getExtdatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
-        e.getStartposition(), e.getEndposition(), TEMP_NAME)));
+        e.getStartposition(), e.getEndposition(), TEMP_NAME, e.getText())));
     allPipes.getExtgeldbetrag().forEach(e -> entities.add(new NamedEntity("Geldbetrag",
-        e.getStartposition(), e.getEndposition(), TEMP_NAME)));
+        e.getStartposition(), e.getEndposition(), TEMP_NAME, e.getText())));
     allPipes.getExttelefonnummer().forEach(e -> entities.add(new NamedEntity("Telefonnummer",
         e.getStartposition(),
-        e.getEndposition(), TEMP_NAME)));
+        e.getEndposition(), TEMP_NAME, e.getText())));
     allPipes.getFuzortsnamen().forEach(e -> entities.add(new NamedEntity("Ortsname",
         e.getStartposition(),
-        e.getEndposition(), TEMP_NAME)));
+        e.getEndposition(), TEMP_NAME, e.getText())));
     allPipes.getVorgangsnummer().forEach(e -> entities.add(new NamedEntity("Vorgangsnummer",
         e.getStartposition() + matchesNumber(e.getText())[0],
-        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME)));
+        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME, e.getText())));
     allPipes.getExtpersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
         e.getStartposition(),
-        e.getEndposition(), TEMP_NAME)));
+        e.getEndposition(), TEMP_NAME, e.getText())));
     return entities;
   }
 

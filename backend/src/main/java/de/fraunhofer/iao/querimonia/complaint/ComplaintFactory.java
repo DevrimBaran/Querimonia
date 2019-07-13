@@ -77,7 +77,7 @@ public class ComplaintFactory {
     String complaintText = complaint.getText();
 
     // analysis
-    List<ComplaintProperty> complaintProperties = classifiers.stream()
+    List<ComplaintProperty> complaintProperties = classifiers.stream().parallel()
         .map(classifier -> classifier.classifyText(complaintText))
         .collect(Collectors.toList());
     complaint.setProperties(complaintProperties);
@@ -86,19 +86,23 @@ public class ComplaintFactory {
         extractEntities(complaint, configuration, keepUserInformation);
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
     ComplaintProperty emotionProperty = sentimentAnalyzer.analyzeEmotion(complaintText);
-    complaint.setEmotion(emotionProperty);
+    complaint.getProperties().add(emotionProperty);
     complaint.setEntities(entities);
+
+    double sentiment = sentimentAnalyzer.analyzeSentiment(complaintText);
 
     // generate response
     ComplaintData complaintData = new ComplaintData(
         complaintText,
-        complaint.getSubject(),
+        complaintProperties,
         emotionProperty,
         entities,
-        LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()));
+        LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()),
+        sentiment);
     ResponseSuggestion responseSuggestion = createResponse(complaintData);
 
     return complaint
+        .setSentiment(sentiment)
         .setConfiguration(configuration)
         .setResponseSuggestion(responseSuggestion)
         .setWordList(words);

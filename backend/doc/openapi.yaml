@@ -1028,45 +1028,6 @@ components:
         minimum: 1
         example: 1
 
-    LabelParameter:
-      name: label
-      in: query
-      description: Der Tag der Entität.
-      required: true
-      schema:
-        type: string
-        example: "Haltestelle"
-
-    StartParameter:
-      name: start
-      in: query
-      description: Der Start-Index der Named Entity. Muss innerhalb der Textgrenzen liegen.
-      required: true
-      schema:
-        type: integer
-        format: int64
-        example: 12
-        minimum: 0
-
-    EndParameter:
-      name: end
-      in: query
-      description: Der End-Index der Named Entity. Muss innerhalb der Textgrenzen liegen und größer als start sein.
-      required: true
-      schema:
-        type: integer
-        format: int64
-        example: 18
-
-    ExtractorParameter:
-      name: extractor
-      in: query
-      description: Der Name des Extraktors, mit dem die Entity hätte gefunden werden sollen.
-      required: true
-      schema:
-        type: string
-        example: "QuerimoniaExtract"
-
   schemas:
     Complaint:
       required:

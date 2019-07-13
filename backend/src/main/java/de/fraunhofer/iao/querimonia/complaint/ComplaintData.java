@@ -10,28 +10,31 @@ import java.util.List;
  */
 public class ComplaintData {
   private final String text;
-  private final ComplaintProperty subject;
-  private final ComplaintProperty sentiment;
+  private final List<ComplaintProperty> properties;
+  private final ComplaintProperty emotion;
   private final List<NamedEntity> entities;
   private final LocalDateTime uploadTime;
+  private final double sentiment;
 
   /**
    * Creates new ComplaintData object.
    *
-   * @param text         the complaint text.
-   * @param subject   contains the subjects of the complaint mapped to their probabilities.
-   * @param sentiment contains the sentiments of the complaint mapped to their probabilities.
-   * @param entities     the found named entities in the text, also including upload date and time.
-   * @param uploadTime   the time when the complaint was uploaded.
+   * @param text       the complaint text.
+   * @param properties all properties of the complaint.
+   * @param emotion    contains the sentiments of the complaint mapped to their probabilities.
+   * @param entities   the found named entities in the text, also including upload date and time.
+   * @param uploadTime the time when the complaint was uploaded.
+   * @param sentiment  the sentiment of the text
    */
-  public ComplaintData(String text, ComplaintProperty subject,
-                       ComplaintProperty sentiment, List<NamedEntity> entities,
-                       LocalDateTime uploadTime) {
+  public ComplaintData(String text, List<ComplaintProperty> properties,
+                       ComplaintProperty emotion, List<NamedEntity> entities,
+                       LocalDateTime uploadTime, double sentiment) {
     this.text = text;
-    this.subject = subject;
-    this.sentiment = sentiment;
+    this.properties = properties;
+    this.emotion = emotion;
     this.entities = entities;
     this.uploadTime = uploadTime;
+    this.sentiment = sentiment;
   }
 
   /**
@@ -42,10 +45,15 @@ public class ComplaintData {
    */
   public ComplaintData(Complaint complaint) {
     this.text = complaint.getText();
-    this.subject = ComplaintUtility.getSubjectOfComplaint(complaint);
-    this.sentiment = complaint.getEmotion();
+    this.properties = complaint.getProperties();
+    this.emotion = complaint.getEmotion();
     this.entities = complaint.getEntities();
     this.uploadTime = LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime());
+    this.sentiment = complaint.getSentiment();
+  }
+
+  public List<ComplaintProperty> getProperties() {
+    return properties;
   }
 
   public String getText() {
@@ -53,15 +61,19 @@ public class ComplaintData {
   }
 
   public ComplaintProperty getSubject() {
-    return subject;
+    return ComplaintUtility.getPropertyOfComplaint(this, "Kategorie");
   }
 
-  public ComplaintProperty getSentiment() {
-    return sentiment;
+  public ComplaintProperty getEmotion() {
+    return emotion;
   }
 
   public List<NamedEntity> getEntities() {
     return entities;
+  }
+
+  public double getSentiment() {
+    return sentiment;
   }
 
   public LocalDateTime getUploadTime() {

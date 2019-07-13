@@ -49,11 +49,10 @@ public class FlaskSentiment implements SentimentAnalyzer {
     return flaskResult.getOrDefault("sentiment", 0.0);
   }
 
-  /**
+  /* *
    * creates a Text that contains each key from the map with an amount of the mapped value.
    *
    * @param nonStopWords map with the words and their appearance value
-   */
   private String createPseudoText(Map<String, Integer> nonStopWords) {
     final StringBuilder builder = new StringBuilder();
     nonStopWords.forEach((key, value) -> {
@@ -62,5 +61,5 @@ public class FlaskSentiment implements SentimentAnalyzer {
       }
     });
     return builder.toString().trim();
-  }
+  }*/
 }

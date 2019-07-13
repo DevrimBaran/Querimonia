@@ -4,7 +4,6 @@ import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
@@ -178,10 +177,10 @@ public class ComplaintManager {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
 
-    updateRequest.getNewSentiment()
+    updateRequest.getNewEmotion()
         .ifPresent(sentiment -> complaint.getEmotion().setValue(sentiment));
     updateRequest.getNewSubject()
-        .ifPresent(subject -> ComplaintUtility.getSubjectOfComplaint(complaint).setValue(subject));
+        .ifPresent(subject -> complaint.getSubject().setValue(subject));
     updateRequest.getNewState()
         .ifPresent(complaint::setState);
 

@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.extractor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -46,6 +47,8 @@ public class ExtractorDefinition {
     // for hibernate
   }
 
+  @JsonCreator
+  @SuppressWarnings("unused")
   public ExtractorDefinition(String name,
                              ExtractorType type,
                              Map<String, String> colors) {

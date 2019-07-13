@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.rest.manager.filter;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -112,7 +111,7 @@ public class ComplaintFilter {
    * @return true, if the value of sentiments is absent or
    */
   public static boolean filterBySubject(Complaint complaint, Optional<String[]> subjects) {
-    return checkForParameters(ComplaintUtility.getSubjectOfComplaint(complaint), subjects);
+    return checkForParameters(complaint.getSubject(), subjects);
   }
 
   private static boolean checkForParameters(ComplaintProperty complaintProperty,
@@ -152,8 +151,11 @@ public class ComplaintFilter {
               compareValue = Double.compare(c1.getSentiment(), c2.getSentiment());
               break;
             case "subject":
-              compareValue = ComplaintUtility.getSubjectOfComplaint(c1).getValue()
-                  .compareTo(ComplaintUtility.getSubjectOfComplaint(c2).getValue());
+              compareValue = c1.getSubject().getValue()
+                  .compareTo(c2.getSubject().getValue());
+              break;
+            case "id":
+              compareValue = Long.compare(c1.getComplaintId(), c2.getComplaintId());
               break;
             default:
               throw new QuerimoniaException(HttpStatus.BAD_REQUEST,

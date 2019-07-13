@@ -28,7 +28,7 @@ public class ComplaintUpdateRequest {
     this.newState = newState;
   }
 
-  public Optional<String> getNewSentiment() {
+  public Optional<String> getNewEmotion() {
     return Optional.ofNullable(newSentiment);
   }
 

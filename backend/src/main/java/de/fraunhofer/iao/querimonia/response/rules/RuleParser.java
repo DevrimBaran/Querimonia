@@ -35,10 +35,10 @@ public class RuleParser {
     if (rulesXml.isEmpty()) {
       return Rule.TRUE;
     }
+
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
-
       Document doc = builder.parse(new InputSource(new StringReader(rulesXml)));
 
       Element root = doc.getDocumentElement();
@@ -46,6 +46,7 @@ public class RuleParser {
       if (root.getTagName().equals("Rules") && root.hasChildNodes()) {
         return getRuleFromNode((Element) root.getFirstChild());
       } else {
+        // wrong root element
         throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Fehlerhaftes XML: "
             + "Root-Element muss 'Rules' heißen.", "XML Error");
       }
@@ -67,10 +68,10 @@ public class RuleParser {
     String tag = element.getTagName();
 
     switch (tag) {
-      case "Subject":
-        return new SubjectRule(element.getAttribute("value"));
+      case "Property":
+        return new PropertyRule(element.getAttribute("name"), element.getAttribute("value"));
       case "Sentiment":
-        return new SentimentRule(element.getAttribute("value"));
+        return getSentimentRule(element);
       case "UploadDate":
         return getUploadDateRule(element);
       case "UploadTime":
@@ -93,6 +94,19 @@ public class RuleParser {
       default:
         throw new IllegalStateException("Malformed XML");
     }
+  }
+
+  private static Rule getSentimentRule(Element element) {
+    double max = Double.POSITIVE_INFINITY;
+    double min = Double.NEGATIVE_INFINITY;
+
+    if (element.hasAttribute("max")) {
+      max = Double.parseDouble(element.getAttribute("max"));
+    }
+    if (element.hasAttribute("min")) {
+      min = Double.parseDouble(element.getAttribute("min"));
+    }
+    return new SentimentRule(min, max);
   }
 
   private static Rule getPredecessorCountRule(Element element) {
@@ -118,8 +132,8 @@ public class RuleParser {
 
   private static Rule getEntityRule(Element element) {
     String value = null;
-    if (element.hasAttribute("value")) {
-      value = element.getAttribute("value");
+    if (element.hasAttribute("matches")) {
+      value = element.getAttribute("matches");
     }
     return new EntityRule(element.getAttribute("label"), value);
   }
