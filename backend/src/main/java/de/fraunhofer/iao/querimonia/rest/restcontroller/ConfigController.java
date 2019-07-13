@@ -73,7 +73,8 @@ public class ConfigController {
 
   @GetMapping("api/config/count")
   public ResponseEntity<?> countConfigurations() {
-    return ControllerUtility.tryAndCatch(configurationManager::countConfigurations);
+    return ControllerUtility.tryAndCatch(() ->
+        Long.toString(configurationManager.countConfigurations()));
   }
 
   @GetMapping("api/config/current")

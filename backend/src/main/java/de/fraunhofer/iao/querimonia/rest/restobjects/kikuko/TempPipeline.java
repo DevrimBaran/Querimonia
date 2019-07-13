@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder( {
+@JsonPropertyOrder(value = {
                         "Startposition",
                         "ContextBefore",
                         "Endposition",

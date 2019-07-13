@@ -12,6 +12,7 @@ import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
+import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
@@ -226,6 +227,20 @@ public class ComplaintManager {
     return complaint;
   }
 
+  public synchronized Complaint closeComplaint(long complaintId) {
+    Complaint complaint = getComplaint(complaintId);
+    checkState(complaint);
+    complaint.setState(ComplaintState.CLOSED);
+
+    // execute actions of the complaint
+    complaint
+        .getResponseSuggestion()
+        .getActions()
+        .forEach(Action::executeAction);
+
+    return complaint;
+  }
+
   /**
    * Counts the complaints.
    *
@@ -238,6 +253,10 @@ public class ComplaintManager {
   ) {
     return "" + (getComplaints(Optional.empty(), Optional.empty(), Optional.empty(), state, dateMin,
         dateMax, sentiment, subject, keywords).size());
+  }
+
+  public List<NamedEntity> getEntities(long complaintId) {
+    return getComplaint(complaintId).getEntities();
   }
 
   /**

@@ -38,10 +38,20 @@ public class ConfigurationManager {
     this.configurationRepository = configurationRepository;
   }
 
+  /**
+   * Returns all configuration of the database. Sorting and pagination can be used.
+   *
+   * @param count  the amount of configurations per page.
+   * @param page   the page number.
+   * @param sortBy sorting parameters.
+   *
+   * @return the list of configurations of the database, respecting the pagination and sorting
+   * parameters.
+   */
   public synchronized List<Configuration> getConfigurations(Optional<Integer> count,
                                                             Optional<Integer> page,
                                                             Optional<String[]> sortBy) {
-
+    // create stream of all configurations of the database
     Stream<Configuration> allConfigs =
         StreamSupport.stream(configurationRepository.findAll().spliterator(), false);
 
@@ -52,19 +62,40 @@ public class ConfigurationManager {
       allConfigs = allConfigs.limit(count.get());
     }
 
-    return allConfigs.sorted(getConfigComparator(sortBy)).collect(Collectors.toList());
+    return allConfigs
+        .sorted(getConfigComparator(sortBy))
+        .collect(Collectors.toList());
   }
 
+  /**
+   * Adds a new configuration to the database.
+   *
+   * @param configuration the configuration that will be added.
+   *
+   * @return the new added configuration.
+   */
   public synchronized Configuration addConfiguration(Configuration configuration) {
     return configurationRepository.save(configuration);
   }
 
+  /**
+   * Returns the configuration with the given id.
+   *
+   * @param configId the id of the configuration.
+   *
+   * @return the configuration with the given id.
+   */
   public synchronized Configuration getConfiguration(long configId) {
     return configurationRepository
         .findById(configId)
         .orElseThrow(() -> new NotFoundException(configId));
   }
 
+  /**
+   * Deletes the configuration with the given id.
+   *
+   * @param configId the id of the configuration that should be deleted.
+   */
   public synchronized void deleteConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
       configurationRepository.deleteById(configId);
@@ -77,6 +108,14 @@ public class ConfigurationManager {
     }
   }
 
+  /**
+   * The configuration with the given id gets replaced with the given configuration.
+   *
+   * @param configId      the id of the configuration that should be replaced. Must exists.
+   * @param configuration the configuration that should be used.
+   *
+   * @return the new configuration.
+   */
   public synchronized Configuration updateConfiguration(long configId,
                                                         Configuration configuration) {
     if (configurationRepository.existsById(configId)) {
@@ -86,16 +125,33 @@ public class ConfigurationManager {
     throw new NotFoundException(configId);
   }
 
-  public synchronized String countConfigurations() {
-    return Long.toString(configurationRepository.count());
+  /**
+   * Returns the amount of configurations that are stored in the database.
+   *
+   * @return the amount of configurations.
+   */
+  public synchronized Long countConfigurations() {
+    return configurationRepository.count();
   }
 
+  /**
+   * Returns the configuration that is currently active.
+   *
+   * @return the configuration that is currently active.
+   */
   public synchronized Configuration getCurrentConfiguration() {
     return configurationRepository
         .findById(analyzerConfigProperties.getId())
         .orElse(Configuration.FALLBACK_CONFIGURATION);
   }
 
+  /**
+   * Sets the configuration with the given id as active.
+   *
+   * @param configId the id of the configuration that should be activated.
+   *
+   * @return the now active configuration.
+   */
   public synchronized Configuration updateCurrentConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
       analyzerConfigProperties.setId(configId);
@@ -103,11 +159,19 @@ public class ConfigurationManager {
     return getConfiguration(configId);
   }
 
+  /**
+   * Deletes all configurations of the database.
+   */
   public synchronized void deleteAllConfigurations() {
     configurationRepository.deleteAll();
     analyzerConfigProperties.setId(0);
   }
 
+  /**
+   * Stores the configuration in the database.
+   *
+   * @param configuration the configuration that should be stored.
+   */
   synchronized void storeConfiguration(Configuration configuration) {
     configurationRepository.save(configuration);
   }

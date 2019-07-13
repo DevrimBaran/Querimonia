@@ -36,7 +36,7 @@ paths:
         - $ref: '#/components/parameters/ComplaintStateParameter'
         - $ref: '#/components/parameters/DateMinParameter'
         - $ref: '#/components/parameters/DateMaxParameter'
-        - $ref: '#/components/parameters/SentimentParameter'
+        - $ref: '#/components/parameters/EmotionParameter'
         - $ref: '#/components/parameters/SubjectParameter'
         - $ref: '#/components/parameters/KeywordsParameter'
 
@@ -125,7 +125,7 @@ paths:
       tags:
         - complaints
       summary: Aktualisiert eine Beschwerde.
-      description: Mit dieser Anfrage können Sentiment, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
+      description: Mit dieser Anfrage können Emotion, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
       requestBody:
         description: Ein Objekt mit Attributen, die aktualisiert werden sollen. Es müssen nur die Attribute angegeben werden, bei denen eine Änderung an der Beschwerde vorgenommen werden soll.
         content:
@@ -251,7 +251,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/DateMinParameter'
         - $ref: '#/components/parameters/DateMaxParameter'
-        - $ref: '#/components/parameters/SentimentParameter'
+        - $ref: '#/components/parameters/EmotionParameter'
         - $ref: '#/components/parameters/SubjectParameter'
         - $ref: '#/components/parameters/KeywordsParameter'
 
@@ -860,7 +860,7 @@ paths:
             example: 32
         - $ref: '#/components/parameters/DateMinParameter'
         - $ref: '#/components/parameters/DateMaxParameter'
-        - $ref: '#/components/parameters/SentimentParameter'
+        - $ref: '#/components/parameters/EmotionParameter'
         - $ref: '#/components/parameters/SubjectParameter'
         - name: words_only
           in: query
@@ -986,11 +986,11 @@ components:
         format: date
         example: 2019-07-23
 
-    SentimentParameter:
-      name: sentiment
+    EmotionParameter:
+      name: emotion
       in: query
       required: false
-      description: Bei Angabe werden nur Beschwerden ausgewertet, die einem der gegebenen Sentimenten entsprechen.
+      description: Bei Angabe werden nur Beschwerden ausgewertet, die einem der gegebenen Emotionen entsprechen.
       schema:
         type: array
         items:
@@ -1141,9 +1141,9 @@ components:
           type: string
           description: Die Kategorie der Beschwerde, die übernommen werden soll.
           example: "Fahrer unfreundlich"
-        sentiment:
+        emotion:
           type: string
-          description: Das Sentiment der Beschwerde, das übernommen werden soll.
+          description: Die Emotion der Beschwerde, das übernommen werden soll.
           example: "Freunde"
 
     NamedEntity:
@@ -1435,7 +1435,7 @@ components:
         timestamp:
           description: Der genaue Zeitpunkt, wann der Fehler aufgetreten ist.
           type: string
-          format: 'date-time'
+          format: date-time
           example: '2019-07-04T15:24:23.3942221'
         statusCode:
           description: Der HTTP-Status Code, der zuückgegeben wird.

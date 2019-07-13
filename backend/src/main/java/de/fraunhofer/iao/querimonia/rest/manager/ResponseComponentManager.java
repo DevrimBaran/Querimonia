@@ -57,6 +57,7 @@ public class ResponseComponentManager {
    * Add a new component to the repository.
    *
    * @param templateRepository the component repository to use
+   *
    * @return the created component
    */
   public synchronized ResponseComponent addTemplate(ResponseComponentRepository templateRepository,
@@ -101,13 +102,14 @@ public class ResponseComponentManager {
   }
 
   /**
-   * Pagination for templates (sort_by, page, count).
+   * Pagination for components (sort_by, page, count).
    *
-   * @param count  Counter for the templates.
-   * @param page   Page number.
-   * @param keywords  Keywords of the template texts.
-   * @param sortBy Sorts by name ascending or descending, priority ascending and descending.
-   * @return Returns a list of sorted templates.
+   * @param count    number of templates per page.
+   * @param page     number of the page.
+   * @param keywords if given, complaints get filtered by these keywords.
+   * @param sortBy   Sorts by name ascending or descending, priority ascending and descending.
+   *
+   * @return Returns a list of sorted components.
    */
   public synchronized List<ResponseComponent> getAllTemplates(
       ResponseComponentRepository templateRepository,
@@ -119,10 +121,10 @@ public class ResponseComponentManager {
     templateRepository.findAll().forEach(result::add);
 
     Stream<ResponseComponent> filteredResult =
-            result.stream()
-                    .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(
-                        responseComponent, keywords))
-                    .sorted(ResponseComponentFilter.createTemplateComparator(sortBy));
+        result.stream()
+            .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(
+                responseComponent, keywords))
+            .sorted(ResponseComponentFilter.createTemplateComparator(sortBy));
 
     if (count.isPresent()) {
       if (page.isPresent()) {
@@ -141,6 +143,7 @@ public class ResponseComponentManager {
    *
    * @param templateRepository the component repository to use
    * @param id                 the ID to look for
+   *
    * @return the response component with the given ID
    */
   public synchronized ResponseComponent getTemplateByID(
