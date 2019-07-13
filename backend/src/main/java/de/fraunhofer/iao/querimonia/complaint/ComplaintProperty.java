@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ import java.util.Map;
  * property and a map that maps possible values to their probability.
  */
 @Entity
-public class ComplaintProperty {
+public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   @JsonIgnore
   @Id
@@ -151,5 +152,10 @@ public class ComplaintProperty {
         .append("probabilities", probabilities)
         .append("isSetByUser", isSetByUser)
         .toString();
+  }
+
+  @Override
+  public int compareTo(@NotNull ComplaintProperty o) {
+    return this.getValue().compareTo(o.getValue());
   }
 }

@@ -3,11 +3,10 @@ package de.fraunhofer.iao.querimonia.rest.manager.filter;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Optional;
@@ -130,62 +129,15 @@ public class ComplaintFilter {
    *               details.
    */
   public static Comparator<Complaint> createComplaintComparator(Optional<String[]> sortBy) {
-    return (c1, c2) -> {
-      if (sortBy.isPresent()) {
-        int compareValue = 0;
-
-        for (String sortAspect : sortBy.get()) {
-          // get index where suffix starts
-          int indexOfPrefix = sortAspect.lastIndexOf('_');
-          // get aspect without suffix
-          String rawSortAspect = sortAspect.substring(0, indexOfPrefix);
-
-          switch (rawSortAspect) {
-            case "upload_date":
-              compareValue = c1.getReceiveDate().compareTo(c2.getReceiveDate());
-              if (compareValue == 0) {
-                compareValue = c1.getReceiveTime().compareTo(c2.getReceiveTime());
-              }
-              break;
-            case "sentiment":
-              compareValue = Double.compare(c1.getSentiment(), c2.getSentiment());
-              break;
-            case "subject":
-              compareValue = c1.getSubject().getValue()
-                  .compareTo(c2.getSubject().getValue());
-              break;
-            case "id":
-              compareValue = Long.compare(c1.getComplaintId(), c2.getComplaintId());
-              break;
-            default:
-              throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
-                  "Unbekannter Sortierparameter " + rawSortAspect, "Ungültige Anfrage");
-          }
-
-          // invert sorting if desc
-          if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {
-            compareValue *= -1;
-          }
-
-          if (compareValue != 0) {
-            // if difference is already found, don't continue comparing
-            // (the later the aspects are in the array, the less priority they have, so
-            // only continue on equal complaints)
-            return compareValue;
-          }
-
-        }
-        // all sorting aspects where checked
-        return compareValue;
-      } else {
-        // sort by date *descending* per default
-        int compareValue = c1.getReceiveDate().compareTo(c2.getReceiveDate());
-        if (compareValue == 0) {
-          compareValue = c1.getReceiveTime().compareTo(c2.getReceiveTime());
-        }
-        return -compareValue;
-      }
-    };
+    return new ComparatorBuilder<Complaint>()
+        .append("upload_date", complaint -> LocalDateTime.of(complaint.getReceiveDate(),
+            complaint.getReceiveTime()))
+        .append("id", Complaint::getComplaintId)
+        .append("sentiment", Complaint::getSentiment)
+        .append("state", Complaint::getState)
+        .append("emotion", Complaint::getEmotion)
+        .append("subject", Complaint::getSubject)
+        .build(sortBy.orElse(new String[]{"state", "upload_date_desc"}));
   }
 
 }

@@ -145,7 +145,7 @@ public class ResponseComponentManager {
    */
   public synchronized ResponseComponent getTemplateByID(
       ResponseComponentRepository templateRepository,
-      int id) {
+      long id) {
     return templateRepository.findById(id)
         .orElseThrow(() -> NOT_FOUND_EXCEPTION);
   }

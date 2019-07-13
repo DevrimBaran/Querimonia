@@ -3,10 +3,9 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
+import de.fraunhofer.iao.querimonia.rest.manager.filter.ComparatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -115,45 +114,11 @@ public class ConfigurationManager {
 
   /**
    * Returns a comparator for the configurations.
-   * TODO generify comparators
    */
   private Comparator<Configuration> getConfigComparator(Optional<String[]> sortBy) {
-    return (c1, c2) -> {
-      int compareValue = 0;
-
-      for (String sortAspect : sortBy.orElse(new String[] {"id_desc"})) {
-        // get index where prefix starts
-        int indexOfPrefix = sortAspect.lastIndexOf('_');
-        // get aspect without prefix
-        String rawSortAspect = sortAspect.substring(0, indexOfPrefix);
-
-        switch (rawSortAspect) {
-          case "id":
-            compareValue = Long.compare(c1.getConfigId(), c2.getConfigId());
-            break;
-          case "name":
-            compareValue = c1.getName().compareTo(c2.getName());
-            break;
-          default:
-            throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
-                "Unbekannter Sortierparameter " + rawSortAspect, "Ungültige Anfrage");
-        }
-
-        // invert sorting if desc
-        if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {
-          compareValue *= -1;
-        }
-
-        if (compareValue != 0) {
-          // if difference is already found, don't continue comparing
-          // (the later the aspects are in the array, the less priority they have, so
-          // only continue on equal complaints)
-          return compareValue;
-        }
-
-      }
-      // all sorting aspects where checked
-      return compareValue;
-    };
+    return new ComparatorBuilder<Configuration>()
+        .append("id", Configuration::getConfigId)
+        .append("name", Configuration::getName)
+        .build(sortBy.orElse(new String[] {"id_asc"}));
   }
 }

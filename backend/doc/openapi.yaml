@@ -520,12 +520,14 @@ paths:
 
       operationId: addDefaultComponents
       responses:
-        204:
+        200:
           description: Die Standard Bausteine wurden erfolgreich hinzugefügt.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuerimoniaException'
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResponseComponent'
         500:
           description: Die Datei mit den Standard-Antwortbausteinen ist nicht vorhanden, korrupt oder nicht richtig formatiert.
           content:
@@ -950,13 +952,19 @@ components:
           type: string
           description: Gibt an, nach was die Beschwerden sortiert werden sollen.
           enum:
+            - id_asc
+            - id_desc
+            - state_asc
+            - state_desc
             - upload_date_asc
             - upload_date_desc
             - subject_asc
             - subject_desc
             - sentiment_asc
             - sentiment_desc
-        default: ["upload_date_desc"]
+            - emotion_asc
+            - emotion_desc
+        default: ["state", "upload_date_desc"]
 
     DateMinParameter:
       name: date_min
