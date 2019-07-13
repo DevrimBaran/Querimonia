@@ -31,13 +31,13 @@ public class ResponseController {
    * @return the new response
    */
   @GetMapping("api/responses/{complaintId}")
-  public ResponseEntity<?> getResponse(@PathVariable int complaintId) {
+  public ResponseEntity<?> getResponse(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() ->
         complaintManager.getComplaint(complaintId).getResponseSuggestion());
   }
 
   @PatchMapping("api/responses/{complaintId}/refresh")
-  public ResponseEntity<?> refreshResponse(@PathVariable int complaintId) {
+  public ResponseEntity<?> refreshResponse(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.refreshResponse(complaintId));
   }
 }

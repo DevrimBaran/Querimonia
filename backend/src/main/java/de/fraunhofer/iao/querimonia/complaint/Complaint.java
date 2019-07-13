@@ -1,12 +1,13 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -22,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,11 +31,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This class is represents a complaint. It contains the complaint text, the preview text, the
- * subject, the sentiment and the date of the complaint.
+ * subject, the emotion and the date of the complaint.
  */
 @Entity
 @JsonPropertyOrder(value = {
@@ -45,7 +46,7 @@ import java.util.Objects;
     "receiveDate",
     "receiveTime",
     "subject",
-    "sentiment",
+    "emotion",
     "entities"
 })
 public class Complaint {
@@ -55,8 +56,8 @@ public class Complaint {
    */
   @Id
   @JsonProperty("id")
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int complaintId;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private long complaintId;
 
   /**
    * The complaint message, is limited to 10000 characters.
@@ -77,22 +78,27 @@ public class Complaint {
   private ComplaintState state;
 
   /**
-   * The category of the complaint.
+   * Additional properties for the complaint like the category, that get found by classifiers.
    */
-  @OneToOne(cascade = CascadeType.ALL)
-  private ComplaintProperty subject;
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<ComplaintProperty> properties;
 
   /**
-   * The sentiment of the complaint.
+   * The emotion of the complaint.
    */
   @OneToOne(cascade = CascadeType.ALL)
-  private ComplaintProperty sentiment;
+  private ComplaintProperty emotion;
+
+  /**
+   * A value that represents the sentiment of the text. Negative values represent negative
+   * sentiment, positive value means positive sentiment.
+   */
+  private double sentiment;
 
   /**
    * The list of all named entities in the complaint text.
    */
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name = "entity_table", joinColumns = @JoinColumn(name = "complaintId"))
+  @OneToMany(cascade = CascadeType.MERGE)
   private List<NamedEntity> entities;
 
   /**
@@ -125,31 +131,6 @@ public class Complaint {
   private Configuration configuration;
 
   /**
-   * Creates a new complaint. This constructor is only used for JSON deserialization. Use a {@link
-   * ComplaintFactory} to create complaints instead.
-   */
-  @JsonCreator
-  public Complaint(@JsonProperty String text,
-                   @JsonProperty String preview,
-                   @JsonProperty ComplaintState state,
-                   @JsonProperty ComplaintProperty sentiment,
-                   @JsonProperty ComplaintProperty subject,
-                   @JsonProperty LocalDate receiveDate,
-                   @JsonProperty LocalTime receiveTime,
-                   @JsonProperty List<NamedEntity> entities,
-                   @JsonProperty Configuration configuration) {
-    this.text = text;
-    this.preview = preview;
-    this.sentiment = sentiment;
-    this.subject = subject;
-    this.receiveDate = receiveDate;
-    this.receiveTime = receiveTime;
-    this.entities = entities;
-    this.state = state;
-    this.configuration = configuration;
-  }
-
-  /**
    * Constructor for the complaint factory.
    */
   Complaint(String text,
@@ -159,9 +140,9 @@ public class Complaint {
     this.text = text;
     this.state = ComplaintState.NEW;
     this.preview = preview;
-    this.sentiment = new ComplaintProperty();
-    this.subject = new ComplaintProperty();
+    this.emotion = new ComplaintProperty();
     this.entities = new ArrayList<>();
+    this.configuration = Configuration.FALLBACK_CONFIGURATION;
     this.responseSuggestion = new ResponseSuggestion();
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
@@ -176,7 +157,12 @@ public class Complaint {
 
   }
 
-  public int getComplaintId() {
+  @JsonProperty("subject")
+  public ComplaintProperty getSubject() {
+    return ComplaintUtility.getSubjectOfComplaint(this);
+  }
+
+  public long getComplaintId() {
     return complaintId;
   }
 
@@ -188,8 +174,8 @@ public class Complaint {
     return preview;
   }
 
-  public ComplaintProperty getSentiment() {
-    return sentiment;
+  public ComplaintProperty getEmotion() {
+    return emotion;
   }
 
   public LocalDate getReceiveDate() {
@@ -198,10 +184,6 @@ public class Complaint {
 
   public LocalTime getReceiveTime() {
     return receiveTime;
-  }
-
-  public ComplaintProperty getSubject() {
-    return subject;
   }
 
   public List<NamedEntity> getEntities() {
@@ -231,8 +213,7 @@ public class Complaint {
     return this;
   }
 
-  public Complaint setEntities(
-      List<NamedEntity> entities) {
+  public Complaint setEntities(List<NamedEntity> entities) {
     this.entities = entities;
     return this;
   }
@@ -252,9 +233,33 @@ public class Complaint {
     return this;
   }
 
+  public List<ComplaintProperty> getProperties() {
+    return properties;
+  }
+
+  public Complaint setProperties(
+      List<ComplaintProperty> properties) {
+    this.properties = properties;
+    return this;
+  }
+
+  public Complaint setEmotion(ComplaintProperty emotion) {
+    this.emotion = emotion;
+    return this;
+  }
+
+  public double getSentiment() {
+    return sentiment;
+  }
+
+  public Complaint setSentiment(double sentiment) {
+    this.sentiment = sentiment;
+    return this;
+  }
+
   /**
    * Checks if two complaints are considered equal. A complaint is equal to another if their
-   * text, state, subject, sentiment, entities and their response is equal.
+   * text, state, subject, emotion, entities and their response is equal.
    *
    * @param o the other complaint. Must be a complaint object.
    * @return true, if the given object is a complaint object and the two complaint objects are
@@ -265,37 +270,42 @@ public class Complaint {
     if (this == o) {
       return true;
     }
+
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
+
     Complaint complaint = (Complaint) o;
-    return text.equals(complaint.text)
-        && state == complaint.state
-        && Objects.equals(subject, complaint.subject)
-        && Objects.equals(sentiment, complaint.sentiment)
-        && Objects.equals(entities, complaint.entities)
-        && Objects.equals(responseSuggestion, complaint.responseSuggestion);
+
+    return new EqualsBuilder()
+        .append(sentiment, complaint.sentiment)
+        .append(text, complaint.text)
+        .append(state, complaint.state)
+        .append(properties, complaint.properties)
+        .append(emotion, complaint.emotion)
+        .append(entities, complaint.entities)
+        .append(responseSuggestion, complaint.responseSuggestion)
+        .append(wordList, complaint.wordList)
+        .append(receiveDate, complaint.receiveDate)
+        .append(receiveTime, complaint.receiveTime)
+        .append(configuration, complaint.configuration)
+        .isEquals();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(text, state, subject, sentiment, entities, responseSuggestion);
-  }
-
-  @Override
-  public String toString() {
-    return "Complaint{"
-        + "complaintId=" + complaintId
-        + ", text='" + text + '\''
-        + ", preview='" + preview + '\''
-        + ", state=" + state
-        + ", subject=" + subject
-        + ", sentiment=" + sentiment
-        + ", entities=" + entities
-        + ", responseSuggestion=" + responseSuggestion
-        + ", wordList=" + wordList
-        + ", receiveDate=" + receiveDate
-        + ", receiveTime=" + receiveTime
-        + '}';
+    return new HashCodeBuilder(17, 37)
+        .append(text)
+        .append(state)
+        .append(properties)
+        .append(emotion)
+        .append(sentiment)
+        .append(entities)
+        .append(responseSuggestion)
+        .append(wordList)
+        .append(receiveDate)
+        .append(receiveTime)
+        .append(configuration)
+        .toHashCode();
   }
 }

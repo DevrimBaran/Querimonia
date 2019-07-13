@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
 import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -17,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,7 +35,8 @@ import java.util.stream.Collectors;
     "priority",
     "rulesXml",
     "requiredEntities",
-    "templateTexts"
+    "templateTexts",
+    "actions"
 })
 public class ResponseComponent implements RuledInterface {
 
@@ -40,11 +44,11 @@ public class ResponseComponent implements RuledInterface {
    * The unique primary key of the component.
    */
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonProperty("id")
-  private int componentId;
+  private long componentId;
 
-  public void setComponentId(int componentId) {
+  public void setComponentId(long componentId) {
     this.componentId = componentId;
   }
 
@@ -68,6 +72,9 @@ public class ResponseComponent implements RuledInterface {
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000)
   private List<String> templateTexts;
+
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<Action> actions;
 
   /**
    * The rules in xml format.
@@ -98,6 +105,15 @@ public class ResponseComponent implements RuledInterface {
     setRulesXml(rulesXml);
   }
 
+  @JsonCreator
+  public ResponseComponent(@JsonProperty String componentName,
+                           @JsonProperty List<String> templateTexts,
+                           @JsonProperty String rulesXml,
+                          @JsonProperty List<String> requiredEntities) {
+    // work around to allow json creation with required entities property
+    this(componentName, templateTexts, rulesXml);
+  }
+
   public ResponseComponent() {
     // required for hibernate
   }
@@ -110,7 +126,6 @@ public class ResponseComponent implements RuledInterface {
    * component.
    */
   @Transient
-  @JsonIgnore
   public List<String> getRequiredEntities() {
     return getResponseSlices()
         .stream()
@@ -161,7 +176,7 @@ public class ResponseComponent implements RuledInterface {
    */
   @JsonIgnore
   @Transient
-  public List<List<ResponseSlice>> getResponseSlices() {
+  private List<List<ResponseSlice>> getResponseSlices() {
     if (templateSlices == null) {
       templateSlices = createSlices();
     }
@@ -190,13 +205,17 @@ public class ResponseComponent implements RuledInterface {
     return this;
   }
 
-  public Rule parseRulesXml(String rulesXml) {
+  private Rule parseRulesXml(String rulesXml) {
     return RuleParser.parseRules(rulesXml);
   }
 
-  public List<List<ResponseSlice>> createSlices() {
+  private List<List<ResponseSlice>> createSlices() {
     return templateTexts.stream()
         .map(ResponseSlice::createSlices)
         .collect(Collectors.toList());
+  }
+
+  public List<Action> getActions() {
+    return actions;
   }
 }

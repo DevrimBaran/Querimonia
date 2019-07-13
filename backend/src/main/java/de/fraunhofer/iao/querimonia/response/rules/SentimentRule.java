@@ -1,6 +1,5 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 
@@ -22,8 +21,9 @@ public class SentimentRule implements Rule {
 
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
-    return ComplaintUtility.getEntryWithHighestProbability(complaint.getSentimentMap())
-        .map(sentiment::equals)
-        .orElse(false);
+    return complaint
+        .getSentiment()
+        .getValue()
+        .equals(sentiment);
   }
 }

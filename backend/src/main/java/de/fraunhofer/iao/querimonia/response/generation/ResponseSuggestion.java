@@ -8,6 +8,7 @@ import de.fraunhofer.iao.querimonia.response.action.Action;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.List;
@@ -16,9 +17,9 @@ import java.util.List;
 public class ResponseSuggestion {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonIgnore
-  private int id;
+  private long id;
 
   @OneToMany(cascade = CascadeType.ALL)
   private List<CompletedResponseComponent> responseComponents;
@@ -44,5 +45,9 @@ public class ResponseSuggestion {
 
   public List<Action> getActions() {
     return actions;
+  }
+
+  public long getId() {
+    return id;
   }
 }

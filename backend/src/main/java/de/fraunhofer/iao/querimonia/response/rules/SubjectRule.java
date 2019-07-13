@@ -1,6 +1,5 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 
@@ -26,8 +25,9 @@ public class SubjectRule implements Rule {
   @Override
   public boolean isPotentiallyRespected(ComplaintData complaint) {
     // check if the subject of the complaint matches
-    return ComplaintUtility.getEntryWithHighestProbability(complaint.getSubjectMap())
-        .map(subject::equals)
-        .orElse(false);
+    return complaint
+        .getSubject()
+        .getValue()
+        .equals("subject");
   }
 }

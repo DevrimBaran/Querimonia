@@ -15,8 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Entity
-@JsonPropertyOrder( {
-    "actionId",
+@JsonPropertyOrder(value = {
     "name",
     "actionCode",
     "rulesXml",
@@ -25,24 +24,25 @@ import java.util.Map;
 public class Action implements RuledInterface {
 
   /**
-   * The unique primary key of the action
+   * The unique primary key of the action.
    */
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
-  private int actionId;
+  @JsonIgnore
+  private long actionId;
 
-  public void setActionId(int actionId) {
+  public void setActionId(long actionId) {
     this.actionId = actionId;
   }
 
   /**
-   * A unique identifier for the actions to display
+   * A unique identifier for the actions to display.
    */
   @Column(name = "name", unique = true)
   private String name;
 
   /**
-   * The action that could be executed
+   * The action that could be executed.
    */
   @Enumerated(EnumType.STRING)
   @Column(name = "actionCode")
@@ -56,7 +56,7 @@ public class Action implements RuledInterface {
   private String rulesXml;
 
   /**
-   * Here are parameters for the Action to be executed
+   * Here are parameters for the Action to be executed.
    */
   @Column
   private HashMap<String, String> parameters;
@@ -99,7 +99,7 @@ public class Action implements RuledInterface {
     return rootRule;
   }
 
-  public int getActionId() {
+  public long getActionId() {
     return actionId;
   }
 

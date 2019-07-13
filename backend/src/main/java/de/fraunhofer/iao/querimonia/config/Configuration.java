@@ -17,6 +17,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -33,7 +34,7 @@ import java.util.List;
     "id",
     "name",
     "extractors",
-    "classifier",
+    "classifiers",
     "sentimentAnalyzer"
 })
 public class Configuration {
@@ -47,13 +48,14 @@ public class Configuration {
   public static final Configuration FALLBACK_CONFIGURATION = new Configuration()
       .setName("Default")
       .setExtractors(Collections.emptyList())
-      .setClassifier(new ClassifierDefinition(ClassifierType.NONE, "Default"))
+      .setClassifiers(List.of(
+          new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, "Default"));
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonProperty("id")
-  private int configId;
+  private long configId;
 
   @Column(name = "config_name")
   private String name;
@@ -61,7 +63,8 @@ public class Configuration {
   @OneToMany(cascade = CascadeType.ALL)
   private List<ExtractorDefinition> extractors;
 
-  private ClassifierDefinition classifier;
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<ClassifierDefinition> classifiers;
 
   private SentimentAnalyzerDefinition sentimentAnalyzer;
 
@@ -70,17 +73,17 @@ public class Configuration {
    *
    * @param name              a identifier for the configuration.
    * @param extractors        the list of extractors.
-   * @param classifier        the classifier.
+   * @param classifiers       the classifiers of this configuration.
    * @param sentimentAnalyzer the sentiment analyzer.
    */
   @JsonCreator
   public Configuration(String name,
                        List<ExtractorDefinition> extractors,
-                       ClassifierDefinition classifier,
+                       List<ClassifierDefinition> classifiers,
                        SentimentAnalyzerDefinition sentimentAnalyzer) {
     this.name = name;
     this.extractors = extractors;
-    this.classifier = classifier;
+    this.classifiers = classifiers;
     this.sentimentAnalyzer = sentimentAnalyzer;
   }
 
@@ -88,11 +91,11 @@ public class Configuration {
     // for hibernate
   }
 
-  public int getConfigId() {
+  public long getConfigId() {
     return configId;
   }
 
-  public Configuration setConfigId(int configId) {
+  public Configuration setConfigId(long configId) {
     this.configId = configId;
     return this;
   }
@@ -110,19 +113,19 @@ public class Configuration {
     return extractors;
   }
 
-  public Configuration setExtractors(
+  private Configuration setExtractors(
       List<ExtractorDefinition> extractors) {
     this.extractors = extractors;
     return this;
   }
 
-  public ClassifierDefinition getClassifier() {
-    return classifier;
+  public List<ClassifierDefinition> getClassifiers() {
+    return classifiers;
   }
 
-  public Configuration setClassifier(
-      ClassifierDefinition classifier) {
-    this.classifier = classifier;
+  private Configuration setClassifiers(
+      List<ClassifierDefinition> classifiers) {
+    this.classifiers = classifiers;
     return this;
   }
 
@@ -130,7 +133,7 @@ public class Configuration {
     return sentimentAnalyzer;
   }
 
-  public Configuration setSentimentAnalyzer(
+  private Configuration setSentimentAnalyzer(
       SentimentAnalyzerDefinition sentimentAnalyzer) {
     this.sentimentAnalyzer = sentimentAnalyzer;
     return this;
@@ -151,7 +154,7 @@ public class Configuration {
     return new EqualsBuilder()
         .append(name, that.name)
         .append(extractors, that.extractors)
-        .append(classifier, that.classifier)
+        .append(classifiers, that.classifiers)
         .append(sentimentAnalyzer, that.sentimentAnalyzer)
         .isEquals();
   }
@@ -161,7 +164,7 @@ public class Configuration {
     return new HashCodeBuilder(17, 37)
         .append(name)
         .append(extractors)
-        .append(classifier)
+        .append(classifiers)
         .append(sentimentAnalyzer)
         .toHashCode();
   }
@@ -172,7 +175,7 @@ public class Configuration {
         .append("configId", configId)
         .append("name", name)
         .append("extractors", extractors)
-        .append("classifier", classifier)
+        .append("classifier", classifiers)
         .append("sentimentAnalyzer", sentimentAnalyzer)
         .toString();
   }

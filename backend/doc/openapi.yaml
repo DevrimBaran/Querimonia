@@ -263,7 +263,7 @@ paths:
             text/plain:
               schema:
                 type: integer
-                format: int32
+                format: int64
                 example: 140
         400:
           description: Üngültige Angabe von Parametern.
@@ -332,16 +332,25 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/complaints/{complaintId}/entities/{entityId}:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
     delete:
       tags:
         - complaints
       summary: Löscht eine Named Entity.
       description: Eine neue Named Entity wird aus der Liste der Entitäten entfernt.
       parameters:
-        - $ref: '#/components/parameters/LabelParameter'
-        - $ref: '#/components/parameters/StartParameter'
-        - $ref: '#/components/parameters/EndParameter'
-        - $ref: '#/components/parameters/ExtractorParameter'
+        - name: entityId
+          in: path
+          description: Die eindeutige Id der Entität, die gelöscht werden soll.
+          required: true
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+            example: 1
 
       operationId: deleteEntity
       responses:
@@ -532,7 +541,7 @@ paths:
         required: true
         schema:
           type: integer
-          format: int32
+          format: int64
           minimum: 1
           example: 1
 
@@ -614,7 +623,7 @@ paths:
             text/plain:
               schema:
                 type: integer
-                format: int32
+                format: int64
                 example: 48
         400:
           $ref: '#/components/responses/IllegalParametersError'
@@ -777,7 +786,7 @@ paths:
             text/plain:
               schema:
                 type: integer
-                format: int32
+                format: int64
                 minimum: 0
                 example: 42
         500:
@@ -878,7 +887,7 @@ components:
       required: true
       schema:
         type: integer
-        format: int32
+        format: int64
         minimum: 1
         example: 1
 
@@ -902,7 +911,7 @@ components:
       description: Die eindeutige ID einer Konfiguration
       schema:
         type: integer
-        format: int32
+        format: int64
         minimum: 1
         example: 1
 
@@ -1015,7 +1024,7 @@ components:
       required: false
       schema:
         type: integer
-        format: int32
+        format: int64
         minimum: 1
         example: 1
 
@@ -1035,7 +1044,7 @@ components:
       required: true
       schema:
         type: integer
-        format: int32
+        format: int64
         example: 12
         minimum: 0
 
@@ -1046,7 +1055,7 @@ components:
       required: true
       schema:
         type: integer
-        format: int32
+        format: int64
         example: 18
 
     ExtractorParameter:
@@ -1076,7 +1085,7 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
           minimum: 1
           example: 1
           description: Die eindeutige ID der Beschwerde.
@@ -1188,12 +1197,12 @@ components:
           example: Datum
         start:
           type: integer
-          format: int32
+          format: int64
           description: Der Index des Zeichens im Text, mit dem die Named Entity beginnt.
           example: 24
         end:
           type: integer
-          format: int32
+          format: int64
           description: Der Index des Zeichens im Text, ab dem der Text *nicht* mehr diese Named Entity ist.
           example: 29
         value:
@@ -1219,7 +1228,7 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
           description: Eindeutige ID der Konfiguration.
           minimum: 1
           example: 1
@@ -1330,13 +1339,13 @@ components:
       properties:
         id:
           type: integer
-          format: int32
+          format: int64
           description: Die eindeutige ID des Antwortbausteins.
           minimum: 1
           example: 1
         priority:
           type: integer
-          format: int32
+          format: int64
           example: 100
           description: Eine Zahl, die die Priorität bei der Antwortgenerierung angibt. Bausteine mit hoher Priorität werden zuerst geprüft und ggf. verwendet.
         componentName:
@@ -1437,7 +1446,7 @@ components:
       type: object
       additionalProperties:
         type: integer
-        format: int32
+        format: int64
       example:
         "Fahrer": 32
         "Bus": 29
@@ -1460,7 +1469,7 @@ components:
         statusCode:
           description: Der HTTP-Status Code, der zuückgegeben wird.
           type: integer
-          format: int32
+          format: int64
           example: 500
         message:
           description: Die Beschreibung des Fehlers auf Deutsch

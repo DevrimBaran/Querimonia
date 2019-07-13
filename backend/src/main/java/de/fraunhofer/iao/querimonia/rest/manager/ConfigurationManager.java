@@ -60,13 +60,13 @@ public class ConfigurationManager {
     return configurationRepository.save(configuration);
   }
 
-  public synchronized Configuration getConfiguration(int configId) {
+  public synchronized Configuration getConfiguration(long configId) {
     return configurationRepository
         .findById(configId)
         .orElseThrow(() -> new NotFoundException(configId));
   }
 
-  public synchronized void deleteConfiguration(int configId) {
+  public synchronized void deleteConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
       configurationRepository.deleteById(configId);
       // check if current configuration gets removed
@@ -78,7 +78,8 @@ public class ConfigurationManager {
     }
   }
 
-  public synchronized Configuration updateConfiguration(int configId, Configuration configuration) {
+  public synchronized Configuration updateConfiguration(long configId,
+                                                        Configuration configuration) {
     if (configurationRepository.existsById(configId)) {
       configuration.setConfigId(configId);
       return configurationRepository.save(configuration);
@@ -96,7 +97,7 @@ public class ConfigurationManager {
         .orElse(Configuration.FALLBACK_CONFIGURATION);
   }
 
-  public synchronized Configuration updateCurrentConfiguration(int configId) {
+  public synchronized Configuration updateCurrentConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
       analyzerConfigProperties.setId(configId);
     }
@@ -128,7 +129,7 @@ public class ConfigurationManager {
 
         switch (rawSortAspect) {
           case "id":
-            compareValue = Integer.compare(c1.getConfigId(), c2.getConfigId());
+            compareValue = Long.compare(c1.getConfigId(), c2.getConfigId());
             break;
           case "name":
             compareValue = c1.getName().compareTo(c2.getName());

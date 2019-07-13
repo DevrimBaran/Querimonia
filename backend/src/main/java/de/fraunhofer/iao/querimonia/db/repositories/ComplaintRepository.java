@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Interface to the database for storing db.
  */
-public interface ComplaintRepository extends CrudRepository<Complaint, Integer> {
+public interface ComplaintRepository extends CrudRepository<Complaint, Long> {
 }

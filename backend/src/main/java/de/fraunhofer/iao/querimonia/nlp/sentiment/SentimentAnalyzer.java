@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
-import java.util.Map;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 
 /**
  * This interface is used to analyze the sentiment of a text.
@@ -8,11 +8,19 @@ import java.util.Map;
 public interface SentimentAnalyzer {
 
   /**
-   * Analyzes the sentiment of a given text.
+   * Analyzes the emotion of a given text.
    *
-   * @param nonStopWords a map that contains all non stop words mapped to the count how often their
-   *                     occur in the complaints
-   * @return a linked hash map that maps the possible sentiments to their probability.
+   * @param complaintText the text of the complaint.
+   * @return the property containing the emotions of the complaint.
    */
-  Map<String, Double> analyzeSentiment(Map<String, Integer> nonStopWords);
+  ComplaintProperty analyzeEmotion(String complaintText);
+
+  /**
+   * Analyzes the sentiment of the given text.
+   *
+   * @param complaintText the text of the complaint.
+   * @return a double value where negative values represent negative sentiment and positive
+   * values represent positive sentiment.
+   */
+  double analyzeSentiment(String complaintText);
 }

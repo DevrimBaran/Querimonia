@@ -1,6 +1,5 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -28,10 +27,12 @@ public class ComplaintProperty {
 
   @JsonIgnore
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private int id;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private long id;
 
   private String value = "";
+
+  private String name = "";
 
   /**
    * This map contains the possible values of the property mapped to their probabilities.
@@ -49,29 +50,21 @@ public class ComplaintProperty {
     // for hibernate
   }
 
-  @JsonCreator
-  public ComplaintProperty(String value,
-                           Map<String, Double> probabilities,
-                           boolean isSetByUser) {
-    this.value = value;
-    this.probabilities = probabilities;
-    this.isSetByUser = isSetByUser;
-  }
-
   /**
    * Creates new complaint property from a probability map. The element with the greatest
    * probability is set as value. Set by user is set to false.
    *
    * @param probabilities the probability map, that maps each value to its probability.
    */
-  public ComplaintProperty(Map<String, Double> probabilities) {
+  public ComplaintProperty(Map<String, Double> probabilities, String name) {
     this.probabilities = probabilities;
     this.value = ComplaintUtility.getEntryWithHighestProbability(probabilities)
         .orElse("");
     this.isSetByUser = false;
+    this.name = name;
   }
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 
@@ -115,6 +108,10 @@ public class ComplaintProperty {
     return this;
   }
 
+  public String getName() {
+    return name;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -130,6 +127,7 @@ public class ComplaintProperty {
     return new EqualsBuilder()
         .append(isSetByUser, that.isSetByUser)
         .append(value, that.value)
+        .append(name, that.name)
         .append(probabilities, that.probabilities)
         .isEquals();
   }
@@ -138,6 +136,7 @@ public class ComplaintProperty {
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
         .append(value)
+        .append(name)
         .append(probabilities)
         .append(isSetByUser)
         .toHashCode();
@@ -148,6 +147,7 @@ public class ComplaintProperty {
     return new ToStringBuilder(this)
         .append("id", id)
         .append("value", value)
+        .append("name", name)
         .append("probabilities", probabilities)
         .append("isSetByUser", isSetByUser)
         .toString();

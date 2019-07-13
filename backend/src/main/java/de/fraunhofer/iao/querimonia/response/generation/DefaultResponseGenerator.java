@@ -1,13 +1,11 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
-import de.fraunhofer.iao.querimonia.response.component.ResponseSlice;
 import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 
 import java.time.format.DateTimeFormatter;
@@ -17,7 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -28,51 +25,10 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   private final ActionRepository actionRepository;
   private final ResponseComponentRepository templateRepository;
 
-  public DefaultResponseGenerator(ResponseComponentRepository templateRepository, ActionRepository actionRepository) {
+  public DefaultResponseGenerator(ResponseComponentRepository templateRepository,
+                                  ActionRepository actionRepository) {
     this.templateRepository = templateRepository;
     this.actionRepository = actionRepository;
-  }
-
-  /**
-   * Fills a response component with the information given in the entities.
-   *
-   * @param currentSlices the current text slices
-   * @param entities      the named entities of the complaint.
-   *
-   * @return a filled out response component.
-   */
-  private static SingleCompletedComponent fillResponseComponent(List<ResponseSlice> currentSlices,
-                                                                Map<NamedEntity, String> entities) {
-
-    StringBuilder resultText = new StringBuilder();
-    List<NamedEntity> entityList = new ArrayList<>();
-    // the current position in the text
-    int resultPosition = 0;
-
-    for (ResponseSlice slice : currentSlices) {
-      String textToAppend;
-
-      if (slice.isPlaceholder()) {
-        String placeholderName = slice.getContent();
-        // find entity with that label
-        var entityWithPlaceholder = entities.keySet().stream()
-            .filter(namedEntity -> namedEntity.getLabel().equals(placeholderName))
-            .findAny();
-
-        textToAppend = entityWithPlaceholder.map(entities::get).orElse("");
-        // create entity with label
-        entityList.add(new NamedEntity(placeholderName, resultPosition,
-            resultPosition + textToAppend.length(),
-            entityWithPlaceholder.map(NamedEntity::getExtractor).orElse(null)));
-      } else {
-        // raw text that does not need to be replaced
-        textToAppend = slice.getContent();
-      }
-
-      resultPosition += textToAppend.length();
-      resultText.append(textToAppend);
-    }
-    return new SingleCompletedComponent(resultText.toString(), entityList);
   }
 
   @Override
@@ -95,9 +51,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
     responseComponentsFiltered.addAll(actions);
 
-
-    Map<NamedEntity, String> entityValueMap =
-        ComplaintUtility.getEntityValueMap(complaintData.getText(), complaintData.getEntities());
+    List<NamedEntity> allEntities = new ArrayList<>();
 
     String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
         .withLocale(Locale.GERMAN)
@@ -105,11 +59,10 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
         .withLocale(Locale.GERMAN)
         .format(complaintData.getUploadTime().toLocalTime());
-    entityValueMap.put(new NamedEntity("UploadDatum", 0, 0, false, null), formattedDate);
-    entityValueMap.put(new NamedEntity("UploadZeit", 0, 0, false, null), formattedTime);
+    allEntities.add(new NamedEntity("Eingangsdatum", 0, 0, false, "", formattedDate));
+    allEntities.add(new NamedEntity("Eingangszeit", 0, 0, false, "", formattedTime));
 
-    return getResponseSuggestion
-        (complaintData, responseComponentsFiltered, entityValueMap);
+    return getResponseSuggestion(complaintData, responseComponentsFiltered, allEntities);
   }
 
   private List<RuledInterface> filterComponents(ComplaintData complaintData,
@@ -126,7 +79,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
   private ResponseSuggestion getResponseSuggestion(ComplaintData complaintData,
                                                    List<RuledInterface> filteredComponents,
-                                                   Map<NamedEntity, String> entityValueMap) {
+                                                   List<NamedEntity> allEntities) {
     List<CompletedResponseComponent> generatedResponse = new ArrayList<>();
     List<Action> validActions = new ArrayList<>();
 
@@ -139,12 +92,16 @@ public class DefaultResponseGenerator implements ResponseGenerator {
           filteredComponents.remove(i);
           if (currentRuledObject instanceof ResponseComponent) {
             ResponseComponent currentComponent = (ResponseComponent) currentRuledObject;
-            generatedResponse.add(
-                new CompletedResponseComponent(currentComponent.getResponseSlices().stream()
-                    .map(responseSlices -> fillResponseComponent(
-                        responseSlices, entityValueMap))
-                    .collect(Collectors.toList()), currentComponent));
-          } else if (currentRuledObject instanceof Action){
+
+            // filter the entities so only the required ones get added
+            var matchingEntities = allEntities.stream()
+                .filter(namedEntity ->
+                    currentComponent.getRequiredEntities().contains(namedEntity.getLabel()))
+                .collect(Collectors.toList());
+
+            generatedResponse
+                .add(new CompletedResponseComponent(currentComponent, matchingEntities));
+          } else if (currentRuledObject instanceof Action) {
             validActions.add((Action) currentRuledObject);
           }
           continue outer;

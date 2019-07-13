@@ -101,7 +101,7 @@ public class ResponseComponentController {
    * @param id the ID of the component to delete
    */
   @DeleteMapping("api/templates/{id}")
-  public ResponseEntity<?> deleteComponent(@PathVariable int id) {
+  public ResponseEntity<?> deleteComponent(@PathVariable long id) {
     return ControllerUtility.tryAndCatch(() -> componentRepository.deleteById(id));
   }
 
@@ -120,7 +120,7 @@ public class ResponseComponentController {
    * @param responseComponent Is the component itself.
    */
   @PutMapping("api/templates/{componentId}")
-  public ResponseEntity<?> updateTemplate(@PathVariable int componentId,
+  public ResponseEntity<?> updateTemplate(@PathVariable long componentId,
                                           @RequestBody ResponseComponent responseComponent) {
     return ControllerUtility.tryAndCatch(() -> {
       responseComponent.setComponentId(componentId);

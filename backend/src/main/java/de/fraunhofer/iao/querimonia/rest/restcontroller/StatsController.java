@@ -74,7 +74,7 @@ public class StatsController {
           // filter complaints
           .filter(compl -> ComplaintFilter.filterByDate(compl, dateMin, dateMax))
           .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
-          .filter(compl -> ComplaintFilter.filterBySentiment(compl, sentiment))
+          .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
           // get their word lists
           .map(Complaint::getWordList)
           // combine all count maps together

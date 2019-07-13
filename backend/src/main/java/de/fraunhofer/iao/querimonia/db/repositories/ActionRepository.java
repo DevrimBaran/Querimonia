@@ -6,5 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 /**
  * Interface to access the action table.
  */
-public interface ActionRepository extends CrudRepository<Action, Integer> {
+public interface ActionRepository extends CrudRepository<Action, Long> {
 }

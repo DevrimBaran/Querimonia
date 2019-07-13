@@ -1,6 +1,10 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
+
 import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This factory creates {@link Classifier classifiers} from {@link ClassifierDefinition their
@@ -20,12 +24,25 @@ public class ClassifierFactory {
       case NONE:
         var baseMap = new HashMap<String, Double>();
         baseMap.put("Unbekannt", 1.0);
-        return text -> baseMap;
+        return text -> new ComplaintProperty(baseMap, "Kategorie");
       case KIKUKO_CLASSIFIER:
-        return new KiKuKoClassifier(definition.getName());
+        return new KiKuKoClassifier(definition.getName(), definition.getCategoryName());
       default:
         throw new IllegalArgumentException(
             "Unbekannter Typ: " + definition.getClassifierType().name());
     }
+  }
+
+  /**
+   * Creates classifiers from their definitions.
+   *
+   * @param definitions the list of definitions.
+   * @return a list of all creates classifiers.
+   */
+  public static List<Classifier> getFromDefinition(List<ClassifierDefinition> definitions) {
+    return definitions
+        .stream()
+        .map(ClassifierFactory::getFromDefinition)
+        .collect(Collectors.toList());
   }
 }

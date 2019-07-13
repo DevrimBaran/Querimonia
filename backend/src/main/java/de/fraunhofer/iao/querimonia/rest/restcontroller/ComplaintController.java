@@ -219,7 +219,7 @@ public class ComplaintController {
    *     </table>
    */
   @GetMapping("/api/complaints/{complaintId}")
-  public ResponseEntity<?> getComplaint(@PathVariable int complaintId) {
+  public ResponseEntity<?> getComplaint(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.getComplaint(complaintId));
   }
 
@@ -260,7 +260,7 @@ public class ComplaintController {
    */
   @PatchMapping("/api/complaints/{complaintId}")
   public ResponseEntity<?> updateComplaint(
-      @PathVariable int complaintId,
+      @PathVariable long complaintId,
       @RequestBody ComplaintUpdateRequest updateRequest) {
 
     return ControllerUtility.tryAndCatch(() ->
@@ -297,7 +297,7 @@ public class ComplaintController {
    *     </table>
    */
   @DeleteMapping("/api/complaints/{complaintId}")
-  public ResponseEntity<?> deleteComplaint(@PathVariable int complaintId) {
+  public ResponseEntity<?> deleteComplaint(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.deleteComplaint(complaintId));
   }
 
@@ -324,9 +324,9 @@ public class ComplaintController {
    */
   @PatchMapping("api/complaints/{complaintId}/refresh")
   public ResponseEntity<?> refreshComplaint(
-      @PathVariable int complaintId,
+      @PathVariable long complaintId,
       @RequestParam Optional<Boolean> keepUserInformation,
-      @RequestParam Optional<Integer> configId) {
+      @RequestParam Optional<Long> configId) {
 
     return ControllerUtility.tryAndCatch(() ->
         complaintManager.refreshComplaint(complaintId, keepUserInformation, configId));
@@ -383,7 +383,7 @@ public class ComplaintController {
    */
   @PostMapping("api/complaints/{complaintId}/entities")
   public ResponseEntity<?> addEntity(
-      @PathVariable int complaintId,
+      @PathVariable long complaintId,
       @RequestBody NamedEntity namedEntity) {
     return ControllerUtility.tryAndCatch(() ->
         complaintManager.addEntity(complaintId, namedEntity), HttpStatus.CREATED);
@@ -393,10 +393,7 @@ public class ComplaintController {
    * Deletes a named entity of a complaint.
    *
    * @param complaintId the id of the complaint.
-   * @param label       the label of the entity.
-   * @param start       the start index of the entity.
-   * @param end         the end index of the entity.
-   * @param extractor   the name of the extractor, that should have found the entity.
+   * @param entityId    the id of the entity
    *
    * @return a response entity with status code 200 and a list of the named entities of the
    *     complaint as response body.
@@ -406,15 +403,12 @@ public class ComplaintController {
    *                                 <li>5XX: some unexpected server error occurred.</li>
    *                                 </ul>
    */
-  @DeleteMapping("api/complaints/{complaintId}/entities")
+  @DeleteMapping("api/complaints/{complaintId}/entities/{entityId}")
   public ResponseEntity<?> removeEntity(
-      @PathVariable int complaintId,
-      @RequestParam String label,
-      @RequestParam int start,
-      @RequestParam int end,
-      @RequestParam String extractor) {
+      @PathVariable long complaintId,
+      @PathVariable long entityId) {
     return ControllerUtility.tryAndCatch(() ->
-        complaintManager.removeEntity(complaintId, label, start, end, extractor));
+        complaintManager.removeEntity(complaintId, entityId));
   }
 
   /**

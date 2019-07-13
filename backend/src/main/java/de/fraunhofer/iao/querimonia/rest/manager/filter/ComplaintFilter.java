@@ -29,9 +29,10 @@ public class ComplaintFilter {
    * @param optionalDateMinStr the earliest date that should be accepted. All complaints before this
    *                           date get rejected.
    * @param optionalDateMaxStr the latest date that should be accepted.
+   *
    * @return true, if the upload date of the complaint is not after the maximum date or the maximum
-   * date is not given and the complaint not before the minimum date or the minimum date is not
-   * given.
+   *     date is not given and the complaint not before the minimum date or the minimum date is not
+   *     given.
    */
   public static boolean filterByDate(Complaint complaint, Optional<String> optionalDateMinStr,
                                      Optional<String> optionalDateMaxStr) {
@@ -52,9 +53,10 @@ public class ComplaintFilter {
   /**
    * Checks if a complaint is in a certain state.
    *
-   * @param complaint       the complaints which gets checked.
-   * @param optionalStates  contains possible states, that the complaint may be in. The states
-   *                        should match the {@link ComplaintState} names.
+   * @param complaint      the complaints which gets checked.
+   * @param optionalStates contains possible states, that the complaint may be in. The states
+   *                       should match the {@link ComplaintState} names.
+   *
    * @return true, if the complaint is one of the states given by the parameter, else false.
    */
   public static boolean filterByState(Complaint complaint, Optional<String[]> optionalStates) {
@@ -72,6 +74,7 @@ public class ComplaintFilter {
    *
    * @param complaint        the complaint to check.
    * @param optionalKeywords the keywords that should be in the complaint text.
+   *
    * @return true, if the keywords are not present or the text contains all keywords, ignoring case.
    */
   public static boolean filterByKeywords(Complaint complaint, Optional<String[]> optionalKeywords) {
@@ -83,17 +86,18 @@ public class ComplaintFilter {
   }
 
   /**
-   * Checks if a complaints sentiment is one of the given sentiments. A complaint has the sentiment,
+   * Checks if a complaints sentiment is one of the given emotions. A complaint has the sentiment,
    * that has the highest probability in the sentiment map.
    *
-   * @param complaint  the complaint which gets checked.
-   * @param sentiments an optional array of sentiments. The complaint should match at least one of
-   *                   these.
-   * @return true, if the value of sentiments is absent or the complaint has a sentiment with the
-   * highest probability that in one of the given sentiments.
+   * @param complaint the complaint which gets checked.
+   * @param emotions  an optional array of emotions. The complaint should match at least one of
+   *                  these.
+   *
+   * @return true, if the value of emotions is absent or the complaint has a sentiment with the
+   *     highest probability that in one of the given emotions.
    */
-  public static boolean filterBySentiment(Complaint complaint, Optional<String[]> sentiments) {
-    return checkForParameters(complaint.getSentiment(), sentiments);
+  public static boolean filterByEmotion(Complaint complaint, Optional<String[]> emotions) {
+    return checkForParameters(complaint.getEmotion(), emotions);
   }
 
   /**
@@ -104,10 +108,11 @@ public class ComplaintFilter {
    * @param complaint the complaint which gets checked.
    * @param subjects  an optional array of subjects. The complaint gets checked if its subject is
    *                  one of these.
+   *
    * @return true, if the value of sentiments is absent or
    */
   public static boolean filterBySubject(Complaint complaint, Optional<String[]> subjects) {
-    return checkForParameters(complaint.getSubject(), subjects);
+    return checkForParameters(ComplaintUtility.getSubjectOfComplaint(complaint), subjects);
   }
 
   private static boolean checkForParameters(ComplaintProperty complaintProperty,
@@ -116,13 +121,7 @@ public class ComplaintFilter {
       // no filter is applied, then return true
       return true;
     }
-    return ComplaintUtility.getEntryWithHighestProbability(
-        complaintProperty.getProbabilities())
-        .map(sentiment ->
-            // check if the sentiment/subject of the complaint matches
-            Arrays.asList(optionalParameters.get()).contains(sentiment))
-        // if not present, complaint has no subject/sentiment
-        .orElse(false);
+    return Arrays.asList(optionalParameters.get()).contains(complaintProperty.getValue());
   }
 
   /**
@@ -150,13 +149,11 @@ public class ComplaintFilter {
               }
               break;
             case "sentiment":
-              // TODO better sorting for sentiments
-              compareValue = c1.getSentiment().getValue()
-                  .compareTo(c2.getSentiment().getValue());
+              compareValue = Double.compare(c1.getSentiment(), c2.getSentiment());
               break;
             case "subject":
-              compareValue = c1.getSubject().getValue()
-                  .compareTo(c2.getSubject().getValue());
+              compareValue = ComplaintUtility.getSubjectOfComplaint(c1).getValue()
+                  .compareTo(ComplaintUtility.getSubjectOfComplaint(c2).getValue());
               break;
             default:
               throw new QuerimoniaException(HttpStatus.BAD_REQUEST,

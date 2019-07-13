@@ -7,16 +7,24 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
 
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
 /**
  * This is a simple POJO that represents a named entity in a text. It has a label (for example
  * "Date", "Org") and the indices where the entity starts and ends in the text.
  */
-@Embeddable
+@Entity
 public class NamedEntity implements Comparable<NamedEntity> {
 
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  private long id;
+
   private String label;
+  private String value;
   private int start;
   private int end;
   private boolean setByUser = false;
@@ -33,10 +41,12 @@ public class NamedEntity implements Comparable<NamedEntity> {
    */
   @JsonCreator
   public NamedEntity(@JsonProperty String label, @JsonProperty("start") int start, @JsonProperty(
-      "end") int end, @JsonProperty boolean setByUser, @JsonProperty String extractor) {
+      "end") int end, @JsonProperty boolean setByUser, @JsonProperty String extractor,
+                     @JsonProperty String value) {
     this.label = label;
     this.start = start;
     this.end = end;
+    this.value = value;
     this.setByUser = setByUser;
     this.extractor = extractor;
   }
@@ -48,10 +58,11 @@ public class NamedEntity implements Comparable<NamedEntity> {
    * @param label     the label of the entity, like name.
    * @param start     the start index of the entity.
    * @param end       the end index of the entity.
+   * @param value     the text of the entity.
    * @param extractor the name of the extractor that was used to find this entity.
    */
-  public NamedEntity(String label, int start, int end, String extractor) {
-    this(label, start, end, false, extractor);
+  public NamedEntity(String label, int start, int end, String extractor, String value) {
+    this(label, start, end, false, extractor, value);
   }
 
   public NamedEntity() {
@@ -81,6 +92,14 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return extractor;
   }
 
+  public long getId() {
+    return id;
+  }
+
+  public String getValue() {
+    return value;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -97,6 +116,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
         .append(start, that.start)
         .append(end, that.end)
         .append(label, that.label)
+        .append(value, that.value)
         .append(extractor, that.extractor)
         .isEquals();
   }
@@ -107,6 +127,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
         .append(label)
         .append(start)
         .append(end)
+        .append(value)
         .append(extractor)
         .toHashCode();
   }
@@ -114,9 +135,11 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @Override
   public String toString() {
     return new ToStringBuilder(this)
+        .append("id", id)
         .append("label", label)
         .append("start", start)
         .append("end", end)
+        .append("value", value)
         .append("setByUser", setByUser)
         .append("extractor", extractor)
         .toString();

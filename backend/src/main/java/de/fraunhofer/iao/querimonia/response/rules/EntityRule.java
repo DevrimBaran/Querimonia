@@ -12,7 +12,7 @@ public class EntityRule implements Rule {
   private final String entityLabel;
   // if this is null, only check if entity is available
   @Nullable
-  private String expectedValue = null;
+  private String expectedValue;
 
   public EntityRule(String entityLabel, @Nullable String expectedValue) {
     this.entityLabel = entityLabel;

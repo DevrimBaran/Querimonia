@@ -69,25 +69,33 @@ public class ComplaintFactory {
   public Complaint analyzeComplaint(Complaint complaint, Configuration configuration,
                                     boolean keepUserInformation) {
     // get the analysis tools from the configuration
-    Classifier classifier = ClassifierFactory.getFromDefinition(configuration.getClassifier());
+    List<Classifier> classifiers =
+        ClassifierFactory.getFromDefinition(configuration.getClassifiers());
     SentimentAnalyzer sentimentAnalyzer =
         SentimentAnalyzerFactory.getFromDefinition(configuration.getSentimentAnalyzer());
     // the text of the complaint
     String complaintText = complaint.getText();
 
     // analysis
-    Map<String, Double> subjectMap = classifier.classifyText(complaintText);
+    List<ComplaintProperty> complaintProperties = classifiers.stream()
+        .map(classifier -> classifier.classifyText(complaintText))
+        .collect(Collectors.toList());
+    complaint.setProperties(complaintProperties);
+
     List<NamedEntity> entities =
         extractEntities(complaint, configuration, keepUserInformation);
     Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
-    Map<String, Double> sentimentMap = sentimentAnalyzer.analyzeSentiment(words);
-    complaint.getSubject().updateValueProbabilities(subjectMap, keepUserInformation);
-    complaint.getSentiment().updateValueProbabilities(sentimentMap, keepUserInformation);
+    ComplaintProperty emotionProperty = sentimentAnalyzer.analyzeEmotion(complaintText);
+    complaint.setEmotion(emotionProperty);
     complaint.setEntities(entities);
 
     // generate response
-    ComplaintData complaintData = new ComplaintData(complaintText, subjectMap, sentimentMap,
-        entities, LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()));
+    ComplaintData complaintData = new ComplaintData(
+        complaintText,
+        complaint.getSubject(),
+        emotionProperty,
+        entities,
+        LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()));
     ResponseSuggestion responseSuggestion = createResponse(complaintData);
 
     return complaint

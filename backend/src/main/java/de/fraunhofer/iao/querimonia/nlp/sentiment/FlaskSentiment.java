@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
 
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.rest.contact.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -16,18 +17,9 @@ import java.util.Map;
 public class FlaskSentiment implements SentimentAnalyzer {
 
   @Override
-  public Map<String, Double> analyzeSentiment(Map<String, Integer> nonStopWords) {
-    String text = createPseudoText(nonStopWords);
+  public ComplaintProperty analyzeEmotion(String text) {
+    double sentimentValue = analyzeSentiment(text);
 
-    JSONObject jsonText = new JSONObject();
-    try {
-      jsonText.put("text", text);
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-
-    Map<String, Double> flaskResult = FlaskContact.receiveJson(jsonText, "sentiment_analyse");
-    double sentimentValue = flaskResult.getOrDefault("sentiment", 0.0);
     Map<String, Double> result = new HashMap<>();
 
     if (sentimentValue >= 1) {
@@ -41,7 +33,20 @@ public class FlaskSentiment implements SentimentAnalyzer {
     } else {
       result.put("Wut", 1.0);
     }
-    return result;
+    return new ComplaintProperty(result, "Emotion");
+  }
+
+  @Override
+  public double analyzeSentiment(String text) {
+    JSONObject jsonText = new JSONObject();
+    try {
+      jsonText.put("text", text);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+
+    Map<String, Double> flaskResult = FlaskContact.receiveJson(jsonText, "sentiment_analyse");
+    return flaskResult.getOrDefault("sentiment", 0.0);
   }
 
   /**

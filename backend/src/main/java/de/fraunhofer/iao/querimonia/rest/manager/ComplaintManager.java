@@ -4,12 +4,11 @@ import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.SingleCompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -56,11 +55,8 @@ public class ComplaintManager {
   private static final Logger logger = LoggerFactory.getLogger(ComplaintManager.class);
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
-  private final CompletedResponseComponentRepository completedResponseComponentRepository;
   private final ComplaintFactory complaintFactory;
   private final ConfigurationManager configurationManager;
-  private final ResponseComponentRepository responseComponentRepository;
-  private final SingleCompletedComponentRepository singleCompletedComponentRepository;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint manager.
@@ -70,24 +66,18 @@ public class ComplaintManager {
                           ComplaintRepository complaintRepository,
                           ResponseComponentRepository templateRepository,
                           ActionRepository actionRepository,
-                          CompletedResponseComponentRepository
-                              completedResponseComponentRepository,
-                          ConfigurationManager configurationManager,
-                          SingleCompletedComponentRepository singleCompletedComponentRepository) {
+                          ConfigurationManager configurationManager) {
 
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
-    this.completedResponseComponentRepository = completedResponseComponentRepository;
     this.configurationManager = configurationManager;
-    this.responseComponentRepository = templateRepository;
-    this.singleCompletedComponentRepository = singleCompletedComponentRepository;
 
     complaintFactory =
         new ComplaintFactory(new DefaultResponseGenerator(templateRepository, actionRepository),
             new TokenAnalyzer());
   }
 
-  private static QuerimoniaException getNotFoundException(int complaintId) {
+  private static QuerimoniaException getNotFoundException(long complaintId) {
     return new NotFoundException("Es existiert keine Beschwerde mit der ID " + complaintId,
         complaintId);
   }
@@ -110,7 +100,7 @@ public class ComplaintManager {
         result.stream()
             .filter(complaint -> ComplaintFilter.filterByState(complaint, state))
             .filter(complaint -> ComplaintFilter.filterByDate(complaint, dateMin, dateMax))
-            .filter(complaint -> ComplaintFilter.filterBySentiment(complaint, sentiment))
+            .filter(complaint -> ComplaintFilter.filterByEmotion(complaint, sentiment))
             .filter(complaint -> ComplaintFilter.filterBySubject(complaint, subject))
             .filter(complaint -> ComplaintFilter.filterByKeywords(complaint, keywords))
             .sorted(ComplaintFilter.createComplaintComparator(sortBy));
@@ -172,9 +162,9 @@ public class ComplaintManager {
   /**
    * Method for getting a complaint with an id.
    *
-   * @see ComplaintController#getComplaint(int) getComplaint
+   * @see ComplaintController#getComplaint(long) getComplaint
    */
-  public synchronized Complaint getComplaint(int complaintId) {
+  public synchronized Complaint getComplaint(long complaintId) {
     return complaintRepository.findById(complaintId)
         .orElseThrow(() -> getNotFoundException(complaintId));
   }
@@ -182,16 +172,16 @@ public class ComplaintManager {
   /**
    * Method for updating complaints.
    *
-   * @see ComplaintController#updateComplaint(int, ComplaintUpdateRequest) updateComplaint
+   * @see ComplaintController#updateComplaint(long, ComplaintUpdateRequest) updateComplaint
    */
-  public Complaint updateComplaint(int complaintId, ComplaintUpdateRequest updateRequest) {
+  public Complaint updateComplaint(long complaintId, ComplaintUpdateRequest updateRequest) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
 
     updateRequest.getNewSentiment()
-        .ifPresent(sentiment -> complaint.getSentiment().setValue(sentiment));
+        .ifPresent(sentiment -> complaint.getEmotion().setValue(sentiment));
     updateRequest.getNewSubject()
-        .ifPresent(subject -> complaint.getSubject().setValue(subject));
+        .ifPresent(subject -> ComplaintUtility.getSubjectOfComplaint(complaint).setValue(subject));
     updateRequest.getNewState()
         .ifPresent(complaint::setState);
 
@@ -202,9 +192,9 @@ public class ComplaintManager {
   /**
    * Deletes a complaint with the given id.
    *
-   * @see ComplaintController#deleteComplaint(int) deleteComplaint
+   * @see ComplaintController#deleteComplaint(long) deleteComplaint
    */
-  public synchronized void deleteComplaint(int complaintId) {
+  public synchronized void deleteComplaint(long complaintId) {
     if (complaintRepository.existsById(complaintId)) {
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
@@ -216,12 +206,12 @@ public class ComplaintManager {
   /**
    * Reanalyzes a complaint.
    *
-   * @see ComplaintController#refreshComplaint(int, Optional, Optional) refreshComplaint
+   * @see ComplaintController#refreshComplaint(long, Optional, Optional) refreshComplaint
    */
   public synchronized Complaint refreshComplaint(
-      int complaintId,
+      long complaintId,
       Optional<Boolean> keepUserInformation,
-      Optional<Integer> configId) {
+      Optional<Long> configId) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
 
@@ -254,9 +244,9 @@ public class ComplaintManager {
   /**
    * Adds a named entity to a complaint.
    *
-   * @see ComplaintController#addEntity(int, NamedEntity) addEntity
+   * @see ComplaintController#addEntity(long, NamedEntity) addEntity
    */
-  public List<NamedEntity> addEntity(int complaintId, NamedEntity entity) {
+  public List<NamedEntity> addEntity(long complaintId, NamedEntity entity) {
     Complaint complaint = getComplaint(complaintId);
     // check validity of entity
     int start = entity.getStartIndex();
@@ -284,19 +274,21 @@ public class ComplaintManager {
   /**
    * Removes an entity in the database.
    *
-   * @see ComplaintController#removeEntity(int, String, int, int, String) removeEntity
+   * @see ComplaintController#removeEntity(long, long) removeEntity
    */
-  public List<NamedEntity> removeEntity(int complaintId, String label, int start,
-                                        int end, String extractor) {
+  public List<NamedEntity> removeEntity(long complaintId, long entityId) {
     Complaint complaint = getComplaint(complaintId);
-    NamedEntity newEntity = new NamedEntity(label, start, end, extractor);
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
-    boolean removed = complaintEntities.remove(newEntity);
-    if (!removed) {
+    List<NamedEntity> entitiesToRemove = complaintEntities
+        .stream()
+        .filter(namedEntity -> namedEntity.getId() == entityId)
+        .collect(Collectors.toList());
+    if (entitiesToRemove.isEmpty()) {
       throw new QuerimoniaException(HttpStatus.NOT_FOUND, "Die gegebene Entität existiert nicht "
           + "in der Beschwerde.", "Ungültige Entity");
     }
+    entitiesToRemove.forEach(complaintEntities::remove);
     storeComplaint(complaint);
     return complaintEntities;
   }
@@ -308,13 +300,12 @@ public class ComplaintManager {
    */
   public void deleteAllComplaints() {
     complaintRepository.deleteAll();
-    completedResponseComponentRepository.deleteAll();
   }
 
   /**
    * Refreshed the response for a complaint.
    */
-  public ResponseSuggestion refreshResponse(int complaintId) {
+  public ResponseSuggestion refreshResponse(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
     var suggestion = complaintFactory.createResponse(new ComplaintData(complaint));
     complaint.setResponseSuggestion(suggestion);

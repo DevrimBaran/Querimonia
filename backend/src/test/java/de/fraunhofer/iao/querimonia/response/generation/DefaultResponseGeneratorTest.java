@@ -1,3 +1,4 @@
+/*
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
@@ -18,11 +19,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 
+*/
 /**
  * Unit test class for DefaultResponseGenerator.
  *
  * @author Simon Weiler
- */
+ *//*
+
 
 public class DefaultResponseGeneratorTest {
 
@@ -243,3 +246,4 @@ public class DefaultResponseGeneratorTest {
     }
   }
 }
+*/

@@ -59,4 +59,18 @@ public class ComplaintUtility {
 
     return result;
   }
+
+  /**
+   * Returns the subject of the complaint.
+   *
+   * @param complaint the complaint.
+   * @return hhe property that contains the subject
+   */
+  public static ComplaintProperty getSubjectOfComplaint(Complaint complaint) {
+    return complaint.getProperties()
+        .stream()
+        .filter(complaintProperty -> complaintProperty.getName().equals("Kategorie"))
+        .findAny()
+        .orElseThrow(IllegalStateException::new);
+  }
 }
