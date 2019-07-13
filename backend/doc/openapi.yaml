@@ -1077,6 +1077,8 @@ components:
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
           items:
             $ref: '#/components/schemas/ComplaintProperty'
+        subject:
+          $ref: '#/components/schemas/ComplaintProperty'
         emotion:
           $ref: '#/components/schemas/ComplaintProperty'
         sentiment:
