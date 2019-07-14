@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * The filter/sorter class for templates.
+ * The filter/sorter class for components.
  */
 public class ResponseComponentFilter {
 
@@ -27,7 +27,7 @@ public class ResponseComponentFilter {
     // look for all keywords
     return keywords
         .allMatch(keyword -> StringUtils.containsIgnoreCase(
-            responseComponent.getTemplateTexts().toString(), keyword)
+            responseComponent.getComponentTexts().toString(), keyword)
             || StringUtils.containsIgnoreCase(responseComponent.getComponentName(), keyword));
 
   }
@@ -39,7 +39,7 @@ public class ResponseComponentFilter {
    *
    * @return Returns the sorted component.
    */
-  public static Comparator<ResponseComponent> createTemplateComparator(Optional<String[]> sortBy) {
+  public static Comparator<ResponseComponent> createComponentComparator(Optional<String[]> sortBy) {
     return new ComparatorBuilder<ResponseComponent>()
         .append("name", ResponseComponent::getComponentName)
         .append("id", ResponseComponent::getComponentId)

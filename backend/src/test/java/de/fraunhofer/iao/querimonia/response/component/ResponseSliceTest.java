@@ -35,8 +35,8 @@ public class ResponseSliceTest {
     }
 
     @Test
-    public void testSetTemplateTextStandard() {
-        String templateText = "Guten Tag, Herr ${Name}. Wir haben Ihnen ${Geldbetrag} überwiesen. Auf Wiedersehen!";
+    public void testSetComponentTextStandard() {
+        String componentText = "Guten Tag, Herr ${Name}. Wir haben Ihnen ${Geldbetrag} überwiesen. Auf Wiedersehen!";
 
         ArrayList<TestResponseSlice> correctSlices = new ArrayList<>();
         correctSlices.add(new TestResponseSlice(false, "Guten Tag, Herr "));
@@ -45,7 +45,7 @@ public class ResponseSliceTest {
         correctSlices.add(new TestResponseSlice(true, "Geldbetrag"));
         correctSlices.add(new TestResponseSlice(false, " überwiesen. Auf Wiedersehen!"));
 
-        List<ResponseSlice> testSlices = ResponseSlice.createSlices(templateText);
+        List<ResponseSlice> testSlices = ResponseSlice.createSlices(componentText);
 
         for (int i = 0; i < correctSlices.size(); i++) {
             TestResponseSlice correctSlice = correctSlices.get(i);
@@ -57,43 +57,43 @@ public class ResponseSliceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetTemplateTextMissingClosingBracket() {
-        String templateText = "Guten Tag, Herr ${Name, wie geht es Ihnen?";
-        ResponseSlice.createSlices(templateText);
+    public void testSetComponentTextMissingClosingBracket() {
+        String componentText = "Guten Tag, Herr ${Name, wie geht es Ihnen?";
+        ResponseSlice.createSlices(componentText);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetTemplateTextMissingOpeningBracket() {
-        String templateText = "Guten Tag, Herr $Name}, wie geht es Ihnen?";
-        ResponseSlice.createSlices(templateText);
+    public void testSetComponentTextMissingOpeningBracket() {
+        String componentText = "Guten Tag, Herr $Name}, wie geht es Ihnen?";
+        ResponseSlice.createSlices(componentText);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetTemplateTextMissingDollarSign() {
-        String templateText = "Guten Tag, Herr {Name}, wie geht es Ihnen?";
-        ResponseSlice.createSlices(templateText);
+    public void testSetComponentTextMissingDollarSign() {
+        String componentText = "Guten Tag, Herr {Name}, wie geht es Ihnen?";
+        ResponseSlice.createSlices(componentText);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetTemplateTextOnlyPlaceholdersIllegal() {
-        String templateText = "${So}${viele}${Placeholder}";
-        ResponseSlice.createSlices(templateText);
+    public void testSetComponentTextOnlyPlaceholdersIllegal() {
+        String componentText = "${So}${viele}${Placeholder}";
+        ResponseSlice.createSlices(componentText);
     }
 
     @Test
-    public void testSetTemplateTextNoPlaceholders() {
-        String templateText = "Guten Tag, wie geht es Ihnen?";
-        List<ResponseSlice> testSliceList = ResponseSlice.createSlices(templateText);
+    public void testSetComponentTextNoPlaceholders() {
+        String componentText = "Guten Tag, wie geht es Ihnen?";
+        List<ResponseSlice> testSliceList = ResponseSlice.createSlices(componentText);
         ResponseSlice testSlice = testSliceList.get(0);
 
         assertEquals(1, testSliceList.size());
         assertFalse(testSlice.isPlaceholder());
-        assertEquals(templateText, testSlice.getContent());
+        assertEquals(componentText, testSlice.getContent());
     }
 
     @Test
-    public void testSetTemplateTextOnlyPlaceholdersLegal() {
-        String templateText = "-${So}-${viele}-${Placeholder}-";
+    public void testSetComponentTextOnlyPlaceholdersLegal() {
+        String componentText = "-${So}-${viele}-${Placeholder}-";
 
         List<TestResponseSlice> correctSlices = new ArrayList<>();
         correctSlices.add(new TestResponseSlice(false, "-"));
@@ -104,7 +104,7 @@ public class ResponseSliceTest {
         correctSlices.add(new TestResponseSlice(true, "Placeholder"));
         correctSlices.add(new TestResponseSlice(false, "-"));
 
-        List<ResponseSlice> testSlices = ResponseSlice.createSlices(templateText);
+        List<ResponseSlice> testSlices = ResponseSlice.createSlices(componentText);
 
         for (int i = 0; i < correctSlices.size(); i++) {
             TestResponseSlice correctSlice = correctSlices.get(i);
@@ -116,15 +116,15 @@ public class ResponseSliceTest {
     }
 
     @Test
-    public void testSetTemplateTextEmptyPlaceholder() {
-        String templateText = "Guten Tag, Herr ${}, wie geht es Ihnen?";
+    public void testSetComponentTextEmptyPlaceholder() {
+        String componentText = "Guten Tag, Herr ${}, wie geht es Ihnen?";
 
         List<TestResponseSlice> correctSlices = new ArrayList<>();
         correctSlices.add(new TestResponseSlice(false, "Guten Tag, Herr "));
         correctSlices.add(new TestResponseSlice(true, ""));
         correctSlices.add(new TestResponseSlice(false, ", wie geht es Ihnen?"));
 
-        List<ResponseSlice> testSlices = ResponseSlice.createSlices(templateText);
+        List<ResponseSlice> testSlices = ResponseSlice.createSlices(componentText);
 
         for (int i = 0; i < correctSlices.size(); i++) {
             TestResponseSlice correctSlice = correctSlices.get(i);
@@ -137,9 +137,9 @@ public class ResponseSliceTest {
 
     @Test
     public void testGetRequiredEntitiesStandard() {
-        String templateText = "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen.";
+        String componentText = "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen.";
         ResponseComponent responseComponent = new ResponseComponent();
-        responseComponent.setTemplateTexts(Collections.singletonList(templateText));
+        responseComponent.setComponentTexts(Collections.singletonList(componentText));
 
         List<String> correctRequiredEntities = new ArrayList<>();
         correctRequiredEntities.add("Name");
@@ -155,10 +155,10 @@ public class ResponseSliceTest {
 
     @Test
     public void testGetRequiredEntitiesDuplicatePlaceholder() {
-        String templateText = "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen. " +
+        String componentText = "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen. " +
                 "Auf Wiedersehen, Herr ${Name}!";
         ResponseComponent responseComponent = new ResponseComponent();
-        responseComponent.setTemplateTexts(Collections.singletonList(templateText));
+        responseComponent.setComponentTexts(Collections.singletonList(componentText));
 
         List<String> correctRequiredEntities = new ArrayList<>();
         correctRequiredEntities.add("Name");
@@ -174,9 +174,9 @@ public class ResponseSliceTest {
 
     @Test
     public void testGetRequiredEntitiesNoPlaceholder() {
-        String templateText = "Guten Tag!";
+        String componentText = "Guten Tag!";
         ResponseComponent responseComponent = new ResponseComponent();
-        responseComponent.setTemplateTexts(Collections.singletonList(templateText));
+        responseComponent.setComponentTexts(Collections.singletonList(componentText));
 
         assertEquals(new ArrayList<>(), responseComponent.getRequiredEntities());
     }
