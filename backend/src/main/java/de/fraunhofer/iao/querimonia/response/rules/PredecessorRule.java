@@ -2,7 +2,7 @@ package de.fraunhofer.iao.querimonia.response.rules;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
-import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 
 import java.util.List;
 

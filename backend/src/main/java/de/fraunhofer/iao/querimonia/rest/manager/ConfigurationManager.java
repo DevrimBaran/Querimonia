@@ -1,6 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.manager;
 
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
@@ -23,19 +25,23 @@ public class ConfigurationManager {
 
   private final AnalyzerConfigProperties analyzerConfigProperties;
   private final ConfigurationRepository configurationRepository;
+  private final ComplaintRepository complaintRepository;
 
   /**
    * Creates new configuration manager.
    *
    * @param analyzerConfigProperties the properties object for getting the current configuration.
    * @param configurationRepository  the repository for properties.
+   * @param complaintRepository      the repository for complaints.
    */
   @Autowired
   public ConfigurationManager(
       AnalyzerConfigProperties analyzerConfigProperties,
-      ConfigurationRepository configurationRepository) {
+      ConfigurationRepository configurationRepository,
+      ComplaintRepository complaintRepository) {
     this.analyzerConfigProperties = analyzerConfigProperties;
     this.configurationRepository = configurationRepository;
+    this.complaintRepository = complaintRepository;
   }
 
   /**
@@ -46,7 +52,7 @@ public class ConfigurationManager {
    * @param sortBy sorting parameters.
    *
    * @return the list of configurations of the database, respecting the pagination and sorting
-   * parameters.
+   *     parameters.
    */
   public synchronized List<Configuration> getConfigurations(Optional<Integer> count,
                                                             Optional<Integer> page,
@@ -98,10 +104,21 @@ public class ConfigurationManager {
    */
   public synchronized void deleteConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
-      configurationRepository.deleteById(configId);
+      // remove reference in all complaints
+      for (Complaint complaint : complaintRepository.findAll()) {
+        if (complaint.getConfiguration().getConfigId() == configId) {
+          complaint.setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+        }
+        complaintRepository.save(complaint);
+      }
+
+      // dont delete fallback configuration
+      if (configId != Configuration.FALLBACK_CONFIGURATION.getConfigId()) {
+        configurationRepository.deleteById(configId);
+      }
       // check if current configuration gets removed
       if (analyzerConfigProperties.getId() == configId) {
-        analyzerConfigProperties.setId(0);
+        analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getConfigId());
       }
     } else {
       throw new NotFoundException(configId);
@@ -163,8 +180,16 @@ public class ConfigurationManager {
    * Deletes all configurations of the database.
    */
   public synchronized void deleteAllConfigurations() {
-    configurationRepository.deleteAll();
-    analyzerConfigProperties.setId(0);
+    for (Complaint complaint : complaintRepository.findAll()) {
+      complaint.setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+      complaintRepository.save(complaint);
+    }
+    for (Configuration configuration : configurationRepository.findAll()) {
+      if (configuration.getConfigId() != Configuration.FALLBACK_CONFIGURATION.getConfigId()) {
+        configurationRepository.deleteById(configuration.getConfigId());
+      }
+    }
+    analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getConfigId());
   }
 
   /**

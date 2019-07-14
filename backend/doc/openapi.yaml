@@ -964,7 +964,7 @@ components:
             - sentiment_desc
             - emotion_asc
             - emotion_desc
-        default: ["state", "upload_date_desc"]
+        default: ["state_asc", "upload_date_desc"]
 
     DateMinParameter:
       name: date_min

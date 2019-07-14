@@ -1,16 +1,24 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.rest.manager.ResponseComponentManager;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 
 /**
- * REST Controller for creating, viewing and deleting Response Components. Serves as the REST API for
+ * REST Controller for creating, viewing and deleting Response Components. Serves as the REST API
+ * for
  * the ResponseComponentManager.
  *
  * @author Simon Weiler
@@ -20,12 +28,10 @@ import java.util.Optional;
 @RestController
 public class ResponseComponentController {
 
-  private final ResponseComponentRepository componentRepository;
   private final ResponseComponentManager responseComponentManager;
 
-  public ResponseComponentController(ResponseComponentRepository componentRepository) {
-    this.componentRepository = componentRepository;
-    responseComponentManager = new ResponseComponentManager();
+  public ResponseComponentController(ResponseComponentManager responseComponentManager) {
+    this.responseComponentManager = responseComponentManager;
   }
 
 
@@ -36,8 +42,8 @@ public class ResponseComponentController {
    */
   @PostMapping("api/components")
   public ResponseEntity<?> addComponent(@RequestBody ResponseComponent responseComponent) {
-    return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .addComponent(componentRepository, responseComponent));
+    return ControllerUtility.tryAndCatch(() ->
+        responseComponentManager.addComponent(responseComponent));
   }
 
 
@@ -48,8 +54,7 @@ public class ResponseComponentController {
    */
   @PostMapping("api/components/default")
   public ResponseEntity<?> addDefaultComponents() {
-    return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .addDefaultComponents(componentRepository));
+    return ControllerUtility.tryAndCatch(responseComponentManager::addDefaultComponents);
   }
 
   /**
@@ -70,14 +75,14 @@ public class ResponseComponentController {
       @RequestParam("keywords") Optional<String[]> keyWords
   ) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .getAllComponents(componentRepository, count, page, sortBy, keyWords));
+        .getAllComponents(count, page, sortBy, keyWords));
   }
 
   @GetMapping("api/components/count")
   public ResponseEntity<?> getComponentCount(
       @RequestParam("keywords") Optional<String[]> keyWords) {
     return ControllerUtility.tryAndCatch(() ->
-        responseComponentManager.getAllComponents(componentRepository, Optional.empty(),
+        responseComponentManager.getAllComponents(Optional.empty(),
             Optional.empty(), Optional.empty(), keyWords).size());
   }
 
@@ -92,7 +97,7 @@ public class ResponseComponentController {
   @GetMapping("api/components/{id}")
   public ResponseEntity<?> getComponentByID(@PathVariable int id) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .getComponentByID(componentRepository, id));
+        .getComponentByID(id));
   }
 
   /**
@@ -102,7 +107,7 @@ public class ResponseComponentController {
    */
   @DeleteMapping("api/components/{id}")
   public ResponseEntity<?> deleteComponent(@PathVariable long id) {
-    return ControllerUtility.tryAndCatch(() -> componentRepository.deleteById(id));
+    return ControllerUtility.tryAndCatch(() -> responseComponentManager.deleteComponent(id));
   }
 
   /**
@@ -110,7 +115,7 @@ public class ResponseComponentController {
    */
   @DeleteMapping("api/components/all")
   public ResponseEntity<?> deleteAllComponents() {
-    return ControllerUtility.tryAndCatch((Runnable) componentRepository::deleteAll);
+    return ControllerUtility.tryAndCatch(responseComponentManager::deleteAllComponents);
   }
 
   /**
@@ -121,11 +126,8 @@ public class ResponseComponentController {
    */
   @PutMapping("api/components/{componentId}")
   public ResponseEntity<?> updateComponent(@PathVariable long componentId,
-                                          @RequestBody ResponseComponent responseComponent) {
-    return ControllerUtility.tryAndCatch(() -> {
-      responseComponent.setComponentId(componentId);
-      componentRepository.save(responseComponent);
-      return responseComponent;
-    });
+                                           @RequestBody ResponseComponent responseComponent) {
+    return ControllerUtility.tryAndCatch(
+        () -> responseComponentManager.updateComponent(componentId, responseComponent));
   }
 }

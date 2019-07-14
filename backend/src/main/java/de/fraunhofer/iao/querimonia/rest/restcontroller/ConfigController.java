@@ -1,8 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.db.repositories.ConfigurationRepository;
-import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
 import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,14 +28,11 @@ public class ConfigController {
   /**
    * Creates new config controller.
    *
-   * @param analyzerConfigProperties the properties that contains the current configuration.
-   * @param configurationRepository  the repository for the configurations.
+   * @param configurationManager the manager for the configurations.
    */
-  public ConfigController(AnalyzerConfigProperties analyzerConfigProperties,
-                          ConfigurationRepository configurationRepository) {
+  public ConfigController(ConfigurationManager configurationManager) {
 
-    this.configurationManager = new ConfigurationManager(analyzerConfigProperties,
-        configurationRepository);
+    this.configurationManager = configurationManager;
   }
 
   /**

@@ -58,4 +58,12 @@ public class ComplaintUtility {
         .findAny()
         .orElseThrow(IllegalStateException::new);
   }
+
+  public static ComplaintProperty getPropertyOfComplaint(Complaint complaint, String name) {
+    return complaint.getProperties()
+        .stream()
+        .filter(complaintProperty -> complaintProperty.getName().equals(name))
+        .findAny()
+        .orElseThrow(IllegalStateException::new);
+  }
 }

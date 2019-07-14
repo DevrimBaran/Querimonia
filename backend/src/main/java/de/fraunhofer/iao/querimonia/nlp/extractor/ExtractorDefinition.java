@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,8 +18,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import java.util.Map;
+import java.util.List;
 
 /**
  * This class is used to define the extractor which should be used in the a configuration.
@@ -38,9 +38,8 @@ public class ExtractorDefinition {
 
   @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "color_table", joinColumns = @JoinColumn(name = "id"))
-  @MapKeyColumn(name = "label")
   @Column(name = "color")
-  private Map<String, String> colors;
+  private List<ColorDefinition> colors;
 
   @SuppressWarnings("unused")
   public ExtractorDefinition() {
@@ -51,7 +50,7 @@ public class ExtractorDefinition {
   @SuppressWarnings("unused")
   public ExtractorDefinition(String name,
                              ExtractorType type,
-                             Map<String, String> colors) {
+                             List<ColorDefinition> colors) {
     this.name = name;
     this.type = type;
     this.colors = colors;
@@ -69,7 +68,7 @@ public class ExtractorDefinition {
     return type;
   }
 
-  public Map<String, String> getColors() {
+  public List<ColorDefinition> getColors() {
     return colors;
   }
 
@@ -109,5 +108,21 @@ public class ExtractorDefinition {
         .append("type", type)
         .append("colors", colors)
         .toString();
+  }
+
+  @Embeddable
+  private static class ColorDefinition {
+
+    String label;
+    String color;
+
+    public ColorDefinition() {
+    }
+
+    @JsonCreator
+    public ColorDefinition(String label, String color) {
+      this.label = label;
+      this.color = color;
+    }
   }
 }

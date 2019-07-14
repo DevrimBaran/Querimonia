@@ -1,6 +1,8 @@
 
 package de.fraunhofer.iao.querimonia.response.component;
 
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSlice;
 import org.junit.Test;
 
 import java.util.*;

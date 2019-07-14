@@ -92,13 +92,15 @@ public class Complaint {
   /**
    * The list of all named entities in the complaint text.
    */
-  @OneToMany(cascade = CascadeType.MERGE)
+  @OneToMany(cascade = CascadeType.ALL)
+  @JsonIgnore
   private List<NamedEntity> entities;
 
   /**
    * The response for the complaint.
    */
   @OneToOne(cascade = CascadeType.ALL)
+  @JsonIgnore
   private ResponseSuggestion responseSuggestion;
 
   /**
@@ -151,9 +153,9 @@ public class Complaint {
 
   }
 
-  @JsonProperty("subject")
+  @JsonIgnore
   public ComplaintProperty getSubject() {
-    return ComplaintUtility.getPropertyOfComplaint(new ComplaintData(this), "Kategorie");
+    return ComplaintUtility.getPropertyOfComplaint(this, "Kategorie");
   }
 
   public long getComplaintId() {
@@ -168,9 +170,9 @@ public class Complaint {
     return preview;
   }
 
-  @JsonProperty("emotion")
+  @JsonIgnore
   public ComplaintProperty getEmotion() {
-    return ComplaintUtility.getPropertyOfComplaint(new ComplaintData(this), "Emotion");
+    return ComplaintUtility.getPropertyOfComplaint(this, "Emotion");
   }
 
   public LocalDate getReceiveDate() {
@@ -274,10 +276,8 @@ public class Complaint {
         .append(properties, complaint.properties)
         .append(entities, complaint.entities)
         .append(responseSuggestion, complaint.responseSuggestion)
-        .append(wordList, complaint.wordList)
         .append(receiveDate, complaint.receiveDate)
         .append(receiveTime, complaint.receiveTime)
-        .append(configuration, complaint.configuration)
         .isEquals();
   }
 
@@ -290,10 +290,8 @@ public class Complaint {
         .append(sentiment)
         .append(entities)
         .append(responseSuggestion)
-        .append(wordList)
         .append(receiveDate)
         .append(receiveTime)
-        .append(configuration)
         .toHashCode();
   }
 }
