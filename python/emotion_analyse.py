@@ -3,7 +3,7 @@ import nltk
 from enum import Enum
 from pathlib import Path
 from collections import defaultdict
-from nltk.corpus import stopwords
+import math
 
 # This is an approach for emotion analysis in the german language
 # created by phuszár
@@ -24,9 +24,9 @@ class emotions(Enum):
 
 def tokenize(t):
     # tokenize, erase punctuation(#, $, %, ., ~, ...), erase whitespaces
-    t = nltk.tokenize.word_tokenize(t, 'german')
+    tokens = nltk.tokenize.word_tokenize(t, 'german')
     return list(filter(None, [''.join(i for i in s if i not in string.punctuation)
-                              for s in t]))
+                              for s in tokens]))
 
 
 def tokenize_and_stem(x):
@@ -42,27 +42,42 @@ def tokenize_and_stem(x):
 
 
 def stopword_filter(query):
-    stopWords = set(stopwords.words('german'))
+    file_to_open = datafolder / 'stopWords.txt'
+    f = open(file_to_open, 'r')
+    stopWords = [''.join(tokenize_and_stem(t))
+                 for t in f]
+    for i, s in enumerate(stopWords):
+        stopWords[i] = s.strip()
     return list(filter(None, [''.join(q for q in t if t not in stopWords)
                               for t in query]))
 
 
+def prozent(dict):
+    # Convert from count to prozent ratio
+    sum = 0
+    for value in dict.values():
+        sum += value
+    for key, value in dict.items():
+        dict[key] = round((100 / sum) * value, 2)
+    print(dict)
+
 def emotion_analysis(query):
     emotions_d = defaultdict(int)
-    stemmed = tokenize_and_stem(query)
-    swFiltered = stopword_filter(stemmed)
+    stemNtokenize = tokenize_and_stem(query)
+    swFiltered = stopword_filter(stemNtokenize)
     for emo in emotions:
         file_to_open = datafolder / emo.value
-        for sw in swFiltered:
-            with open(file_to_open, 'r', encoding='utf-8') as file:
-                list = [''.join(tokenize_and_stem(t))
-                        for t in file]
-                for l in list:
-                    if sw == l:
-                        print('Found word in: ' + emo.name + '-Dictionary')
-                        emotions_d[emo.name] += 1
-    # ToDo: value with respect to freqeuncy
-    return dict(emotions_d)
+        with open(file_to_open, 'r', encoding='utf-8') as file:
+            emoList = [''.join(tokenize_and_stem(t))
+                       for t in file]
+            # delete duplicates happend due stemming
+            emoList = list(dict.fromkeys(emoList))
+            for sw in swFiltered:
+                if sw in emoList:
+                    print('Found word in: ' + emo.name + '-Dictionary')
+                    # Sum and normalize by the Dictionary Size
+                    emotions_d[emo.name] += 1 * (1 / len(emoList))
+    return prozent(dict(emotions_d))
 
 
 # for flask
@@ -75,5 +90,6 @@ def main(query):
 if __name__ == '__main__':
     print('Use test in comments in code')
 
-    testQuery = "Ein dickes Lob an eine Fahrerin von einer Kundin. Durch den starken Schneefall sind an dem Tag mehrere Busse ausgefallen. Viele Leute standen an der Bushaltestelle Neviges Bahnhof. Eine Fahrerin der Linie 649 , bat in der Leitstelle darum, die wartenden Fahrgäste an Ihr Ziel bringen zu können nach Velbert, da der Linienweg des Busses den sie eigentlich fahren sollte, nicht befahrbar war.Die Leitstelle sagte hier zu.Die Fahrgäste waren total glücklich und stellvertretend für alle möchte die Kundin ein dickes Lob aussprechen für die vorausschauende Art und Weise, die diese Fahrerin an den Tag gelegt hat."
-    print(emotion_analysis(testQuery))
+    testQuery2 = 'alles aber weg bloß kein Hass oder Liebe und Hass '
+    testQuery = 'In Ihrem Schreibenvom 8. 2. 2013schreiben Sie, nur "ein" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalbständig undgehäuft Busliniender WSWausfallen undFahrten entgegen dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer benutze ich eher selten die Busse der WSW. Wenn ichsie benutze, ergeben sich auffällig häufig Ausfälle und deutliche Verspätungen. Dies betrifft auffallend oft die als schnell konzipierten CE-Linien, nach meiner jüngeren Erfahrung CE61/CE62, weniger auch CE64/CE65 (Elberfeld-Cronenberg), und Nebenlinienwie etwa 643. Einzelne Ihrer Mitarbeiter berichten mir übereinstimmend, die Personaldecke sei zu dünn, um Ausfälle einzelner Mitarbeiter auszugleichen. Wegen spürbaren Personalmangels - nicht, wie Sie schreiben, vereinzelt wegen Krankheit - würden häufig Fahrten ausfallen. Viele Fahrer berichten anschaulich, dass in manchen Stoßzeiten vergeblich wartende Passagiere an Haltestellen stünden. Teilweise berichtet man mir von gezielten Maßnahmen, um Einsparungen herbeizuführen sowie nicht ausgeglichenen Überstunden. Ihre Fahrer sehen dies unmittelbar mit der Politikder WSW verknüpft, die CE-Linien ab März/April 2013auszudünnen.Der Vorgang, auf den sich Ihr Schreiben bezieht, lief tatsächlich so ab: Am 1. 2. 2013 wartete ich an der Morianstraße in Wuppertalmit meinem x Monate alten Sohn nachmittags auf eine Busverbindung nach Ronsdorf, Haltestelle Kniprodestraße. Ich beabsichtigte, den Bus CE62 um 15:47 Uhr zu nehmen. Wir waren auf dem Weg zu einer Nachmittagsveranstaltung für Eltern mit Kleinstkindern, die ich verpasste:Die CE62um 15:47 Uhrfuhr nicht, ebenso nicht die nachfolgenden Busse der Linie CE62:- 16:07 Uhr- 16:27 UhrEs fuhren ferner nicht die Busse der Linie 620um- 15:55 Uhr- 16:15 Uhr- 16:35 Uhrdie Haltestelle an. Ihr Schreiben legt nahe, dass es sich nur um vereinzelte Fälle handele. Unmittelbar bei meinem nächsten Fahrtantritt mit der WSW eine Woche später kam es wiederum zu einem Ausfall. Am Freitag, 8. 2. 2013, fiel Linie CE61 um 15:38 Uhran der Haltestelle Am Stadtbahnhof in Richtung Barmenaus. Mit ca. 25 MinutenVerspätung erreichte ich mit der Linie 640(ab 15:48 Uhr) gegen 16:25 Uhrden Alten Markt in Barmen.Heute, am 21. 2. 2013, fielen die Busse der Linie CE64von Wuppertal Hbf in Richtung Cronenbergum 06:40 Uhr und um 07:00 Uhr aus. Ein Fahrgast erreichte deshalb nicht pünktlich seine Arbeitsstelle in Solingen. Würde ich häufiger fahren, würdeich vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre Dienstleistungen bestmöglich fahrplangemäß anzubieten.'
+    emotion_analysis(testQuery)

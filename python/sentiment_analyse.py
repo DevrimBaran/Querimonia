@@ -13,12 +13,14 @@ datafolder = Path("data/")
 
 
 def positive_sentiment(query):
-    sentiment = analyze(query, 'SentiWS_v2.0_Positive.txt')
+    sentiment = round(analyze(query, 'SentiWS_v2.0_Positive.txt'), 2)
+    print(sentiment)
     return sentiment
 
 
 def negative_sentiment(query):
-    sentiment = analyze(query, 'SentiWS_v2.0_Negative.txt')
+    sentiment = round(analyze(query, 'SentiWS_v2.0_Negative.txt'), 2)
+    print(sentiment)
     return sentiment
 
 
@@ -72,8 +74,8 @@ if __name__ == '__main__':
 
     # for example
     # test_pos = 'liebe ist was schönes'
-    # test_neg = 'Ich hasse Zerstörung und Gewalt'
-    # print(main(test_neg))
+    test_neg = 'Ich hasse Zerstörung und Gewalt'
+    main(test_neg)
 
     # for cmd
     # print("Sentiment Value is: " + (str)(parse_arg()))
