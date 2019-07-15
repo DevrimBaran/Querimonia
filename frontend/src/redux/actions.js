@@ -24,7 +24,7 @@ export function saveActive (endpoint) {
       endpoint: endpoint
     });
     dispatch((dispatch) => {
-      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + active.id, active)
+      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + (active.id === 0 ? '' : active.id), active)
         .then(data => {
           if (data.status && data.status === 500) {
             alert(data.message);

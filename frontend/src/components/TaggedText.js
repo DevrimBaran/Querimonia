@@ -14,15 +14,7 @@ import merge from 'deepmerge';
 import { connect } from 'react-redux';
 
 const LABEL_COLORS = {
-  Datum: 'green',
-  Eingangsdatum: 'red',
-  Name: 'violet',
-  Geldbetrag: 'turquoise',
-  Bushaltestelle: 'orange',
-  Vorgangsnummer: 'yellow',
-  Ortsname: 'brown',
-  Linie: 'pink',
-  default: 'green'
+  default: '#cccccc'
 };
 
 class TaggedText extends Component {
@@ -116,13 +108,28 @@ class TaggedText extends Component {
     return entities;
   };
 
+  getTextColor = (color) => {
+    console.log(color);
+    const rgb = color.match(/#(..)(..)(..)/);
+    const luminance = 0.299 * parseInt(rgb[1], 16) + 0.587 * parseInt(rgb[2], 16) + 0.114 * parseInt(rgb[3], 16);
+    const blackLum = 33.043;
+    const whiteLum = 255;
+    if (Math.abs(blackLum - luminance) < Math.abs(whiteLum - luminance)) {
+      return '#ffffff';
+    } else {
+      return '#202124';
+    }
+  }
+
   // calculates the proper background colors for the given labels
   createBackground = (tag) => {
     let labels = tag.label;
     const individualHeightPercentage = 100 / labels.length;
     let linearGradient = '';
+    let textColor = '#202124';
     labels.forEach((label, i) => {
       const color = (tag.extractor && this.props.colors[tag.extractor] ? this.props.colors[tag.extractor][label.label] : this.props.defaultColors[label.label]) || LABEL_COLORS['default'];
+      textColor = this.getTextColor(color);
       linearGradient += color +
         (i !== 0 ? ' ' + String(individualHeightPercentage * (i)) + '%,' : ',') +
         color +
@@ -131,30 +138,35 @@ class TaggedText extends Component {
         '%' +
         (i !== labels.length - 1 ? ',' : '');
     });
-    return { backgroundImage: 'linear-gradient(' + linearGradient + ')' };
+    return { color: textColor, backgroundImage: 'linear-gradient(' + linearGradient + ')' };
   };
 
   createTooltip = (tag, id, key) => {
     let labels = tag.label;
     let labelArray = labels.map((label, i) => {
       const color = (tag.extractor && this.props.colors[tag.extractor] ? this.props.colors[tag.extractor][label.label] : this.props.defaultColors[label.label]) || LABEL_COLORS['default'];
-      return <div key={key + i}><span className='dot' style={{ backgroundColor: color,
-        height: '10px',
-        width: '10px',
-        borderRadius: '50%',
-        display: 'inline-block',
-        marginLeft: '5px' }}> </span> {label.label} <br />
-        {this.props.editable
+      return (
+        <div key={key + i}>
+          <span className='dot' style={{
+            backgroundColor: color,
+            height: '10px',
+            width: '10px',
+            borderRadius: '50%',
+            display: 'inline-block',
+            marginLeft: '5px' }} /> {label.label} <br />
+          {this.props.editable
+          // eslint-disable-next-line
         ? <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
-        : null}
-        {this.props.editable
+            : null}
+          {this.props.editable
+          // eslint-disable-next-line
         ? <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
-        : null}
-        {this.props.editable
-        // eslint-disable-next-line
+            : null}
+          {this.props.editable
+          // eslint-disable-next-line
         ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', padding: '8px' }} />
-        : null}
-      </div>;
+            : null}
+        </div>);
     });
     return <ReactTooltip effect='solid' delayHide={200} clickable key={key + labels.length + 1} id={id} aria-haspopup='true'>
       {
