@@ -2,7 +2,7 @@
   "name": "querimonia",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
+  "homepage": ".",
   "config": {
     "backend": "https://querimonia.iao.fraunhofer.de"
   },
