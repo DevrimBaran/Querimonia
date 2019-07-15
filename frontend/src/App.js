@@ -23,9 +23,7 @@ function App () {
   let basepath;
   try {
     basepath = new URL(process.env.REACT_APP_BACKEND_PATH).pathname;
-    console.log('basepath', new URL(process.env.REACT_APP_BACKEND_PATH));
   } catch (e) {
-    console.log('basepath', 'error', process.env.REACT_APP_BACKEND_PATH, new URL(process.env.REACT_APP_BACKEND_PATH));
     basepath = '/';
   }
 
