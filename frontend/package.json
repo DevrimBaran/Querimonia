@@ -2,12 +2,13 @@
   "name": "querimonia",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://querimonia.iao.fraunhofer.de",
+  "homepage": ".",
   "config": {
     "backend": "https://querimonia.iao.fraunhofer.de"
   },
   "dependencies": {
     "deepmerge": "^4.0.0",
+    "env-cmd": "^9.0.3",
     "express": "^4.16.4",
     "node-sass": "^4.12.0",
     "pretty-data": "^0.40.0",
@@ -26,9 +27,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build-prod": "REACT_APP_BACKEND_PATH=$npm_package_config_backend react-scripts build",
-    "build-dev": "REACT_APP_BACKEND_PATH=$npm_package_config_backend/dev react-scripts build",
-    "build-mock": "REACT_APP_BACKEND_PATH=$npm_package_config_backend/mock react-scripts build",
+    "build-prod": "env-cmd -f .env.prod react-scripts build",
+    "build-dev": "env-cmd -f .env.dev react-scripts build",
+    "build-mock": "env-cmd -f .env.mock react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "eslint": "./node_modules/.bin/eslint src --fix"
