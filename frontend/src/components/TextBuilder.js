@@ -103,14 +103,15 @@ class TextBuilder extends Component {
     const mailto = 'mailto:' + encodeURIComponent(mail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message) + link;
     return (
       <React.Fragment>
-        <Content style={{ flexBasis: '10%' }}>
+        <Content>
           <textarea className='margin' id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
         </Content>
         <div>
           <Input type='button' value='Abschließen' onClick={() => this.finish(mailto)} />
         </div>
-        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions'>
+        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions' />
+        <Content>
           {
             this.state.actions.ids.map((id) => {
               const action = this.state.actions[id];
@@ -119,8 +120,9 @@ class TextBuilder extends Component {
               );
             })
           }
-        </Collapsible>
-        <Collapsible className='Content' label='Antworten' collapse={false} id='responses'>
+        </Content>
+        <Collapsible className='Content' label='Antworten' collapse={false} id='responses' />
+        <Content>
           {
             this.state.components.ids.map((id) => {
               const component = this.state.components[id];
@@ -137,7 +139,7 @@ class TextBuilder extends Component {
               );
             })
           }
-        </Collapsible>
+        </Content>
       </React.Fragment>
     );
   }

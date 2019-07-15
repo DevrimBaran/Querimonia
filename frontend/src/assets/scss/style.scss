@@ -39,9 +39,10 @@
         border-right: none;
     }
 }
-.Content {
+.content {
     overflow: auto;
     flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .row {
@@ -226,17 +227,12 @@
             background-color: $white;
         }
     }
-    .content {
-        overflow: auto;
-        height: calc(100% - 40px);
-        //padding-top: 10px;
-    }
-}
-.collapsible[data-collapse=true] {
-    min-height: 30px !important;
-    max-height: 30px !important;
-    .content {
-        display: none;
+    &[data-collapse=true] {
+        min-height: 30px !important;
+        max-height: 30px !important;
+        &+* {
+            display: none;
+        }
     }
 }
 

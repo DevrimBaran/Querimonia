@@ -58,8 +58,8 @@ function Single (active) {
       <Block>
         <Row vertical>
           <h6 className='center'>Meldetext</h6>
-          <Content style={{ flexBasis: '100%' }}>
-            <Tabbed className='padding' style={{ height: '100%' }}>
+          <Content>
+            <Tabbed style={{ height: '100%' }}>
               <div label='Überarbeitet'>
                 <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} editable />
               </div>
@@ -68,7 +68,8 @@ function Single (active) {
               </div>
             </Tabbed>
           </Content>
-          <Collapsible label='Details' style={{ minHeight: '130px' }}>
+          <Collapsible label='Details' />
+          <div>
             <b>Eingangsdatum: </b>
             <TaggedText taggedText={{
               text: active.receiveDate,
@@ -83,16 +84,16 @@ function Single (active) {
             <br />
             <b> Sentiment: </b>
             <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
-            <br />
-            <ReactTooltip id='subjects' aria-haspopup='true'>
-              {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
-            </ReactTooltip>
-            <ReactTooltip id='sentiments' aria-haspopup='true'>
-              {Object.keys(active.sentiment.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
-            </ReactTooltip>
-          </Collapsible>
-          <Collapsible label='Entitäten'>
-            <ul>
+          </div>
+          <ReactTooltip id='subjects' aria-haspopup='true'>
+            {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
+          </ReactTooltip>
+          <ReactTooltip id='sentiments' aria-haspopup='true'>
+            {Object.keys(active.sentiment.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
+          </ReactTooltip>
+          <Collapsible label='Entitäten' />
+          <Content>
+            {active.entities.length > 0 ? (<ul>
               {
                 active.entities.map((entity, i) => {
                   return <li key={i}> {entity['label']} {': '}
@@ -103,8 +104,8 @@ function Single (active) {
                   </li>;
                 })
               }
-            </ul>
-          </Collapsible>
+            </ul>) : ''}
+          </Content>
         </Row>
       </Block>
     </React.Fragment>
