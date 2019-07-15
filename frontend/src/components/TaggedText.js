@@ -44,7 +44,10 @@ class TaggedText extends Component {
         // String that is entity
         html.push(<span data-tip data-for={id} key={key++} data-key={html.length} className='tag' style={this.createBackground(tag)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
         // Tooltip for that entity
-        html.push(this.createTooltip(tag, id, key++));
+        html.push(this.createTooltip(tag, id, key++, false));
+        if (this.props.editable) {
+          html.push(this.createTooltip(tag, id, key++, true));
+        }
         key += tag.label.length + 1;
         cpos = tag.end;
       }
@@ -141,38 +144,46 @@ class TaggedText extends Component {
     return { color: textColor, backgroundImage: 'linear-gradient(' + linearGradient + ')' };
   };
 
-  createTooltip = (tag, id, key) => {
+  createTooltip = (tag, id, key, showOptions) => {
     let labels = tag.label;
     let labelArray = labels.map((label, i) => {
       const color = (tag.extractor && this.props.colors[tag.extractor] ? this.props.colors[tag.extractor][label.label] : this.props.defaultColors[label.label]) || LABEL_COLORS['default'];
-      return (
-        <div key={key + i}>
-          <span className='dot' style={{
+      return <div key={key + i}>
+        <span className='dot' style={
+          {
             backgroundColor: color,
             height: '10px',
             width: '10px',
             borderRadius: '50%',
             display: 'inline-block',
-            marginLeft: '5px' }} /> {label.label} <br />
-          {this.props.editable
-          // eslint-disable-next-line
-        ? <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
-            : null}
-          {this.props.editable
-          // eslint-disable-next-line
-        ? <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
-            : null}
-          {this.props.editable
-          // eslint-disable-next-line
-        ? <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', padding: '8px' }} />
-            : null}
-        </div>);
+            marginLeft: '5px' }
+        } /> {label.label} <br />
+        {showOptions
+          ? (
+            <div>
+              {/* eslint-disable-next-line */}
+              <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
+              {/* eslint-disable-next-line */}
+              <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+              {/* eslint-disable-next-line */}
+              <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', padding: '8px' }} />
+            </div>
+          ) : null}
+      </div>;
     });
-    return <ReactTooltip effect='solid' delayHide={200} clickable key={key + labels.length + 1} id={id} aria-haspopup='true'>
-      {
-        labelArray
-      }
-    </ReactTooltip>;
+    if (showOptions) {
+      return <ReactTooltip effect='solid' clickable key={key + labels.length + 1} id={id} aria-haspopup='true' event='click' globalEventOff='click'>
+        {
+          labelArray
+        }
+      </ReactTooltip>;
+    } else {
+      return <ReactTooltip effect='solid' key={key + labels.length + 1} id={id} aria-haspopup='true'>
+        {
+          labelArray
+        }
+      </ReactTooltip>;
+    }
   };
 
   deleteEntity = (id) => {
@@ -189,7 +200,7 @@ class TaggedText extends Component {
         });
       });
 
-    Api.patch('/api/responses/' + this.state.id + '/refresh');
+    // Api.patch('/api/responses/' + this.state.id + '/refresh');
   };
 
   // edit or copy the Entity
@@ -220,7 +231,7 @@ class TaggedText extends Component {
   handleMouseUp = (e) => {
     e.stopPropagation();
     const selectedText = window.getSelection();
-    if (selectedText && selectedText.baseNode.parentNode.parentNode.className === 'tagged-text' && selectedText.toString()) {
+    if (selectedText && selectedText.anchorNode.parentNode.parentNode.className === 'tagged-text' && selectedText.focusNode.parentNode.parentNode.className === 'tagged-text' && selectedText.anchorNode.parentNode.attributes['data-key'] && selectedText.focusNode.parentNode.attributes['data-key'] && selectedText.toString()) {
       const newLabelString = selectedText.toString();
       const baseOffset = selectedText.anchorOffset;
       const extentOffset = selectedText.focusOffset;
@@ -250,21 +261,35 @@ class TaggedText extends Component {
             globalOffsetEnd += extentOffset;
           }
         });
+      if (globalOffsetEnd < globalOffsetStart) {
+        let temp = globalOffsetStart;
+        globalOffsetStart = globalOffsetEnd;
+        globalOffsetEnd = temp;
+      }
       let query = {};
       query['start'] = globalOffsetStart;
       query['end'] = globalOffsetEnd;
+      query['setByUser'] = true;
       this.startEdit();
       if (this.state.editEntity) {
         this.setState({
-          newEntityQuery: { ...this.state.newEntityQuery, start: globalOffsetStart, end: globalOffsetEnd }
+          newEntityQuery: { ...this.state.newEntityQuery, start: globalOffsetStart, end: globalOffsetEnd, setByUser: true }
         });
         this.addEntity();
       } else {
-        this.setState({
-          editFormActive: true,
-          newEntityQuery: query,
-          newEntityString: newLabelString
-        });
+        Api.get('/api/config/current', {})
+          .then((data) => {
+            let extractorList = [];
+            for (let i = 0; i < data.extractors.length; i++) {
+              extractorList = extractorList.concat(Object.keys(data.extractors[i].colors).map(extractor => extractor + ' (' + data.extractors[i].name + ')'));
+            }
+            this.setState({
+              editFormActive: true,
+              newEntityQuery: query,
+              newEntityString: newLabelString,
+              extractorList: extractorList
+            });
+          });
       };
     }
   };
@@ -275,20 +300,14 @@ class TaggedText extends Component {
     });
   };
 
-  handleLabelChange = (event) => {
-    this.setState({
-      newEntityQuery: { ...this.state.newEntityQuery, label: event.target.value }
-    });
-  };
-
-  handleExtractorChange = (event) => {
-    this.setState({
-      newEntityQuery: { ...this.state.newEntityQuery, extractor: event.target.value }
-    });
-  };
-
   addEntity = () => {
-    Api.post('/api/complaints/' + this.state.id + '/entities', this.state.newEntityQuery)
+    let query = this.state.newEntityQuery;
+    if (!this.state.editEntity) {
+      let extractorQuery = document.getElementById('chooseExtractor').value.split(' (').map(extractor => extractor.replace(')', ''));
+      query['label'] = extractorQuery[0];
+      query['extractor'] = extractorQuery[1];
+    }
+    Api.post('/api/complaints/' + this.state.id + '/entities', query)
       .then((data) => {
         this.setState({
           taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
@@ -296,7 +315,7 @@ class TaggedText extends Component {
           editEntity: false
         });
       });
-    Api.patch('/api/responses/' + this.state.id + '/refresh');
+    // Api.patch('/api/responses/' + this.state.id + '/refresh');
   };
 
   componentWillUpdate = (props) => {
@@ -321,7 +340,10 @@ class TaggedText extends Component {
         onClick={this.startEdit} />
       {this.state.editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}
       {this.state.editFormActive ? <div style={{ marginTop: '5px' }}> <div>{this.state.newEntityString}</div>
-        <input type={'text'} placeholder={'Label'} onChange={this.handleLabelChange} /> <input type={'text'} placeholder={'Extractor'} onChange={this.handleExtractorChange} /> <br />
+        <b> Entität: </b>
+        <select id='chooseExtractor'>
+          {this.state.extractorList.map(extractor => <option>{`${extractor}`}</option>)};
+        </select> <br />
         <i style={{ color: 'green', cursor: 'pointer', padding: '5px' }} onClick={this.addEntity} className='far fa-check-circle fa-2x' />
         <i style={{ color: 'red', cursor: 'pointer', padding: '5px' }} onClick={this.abortEdit} className='far fa-times-circle fa-2x' /> </div> : null}
     </div>;
