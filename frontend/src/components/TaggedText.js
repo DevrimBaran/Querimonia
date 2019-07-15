@@ -24,7 +24,9 @@ class TaggedText extends Component {
     this.state = {
       taggedText: '',
       originalLabels: new Map(),
-      id: null
+      id: null,
+      active: null,
+      refreshEntities: null
     };
   }
 
@@ -144,6 +146,10 @@ class TaggedText extends Component {
     return { color: textColor, backgroundImage: 'linear-gradient(' + linearGradient + ')' };
   };
 
+  /**
+   * Creates tthe tooltips for the entitie-labels
+   * If showOptions is true, the tooltips appear in the tooltip
+   */
   createTooltip = (tag, id, key, showOptions) => {
     let labels = tag.label;
     let labelArray = labels.map((label, i) => {
@@ -172,13 +178,13 @@ class TaggedText extends Component {
       </div>;
     });
     if (showOptions) {
-      return <ReactTooltip effect='solid' clickable key={key + labels.length + 1} id={id} aria-haspopup='true' event='click' globalEventOff='click'>
+      return <ReactTooltip effect='solid' clickable key={key + labels.length + 1 + showOptions} id={id} aria-haspopup='true' event='click' globalEventOff='click'>
         {
           labelArray
         }
       </ReactTooltip>;
     } else {
-      return <ReactTooltip effect='solid' key={key + labels.length + 1} id={id} aria-haspopup='true'>
+      return <ReactTooltip effect='solid' key={key + labels.length + 1 + showOptions} id={id} aria-haspopup='true'>
         {
           labelArray
         }
@@ -195,12 +201,17 @@ class TaggedText extends Component {
     query['extractor'] = originalLabel.extractor;
     Api.delete('/api/complaints/' + this.state.id + '/entities', query)
       .then((data) => {
-        this.setState({
-          taggedText: this.parseText({ text: this.props.taggedText.text, entities: data })
-        });
+        if (Array.isArray(data)) {
+          // deep copy of data
+          let entities = JSON.parse(JSON.stringify(data));
+          // Updates the entity list with the new values
+          this.props.refreshEntities(this.props.active, entities);
+          this.setState({
+            taggedText: this.parseText({ text: this.props.taggedText.text, entities: data })
+          });
+          // Api.patch('/api/responses/' + this.state.id + '/refresh');
+        }
       });
-
-    // Api.patch('/api/responses/' + this.state.id + '/refresh');
   };
 
   // edit or copy the Entity
@@ -307,21 +318,32 @@ class TaggedText extends Component {
       query['label'] = extractorQuery[0];
       query['extractor'] = extractorQuery[1];
     }
+    if (!(query['label'] && query['extractor'])) {
+      return;
+    }
     Api.post('/api/complaints/' + this.state.id + '/entities', query)
-      .then((data) => {
-        this.setState({
-          taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
-          editFormActive: false,
-          editEntity: false
+        .then((data) => {
+          if (Array.isArray(data)) {
+            // deep copy of data
+            let entities = JSON.parse(JSON.stringify(data));
+            // Updates the entity list with the new values
+            this.props.refreshEntities(this.props.active, entities);
+            this.setState({
+              taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
+              editFormActive: false,
+              editEntity: false
+            });
+            // Api.patch('/api/responses/' + this.state.id + '/refresh');
+          }
         });
-      });
-    // Api.patch('/api/responses/' + this.state.id + '/refresh');
   };
 
   componentWillUpdate = (props) => {
     if (props.taggedText !== this.props.taggedText) {
       this.setState({
-        taggedText: this.parseText(JSON.parse(JSON.stringify(props.taggedText)))
+        taggedText: this.parseText(JSON.parse(JSON.stringify(props.taggedText))),
+        active: this.props.active,
+        refreshEntities: this.props.refreshEntities
       });
     }
   };
@@ -329,7 +351,9 @@ class TaggedText extends Component {
   componentDidMount () {
     this.setState({
       taggedText: this.parseText(JSON.parse(JSON.stringify(this.props.taggedText))),
-      id: this.props.id || null
+      id: this.props.id || null,
+      active: this.props.active,
+      refreshEntities: this.props.refreshEntities
     });
   }
 
