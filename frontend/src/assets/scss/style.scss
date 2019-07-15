@@ -236,6 +236,29 @@
     }
 }
 
+.responsive-table {
+    width: calc(100% + 30px);
+    height: 100%;
+    overflow: auto;
+    padding-right: 30px;
+    table {
+        min-width: 100%;
+        border-collapse: collapse;
+    }
+    tr:hover {
+        background-color: $lightgrey;
+    }
+    th {
+        background-color: $white;
+        position: sticky;
+        top: 0px;
+        text-align: right;
+    }
+    td {
+        text-align: right;
+    }
+}
+
 .padding {
     padding: 0 30px;
 }

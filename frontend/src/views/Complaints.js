@@ -45,7 +45,7 @@ class Complaints extends Component {
       <Row vertical>
         <Filter endpoint='complaints' />
         <Content>
-          {this.props.fetching
+          { this.props.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
             : (this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id])))
           }

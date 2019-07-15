@@ -18,28 +18,31 @@ import Input from '../../components/Input';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
+function Header () {
+  return (
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Aktiv</th>
+        <th>Name</th>
+        <th>Extraktoren</th>
+        <th>Klassififkatoren</th>
+        <th>Stimmungsanalysator</th>
+      </tr>
+    </thead>
+  );
+}
+
 function List (data, currentConfig) {
   return (
-    <React.Fragment key={data.id}>
-      {
-        data && (
-          <Link to={'/config/' + data.id}>
-            <div className='Template'>
-              <div className='floatLeft'>
-                <p className='h3'>{data.name}</p>
-                {data.id === currentConfig.id && (<strong>Aktiv</strong>)}
-                <p>ID: {data.id}</p>
-              </div>
-              <div className='floatRight'>
-                <p>Extraktoren: {data.extractors.length}</p>
-                <p>Klassifikator: {data.classifier.name}</p>
-                <p>Stimmungsanalysator: {data.sentimentAnalyzer.name}</p>
-              </div>
-            </div>
-          </Link>
-        )
-      }
-    </React.Fragment>
+    <tr key={data.id}>
+      <td><Link to={'/config/' + data.id}>{data.id}</Link></td>
+      <td>{ data.id === currentConfig.id ? 'Ja' : 'Nein' }</td>
+      <td>{data.name}</td>
+      <td>{data.extractors.length}</td>
+      <td>{data.classifier.name}</td>
+      <td>{data.sentimentAnalyzer.name}</td>
+    </tr>
   );
 }
 
@@ -215,4 +218,4 @@ function Single (active, dispatch, currentConfig) {
   );
 }
 
-export default { List, Single };
+export default { Header, List, Single };

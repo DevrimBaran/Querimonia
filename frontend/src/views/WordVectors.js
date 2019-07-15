@@ -189,6 +189,41 @@ class WordVectors extends Component {
     this.setState({ corpora: e.target.value });
   };
 
+  renderDescription = () => {
+    switch (this.state.corpora) {
+      case 'beschwerden3kPolished.bin': {
+        return (
+          <p>Keine Beschreibung verfügbar</p>
+        );
+      }
+      case 'cc.de.300.bin': {
+        return (
+          <p>Keine Beschreibung verfügbar</p>
+        );
+      }
+      case 'ngram_ger.bin': {
+        return (
+          <p>Keine Beschreibung verfügbar</p>
+        );
+      }
+      case 'BeschwerdenCATLeipzig.bin': {
+        return (
+          <p>Keine Beschreibung verfügbar</p>
+        );
+      }
+      case 'leipzigCorporaCollection1M.bin': {
+        return (
+          <p>Keine Beschreibung verfügbar</p>
+        );
+      }
+      default: {
+        return (
+          <p>Keine Beschreibung verfügbar</p>
+        );
+      }
+    }
+  }
+
   render () {
     return (
       <React.Fragment>
@@ -196,12 +231,11 @@ class WordVectors extends Component {
           <h1 className='center'>Wortvektoren</h1>
           <Content className='center'style={{ flexBasis: '100%' }}>
             <div className='smallmargin'>
-              <label htmlFor='textkorpora'>Textkorpus: </label>
-              <Input type='select' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
+              <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
+              {this.renderDescription()}
             </div>
             <div className='smallmargin'>
-              <label htmlFor='analogy'>Anfrage: </label>
-              <input id='analogy' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
+              <Input id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
               <div className='smallmargin'>
                 <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>

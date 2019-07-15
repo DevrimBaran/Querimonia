@@ -18,6 +18,7 @@ import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
+import Table from './../components/Table';
 
 class Config extends Component {
   componentDidMount = () => {
@@ -33,9 +34,16 @@ class Config extends Component {
           <Link to='/config/0'><Input type='button' value='Neue Konfiguration' /></Link>
         </div>
         <Content className='padding'>
-          {this.props.fetching
-            ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => ConfigPartial.List(this.props.data.byId[id], this.props.currentConfig)))
+          {!this.props.fetching && this.props.data
+            ? (
+              <Table>
+                {ConfigPartial.Header()}
+                <tbody>
+                  {this.props.data.ids.map(id => ConfigPartial.List(this.props.data.byId[id], this.props.currentConfig))}
+                </tbody>
+              </Table>
+            )
+            : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
           }
         </Content>
         <Pagination endpoint='config' />
