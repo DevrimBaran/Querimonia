@@ -54,10 +54,10 @@ function App () {
             <Link to='/config'>Konfiguration</Link>
           </li>
           <li>
-            <Link to='/wordvectors'>Worthäufigkeiten</Link>
+            <Link to='/wordvectors'>Wordvektoren</Link>
           </li>
           <li>
-            <Link to='/tagcloud'>Tag-Cloud</Link>
+            <Link to='/tagcloud'>Worthäufigkeiten</Link>
           </li>
           <li>
             { /* wird nur in development und mock gerendered */ }

@@ -37,6 +37,7 @@ class WordVectors extends Component {
     ];
     this.state = {
       result: [],
+      analogy: [],
       error: false,
       corpora: this.corpora[0].value
     };
@@ -96,8 +97,7 @@ class WordVectors extends Component {
       }
     }
 
-    this.setState({ error: null });
-    this.analogy = outputQueue;
+    this.setState({ error: null, analogy: outputQueue });
   };
 
   calculateOnEnter = (e) => {
@@ -130,13 +130,14 @@ class WordVectors extends Component {
   };
 
   calculate = () => {
+    let analogy = this.state.analogy.slice();
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
       return x.map(a => a / len);
     };
     if (this.state.error) return;
     // this.analogy is postfix expression
-    let words = this.analogy.filter((token) => {
+    let words = analogy.filter((token) => {
       return !(token === '+' || token === '-' || token === '*' || token === '/');
     });
     Promise.all(
@@ -149,7 +150,7 @@ class WordVectors extends Component {
     }).then(dictionary => {
       // Reverse Polish
       let a; let b; let token; let stack = [];
-      let postfix = this.analogy;
+      let postfix = analogy;
       while (postfix.length > 0) {
         token = postfix.shift();
         if (token === '+' || token === '-' || token === '*' || token === '/') {
@@ -205,11 +206,25 @@ class WordVectors extends Component {
                 <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>
             </div>
-            <ul>
-              {this.state.result.map((word, index) => {
-                return (<li key={index}>{word}</li>);
-              })}
-            </ul>
+            <table>
+              <thead>
+                <tr>
+                  <th>Wort</th>
+                  <th>Wahrscheinlichkeit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.result.map((word, index) => {
+                  const split = word.split(': ');
+                  return (
+                    <tr key={index}>
+                      <td>{split[0]}</td>
+                      <td>{(split[1] * 100).toFixed(2)}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
           </Content>
         </Block>
       </React.Fragment>
