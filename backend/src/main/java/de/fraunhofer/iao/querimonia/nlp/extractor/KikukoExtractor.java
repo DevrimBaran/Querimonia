@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.extractor;
 
-import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorPipelines;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorResponse;
 

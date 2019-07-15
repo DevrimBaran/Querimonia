@@ -4,13 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,15 +25,19 @@ public class ResponseSuggestion {
   private long id;
 
   @OneToMany(cascade = CascadeType.ALL)
-  private List<CompletedResponseComponent> responseComponents;
+  @Column(nullable = false)
+  @NonNull
+  private List<CompletedResponseComponent> responseComponents = new ArrayList<>();
 
+  @NonNull
+  @Column(nullable = false)
   @OneToMany(cascade = CascadeType.ALL)
-  private List<Action> actions;
+  private List<Action> actions = new ArrayList<>();
 
   @JsonCreator
   public ResponseSuggestion(
-      @JsonProperty("components") List<CompletedResponseComponent> responseComponents,
-      @JsonProperty("actions") List<Action> actions) {
+      @JsonProperty("components") @NonNull List<CompletedResponseComponent> responseComponents,
+      @JsonProperty("actions") @NonNull List<Action> actions) {
     this.actions = actions;
     this.responseComponents = responseComponents;
   }
@@ -39,10 +46,12 @@ public class ResponseSuggestion {
   public ResponseSuggestion() {
   }
 
+  @NonNull
   public List<CompletedResponseComponent> getResponseComponents() {
     return responseComponents;
   }
 
+  @NonNull
   public List<Action> getActions() {
     return actions;
   }

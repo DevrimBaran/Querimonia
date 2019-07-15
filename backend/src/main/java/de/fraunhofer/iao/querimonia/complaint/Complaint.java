@@ -126,6 +126,27 @@ public class Complaint {
   @ManyToOne(cascade = CascadeType.MERGE)
   private Configuration configuration;
 
+  public Complaint(String text, String preview,
+                   ComplaintState state,
+                   List<ComplaintProperty> properties, double sentiment,
+                   List<NamedEntity> entities,
+                   ResponseSuggestion responseSuggestion,
+                   Map<String, Integer> wordList, LocalDate receiveDate,
+                   LocalTime receiveTime,
+                   Configuration configuration) {
+    this.text = text;
+    this.preview = preview;
+    this.state = state;
+    this.properties = properties;
+    this.sentiment = sentiment;
+    this.entities = entities;
+    this.responseSuggestion = responseSuggestion;
+    this.wordList = wordList;
+    this.receiveDate = receiveDate;
+    this.receiveTime = receiveTime;
+    this.configuration = configuration;
+  }
+
   /**
    * Constructor for the complaint factory.
    */

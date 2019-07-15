@@ -1,11 +1,11 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
-import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
+import org.slf4j.LoggerFactory;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -21,13 +21,10 @@ import java.util.stream.Collectors;
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
-  private final ActionRepository actionRepository;
   private final ResponseComponentRepository templateRepository;
 
-  public DefaultResponseGenerator(ResponseComponentRepository templateRepository,
-                                  ActionRepository actionRepository) {
+  public DefaultResponseGenerator(ResponseComponentRepository templateRepository) {
     this.templateRepository = templateRepository;
-    this.actionRepository = actionRepository;
   }
 
   @Override
@@ -36,7 +33,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     templateRepository.findAll().forEach(responseComponents::add);
 
     List<Action> actions = new ArrayList<>();
-    actionRepository.findAll().forEach(actions::add);
+    responseComponents.stream()
+        .map(ResponseComponent::getActions)
+        .forEach(actions::addAll);
 
     // filter out not matching templates
     List<RuledInterface> responseComponentsFiltered =
@@ -61,6 +60,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     allEntities.add(new NamedEntity("Eingangsdatum", 0, 0, false, "", formattedDate));
     allEntities.add(new NamedEntity("Eingangszeit", 0, 0, false, "", formattedTime));
 
+    LoggerFactory.getLogger(getClass()).info("Response Generation finished");
     return getResponseSuggestion(complaintData, responseComponentsFiltered, allEntities);
   }
 

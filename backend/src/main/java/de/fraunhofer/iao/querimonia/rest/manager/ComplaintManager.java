@@ -5,7 +5,6 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
@@ -65,7 +64,6 @@ public class ComplaintManager {
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
                           ResponseComponentRepository templateRepository,
-                          ActionRepository actionRepository,
                           ConfigurationManager configurationManager) {
 
     this.fileStorageService = fileStorageService;
@@ -73,7 +71,7 @@ public class ComplaintManager {
     this.configurationManager = configurationManager;
 
     complaintFactory =
-        new ComplaintFactory(new DefaultResponseGenerator(templateRepository, actionRepository),
+        new ComplaintFactory(new DefaultResponseGenerator(templateRepository),
             new TokenAnalyzer());
   }
 

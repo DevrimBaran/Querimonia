@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,6 +47,7 @@ public class ComplaintFactory {
    * the date, sentiment and subject.
    *
    * @param complaintText the text of the complaint.
+   *
    * @return the generated complaint object.
    */
   public Complaint createComplaint(String complaintText, Configuration configuration) {
@@ -64,6 +65,7 @@ public class ComplaintFactory {
    * @param complaint           the complaint, which gets modified.
    * @param configuration       the configuration that should be used for the analysis.
    * @param keepUserInformation if true, no information gets overwritten where setByUser is true.
+   *
    * @return the modified complaint.
    */
   public Complaint analyzeComplaint(Complaint complaint, Configuration configuration,
@@ -77,20 +79,30 @@ public class ComplaintFactory {
     String complaintText = complaint.getText();
 
     // analysis
-    List<ComplaintProperty> complaintProperties = classifiers.stream().parallel()
-        .map(classifier -> classifier.classifyText(complaintText))
-        .collect(Collectors.toList());
-    complaint.setProperties(complaintProperties);
+    var complaintPropertiesFuture =
+        CompletableFuture.supplyAsync(() -> classifiers.stream().parallel()
+            .map(classifier -> classifier.classifyText(complaintText))
+            .collect(Collectors.toList()));
 
-    List<NamedEntity> entities =
-        extractEntities(complaint, configuration, keepUserInformation);
-    Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
-    ComplaintProperty emotionProperty = sentimentAnalyzer.analyzeEmotion(complaintText);
-    complaint.getProperties().add(emotionProperty);
-    complaint.setEntities(entities);
+    var entitiesFuture = CompletableFuture.supplyAsync(() ->
+        extractEntities(complaint, configuration, keepUserInformation));
 
-    double sentiment = sentimentAnalyzer.analyzeSentiment(complaintText);
+    var wordsFuture =
+        CompletableFuture.supplyAsync(() -> stopWordFilter.filterStopWords(complaintText));
 
+    var emotionPropertyFuture =
+        CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeEmotion(complaintText));
+
+    var sentimentFuture =
+        CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeSentiment(complaintText));
+
+    Stream.of(complaintPropertiesFuture, emotionPropertyFuture, entitiesFuture,
+        wordsFuture, sentimentFuture).parallel().forEach(CompletableFuture::join);
+
+    var complaintProperties = complaintPropertiesFuture.join();
+    var emotionProperty = emotionPropertyFuture.join();
+    var entities = entitiesFuture.join();
+    var sentiment = sentimentFuture.join();
     // generate response
     ComplaintData complaintData = new ComplaintData(
         complaintText,
@@ -99,13 +111,16 @@ public class ComplaintFactory {
         entities,
         LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()),
         sentiment);
-    ResponseSuggestion responseSuggestion = createResponse(complaintData);
 
+    ResponseSuggestion responseSuggestion = createResponse(complaintData);
+    complaintProperties.add(emotionProperty);
     return complaint
+        .setEntities(entities)
         .setSentiment(sentiment)
         .setConfiguration(configuration)
         .setResponseSuggestion(responseSuggestion)
-        .setWordList(words);
+        .setProperties(complaintProperties)
+        .setWordList(wordsFuture.join());
   }
 
   /**
@@ -113,6 +128,7 @@ public class ComplaintFactory {
    *
    * @param complaintData contains the necessary information about the complaint to generate the
    *                      answer.
+   *
    * @return a response suggestion for the complaint.
    */
   public ResponseSuggestion createResponse(ComplaintData complaintData) {
@@ -130,6 +146,7 @@ public class ComplaintFactory {
     Stream<NamedEntity> entityStream = configuration
         .getExtractors()
         .stream()
+        .parallel()
         .map(ExtractorFactory::getFromDefinition)
         .map(entityExtractor -> entityExtractor.extractEntities(complaintText))
         .flatMap(List::stream)
@@ -152,6 +169,7 @@ public class ComplaintFactory {
    * Generates a small preview of the complaint text.
    *
    * @param text the full text of the complaint.
+   *
    * @return the first two lines of the complaint, empty lines ignored, limited to 500 characters.
    */
   private String makePreview(String text) {
