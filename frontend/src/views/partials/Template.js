@@ -16,6 +16,7 @@ import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
 import Input from '../../components/Input';
+import Textarea from '../../components/Textarea';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
@@ -117,7 +118,7 @@ function Single (active, dispatch) {
             {active.templateTexts.map((text, index) => {
               return (
                 <div key={index}>
-                  <textarea className='p visible' value={text} onChange={(e) => modify(index, e.target.value)} />
+                  <Textarea max='5' className='p visible' value={text} onChange={(e) => modify(index, e.target.value)} />
                   <i className='fa fa-trash' onClick={() => removeText(index)} />
                 </div>
               );

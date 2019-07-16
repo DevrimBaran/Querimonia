@@ -34,7 +34,7 @@ class Config extends Component {
           <Link to='/config/0'><Input type='button' value='Neue Konfiguration' /></Link>
         </div>
         <Content className='padding'>
-          {!this.props.fetching && this.props.data
+          {!this.props.data.fetching
             ? (
               <Table>
                 {ConfigPartial.Header()}

@@ -1,6 +1,5 @@
 
 const fetchJson = function (action, options) {
-  console.log(process.env.NODE_ENV);
   if ((process.env.NODE_ENV === 'development')) {
     const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
     if (useMockInDev) {

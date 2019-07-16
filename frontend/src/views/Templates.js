@@ -33,7 +33,7 @@ class Templates extends Component {
           <Link to='/templates/0'><Input type='button' value='Neues Template' /></Link>
         </div>
         <Content className='padding'>
-          {this.props.fetching
+          {this.props.data.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
             : (this.props.data && this.props.data.ids.map(id => Template.List(this.props.data.byId[id])))
           }
@@ -48,7 +48,6 @@ class Templates extends Component {
     if (this.props.match.params.id) {
       if (!this.props.data.active || id !== this.props.data.active.id) {
         if (!this.props.data.fetching) {
-          console.log(this.props.data.active.id, id, this.props.data.fetching);
           this.props.dispatch({
             type: 'SET_ACTIVE',
             endpoint: 'templates',
