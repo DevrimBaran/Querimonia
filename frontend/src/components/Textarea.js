@@ -38,7 +38,7 @@ class Textarea extends Component {
   render () {
     const { onInput, ...props } = { ...this.props };
     return (
-      <div ref={this.wrapper} className='dynamic-textarea'>
+      <div className='dynamic-textarea'>
         <textarea ref={this.input} onInput={this.resize} {...props} />
         <textarea className='dummy' ref={this.dummy} />
         {this.props.min && (<textarea className='dummy' rows={this.props.min} ref={this.min} />)}
