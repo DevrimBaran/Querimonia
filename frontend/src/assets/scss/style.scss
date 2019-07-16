@@ -25,6 +25,9 @@
     li > * {
         padding: 5px 20px;
     }
+    li > a.active {
+        color: $primary;
+    }
 }
 .logo {
     margin: auto;

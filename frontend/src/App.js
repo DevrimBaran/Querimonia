@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 
 import Home from './views/Home';
 import Complaints from './views/Complaints';
@@ -35,28 +35,25 @@ function App () {
         </a>
         <ul>
           <li>
-            <Link to='/'>Start</Link>
+            <NavLink activeClassName='active' to='/complaints'>Beschwerden</NavLink>
           </li>
           <li>
-            <Link to='/complaints'>Beschwerden</Link>
+            <NavLink activeClassName='active' to='/import'>Import</NavLink>
           </li>
           <li>
-            <Link to='/import'>Import</Link>
+            <NavLink activeClassName='active' to='/templates'>Textbausteine</NavLink>
           </li>
           <li>
-            <Link to='/templates'>Textbausteine</Link>
+            <NavLink activeClassName='active' to='/actions'>Aktionen</NavLink>
           </li>
           <li>
-            <Link to='/actions'>Aktionen</Link>
+            <NavLink activeClassName='active' to='/config'>Konfiguration</NavLink>
           </li>
           <li>
-            <Link to='/config'>Konfiguration</Link>
+            <NavLink activeClassName='active' to='/wordvectors'>Wordvektoren</NavLink>
           </li>
           <li>
-            <Link to='/wordvectors'>Wordvektoren</Link>
-          </li>
-          <li>
-            <Link to='/tagcloud'>Worthäufigkeiten</Link>
+            <NavLink activeClassName='active' to='/tagcloud'>Worthäufigkeiten</NavLink>
           </li>
           <li>
             { /* wird nur in development und mock gerendered */ }
@@ -65,7 +62,7 @@ function App () {
         </ul>
         <ul style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
           <li>
-            <Link to='/impressum'>Impressum</Link>
+            <NavLink activeClassName='active' to='/impressum'>Impressum</NavLink>
           </li>
         </ul>
       </nav>
