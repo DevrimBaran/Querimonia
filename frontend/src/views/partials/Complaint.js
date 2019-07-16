@@ -80,22 +80,46 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             {active.id}
             <br />
             <b> Kategorie: </b>
-            {!editCategorieBool ? <span><i data-tip data-for='subjects'>{active.subject.value}</i>
-              <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} /></span >
-              : <span><select id='chooseCategorie'>
-                {Object.keys(active.subject.probabilities).map(subject => subject === active.subject.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
-              </select>
-                <i className={'far fa-check-circle fa-lg'} onClick={editCategorie.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
-                <i className={'far fa-times-circle fa-lg'} onClick={editCategorie.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} /></span>}
+            {
+              !editCategorieBool ? (
+                <span>
+                  <i data-tip data-for='subjects'>{active.subject.value}</i>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              ) : (
+                <span>
+                  <select id='chooseCategorie'>
+                    {Object.keys(active.subject.probabilities).map(subject => subject === active.subject.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
+                  </select>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-check-circle fa-lg'} onClick={editCategorie.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-times-circle fa-lg'} onClick={editCategorie.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              )
+            }
             <br />
             <b> Sentiment: </b>
-            {!editSentimentBool ? <span><i data-tip data-for='sentiments'>{active.sentiment.value}</i>
-              <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} /></span>
-              : <span><select id='chooseSentiment'>
-                {Object.keys(active.sentiment.probabilities).map(sentiment => sentiment === active.sentiment.value ? <option selected='selected'>{`${sentiment}`}</option> : <option >{`${sentiment}`}</option>)};
-              </select>
-                <i className={'far fa-check-circle fa-lg'} onClick={editSentiment.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
-                <i className={'far fa-times-circle fa-lg'} onClick={editSentiment.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} /></span>}
+            {
+              !editSentimentBool ? (
+                <span>
+                  <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              ) : (
+                <span>
+                  <select id='chooseSentiment'>
+                    {Object.keys(active.sentiment.probabilities).map(sentiment => sentiment === active.sentiment.value ? <option selected='selected'>{`${sentiment}`}</option> : <option >{`${sentiment}`}</option>)};
+                  </select>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-check-circle fa-lg'} onClick={editSentiment.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-times-circle fa-lg'} onClick={editSentiment.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              )
+            }
           </div>
           <ReactTooltip id='subjects' aria-haspopup='true'>
             {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}

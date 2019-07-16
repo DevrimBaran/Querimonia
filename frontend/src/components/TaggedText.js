@@ -322,20 +322,20 @@ class TaggedText extends Component {
       return;
     }
     Api.post('/api/complaints/' + this.state.id + '/entities', query)
-        .then((data) => {
-          if (Array.isArray(data)) {
-            // deep copy of data
-            let entities = JSON.parse(JSON.stringify(data));
-            // Updates the entity list with the new values
-            this.props.refreshEntities(this.props.active, entities);
-            this.setState({
-              taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
-              editFormActive: false,
-              editEntity: false
-            });
-            // Api.patch('/api/responses/' + this.state.id + '/refresh');
-          }
-        });
+      .then((data) => {
+        if (Array.isArray(data)) {
+          // deep copy of data
+          let entities = JSON.parse(JSON.stringify(data));
+          // Updates the entity list with the new values
+          this.props.refreshEntities(this.props.active, entities);
+          this.setState({
+            taggedText: this.parseText({ text: this.props.taggedText.text, entities: data }),
+            editFormActive: false,
+            editEntity: false
+          });
+          // Api.patch('/api/responses/' + this.state.id + '/refresh');
+        }
+      });
   };
 
   componentWillUpdate = (props) => {
