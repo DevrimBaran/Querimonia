@@ -124,7 +124,7 @@ class TaggedText extends Component {
     } else {
       return '#202124';
     }
-  }
+  };
 
   // calculates the proper background colors for the given labels
   createBackground = (tag) => {
@@ -147,7 +147,7 @@ class TaggedText extends Component {
   };
 
   /**
-   * Creates tthe tooltips for the entitie-labels
+   * Creates the tooltips for the entity-labels
    * If showOptions is true, the tooltips appear in the tooltip
    */
   createTooltip = (tag, id, key, showOptions) => {
@@ -167,11 +167,8 @@ class TaggedText extends Component {
         {showOptions
           ? (
             <div>
-              {/* eslint-disable-next-line */}
               <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
-              {/* eslint-disable-next-line */}
               <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
-              {/* eslint-disable-next-line */}
               <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', padding: '8px' }} />
             </div>
           ) : null}
@@ -301,7 +298,7 @@ class TaggedText extends Component {
               extractorList: extractorList
             });
           });
-      };
+      }
     }
   };
 

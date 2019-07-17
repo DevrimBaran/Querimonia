@@ -131,7 +131,10 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
           <Content>
             {active.entities.length > 0 ? (<ul>
               {
-                active.entities.map((entity, i) => {
+                active.entities.flat().sort((entity1, entity2) => {
+                  const labelCompare = entity1.label && entity2.label ? (entity1.label).localeCompare(entity2.label) : 0;
+                  return labelCompare === 0 ? entity1.start - entity2.start : labelCompare;
+                }).map((entity, i) => {
                   return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: '' + active.text.substring(entity['start'], entity['end']),
