@@ -167,21 +167,21 @@ class TaggedText extends Component {
         {showOptions
           ? (
             <div>
-              <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', paddingLeft: '5px' }} />
-              <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
-              <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', padding: '8px' }} />
+              <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
             </div>
           ) : null}
       </div>;
     });
     if (showOptions) {
-      return <ReactTooltip effect='solid' clickable key={key + labels.length + 1 + showOptions} id={id} aria-haspopup='true' event='click' globalEventOff='click'>
+      return <ReactTooltip effect='solid' clickable key={String(Math.floor(Math.random() * (5000000)))} id={id} aria-haspopup='true' event='click' globalEventOff='click'>
         {
           labelArray
         }
       </ReactTooltip>;
     } else {
-      return <ReactTooltip effect='solid' key={key + labels.length + 1 + showOptions} id={id} aria-haspopup='true'>
+      return <ReactTooltip effect='solid' key={String(Math.floor(Math.random() * (5000000)))} id={id} aria-haspopup='true'>
         {
           labelArray
         }
