@@ -36,48 +36,48 @@ class CodeMirror extends Component {
                     },
                     Subject: {
                         attrs: {
-                            value: null
+                            value: [""]
                         },
                         children: []
                     },
                     Sentiment: {
                         attrs: {
-                            value: null
+                            value: [""]
                         },
                         children: []
                     },
                     EntityAvailable: {
                         attrs: {
-                            label: null,
-                            value: null
+                            label: [""],
+                            value: [""]
                         },
                         children: []
                     },
                     Predecessor: {
                         attrs: {
-                            matches: null,
-                            position: null
+                            matches: [""],
+                            position: ["any", "last", "0"]
                         },
                         children: []
                     },
                     PredecessorCount: {
                         attrs: {
-                            min: null,
-                            max: null
+                            min: ["0"],
+                            max: ["0"]
                         },
                         children: []
                     },
                     UploadDate: {
                         attrs: {
-                            min: null,
-                            max: null
+                            min: ["2019-01-01"],
+                            max: ["2019-01-01"]
                         },
                         children: []
                     },
                     UploadTime: {
                         attrs: {
-                            min: null,
-                            max: null
+                            min: ["00:00:00"],
+                            max: ["00:00:00"]
                         },
                         children: []
                     },
