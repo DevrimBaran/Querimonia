@@ -12,7 +12,6 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -51,25 +50,25 @@ public class ComplaintFactory {
    * @return the generated complaint object.
    */
   public Complaint createComplaint(String complaintText, Configuration configuration) {
-    Complaint complaint = new Complaint(
-        complaintText,
-        makePreview(complaintText),
-        LocalDate.now(),
-        LocalTime.now());
-    return analyzeComplaint(complaint, configuration, false);
+    ComplaintBuilder complaint = new ComplaintBuilder(complaintText)
+        .setConfiguration(configuration)
+        .setPreview(makePreview(complaintText))
+        .setReceiveDate(LocalDate.now())
+        .setReceiveTime(LocalTime.now());
+    return analyzeComplaint(complaint, false);
   }
 
   /**
    * Runs the analyze process on a given complaint.
    *
    * @param complaint           the complaint, which gets modified.
-   * @param configuration       the configuration that should be used for the analysis.
    * @param keepUserInformation if true, no information gets overwritten where setByUser is true.
    *
    * @return the modified complaint.
    */
-  public Complaint analyzeComplaint(Complaint complaint, Configuration configuration,
+  public Complaint analyzeComplaint(ComplaintBuilder complaint,
                                     boolean keepUserInformation) {
+    Configuration configuration = complaint.getConfiguration();
     // get the analysis tools from the configuration
     List<Classifier> classifiers =
         ClassifierFactory.getFromDefinition(configuration.getClassifiers());
@@ -103,45 +102,37 @@ public class ComplaintFactory {
     var emotionProperty = emotionPropertyFuture.join();
     var entities = entitiesFuture.join();
     var sentiment = sentimentFuture.join();
-    // generate response
-    ComplaintData complaintData = new ComplaintData(
-        complaintText,
-        complaintProperties,
-        emotionProperty,
-        entities,
-        LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()),
-        sentiment);
 
-    ResponseSuggestion responseSuggestion = createResponse(complaintData);
+    ResponseSuggestion responseSuggestion = createResponse(complaint);
     complaintProperties.add(emotionProperty);
     return complaint
         .setEntities(entities)
         .setSentiment(sentiment)
-        .setConfiguration(configuration)
         .setResponseSuggestion(responseSuggestion)
         .setProperties(complaintProperties)
-        .setWordList(wordsFuture.join());
+        .setWordList(wordsFuture.join())
+        .createComplaint();
   }
 
   /**
    * Uses the response generator of the factory to generate a response suggestion.
    *
-   * @param complaintData contains the necessary information about the complaint to generate the
-   *                      answer.
+   * @param complaintBuilder contains the necessary information about the complaint to generate the
+   *                         answer.
    *
    * @return a response suggestion for the complaint.
    */
-  public ResponseSuggestion createResponse(ComplaintData complaintData) {
-    return responseGenerator.generateResponse(complaintData);
+  public ResponseSuggestion createResponse(ComplaintBuilder complaintBuilder) {
+    return responseGenerator.generateResponse(complaintBuilder);
   }
 
   /**
    * Analyzes the complaint for named entities.
    */
-  private List<NamedEntity> extractEntities(Complaint complaint,
+  private List<NamedEntity> extractEntities(ComplaintBuilder complaintBuilder,
                                             Configuration configuration,
                                             boolean keepUserInformation) {
-    String complaintText = complaint.getText();
+    String complaintText = complaintBuilder.getText();
     // use entity extractors
     Stream<NamedEntity> entityStream = configuration
         .getExtractors()
@@ -153,9 +144,13 @@ public class ComplaintFactory {
         .distinct();
 
     // keep old entities if necessary
-    Stream<NamedEntity> oldEntityStream = complaint.getEntities()
-        .stream()
-        .filter(NamedEntity::isSetByUser);
+    List<NamedEntity> oldEntities = complaintBuilder.getEntities();
+    Stream<NamedEntity> oldEntityStream =
+        oldEntities == null
+            ? Stream.empty()
+            : oldEntities
+                .stream()
+                .filter(NamedEntity::isSetByUser);
     if (keepUserInformation) {
       entityStream = Stream.concat(entityStream, oldEntityStream).distinct();
     }

@@ -6,7 +6,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,12 +25,18 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
-  private String label;
-  private String value;
+  @NonNull
+  @Column(nullable = false)
+  private String label = "";
+  @NonNull
+  @Column(nullable = false)
+  private String value = "";
   private int start;
   private int end;
   private boolean setByUser = false;
-  private String extractor;
+  @NonNull
+  @Column(nullable = false)
+  private String extractor = "";
 
   /**
    * Simple constructor for creating a new named entity object.
@@ -40,9 +48,12 @@ public class NamedEntity implements Comparable<NamedEntity> {
    * @param extractor the name of the extractor that was used to find this entity.
    */
   @JsonCreator
-  public NamedEntity(@JsonProperty String label, @JsonProperty("start") int start, @JsonProperty(
-      "end") int end, @JsonProperty boolean setByUser, @JsonProperty String extractor,
-                     @JsonProperty String value) {
+  NamedEntity(@NonNull @JsonProperty String label,
+                     @JsonProperty("start") int start,
+                     @JsonProperty("end") int end,
+                     @JsonProperty boolean setByUser,
+                     @NonNull @JsonProperty String extractor,
+                     @NonNull @JsonProperty String value) {
     this.label = label;
     this.start = start;
     this.end = end;
@@ -69,6 +80,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     // constructor for hibernate
   }
 
+  @NonNull
   public String getLabel() {
     return label;
   }
@@ -88,6 +100,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return setByUser;
   }
 
+  @NonNull
   public String getExtractor() {
     return extractor;
   }
@@ -96,6 +109,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return id;
   }
 
+  @NonNull
   public String getValue() {
     return value;
   }

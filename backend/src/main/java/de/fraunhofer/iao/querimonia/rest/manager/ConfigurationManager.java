@@ -106,19 +106,19 @@ public class ConfigurationManager {
     if (configurationRepository.existsById(configId)) {
       // remove reference in all complaints
       for (Complaint complaint : complaintRepository.findAll()) {
-        if (complaint.getConfiguration().getConfigId() == configId) {
-          complaint.setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+        if (complaint.getConfiguration().getId() == configId) {
+          complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
         }
         complaintRepository.save(complaint);
       }
 
       // dont delete fallback configuration
-      if (configId != Configuration.FALLBACK_CONFIGURATION.getConfigId()) {
+      if (configId != Configuration.FALLBACK_CONFIGURATION.getId()) {
         configurationRepository.deleteById(configId);
       }
       // check if current configuration gets removed
       if (analyzerConfigProperties.getId() == configId) {
-        analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getConfigId());
+        analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getId());
       }
     } else {
       throw new NotFoundException(configId);
@@ -136,7 +136,7 @@ public class ConfigurationManager {
   public synchronized Configuration updateConfiguration(long configId,
                                                         Configuration configuration) {
     if (configurationRepository.existsById(configId)) {
-      configuration.setConfigId(configId);
+      configuration = configuration.withConfigId(configId);
       return configurationRepository.save(configuration);
     }
     throw new NotFoundException(configId);
@@ -181,15 +181,15 @@ public class ConfigurationManager {
    */
   public synchronized void deleteAllConfigurations() {
     for (Complaint complaint : complaintRepository.findAll()) {
-      complaint.setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+      complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
       complaintRepository.save(complaint);
     }
     for (Configuration configuration : configurationRepository.findAll()) {
-      if (configuration.getConfigId() != Configuration.FALLBACK_CONFIGURATION.getConfigId()) {
-        configurationRepository.deleteById(configuration.getConfigId());
+      if (!configuration.getId().equals(Configuration.FALLBACK_CONFIGURATION.getId())) {
+        configurationRepository.deleteById(configuration.getId());
       }
     }
-    analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getConfigId());
+    analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getId());
   }
 
   /**
@@ -206,7 +206,7 @@ public class ConfigurationManager {
    */
   private Comparator<Configuration> getConfigComparator(Optional<String[]> sortBy) {
     return new ComparatorBuilder<Configuration>()
-        .append("id", Configuration::getConfigId)
+        .append("id", Configuration::getId)
         .append("name", Configuration::getName)
         .build(sortBy.orElse(new String[] {"id_asc"}));
   }

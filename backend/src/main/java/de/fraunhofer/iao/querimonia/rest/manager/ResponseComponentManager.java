@@ -10,6 +10,7 @@ import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseCompone
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ResponseComponentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,7 @@ public class ResponseComponentManager {
 
   @Autowired
   public ResponseComponentManager(
-      ResponseComponentRepository componentRepository,
+      @Qualifier("responseComponentRepository") ResponseComponentRepository componentRepository,
       ComplaintRepository complaintRepository) {
     this.componentRepository = componentRepository;
     this.complaintRepository = complaintRepository;
@@ -151,7 +152,7 @@ public class ResponseComponentManager {
         List<CompletedResponseComponent> responseComponents =
             complaint.getResponseSuggestion().getResponseComponents();
         responseComponents.stream()
-            .filter(component -> component.getComponent().getComponentId() == componentId)
+            .filter(component -> component.getComponent().getId() == componentId)
             .forEachOrdered(responseComponents::remove);
         complaintRepository.save(complaint);
       }

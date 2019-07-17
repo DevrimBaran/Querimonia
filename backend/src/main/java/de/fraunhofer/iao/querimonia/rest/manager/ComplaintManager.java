@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
@@ -28,6 +28,7 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,7 +64,8 @@ public class ComplaintManager {
   @Autowired
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
-                          ResponseComponentRepository templateRepository,
+                          @Qualifier("responseComponentRepository")
+                              ResponseComponentRepository templateRepository,
                           ConfigurationManager configurationManager) {
 
     this.fileStorageService = fileStorageService;
@@ -175,14 +177,18 @@ public class ComplaintManager {
   public Complaint updateComplaint(long complaintId, ComplaintUpdateRequest updateRequest) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
 
-    updateRequest.getNewEmotion()
-        .ifPresent(sentiment -> complaint.getEmotion().setValue(sentiment));
-    updateRequest.getNewSubject()
-        .ifPresent(subject -> complaint.getSubject().setValue(subject));
-    updateRequest.getNewState()
-        .ifPresent(complaint::setState);
-
+    if (updateRequest.getNewEmotion().isPresent()) {
+      builder.setValueOfProperty("Emotion", updateRequest.getNewEmotion().get());
+    }
+    if (updateRequest.getNewSubject().isPresent()) {
+      builder.setValueOfProperty("Kategorie", updateRequest.getNewSubject().get());
+    }
+    if (updateRequest.getNewState().isPresent()) {
+      builder.setState(updateRequest.getNewState().get());
+    }
+    complaint = builder.createComplaint();
     storeComplaint(complaint);
     return complaint;
   }
@@ -211,6 +217,7 @@ public class ComplaintManager {
       Optional<Boolean> keepUserInformation,
       Optional<Long> configId) {
     Complaint complaint = getComplaint(complaintId);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkState(complaint);
 
     Configuration configuration = configId
@@ -218,8 +225,9 @@ public class ComplaintManager {
         .map(configurationManager::getConfiguration)
         // use the currently active configuration else
         .orElseGet(configurationManager::getCurrentConfiguration);
+    builder.setConfiguration(configuration);
 
-    complaint = complaintFactory.analyzeComplaint(complaint, configuration,
+    complaint = complaintFactory.analyzeComplaint(builder,
         keepUserInformation.orElse(false));
     storeComplaint(complaint);
     return complaint;
@@ -228,13 +236,15 @@ public class ComplaintManager {
   public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
-    complaint.setState(ComplaintState.CLOSED);
+    complaint = complaint.withState(ComplaintState.CLOSED);
 
     // execute actions of the complaint
     complaint
         .getResponseSuggestion()
         .getActions()
         .forEach(Action::executeAction);
+
+    storeComplaint(complaint);
 
     return complaint;
   }
@@ -280,7 +290,7 @@ public class ComplaintManager {
     } else {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
           "Die Entität mit Label " + entity.getLabel()
-          + "existiert bereits!", "Entität bereits vorhanden");
+              + "existiert bereits!", "Entität bereits vorhanden");
     }
 
     storeComplaint(complaint);
@@ -294,6 +304,7 @@ public class ComplaintManager {
    */
   public List<NamedEntity> removeEntity(long complaintId, long entityId) {
     Complaint complaint = getComplaint(complaintId);
+
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
     List<NamedEntity> entitiesToRemove = complaintEntities
@@ -323,10 +334,12 @@ public class ComplaintManager {
    */
   public ResponseSuggestion refreshResponse(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    var suggestion = complaintFactory.createResponse(new ComplaintData(complaint));
-    complaint.setResponseSuggestion(suggestion);
-    storeComplaint(complaint);
-    return complaint.getResponseSuggestion();
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    var suggestion = complaintFactory.createResponse(builder);
+    builder.setResponseSuggestion(suggestion);
+
+    storeComplaint(builder.createComplaint());
+    return suggestion;
   }
 
   private synchronized void storeComplaint(Complaint complaint) {
@@ -344,7 +357,7 @@ public class ComplaintManager {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
           + "Beschwerde", e, "Beschwerde");
     }
-    logger.info("Saved complaint with id {}", complaint.getComplaintId());
+    logger.info("Saved complaint with id {}", complaint.getId());
   }
 
   private void checkState(Complaint complaint) {

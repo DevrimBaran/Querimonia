@@ -8,6 +8,8 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.lang.NonNull;
+import tec.uom.lib.common.function.Identifiable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -27,7 +29,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +51,7 @@ import java.util.Map;
     "emotion",
     "entities"
 })
-public class Complaint {
+public class Complaint implements Identifiable<Long> {
 
   /**
    * The primary key for the complaints in the database.
@@ -62,26 +64,31 @@ public class Complaint {
   /**
    * The complaint message, is limited to 10000 characters.
    */
-  @Column(length = 10000)
-  private String text;
+  @Column(length = 10000, nullable = false)
+  @NonNull
+  private String text = "";
 
   /**
    * A preview of the complaint message, should be the first two lines.
    */
-  @Column(length = 500)
-  private String preview;
+  @Column(length = 500, nullable = false)
+  @NonNull
+  private String preview = "";
 
   /**
    * The state of the complaint. A complaint is either new, in progress or closed.
    */
   @Enumerated(EnumType.ORDINAL)
-  private ComplaintState state;
+  @Column(nullable = false)
+  @NonNull
+  private ComplaintState state = ComplaintState.NEW;
 
   /**
    * Additional properties for the complaint like the category, that get found by classifiers.
    */
   @OneToMany(cascade = CascadeType.ALL)
-  private List<ComplaintProperty> properties;
+  @NonNull
+  private List<ComplaintProperty> properties = Collections.emptyList();
 
   /**
    * A value that represents the sentiment of the text. Negative values represent negative
@@ -94,14 +101,16 @@ public class Complaint {
    */
   @OneToMany(cascade = CascadeType.ALL)
   @JsonIgnore
-  private List<NamedEntity> entities;
+  @NonNull
+  private List<NamedEntity> entities = Collections.emptyList();
 
   /**
    * The response for the complaint.
    */
   @OneToOne(cascade = CascadeType.ALL)
   @JsonIgnore
-  private ResponseSuggestion responseSuggestion;
+  @NonNull
+  private ResponseSuggestion responseSuggestion = new ResponseSuggestion();
 
   /**
    * A list of all words in the complaint text, which are not stop words, mapped to their absolute
@@ -111,29 +120,45 @@ public class Complaint {
   @CollectionTable(name = "word_list_table", joinColumns = @JoinColumn(name = "complaintId"))
   @MapKeyColumn(name = "words")
   @Column(name = "count")
+  @NonNull
   @JsonIgnore
-  private Map<String, Integer> wordList;
+  private Map<String, Integer> wordList = new HashMap<>();
 
   /**
    * The date when the complaint was received.
    */
-  private LocalDate receiveDate;
-  private LocalTime receiveTime;
+  @Column(nullable = false)
+  @NonNull
+  private LocalDate receiveDate = LocalDate.now();
+  @Column(nullable = false)
+  @NonNull
+  private LocalTime receiveTime = LocalTime.now();
 
   /**
    * The configuration which was used to analyze the configuration.
    */
   @ManyToOne(cascade = CascadeType.MERGE)
-  private Configuration configuration;
+  @NonNull
+  @Column(nullable = false)
+  private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
 
-  public Complaint(String text, String preview,
-                   ComplaintState state,
-                   List<ComplaintProperty> properties, double sentiment,
-                   List<NamedEntity> entities,
-                   ResponseSuggestion responseSuggestion,
-                   Map<String, Integer> wordList, LocalDate receiveDate,
-                   LocalTime receiveTime,
-                   Configuration configuration) {
+  /**
+   * Constructor for builder.
+   */
+  Complaint(
+      long id,
+      @NonNull String text,
+      @NonNull String preview,
+      @NonNull ComplaintState state,
+      @NonNull List<ComplaintProperty> properties,
+      double sentiment,
+      @NonNull List<NamedEntity> entities,
+      @NonNull ResponseSuggestion responseSuggestion,
+      @NonNull Map<String, Integer> wordList,
+      @NonNull LocalDate receiveDate,
+      @NonNull LocalTime receiveTime,
+      @NonNull Configuration configuration) {
+    this.complaintId = id;
     this.text = text;
     this.preview = preview;
     this.state = state;
@@ -145,25 +170,6 @@ public class Complaint {
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
     this.configuration = configuration;
-  }
-
-  /**
-   * Constructor for the complaint factory.
-   */
-  Complaint(String text,
-            String preview,
-            LocalDate receiveDate,
-            LocalTime receiveTime) {
-    this.text = text;
-    this.state = ComplaintState.NEW;
-    this.preview = preview;
-    this.entities = new ArrayList<>();
-    this.configuration = Configuration.FALLBACK_CONFIGURATION;
-    this.responseSuggestion = new ResponseSuggestion();
-    this.receiveDate = receiveDate;
-    this.receiveTime = receiveTime;
-    this.wordList = new HashMap<>();
-    this.properties = new ArrayList<>();
   }
 
   /**
@@ -179,14 +185,18 @@ public class Complaint {
     return ComplaintUtility.getPropertyOfComplaint(this, "Kategorie");
   }
 
-  public long getComplaintId() {
+  @JsonProperty("id")
+  @Override
+  public Long getId() {
     return complaintId;
   }
 
+  @NonNull
   public String getText() {
     return text;
   }
 
+  @NonNull
   public String getPreview() {
     return preview;
   }
@@ -196,78 +206,62 @@ public class Complaint {
     return ComplaintUtility.getPropertyOfComplaint(this, "Emotion");
   }
 
+  @NonNull
   public LocalDate getReceiveDate() {
     return receiveDate;
   }
 
+  @NonNull
   public LocalTime getReceiveTime() {
     return receiveTime;
   }
 
+  @NonNull
   public List<NamedEntity> getEntities() {
     return entities;
   }
 
+  @NonNull
   @JsonIgnore
   public Map<String, Integer> getWordList() {
     return wordList;
   }
 
+  @NonNull
   @JsonIgnore
   public ResponseSuggestion getResponseSuggestion() {
     return responseSuggestion;
   }
 
+  @NonNull
   public ComplaintState getState() {
     return state;
   }
 
+  public Complaint withState(ComplaintState state) {
+    return new ComplaintBuilder(this)
+        .setState(state)
+        .createComplaint();
+  }
+
+  @NonNull
   public Configuration getConfiguration() {
     return configuration;
   }
 
-  public Complaint setState(ComplaintState state) {
-    this.state = state;
-    return this;
+  public Complaint withConfiguration(Configuration configuration) {
+    return new ComplaintBuilder(this)
+        .setConfiguration(configuration)
+        .createComplaint();
   }
 
-  public Complaint setEntities(List<NamedEntity> entities) {
-    this.entities = entities;
-    return this;
-  }
-
-  public Complaint setResponseSuggestion(ResponseSuggestion responseSuggestion) {
-    this.responseSuggestion = responseSuggestion;
-    return this;
-  }
-
-  public Complaint setWordList(Map<String, Integer> wordList) {
-    this.wordList = wordList;
-    return this;
-  }
-
-  public Complaint setConfiguration(Configuration configuration) {
-    this.configuration = configuration;
-    return this;
-  }
-
+  @NonNull
   public List<ComplaintProperty> getProperties() {
     return properties;
   }
 
-  public Complaint setProperties(
-      List<ComplaintProperty> properties) {
-    this.properties = properties;
-    return this;
-  }
-
   public double getSentiment() {
     return sentiment;
-  }
-
-  public Complaint setSentiment(double sentiment) {
-    this.sentiment = sentiment;
-    return this;
   }
 
   /**
@@ -275,8 +269,9 @@ public class Complaint {
    * text, state, subject, emotion, entities and their response is equal.
    *
    * @param o the other complaint. Must be a complaint object.
+   *
    * @return true, if the given object is a complaint object and the two complaint objects are
-   * equal.
+   *     equal.
    */
   @Override
   public boolean equals(Object o) {

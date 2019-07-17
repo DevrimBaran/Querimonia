@@ -2,6 +2,7 @@
 package de.fraunhofer.iao.querimonia.response.component;
 
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSlice;
 import org.junit.Test;
 
@@ -140,8 +141,10 @@ public class ResponseSliceTest {
     @Test
     public void testGetRequiredEntitiesStandard() {
         String componentText = "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen.";
-        ResponseComponent responseComponent = new ResponseComponent();
-        responseComponent.setComponentTexts(Collections.singletonList(componentText));
+        ResponseComponent responseComponent =
+            new ResponseComponentBuilder().createResponseComponent();
+        responseComponent =
+            responseComponent.setComponentTexts(Collections.singletonList(componentText));
 
         List<String> correctRequiredEntities = new ArrayList<>();
         correctRequiredEntities.add("Name");
@@ -159,8 +162,10 @@ public class ResponseSliceTest {
     public void testGetRequiredEntitiesDuplicatePlaceholder() {
         String componentText = "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen. " +
                 "Auf Wiedersehen, Herr ${Name}!";
-        ResponseComponent responseComponent = new ResponseComponent();
-        responseComponent.setComponentTexts(Collections.singletonList(componentText));
+        ResponseComponent responseComponent =
+            new ResponseComponentBuilder().createResponseComponent();
+        responseComponent =
+            responseComponent.setComponentTexts(Collections.singletonList(componentText));
 
         List<String> correctRequiredEntities = new ArrayList<>();
         correctRequiredEntities.add("Name");
@@ -177,7 +182,8 @@ public class ResponseSliceTest {
     @Test
     public void testGetRequiredEntitiesNoPlaceholder() {
         String componentText = "Guten Tag!";
-        ResponseComponent responseComponent = new ResponseComponent();
+        ResponseComponent responseComponent =
+            new ResponseComponentBuilder().createResponseComponent();
         responseComponent.setComponentTexts(Collections.singletonList(componentText));
 
         assertEquals(new ArrayList<>(), responseComponent.getRequiredEntities());

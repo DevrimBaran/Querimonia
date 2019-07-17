@@ -132,7 +132,7 @@ public class ComplaintFilter {
     return new ComparatorBuilder<Complaint>()
         .append("upload_date", complaint -> LocalDateTime.of(complaint.getReceiveDate(),
             complaint.getReceiveTime()))
-        .append("id", Complaint::getComplaintId)
+        .append("id", Complaint::getId)
         .append("sentiment", Complaint::getSentiment)
         .append("state", Complaint::getState)
         .append("emotion", Complaint::getEmotion)

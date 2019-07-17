@@ -1,11 +1,12 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
-import org.slf4j.LoggerFactory;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -28,7 +29,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   }
 
   @Override
-  public ResponseSuggestion generateResponse(ComplaintData complaintData) {
+  public ResponseSuggestion generateResponse(ComplaintBuilder complaintBuilder) {
     List<ResponseComponent> responseComponents = new ArrayList<>();
     templateRepository.findAll().forEach(responseComponents::add);
 
@@ -39,11 +40,11 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
     // filter out not matching templates
     List<RuledInterface> responseComponentsFiltered =
-        filterComponents(complaintData, responseComponents);
+        filterComponents(complaintBuilder, responseComponents);
 
     // filter out not matching actions
     actions = actions.stream()
-        .filter(action -> action.getRootRule().isPotentiallyRespected(complaintData))
+        .filter(action -> action.getRootRule().isPotentiallyRespected(complaintBuilder))
         .sorted()
         .collect(Collectors.toList());
 
@@ -53,18 +54,40 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
     String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
         .withLocale(Locale.GERMAN)
-        .format(complaintData.getUploadTime().toLocalDate());
+        .format(complaintBuilder.getReceiveDate());
     String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
         .withLocale(Locale.GERMAN)
-        .format(complaintData.getUploadTime().toLocalTime());
-    allEntities.add(new NamedEntity("Eingangsdatum", 0, 0, false, "", formattedDate));
-    allEntities.add(new NamedEntity("Eingangszeit", 0, 0, false, "", formattedTime));
+        .format(complaintBuilder.getReceiveTime());
+    // get first extractors that is used for the entities that are not in the text
+    String extractor = complaintBuilder
+        .getConfiguration()
+        .getExtractors()
+        .stream()
+        .findFirst()
+        .map(ExtractorDefinition::getName)
+        .orElse("");
 
-    LoggerFactory.getLogger(getClass()).info("Response Generation finished");
-    return getResponseSuggestion(complaintData, responseComponentsFiltered, allEntities);
+    allEntities.add(new NamedEntityBuilder()
+        .setLabel("Eingangsdatum")
+        .setStart(0)
+        .setEnd(0)
+        .setSetByUser(false)
+        .setExtractor(extractor)
+        .setValue(formattedDate)
+        .createNamedEntity());
+    allEntities.add(new NamedEntityBuilder()
+        .setLabel("Eingangszeit")
+        .setStart(0)
+        .setEnd(0)
+        .setSetByUser(false)
+        .setExtractor(extractor)
+        .setValue(formattedTime)
+        .createNamedEntity());
+
+    return getResponseSuggestion(complaintBuilder, responseComponentsFiltered, allEntities);
   }
 
-  private List<RuledInterface> filterComponents(ComplaintData complaintData,
+  private List<RuledInterface> filterComponents(ComplaintBuilder complaintData,
                                                 List<ResponseComponent> responseComponents) {
     List<RuledInterface> responseComponentsFiltered = new ArrayList<>();
     responseComponents.stream()
@@ -76,7 +99,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     return responseComponentsFiltered;
   }
 
-  private ResponseSuggestion getResponseSuggestion(ComplaintData complaintData,
+  private ResponseSuggestion getResponseSuggestion(ComplaintBuilder complaintData,
                                                    List<RuledInterface> filteredComponents,
                                                    List<NamedEntity> allEntities) {
     List<CompletedResponseComponent> generatedResponse = new ArrayList<>();

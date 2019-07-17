@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -18,6 +19,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,15 +33,18 @@ public class ExtractorDefinition {
   @JsonIgnore
   private int id;
 
-  private String name;
+  @NonNull
+  private String name = "";
 
   @Enumerated(EnumType.STRING)
-  private ExtractorType type;
+  @NonNull
+  private ExtractorType type = ExtractorType.NONE;
 
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "color_table", joinColumns = @JoinColumn(name = "id"))
   @Column(name = "color")
-  private List<ColorDefinition> colors;
+  @NonNull
+  private List<ColorDefinition> colors = new ArrayList<>();
 
   @SuppressWarnings("unused")
   public ExtractorDefinition() {
@@ -48,9 +53,9 @@ public class ExtractorDefinition {
 
   @JsonCreator
   @SuppressWarnings("unused")
-  public ExtractorDefinition(String name,
-                             ExtractorType type,
-                             List<ColorDefinition> colors) {
+  public ExtractorDefinition(@NonNull String name,
+                             @NonNull ExtractorType type,
+                             @NonNull List<ColorDefinition> colors) {
     this.name = name;
     this.type = type;
     this.colors = colors;
@@ -60,14 +65,17 @@ public class ExtractorDefinition {
     return id;
   }
 
+  @NonNull
   public String getName() {
     return name;
   }
 
+  @NonNull
   public ExtractorType getType() {
     return type;
   }
 
+  @NonNull
   public List<ColorDefinition> getColors() {
     return colors;
   }
@@ -116,10 +124,12 @@ public class ExtractorDefinition {
     String label;
     String color;
 
+    @SuppressWarnings("unused")
     public ColorDefinition() {
     }
 
     @JsonCreator
+    @SuppressWarnings("unused")
     public ColorDefinition(String label, String color) {
       this.label = label;
       this.color = color;
