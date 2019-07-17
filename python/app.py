@@ -43,6 +43,15 @@ class Vec_to_word(Resource):
         result = wordvector.Calc.getword(np.asarray(vector), modelName)
         return jsonify(result)
 
+@api.route('/python/predict_word')
+class Predict_word(Resource):
+    def post(self):
+        content = request.get_json()
+        query = content['query']
+        modelName = content['model']
+        result = wordvector.Calc.predict_word(query, modelName)
+        return jsonify(result)
+
 
 if __name__ == '__main__':
     app.run(debug=False)

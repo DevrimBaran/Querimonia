@@ -42,3 +42,20 @@ class Calc:
     def vectorize(word, model_name):
         model = Calc.set_model(model_name)
         return np.array(model[word])
+
+    @staticmethod
+    def predict_words(query, model_name):
+
+        # Pfad zu den Listen
+        basepath = "../wortvektoren/fastText/predictionLists/"
+
+        model_file = open( basepath + model_name, "r")
+        words = model_file.read().split('\n')
+        result = []
+        
+        if len(query) >= 3:
+            for word in words:
+                if word[0:len(query)] == query:
+                    result.append(word)
+
+        return result
