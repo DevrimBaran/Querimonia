@@ -240,7 +240,7 @@ class WordVectors extends Component {
                 <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>
             </div>
-            <table>
+            <table className="center">
               <thead>
                 <tr>
                   <th>Wort</th>
