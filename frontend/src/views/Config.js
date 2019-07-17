@@ -39,7 +39,7 @@ class Config extends Component {
               <Table>
                 {ConfigPartial.Header()}
                 <tbody>
-                  {this.props.data.ids.map(id => ConfigPartial.List(this.props.data.byId[id], this.props.currentConfig))}
+                  {this.props.data.ids.map(id => ConfigPartial.List(this.props.dispatch, this.props.data.byId[id], this.props.currentConfig))}
                 </tbody>
               </Table>
             )
