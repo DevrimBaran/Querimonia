@@ -28,31 +28,77 @@ class CodeMirror extends Component {
                 };
 
                 var tags = {
-                    "!top": ["top"],
-                    "!attrs": {
-                        id: null,
-                        class: ["A", "B", "C"]
-                    },
-                    top: {
+                    "!top": ["Rules"],
+                    Rules: {
                         attrs: {
-                            lang: ["en", "de", "fr", "nl"],
-                            freeform: null
                         },
-                        children: ["animal", "plant"]
+                        children: ["Subject", "Sentiment", "EntityAvailable", "Predecessor", "PredecessorCount", "UploadDate", "UploadTime", "Not", "Or", "And"]
                     },
-                    animal: {
+                    Subject: {
                         attrs: {
-                            name: null,
-                            isduck: ["yes", "no"]
+                            value: null
                         },
-                        children: ["wings", "feet", "body", "head", "tail"]
+                        children: []
                     },
-                    plant: {
-                        attrs: {name: null},
-                        children: ["leaves", "stem", "flowers"]
+                    Sentiment: {
+                        attrs: {
+                            value: null
+                        },
+                        children: []
                     },
-                    wings: dummy, feet: dummy, body: dummy, head: dummy, tail: dummy,
-                    leaves: dummy, stem: dummy, flowers: dummy
+                    EntityAvailable: {
+                        attrs: {
+                            label: null,
+                            value: null
+                        },
+                        children: []
+                    },
+                    Predecessor: {
+                        attrs: {
+                            matches: null,
+                            position: null
+                        },
+                        children: []
+                    },
+                    PredecessorCount: {
+                        attrs: {
+                            min: null,
+                            max: null
+                        },
+                        children: []
+                    },
+                    UploadDate: {
+                        attrs: {
+                            min: null,
+                            max: null
+                        },
+                        children: []
+                    },
+                    UploadTime: {
+                        attrs: {
+                            min: null,
+                            max: null
+                        },
+                        children: []
+                    },
+                    Not: {
+                        attrs: {
+
+                        },
+                        children: ["Subject", "Sentiment", "EntityAvailable", "Predecessor", "PredecessorCount", "UploadDate", "UploadTime", "Not", "Or", "And"]
+                    },
+                    Or: {
+                        attrs: {
+
+                        },
+                        children: ["Subject", "Sentiment", "EntityAvailable", "Predecessor", "PredecessorCount", "UploadDate", "UploadTime", "Not", "Or", "And"]
+                    },
+                    And: {
+                        attrs: {
+
+                        },
+                        children: ["Subject", "Sentiment", "EntityAvailable", "Predecessor", "PredecessorCount", "UploadDate", "UploadTime", "Not", "Or", "And"]
+                    }
                 };
 
                 function completeAfter(cm, pred) {
