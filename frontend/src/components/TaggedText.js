@@ -167,8 +167,11 @@ class TaggedText extends Component {
         {showOptions
           ? (
             <div>
+              {/* eslint-disable-next-line */}
               <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              {/* eslint-disable-next-line */}
               <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              {/* eslint-disable-next-line */}
               <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
             </div>
           ) : null}
