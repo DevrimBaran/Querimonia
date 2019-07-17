@@ -61,6 +61,7 @@ def prozent(dict):
         dict[key] = round((100 / sum) * value, 2)
     print(dict)
 
+
 def emotion_analysis(query):
     emotions_d = defaultdict(int)
     stemNtokenize = tokenize_and_stem(query)
