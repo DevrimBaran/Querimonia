@@ -124,7 +124,7 @@ class TaggedText extends Component {
     } else {
       return '#202124';
     }
-  }
+  };
 
   // calculates the proper background colors for the given labels
   createBackground = (tag) => {
@@ -147,7 +147,7 @@ class TaggedText extends Component {
   };
 
   /**
-   * Creates tthe tooltips for the entitie-labels
+   * Creates the tooltips for the entity-labels
    * If showOptions is true, the tooltips appear in the tooltip
    */
   createTooltip = (tag, id, key, showOptions) => {
@@ -301,7 +301,7 @@ class TaggedText extends Component {
               extractorList: extractorList
             });
           });
-      };
+      }
     }
   };
 
