@@ -92,7 +92,7 @@ build-python:
   script:
     - cd python/
     - pip3 install pipenv --user
-    - pipenv install
+    - ~/.local/bin/pipenv install
     - pipenv run flake8 .
   artifacts:
     paths:
