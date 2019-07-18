@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_restplus import Resource, Api, fields
+from flask_restplus import Resource, Api
 import numpy as np
 import sentiment_analyse
 import wordvector
@@ -18,7 +18,6 @@ api = Api(
 @api.route("/python/sentiment_analyse")
 class Sentiment(Resource):
     def post(self):
-        # Example: python -c "import requests; res = requests.post('http://localhost:5000/sentiment', json={'text':'Ich hasse Hawaiipizza'}); print(res.json())"
         # get complaint text
         content = request.get_json()
         if "text" not in content:

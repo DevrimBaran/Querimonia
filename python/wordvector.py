@@ -61,7 +61,7 @@ class Calc:
 
         if len(query) >= 3:
             for word in words:
-                if word[0 : len(query)] == query:
+                if word[0:len(query)] == query:
                     result.append(word)
 
         return result

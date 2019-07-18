@@ -93,7 +93,7 @@ build-python:
     - pip3 install pipenv --user
     - pip3 install flake8 --user
     - ~/.local/bin/pipenv install
-    - ~/.local/bin/flake8 .
+    - ~/.local/bin/flake8 --ignore E501 .
   artifacts:
     paths:
       - python/
