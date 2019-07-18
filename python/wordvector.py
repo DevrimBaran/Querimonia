@@ -3,7 +3,7 @@ import numpy as np
 import logging
 
 # Pfad zu den Modellen
-basepath = "../wortvektoren/fastText/models/"
+basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
 # Lade Modelle
 model_beschwerden3kPolished = FastText.load_fasttext_format(
     basepath + "beschwerden3kPolished.bin"
