@@ -87,6 +87,7 @@ deploy-frontend-dev:
 # python
 build-python:
   stage: build
+  image: python
   tags:
     - shell
   script:
