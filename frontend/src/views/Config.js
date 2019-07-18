@@ -34,12 +34,12 @@ class Config extends Component {
           <Link to='/config/0'><Input type='button' value='Neue Konfiguration' /></Link>
         </div>
         <Content className='padding'>
-          {!this.props.fetching && this.props.data
+          {!this.props.data.fetching
             ? (
               <Table>
                 {ConfigPartial.Header()}
                 <tbody>
-                  {this.props.data.ids.map(id => ConfigPartial.List(this.props.data.byId[id], this.props.currentConfig))}
+                  {this.props.data.ids.map(id => ConfigPartial.List(this.props.dispatch, this.props.data.byId[id], this.props.currentConfig))}
                 </tbody>
               </Table>
             )

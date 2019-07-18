@@ -46,7 +46,7 @@ function List (data) {
     </React.Fragment>
   );
 }
-function Single (active) {
+function Single (active, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
   return (
     <React.Fragment>
       <Block>
@@ -61,7 +61,7 @@ function Single (active) {
           <Content>
             <Tabbed style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} editable />
+                <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} editable />
               </div>
               <div label='Original'>
                 {active.text}
@@ -80,10 +80,46 @@ function Single (active) {
             {active.id}
             <br />
             <b> Kategorie: </b>
-            <i data-tip data-for='subjects'>{active.subject.value}</i>
+            {
+              !editCategorieBool ? (
+                <span>
+                  <i data-tip data-for='subjects'>{active.subject.value}</i>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              ) : (
+                <span>
+                  <select id='chooseCategorie'>
+                    {Object.keys(active.subject.probabilities).map(subject => subject === active.subject.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
+                  </select>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-check-circle fa-lg'} onClick={editCategorie.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-times-circle fa-lg'} onClick={editCategorie.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              )
+            }
             <br />
             <b> Sentiment: </b>
-            <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
+            {
+              !editSentimentBool ? (
+                <span>
+                  <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              ) : (
+                <span>
+                  <select id='chooseSentiment'>
+                    {Object.keys(active.sentiment.probabilities).map(sentiment => sentiment === active.sentiment.value ? <option selected='selected'>{`${sentiment}`}</option> : <option >{`${sentiment}`}</option>)};
+                  </select>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-check-circle fa-lg'} onClick={editSentiment.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-times-circle fa-lg'} onClick={editSentiment.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              )
+            }
           </div>
           <ReactTooltip id='subjects' aria-haspopup='true'>
             {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
@@ -95,7 +131,11 @@ function Single (active) {
           <Content>
             {active.entities.length > 0 ? (<ul>
               {
-                active.entities.map((entity, i) => {
+                active.entities.flat().sort((entity1, entity2) => {
+                  const labelCompare = entity1.label && entity2.label ? (entity1.label).localeCompare(entity2.label) : entity1 ? -1 : entity2 ? 1 : 0;
+                  return labelCompare === 0 ? entity1.start - entity2.start : labelCompare;
+                }).map((entity, i) => {
+                  console.log(entity);
                   return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: '' + active.text.substring(entity['start'], entity['end']),

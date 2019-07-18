@@ -29,11 +29,11 @@ class WordVectors extends Component {
   constructor () {
     super();
     this.corpora = [
-      { label: 'beschwerden3kPolished', value: 'beschwerden3kPolished.bin' },
-      { label: 'cc.de.300', value: 'cc.de.300.bin' },
-      { label: 'ngram_ger', value: 'ngram_ger.bin' },
-      { label: 'BeschwerdenCATLeipzig', value: 'BeschwerdenCATLeipzig.bin' },
-      { label: 'leipzigCorporaCollection1M', value: 'leipzigCorporaCollection1M.bin' }
+      { label: 'Beispielbeschwerden', value: 'beschwerden3kPolished.bin' },
+      { label: 'FastText', value: 'cc.de.300.bin' },
+      { label: 'Google nGrams', value: 'ngram_ger.bin' },
+      { label: 'Beispielbeschwerden & Leipzig', value: 'BeschwerdenCATLeipzig.bin' },
+      { label: 'Leipzig (1M)', value: 'leipzigCorporaCollection1M.bin' }
     ];
     this.state = {
       result: [],
@@ -193,27 +193,27 @@ class WordVectors extends Component {
     switch (this.state.corpora) {
       case 'beschwerden3kPolished.bin': {
         return (
-          <p>Keine Beschreibung verfügbar</p>
+          <p>Der Korpus besteht aus den 3041 uns zur Verfügung gestellten Beispielbeschwerden, was 207.917 Wörtern entspricht. Er ist auf unsere Aufgabenstellung maßgeschneidert, kommt aber mit abweichenden Inhalten kaum zurecht.</p>
         );
       }
       case 'cc.de.300.bin': {
         return (
-          <p>Keine Beschreibung verfügbar</p>
+          <p>Facebook stellt diesen 300-dimensionalen Korpus zur Verfügung. Er wurde auf Wikipedia-Artikeln und Common Crawl trainiert. Wie viele Wörter dazu betrachtet wurden ist nicht bekannt, es sind vermutlich mehr als 24.000.000.</p>
         );
       }
       case 'ngram_ger.bin': {
         return (
-          <p>Keine Beschreibung verfügbar</p>
+          <p>Der Korpus wurde an den von Google zur Verfügung gestellten nGrams trainiert, die 270 032 618 Wörter beinhalten. Leider lassen sich Wortvektor-Modelle nicht mit nGrams trainieren, die Ergebnisse sind furchtbar.</p>
         );
       }
       case 'BeschwerdenCATLeipzig.bin': {
         return (
-          <p>Keine Beschreibung verfügbar</p>
+          <p>Ein Modell, welches auf den Beispielbeschwerden und dem Leipzig-Korpus trainiert wurde. Die gute Performanz der Beispielbeschwerden auf unserem Gebiet soll mit der guten allgemeinen Performanz des Leipzig-Korpus kombiniert werden.</p>
         );
       }
       case 'leipzigCorporaCollection1M.bin': {
         return (
-          <p>Keine Beschreibung verfügbar</p>
+          <p>Die Grundlage für diesen Korpus ist der größte von der Uni Leipzig zu Verfügung gestellte Textkorpus. Der wurde 2011 mit Webcrawlern erstellt und enthält 6 597 048 Wörter.</p>
         );
       }
       default: {
@@ -240,7 +240,7 @@ class WordVectors extends Component {
                 <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>
             </div>
-            <table>
+            <table className='center'>
               <thead>
                 <tr>
                   <th>Wort</th>

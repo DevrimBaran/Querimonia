@@ -1,6 +1,5 @@
 
 const fetchJson = function (action, options) {
-  console.log(process.env.NODE_ENV);
   if ((process.env.NODE_ENV === 'development')) {
     const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
     if (useMockInDev) {
@@ -26,7 +25,7 @@ const options = function (method, data) {
       'Content-Type': 'application/json'
     }
   };
-  if (method === 'post' || method === 'put') {
+  if (method === 'post' || method === 'put' || method === 'PATCH') {
     if (data instanceof FormData) {
       delete options.headers['Content-Type'];
       options.body = data;
@@ -57,8 +56,8 @@ export const api = {
     }).join('&');
     return fetchJson(endpoint + (query ? '?' + query : ''), options('delete'));
   },
-  patch: function (endpoint) {
-    return fetchJson(endpoint, options('PATCH'));
+  patch: function (endpoint, data) {
+    return fetchJson(endpoint, options('PATCH', data));
   },
   post: function (endpoint, data) {
     return fetchJson(endpoint, options('post', data));
