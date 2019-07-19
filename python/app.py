@@ -24,9 +24,20 @@ class Sentiment(Resource):
         return jsonify({"sentiment": sentiment_value})
 
 
+@api.route('/python/vec_to_word')
+@api.doc(
+    params={
+        'word': 'Wort als String',
+        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
+    },
+    responses={
+        200: 'Success'
+    }
+)
 @api.route('/python/word_to_vec')
 class Word_to_vec(Resource):
     def post(self):
+        '''Gibt den Vektor zu einem gegebenen Wort im spezifizierten Korpus zurück.'''
         content = request.get_json()
         word = content['word']
         model_name = content['model']
@@ -35,8 +46,18 @@ class Word_to_vec(Resource):
 
 
 @api.route('/python/vec_to_word')
+@api.doc(
+    params={
+        'vector': 'Vektor als Array',
+        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
+    },
+    responses={
+        200: 'Success'
+    }
+)
 class Vec_to_word(Resource):
     def post(self):
+        '''Gibt das Wort zu einem gegebenen Vektor im spezifizierten Korpus zurück.'''
         content = request.get_json()
         vector = content['vector']
         model_name = content['model']
@@ -44,9 +65,21 @@ class Vec_to_word(Resource):
         return jsonify(result)
 
 
+
 @api.route('/python/predict_word')
+@api.doc(
+    params={
+        'query': 'Die Buchstaben, zu denen die Wörter im Korpus angefragt werden. Nur drei oder mehr Buchstaben erzeugen eine Antwort',
+        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
+    },
+    responses={
+        200: 'Success'
+    }
+)
 class Predict_word(Resource):
+    
     def post(self):
+        '''Gibt eine Liste aller Wörter mit den angefragten Anfangsbuchstaben im spezifizierten Korpus zurück'''
         content = request.get_json()
         query = content['query']
         model_name = content['model']
