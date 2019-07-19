@@ -29,7 +29,6 @@ const Api = {
 class WordVectors extends Component {
   constructor () {
     super();
-    this.input = React.createRef();
     this.corpora = [
       { label: 'Beispielbeschwerden', value: 'beschwerden3kPolished.bin' },
       { label: 'FastText', value: 'cc.de.300.bin' },
@@ -101,6 +100,7 @@ class WordVectors extends Component {
     }
 
     this.setState({ error: null, analogy: outputQueue });
+    return outputQueue;
   };
 
   calculateOnEnter = (e) => {
@@ -133,8 +133,10 @@ class WordVectors extends Component {
   };
 
   calculate = () => {
-    this.parseText(this.input.current.value);
-    let analogy = this.state.analogy.slice();
+    const value = document.getElementById('analogy').value;
+    console.log(value);
+    if (!value) return;
+    let analogy = this.parseText(value);// this.state.analogy.slice();
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
       return x.map(a => a / len);
@@ -239,7 +241,7 @@ class WordVectors extends Component {
               {this.renderDescription()}
             </div>
             <div className='smallmargin'>
-              <Autocomplete model={this.state.corpora} ref={this.input} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
+              <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
               <div className='smallmargin'>
                 <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>

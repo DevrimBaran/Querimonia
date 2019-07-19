@@ -53,7 +53,8 @@ class Autocomplete extends Component {
         },
         body: JSON.stringify({
           query: word,
-          model: this.props.model
+          model: this.props.model,
+          limit: 5
         })
       }
     ).catch(() => {
@@ -79,12 +80,13 @@ class Autocomplete extends Component {
       this.fetchPredictions(this.lastWord);
     } else {
       this.lastWord = '';
+      this.setState({ words: [] });
     }
     this.props.onChange && this.props.onChange(e);
   }
   render () {
     const classes = 'autocomplete';
-    const { className, onChange, type, label, values, value, model, ...passThroughProps } = this.props;
+    const { className, onChange, type, label, values, value, model, ref, ...passThroughProps } = this.props;
 
     let injectedProp = {
       className: className ? className + ' ' + classes : classes
