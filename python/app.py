@@ -69,25 +69,25 @@ class Vec_to_word(Resource):
         return jsonify(result)
 
 
-
 @api.route('/python/predict_word')
 @api.doc(
     params={
         'query': 'Die Buchstaben, zu denen die Wörter im Korpus angefragt werden. Nur drei oder mehr Buchstaben erzeugen eine Antwort',
-        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
+        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen',
+        'limit': fields.Integer(description="Maximale Anzahl zurückgegebener Wörter")
     },
     responses={
         200: 'Success'
     }
 )
 class Predict_word(Resource):
-    
     def post(self):
         '''Gibt eine Liste aller Wörter mit den angefragten Anfangsbuchstaben im spezifizierten Korpus zurück'''
         content = request.get_json()
         query = content["query"]
         model_name = content["model"]
-        result = wordvector.Calc.predict_words(query, model_name)
+        limmit = content["limit"]
+        result = wordvector.Calc.predict_words(query, model_name, limit)
         return jsonify(result)
 
 

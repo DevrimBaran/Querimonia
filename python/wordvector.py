@@ -50,7 +50,7 @@ class Calc:
         return np.array(model[word])
 
     @staticmethod
-    def predict_words(query, model_name):
+    def predict_words(query, model_name, limit):
 
         # Pfad zu den Listen
         basepath = "../wortvektoren/fastText/predictionLists/"
@@ -62,6 +62,9 @@ class Calc:
         if len(query) >= 3:
             for word in words:
                 if word[0:len(query)] == query:
-                    result.append(word)
+                    if len(result) < limit:
+                        result.append(word)
+                    else:
+                        break
 
         return result
