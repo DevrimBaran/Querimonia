@@ -20,20 +20,25 @@ class Tooltip extends Component {
     const element = e.target;
     const rect = element.getBoundingClientRect();
     const tooltip = this.tooltip.current;
-    tooltip.classList.add('show');
-    tooltip.style.left = (rect.x + rect.width * 0.5) + 'px';
-    if (rect.y >= tooltip.offsetHeight) {
-      tooltip.classList.remove('bottom');
-      tooltip.classList.add('top');
-      tooltip.style.top = (rect.y) + 'px';
-    } else {
-      tooltip.classList.remove('top');
-      tooltip.classList.add('bottom');
-      tooltip.style.top = (rect.y + rect.height) + 'px';
+    if (tooltip) {
+      tooltip.classList.add('show');
+      tooltip.style.left = (rect.x + rect.width * 0.5) + 'px';
+      if (rect.y >= tooltip.offsetHeight) {
+        tooltip.classList.remove('bottom');
+        tooltip.classList.add('top');
+        tooltip.style.top = (rect.y) + 'px';
+      } else {
+        tooltip.classList.remove('top');
+        tooltip.classList.add('bottom');
+        tooltip.style.top = (rect.y + rect.height) + 'px';
+      }
     }
   }
   onMouseLeave = (e) => {
-    this.tooltip.current.classList.remove('show');
+    const tooltip = this.tooltip.current;
+    if (tooltip) {
+      tooltip.classList.remove('show');
+    }
   }
   componentDidMount = () => {
     const element = document.getElementById(this.state.htmlFor);
@@ -41,6 +46,14 @@ class Tooltip extends Component {
       element.classList.add('hasTooltip');
       element.addEventListener('mouseenter', this.onMouseEnter);
       element.addEventListener('mouseleave', this.onMouseLeave);
+    }
+  }
+  componentWillUnmount = () => {
+    const element = document.getElementById(this.state.htmlFor);
+    if (element) {
+      element.classList.remove('hasTooltip');
+      element.removeEventListener('mouseenter', this.onMouseEnter);
+      element.removeEventListener('mouseleave', this.onMouseLeave);
     }
   }
   render () {

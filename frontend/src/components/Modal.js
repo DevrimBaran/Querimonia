@@ -17,8 +17,11 @@ class Modal extends Component {
     };
   }
   onClick = (e) => {
+    const modal = this.modal.current;
     this.hideModals();
-    this.modal.current.classList.add('show');
+    if (modal) {
+      modal.classList.add('show');
+    }
   }
   hideModals = () => {
     for (const modal of document.querySelectorAll('.modal.show')) {
@@ -30,6 +33,13 @@ class Modal extends Component {
     if (element) {
       element.classList.add('hasModal');
       element.addEventListener('click', this.onClick);
+    }
+  }
+  componentWillUnmount = () => {
+    const element = document.getElementById(this.state.htmlFor);
+    if (element) {
+      element.classList.remove('hasModal');
+      element.removeEventListener('click', this.onClick);
     }
   }
   render () {
