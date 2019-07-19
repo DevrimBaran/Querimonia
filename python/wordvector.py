@@ -55,7 +55,8 @@ class Calc:
         # Pfad zu den Listen
         basepath = "/home/beschwerdemanagement/wortvektoren/fastText/predictionLists/"
 
-        model_file = open(basepath + model_name, "r")
+        word_file = model_name.split(".")[0] + ".txt"
+        model_file = open(basepath + word_file, "r")
         words = model_file.read().split("\n")
         result = []
 
