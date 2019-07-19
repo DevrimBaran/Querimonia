@@ -5,9 +5,8 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import org.springframework.http.HttpStatus;
 
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -47,16 +46,25 @@ public class ComplaintUtility {
   }
 
   /**
-   * Creates a map that maps all the entity labels to their values in the text.
+   * Returns a certain property of the complaint.
    *
-   * @param text     the complaint text.
-   * @param entities the named entities in the complaint text.
+   * @param complaint the complaint.
+   * @param name the name of the property that should be extracted.
+   * @return the property with the given name.
    */
-  public static Map<NamedEntity, String> getEntityValueMap(String text,
-                                                           List<NamedEntity> entities) {
-    HashMap<NamedEntity, String> result = new HashMap<>();
-    entities.forEach(entity -> result.put(entity, getValueOfEntity(text, entity)));
+  public static ComplaintProperty getPropertyOfComplaint(ComplaintBuilder complaint, String name) {
+    return Objects.requireNonNull(complaint.getProperties())
+        .stream()
+        .filter(complaintProperty -> complaintProperty.getName().equals(name))
+        .findAny()
+        .orElseThrow(IllegalStateException::new);
+  }
 
-    return result;
+  public static ComplaintProperty getPropertyOfComplaint(Complaint complaint, String name) {
+    return complaint.getProperties()
+        .stream()
+        .filter(complaintProperty -> complaintProperty.getName().equals(name))
+        .findAny()
+        .orElseThrow(IllegalStateException::new);
   }
 }

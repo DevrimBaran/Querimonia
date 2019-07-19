@@ -1,10 +1,10 @@
 package de.fraunhofer.iao.querimonia.db.repositories;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**
  * Interface to the database for storing db.
  */
-public interface ComplaintRepository extends CrudRepository<Complaint, Integer> {
+public interface ComplaintRepository extends PagingAndSortingRepository<Complaint, Long> {
 }

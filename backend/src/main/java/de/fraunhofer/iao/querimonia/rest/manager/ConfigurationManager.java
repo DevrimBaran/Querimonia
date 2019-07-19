@@ -1,12 +1,13 @@
 package de.fraunhofer.iao.querimonia.rest.manager;
 
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
+import de.fraunhofer.iao.querimonia.rest.manager.filter.ComparatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -24,25 +25,39 @@ public class ConfigurationManager {
 
   private final AnalyzerConfigProperties analyzerConfigProperties;
   private final ConfigurationRepository configurationRepository;
+  private final ComplaintRepository complaintRepository;
 
   /**
    * Creates new configuration manager.
    *
    * @param analyzerConfigProperties the properties object for getting the current configuration.
    * @param configurationRepository  the repository for properties.
+   * @param complaintRepository      the repository for complaints.
    */
   @Autowired
   public ConfigurationManager(
       AnalyzerConfigProperties analyzerConfigProperties,
-      ConfigurationRepository configurationRepository) {
+      ConfigurationRepository configurationRepository,
+      ComplaintRepository complaintRepository) {
     this.analyzerConfigProperties = analyzerConfigProperties;
     this.configurationRepository = configurationRepository;
+    this.complaintRepository = complaintRepository;
   }
 
+  /**
+   * Returns all configuration of the database. Sorting and pagination can be used.
+   *
+   * @param count  the amount of configurations per page.
+   * @param page   the page number.
+   * @param sortBy sorting parameters.
+   *
+   * @return the list of configurations of the database, respecting the pagination and sorting
+   *     parameters.
+   */
   public synchronized List<Configuration> getConfigurations(Optional<Integer> count,
                                                             Optional<Integer> page,
                                                             Optional<String[]> sortBy) {
-
+    // create stream of all configurations of the database
     Stream<Configuration> allConfigs =
         StreamSupport.stream(configurationRepository.findAll().spliterator(), false);
 
@@ -53,106 +68,146 @@ public class ConfigurationManager {
       allConfigs = allConfigs.limit(count.get());
     }
 
-    return allConfigs.sorted(getConfigComparator(sortBy)).collect(Collectors.toList());
+    return allConfigs
+        .sorted(getConfigComparator(sortBy))
+        .collect(Collectors.toList());
   }
 
+  /**
+   * Adds a new configuration to the database.
+   *
+   * @param configuration the configuration that will be added.
+   *
+   * @return the new added configuration.
+   */
   public synchronized Configuration addConfiguration(Configuration configuration) {
     return configurationRepository.save(configuration);
   }
 
-  public synchronized Configuration getConfiguration(int configId) {
+  /**
+   * Returns the configuration with the given id.
+   *
+   * @param configId the id of the configuration.
+   *
+   * @return the configuration with the given id.
+   */
+  public synchronized Configuration getConfiguration(long configId) {
     return configurationRepository
         .findById(configId)
         .orElseThrow(() -> new NotFoundException(configId));
   }
 
-  public synchronized void deleteConfiguration(int configId) {
+  /**
+   * Deletes the configuration with the given id.
+   *
+   * @param configId the id of the configuration that should be deleted.
+   */
+  public synchronized void deleteConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
-      configurationRepository.deleteById(configId);
+      // remove reference in all complaints
+      for (Complaint complaint : complaintRepository.findAll()) {
+        if (complaint.getConfiguration().getId() == configId) {
+          complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
+        }
+        complaintRepository.save(complaint);
+      }
+
+      // dont delete fallback configuration
+      if (configId != Configuration.FALLBACK_CONFIGURATION.getId()) {
+        configurationRepository.deleteById(configId);
+      }
       // check if current configuration gets removed
       if (analyzerConfigProperties.getId() == configId) {
-        analyzerConfigProperties.setId(0);
+        analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getId());
       }
     } else {
       throw new NotFoundException(configId);
     }
   }
 
-  public synchronized Configuration updateConfiguration(int configId, Configuration configuration) {
+  /**
+   * The configuration with the given id gets replaced with the given configuration.
+   *
+   * @param configId      the id of the configuration that should be replaced. Must exists.
+   * @param configuration the configuration that should be used.
+   *
+   * @return the new configuration.
+   */
+  public synchronized Configuration updateConfiguration(long configId,
+                                                        Configuration configuration) {
     if (configurationRepository.existsById(configId)) {
-      configuration.setConfigId(configId);
+      configuration = configuration.withConfigId(configId);
       return configurationRepository.save(configuration);
     }
     throw new NotFoundException(configId);
   }
 
-  public synchronized String countConfigurations() {
-    return Long.toString(configurationRepository.count());
+  /**
+   * Returns the amount of configurations that are stored in the database.
+   *
+   * @return the amount of configurations.
+   */
+  public synchronized Long countConfigurations() {
+    return configurationRepository.count();
   }
 
+  /**
+   * Returns the configuration that is currently active.
+   *
+   * @return the configuration that is currently active.
+   */
   public synchronized Configuration getCurrentConfiguration() {
     return configurationRepository
         .findById(analyzerConfigProperties.getId())
         .orElse(Configuration.FALLBACK_CONFIGURATION);
   }
 
-  public synchronized Configuration updateCurrentConfiguration(int configId) {
+  /**
+   * Sets the configuration with the given id as active.
+   *
+   * @param configId the id of the configuration that should be activated.
+   *
+   * @return the now active configuration.
+   */
+  public synchronized Configuration updateCurrentConfiguration(long configId) {
     if (configurationRepository.existsById(configId)) {
       analyzerConfigProperties.setId(configId);
     }
     return getConfiguration(configId);
   }
 
+  /**
+   * Deletes all configurations of the database.
+   */
   public synchronized void deleteAllConfigurations() {
-    configurationRepository.deleteAll();
-    analyzerConfigProperties.setId(0);
+    for (Complaint complaint : complaintRepository.findAll()) {
+      complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
+      complaintRepository.save(complaint);
+    }
+    for (Configuration configuration : configurationRepository.findAll()) {
+      if (!configuration.getId().equals(Configuration.FALLBACK_CONFIGURATION.getId())) {
+        configurationRepository.deleteById(configuration.getId());
+      }
+    }
+    analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getId());
   }
 
+  /**
+   * Stores the configuration in the database.
+   *
+   * @param configuration the configuration that should be stored.
+   */
   synchronized void storeConfiguration(Configuration configuration) {
     configurationRepository.save(configuration);
   }
 
   /**
    * Returns a comparator for the configurations.
-   * TODO generify comparators
    */
   private Comparator<Configuration> getConfigComparator(Optional<String[]> sortBy) {
-    return (c1, c2) -> {
-      int compareValue = 0;
-
-      for (String sortAspect : sortBy.orElse(new String[] {"id_desc"})) {
-        // get index where prefix starts
-        int indexOfPrefix = sortAspect.lastIndexOf('_');
-        // get aspect without prefix
-        String rawSortAspect = sortAspect.substring(0, indexOfPrefix);
-
-        switch (rawSortAspect) {
-          case "id":
-            compareValue = Integer.compare(c1.getConfigId(), c2.getConfigId());
-            break;
-          case "name":
-            compareValue = c1.getName().compareTo(c2.getName());
-            break;
-          default:
-            throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
-                "Unbekannter Sortierparameter " + rawSortAspect, "Ungültige Anfrage");
-        }
-
-        // invert sorting if desc
-        if (sortAspect.substring(indexOfPrefix).equalsIgnoreCase("_desc")) {
-          compareValue *= -1;
-        }
-
-        if (compareValue != 0) {
-          // if difference is already found, don't continue comparing
-          // (the later the aspects are in the array, the less priority they have, so
-          // only continue on equal complaints)
-          return compareValue;
-        }
-
-      }
-      // all sorting aspects where checked
-      return compareValue;
-    };
+    return new ComparatorBuilder<Configuration>()
+        .append("id", Configuration::getId)
+        .append("name", Configuration::getName)
+        .build(sortBy.orElse(new String[] {"id_asc"}));
   }
 }

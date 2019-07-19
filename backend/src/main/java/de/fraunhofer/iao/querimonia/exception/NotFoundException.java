@@ -7,18 +7,18 @@ import org.springframework.http.HttpStatus;
  */
 public class NotFoundException extends QuerimoniaException {
 
-  public NotFoundException(int id) {
+  public NotFoundException(long id) {
     this("Es existiert kein Element mit ID " + id + "!", id);
   }
 
-  public NotFoundException(String message, int id) {
+  public NotFoundException(String message, long id) {
     super(HttpStatus.NOT_FOUND, message, "Fehlendes Element");
     this.id = id;
   }
 
-  private final int id;
+  private final long id;
 
-  public int getId() {
+  public long getId() {
     return id;
   }
 }

@@ -1,9 +1,8 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
-
-import java.util.LinkedHashMap;
 
 
 /**
@@ -11,12 +10,16 @@ import java.util.LinkedHashMap;
  */
 public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
 
-  public KiKuKoClassifier() {
+  private String categoryName;
+
+  public KiKuKoClassifier(String categoryName) {
     super("tool", "Beschwerde3Klassifikator2");
+    this.categoryName = categoryName;
   }
 
-  public KiKuKoClassifier(String domainName) {
+  public KiKuKoClassifier(String domainName, String categoryName) {
     super("tool", domainName);
+    this.categoryName = categoryName;
   }
 
   /**
@@ -27,13 +30,13 @@ public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements C
    * @return the type of the text.
    */
   @Override
-  public LinkedHashMap<String, Double> classifyText(String input) {
+  public ComplaintProperty classifyText(String input) {
     KikukoResponse response = executeKikukoRequest(input, KikukoResponse[].class);
 
-    return response.getPipelines()
+    return new ComplaintProperty(response.getPipelines()
         .getTempPipeline()
         .get(0)
-        .getTyp();
+        .getTyp(), categoryName);
   }
 
 }

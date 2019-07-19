@@ -1,17 +1,25 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.rest.manager.ResponseComponentManager;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
 
 /**
- * REST Controller for creating, viewing and deleting Response Templates. Serves as the REST API for
- * the ResponseTemplateManager.
+ * REST Controller for creating, viewing and deleting Response Components. Serves as the REST API
+ * for
+ * the ResponseComponentManager.
  *
  * @author Simon Weiler
  * @author Baran Demir
@@ -20,12 +28,10 @@ import java.util.Optional;
 @RestController
 public class ResponseComponentController {
 
-  private final ResponseComponentRepository componentRepository;
   private final ResponseComponentManager responseComponentManager;
 
-  public ResponseComponentController(ResponseComponentRepository componentRepository) {
-    this.componentRepository = componentRepository;
-    responseComponentManager = new ResponseComponentManager();
+  public ResponseComponentController(ResponseComponentManager responseComponentManager) {
+    this.responseComponentManager = responseComponentManager;
   }
 
 
@@ -34,10 +40,10 @@ public class ResponseComponentController {
    *
    * @return the created component
    */
-  @PostMapping("api/templates")
+  @PostMapping("api/components")
   public ResponseEntity<?> addComponent(@RequestBody ResponseComponent responseComponent) {
-    return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .addTemplate(componentRepository, responseComponent));
+    return ControllerUtility.tryAndCatch(() ->
+        responseComponentManager.addComponent(responseComponent));
   }
 
 
@@ -46,23 +52,22 @@ public class ResponseComponentController {
    *
    * @return the list of default components
    */
-  @PostMapping("api/templates/default")
+  @PostMapping("api/components/default")
   public ResponseEntity<?> addDefaultComponents() {
-    return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .addDefaultTemplates(componentRepository));
+    return ControllerUtility.tryAndCatch(responseComponentManager::addDefaultComponents);
   }
 
   /**
    * Pagination for components (sort_by, page, count).
    *
-   * @param count    Counter for the templates.
+   * @param count    Counter for the components.
    * @param page     Page number.
-   * @param keyWords Keywords of the template texts.
+   * @param keyWords Keywords of the component texts.
    * @param sortBy   Sorts by name ascending or descending, priority ascending and descending.
    *
-   * @return Returns a list of sorted templates.
+   * @return Returns a list of sorted components.
    */
-  @GetMapping("api/templates")
+  @GetMapping("api/components")
   public ResponseEntity<?> getAllComponents(
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
@@ -70,14 +75,14 @@ public class ResponseComponentController {
       @RequestParam("keywords") Optional<String[]> keyWords
   ) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .getAllTemplates(componentRepository, count, page, sortBy, keyWords));
+        .getAllComponents(count, page, sortBy, keyWords));
   }
 
-  @GetMapping("api/templates/count")
+  @GetMapping("api/components/count")
   public ResponseEntity<?> getComponentCount(
       @RequestParam("keywords") Optional<String[]> keyWords) {
     return ControllerUtility.tryAndCatch(() ->
-        responseComponentManager.getAllTemplates(componentRepository, Optional.empty(),
+        responseComponentManager.getAllComponents(Optional.empty(),
             Optional.empty(), Optional.empty(), keyWords).size());
   }
 
@@ -89,10 +94,10 @@ public class ResponseComponentController {
    *
    * @return the response component with the given ID
    */
-  @GetMapping("api/templates/{id}")
+  @GetMapping("api/components/{id}")
   public ResponseEntity<?> getComponentByID(@PathVariable int id) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .getTemplateByID(componentRepository, id));
+        .getComponentByID(id));
   }
 
   /**
@@ -100,17 +105,17 @@ public class ResponseComponentController {
    *
    * @param id the ID of the component to delete
    */
-  @DeleteMapping("api/templates/{id}")
-  public ResponseEntity<?> deleteComponent(@PathVariable int id) {
-    return ControllerUtility.tryAndCatch(() -> componentRepository.deleteById(id));
+  @DeleteMapping("api/components/{id}")
+  public ResponseEntity<?> deleteComponent(@PathVariable long id) {
+    return ControllerUtility.tryAndCatch(() -> responseComponentManager.deleteComponent(id));
   }
 
   /**
-   * Deletes all templates from the database.
+   * Deletes all components from the database.
    */
-  @DeleteMapping("api/templates/all")
-  public ResponseEntity<?> deleteAllTemplates() {
-    return ControllerUtility.tryAndCatch((Runnable) componentRepository::deleteAll);
+  @DeleteMapping("api/components/all")
+  public ResponseEntity<?> deleteAllComponents() {
+    return ControllerUtility.tryAndCatch(responseComponentManager::deleteAllComponents);
   }
 
   /**
@@ -119,13 +124,10 @@ public class ResponseComponentController {
    * @param componentId       Is the component ID.
    * @param responseComponent Is the component itself.
    */
-  @PutMapping("api/templates/{componentId}")
-  public ResponseEntity<?> updateTemplate(@PathVariable int componentId,
-                                          @RequestBody ResponseComponent responseComponent) {
-    return ControllerUtility.tryAndCatch(() -> {
-      responseComponent.setComponentId(componentId);
-      componentRepository.save(responseComponent);
-      return responseComponent;
-    });
+  @PutMapping("api/components/{componentId}")
+  public ResponseEntity<?> updateComponent(@PathVariable long componentId,
+                                           @RequestBody ResponseComponent responseComponent) {
+    return ControllerUtility.tryAndCatch(
+        () -> responseComponentManager.updateComponent(componentId, responseComponent));
   }
 }

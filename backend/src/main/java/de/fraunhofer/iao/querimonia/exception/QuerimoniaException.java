@@ -23,6 +23,7 @@ public class QuerimoniaException extends ResponseStatusException {
 
   // work around to remove the "suppressed"-field from the super class in the json object.
   @JsonIgnore
+  @SuppressWarnings("unused")
   private Object suppressed;
 
   public QuerimoniaException(HttpStatus status, Throwable cause, String title) {
