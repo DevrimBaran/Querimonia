@@ -1085,14 +1085,16 @@ components:
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
           items:
             $ref: '#/components/schemas/ComplaintProperty'
-        subject:
-          $ref: '#/components/schemas/ComplaintProperty'
-        emotion:
-          $ref: '#/components/schemas/ComplaintProperty'
         sentiment:
-          type: number
-          description: Der Wert des Sentiments. Positive Werte bedeuten positives Sentiment, negative Werte bedeuten negatives Sentiment.
-          example: 0.4
+          type: object
+          description: Enthält die Ergbnisse der Sentiment-Analyse.
+          properties:
+            tendency:
+              type: number
+              description: Der Wert des Sentiments. Positive Werte bedeuten positives Sentiment, negative Werte bedeuten negatives Sentiment.
+              example: 0.4
+            emotion:
+              $ref: '#/components/schemas/ComplaintProperty'
 
     ComplaintProperty:
       type: object
@@ -1143,11 +1145,11 @@ components:
           example: "Fahrer unfreundlich"
         emotion:
           type: string
-          description: Die Emotion der Beschwerde, das übernommen werden soll.
+          description: Die Emotion der Beschwerde, die übernommen werden soll.
           example: "Freunde"
 
     NamedEntity:
-      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie. Außerdem ist angeben. ob die Entität von einem Nutzer gesetzt wurde und welcher Extraktor zur Findung gefunden wurde. Dieser wird nicht aktualisiert, wenn sich die Extraktoren-Einstellungen ändern! Der gegebene Farbwert, sollte also nur als Fallback verwendet werden.
+      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie. Außerdem ist angeben. ob die Entität von einem Nutzer gesetzt wurde und mit welcher Farbe die Entität angezeit werden soll. Dieser wird nicht angepasst, wenn sich die Extraktoren-Einstellungen ändern! Der gegebene Farbwert, sollte also nur als Fallback verwendet werden.
       type: object
       required:
         - label
@@ -1155,7 +1157,7 @@ components:
         - end
         - value
         - setByUser
-        - extractor
+        - color
       properties:
         id:
           type: integer
@@ -1184,9 +1186,9 @@ components:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
-        extractor:
+        color:
           type: string
-          description: The name of the extractor that es used to find this entity.
+          description: Die Farbe, mit der die Entität angezeigt werden soll.
           example: 'QuerimoniaExtract'
 
     AnalyzerConfiguration:
@@ -1217,6 +1219,8 @@ components:
             $ref: '#/components/schemas/Classifier'
         sentimentAnalyzer:
           $ref: '#/components/schemas/SentimentAnalyzer'
+        emotionAnalyzer:
+          $ref: '#/components/schemas/EmotionAnalyzer'
 
     Classifier:
       description: Ein Klassifizierer bestimmt die Kategorie (Subject) einer Beschwerde.
@@ -1228,7 +1232,7 @@ components:
       properties:
         name:
           description: Der Name des Klassifizierers. Bei KIKuKo-Klassifizieren muss in KIKuKu ein Klassifizierer mit diesem Namen existieren.
-          example: 'QuerimoniaExtract'
+          example: 'Beschwerde3Klassifikator2'
           type: string
         propertyName:
           description: Die Art von Eigenschaft, die vom Klassifizierer analysiert wird.
@@ -1242,8 +1246,8 @@ components:
           description: Gibt den Typ des Klassifizieres an.
           example: 'KIKUKO_CLASSIFIER'
 
-    SentimentAnalyzer:
-      description: Dient zur Analyse des Sentiments einer Beschwerde.
+    EmotionAnalyzer:
+      description: Dient zur Analyser der Emotion.
       type: object
       required:
         - name
@@ -1251,7 +1255,26 @@ components:
       properties:
         name:
           description: Der Name des Analysierers.
-          example: 'QuerimoniaExtract'
+          example: "QuerimoniaEmotion"
+          type: string
+        type:
+          description: Der Typ des Analysierers.
+          example: "QUERIMONIA_EMOTION"
+          type: string
+          enum:
+            - "QUERIMONIA_EMOTION"
+            - "NONE"
+
+    SentimentAnalyzer:
+      description: Dient zur Analyse des Sentiments einer Beschwerde. (Nur die Tendenz)
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: Der Name des Analysierers.
+          example: 'QuerimoniaSentiment'
           type: string
         type:
           type: string
