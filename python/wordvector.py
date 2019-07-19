@@ -63,7 +63,7 @@ class Calc:
         if len(query) >= 3:
             for word in words:
                 if word[0:len(query)] == query:
-                    if len(result) < limit:
+                    if len(result) < int(limit):
                         result.append(word)
                     else:
                         break
