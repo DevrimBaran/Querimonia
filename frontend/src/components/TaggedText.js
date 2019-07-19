@@ -179,13 +179,13 @@ class TaggedText extends Component {
       </div>;
     });
     if (showOptions) {
-      return <Modal key={key + labels.length + 1 + 'modal'} htmlFor={id}>
+      return <Modal key={id + 'modal'} htmlFor={id}>
         {
           labelArray
         }
       </Modal>;
     } else {
-      return <Tooltip key={key + labels.length + 1 + 'tooltip'} htmlFor={id}>
+      return <Tooltip key={id + 'tooltip'} htmlFor={id}>
         {
           labelArray
         }
