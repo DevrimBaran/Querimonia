@@ -14,9 +14,7 @@ import TaggedText from './../../components/TaggedText';
 import Collapsible from './../../components/Collapsible';
 import Tabbed from './../../components/Tabbed';
 import TextBuilder from './../../components/TextBuilder';
-import ReactTooltip from 'react-tooltip';
 import Tooltip from './../../components/Tooltip';
-import Modal from './../../components/Modal';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
@@ -134,9 +132,10 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             {active.entities.length > 0 ? (<ul>
               {
                 active.entities.flat().sort((entity1, entity2) => {
-                  const labelCompare = entity1.label && entity2.label ? (entity1.label).localeCompare(entity2.label) : 0;
+                  const labelCompare = entity1.label && entity2.label ? (entity1.label).localeCompare(entity2.label) : entity1 ? -1 : entity2 ? 1 : 0;
                   return labelCompare === 0 ? entity1.start - entity2.start : labelCompare;
                 }).map((entity, i) => {
+                  console.log(entity);
                   return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: '' + active.text.substring(entity['start'], entity['end']),
