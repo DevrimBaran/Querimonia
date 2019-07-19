@@ -53,7 +53,7 @@ class Calc:
     def predict_words(query, model_name, limit):
 
         # Pfad zu den Listen
-        basepath = "../wortvektoren/fastText/predictionLists/"
+        basepath = "/home/beschwerdemanagement/wortvektoren/fastText/predictionLists/"
 
         model_file = open(basepath + model_name, "r")
         words = model_file.read().split("\n")
