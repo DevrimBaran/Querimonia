@@ -25,7 +25,7 @@ public class FlaskContact {
     header.setContentType(MediaType.APPLICATION_JSON);
 
     HttpEntity<String> request = new HttpEntity<>(body.toString(), header);
-    String response = null;
+    String response;
     try {
       response = new RestTemplate()
           .exchange(URL + path, HttpMethod.POST, request, String.class).getBody();

@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierType;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerDefinition;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerType;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerType;
@@ -55,6 +57,8 @@ public class Configuration implements Identifiable<Long> {
       .setClassifiers(List.of(
           new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, "Default"))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, "Default"))
+      .setActive(false)
       .createConfiguration();
 
   @Id
@@ -79,6 +83,11 @@ public class Configuration implements Identifiable<Long> {
   @NonNull
   private SentimentAnalyzerDefinition sentimentAnalyzer = new SentimentAnalyzerDefinition();
 
+  @NonNull
+  private EmotionAnalyzerDefinition emotionAnalyzer = new EmotionAnalyzerDefinition();
+
+  private boolean active = false;
+
   /**
    * Creates a new configuration object.
    *
@@ -88,17 +97,21 @@ public class Configuration implements Identifiable<Long> {
    * @param sentimentAnalyzer the sentiment analyzer.
    */
   @JsonCreator
-  public Configuration(
+  Configuration(
       long id,
       @NonNull String name,
       @NonNull List<ExtractorDefinition> extractors,
       @NonNull List<ClassifierDefinition> classifiers,
-      @NonNull SentimentAnalyzerDefinition sentimentAnalyzer) {
+      @NonNull SentimentAnalyzerDefinition sentimentAnalyzer,
+      @NonNull EmotionAnalyzerDefinition emotionAnalyzer,
+      boolean active) {
     this.configId = id;
     this.name = name;
     this.extractors = extractors;
     this.classifiers = classifiers;
     this.sentimentAnalyzer = sentimentAnalyzer;
+    this.emotionAnalyzer = emotionAnalyzer;
+    this.active = active;
   }
 
   @SuppressWarnings("unused")
@@ -130,6 +143,21 @@ public class Configuration implements Identifiable<Long> {
   @NonNull
   public SentimentAnalyzerDefinition getSentimentAnalyzer() {
     return sentimentAnalyzer;
+  }
+
+  @NonNull
+  public EmotionAnalyzerDefinition getEmotionAnalyzer() {
+    return emotionAnalyzer;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public Configuration withActive(boolean active) {
+    return new ConfigurationBuilder(this)
+        .setActive(active)
+        .createConfiguration();
   }
 
   @Override

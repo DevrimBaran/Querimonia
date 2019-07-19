@@ -47,7 +47,6 @@ public class ComplaintControllerTest {
         complaintRepository,
         responseComponentRepository,
         new ConfigurationManager(
-            configProperties,
             configurationRepository,
             complaintRepository
         )

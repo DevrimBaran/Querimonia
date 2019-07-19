@@ -23,23 +23,19 @@ import java.util.stream.StreamSupport;
 @Service
 public class ConfigurationManager {
 
-  private final AnalyzerConfigProperties analyzerConfigProperties;
   private final ConfigurationRepository configurationRepository;
   private final ComplaintRepository complaintRepository;
 
   /**
    * Creates new configuration manager.
    *
-   * @param analyzerConfigProperties the properties object for getting the current configuration.
-   * @param configurationRepository  the repository for properties.
-   * @param complaintRepository      the repository for complaints.
+   * @param configurationRepository the repository for properties.
+   * @param complaintRepository     the repository for complaints.
    */
   @Autowired
   public ConfigurationManager(
-      AnalyzerConfigProperties analyzerConfigProperties,
       ConfigurationRepository configurationRepository,
       ComplaintRepository complaintRepository) {
-    this.analyzerConfigProperties = analyzerConfigProperties;
     this.configurationRepository = configurationRepository;
     this.complaintRepository = complaintRepository;
   }
@@ -117,9 +113,7 @@ public class ConfigurationManager {
         configurationRepository.deleteById(configId);
       }
       // check if current configuration gets removed
-      if (analyzerConfigProperties.getId() == configId) {
-        analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getId());
-      }
+      this.storeConfiguration(Configuration.FALLBACK_CONFIGURATION.withActive(true));
     } else {
       throw new NotFoundException(configId);
     }
@@ -157,9 +151,18 @@ public class ConfigurationManager {
    * @return the configuration that is currently active.
    */
   public synchronized Configuration getCurrentConfiguration() {
-    return configurationRepository
-        .findById(analyzerConfigProperties.getId())
-        .orElse(Configuration.FALLBACK_CONFIGURATION);
+    var activeConfigs = configurationRepository.findAllByActive(true);
+    Configuration currentConfig;
+    if (activeConfigs.isEmpty()) {
+      // fall back if no config is active
+      currentConfig = Configuration.FALLBACK_CONFIGURATION.withActive(true);
+      storeConfiguration(currentConfig);
+    } else {
+      // fix if multiple active configs are in the db
+      currentConfig = activeConfigs.remove(0);
+      activeConfigs.forEach(configuration -> storeConfiguration(configuration.withActive(false)));
+    }
+    return currentConfig;
   }
 
   /**
@@ -170,11 +173,15 @@ public class ConfigurationManager {
    * @return the now active configuration.
    */
   public synchronized Configuration updateCurrentConfiguration(long configId) {
-    if (configurationRepository.existsById(configId)) {
-      analyzerConfigProperties.setId(configId);
-    }
-    return getConfiguration(configId);
+    var currentConfig = getConfiguration(configId).withActive(true);
+    var activeConfigs = configurationRepository.findAllByActive(true);
+    activeConfigs.stream()
+        .map(configuration -> configuration.withActive(false))
+        .forEach(this::storeConfiguration);
+    storeConfiguration(currentConfig);
+    return currentConfig;
   }
+
 
   /**
    * Deletes all configurations of the database.
@@ -189,7 +196,6 @@ public class ConfigurationManager {
         configurationRepository.deleteById(configuration.getId());
       }
     }
-    analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getId());
   }
 
   /**

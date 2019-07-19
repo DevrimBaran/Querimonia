@@ -2,9 +2,12 @@ package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierFactory;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzer;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerFactory;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorFactory;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerFactory;
@@ -74,6 +77,8 @@ public class ComplaintFactory {
         ClassifierFactory.getFromDefinition(configuration.getClassifiers());
     SentimentAnalyzer sentimentAnalyzer =
         SentimentAnalyzerFactory.getFromDefinition(configuration.getSentimentAnalyzer());
+    EmotionAnalyzer emotionAnalyzer
+        = EmotionAnalyzerFactory.getFromDefinition(configuration.getEmotionAnalyzer());
     // the text of the complaint
     String complaintText = complaint.getText();
 
@@ -90,7 +95,7 @@ public class ComplaintFactory {
         CompletableFuture.supplyAsync(() -> stopWordFilter.filterStopWords(complaintText));
 
     var emotionPropertyFuture =
-        CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeEmotion(complaintText));
+        CompletableFuture.supplyAsync(() -> emotionAnalyzer.analyzeEmotion(complaintText));
 
     var sentimentFuture =
         CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeSentiment(complaintText));
@@ -101,10 +106,10 @@ public class ComplaintFactory {
     var complaintProperties = complaintPropertiesFuture.join();
     var emotionProperty = emotionPropertyFuture.join();
     var entities = entitiesFuture.join();
-    var sentiment = sentimentFuture.join();
+    var tendency = sentimentFuture.join();
+    var sentiment = new Sentiment(emotionProperty, tendency);
 
     ResponseSuggestion responseSuggestion = createResponse(complaint);
-    complaintProperties.add(emotionProperty);
     return complaint
         .setEntities(entities)
         .setSentiment(sentiment)
@@ -146,11 +151,9 @@ public class ComplaintFactory {
     // keep old entities if necessary
     List<NamedEntity> oldEntities = complaintBuilder.getEntities();
     Stream<NamedEntity> oldEntityStream =
-        oldEntities == null
-            ? Stream.empty()
-            : oldEntities
-                .stream()
-                .filter(NamedEntity::isSetByUser);
+        oldEntities
+            .stream()
+            .filter(NamedEntity::isSetByUser);
     if (keepUserInformation) {
       entityStream = Stream.concat(entityStream, oldEntityStream).distinct();
     }

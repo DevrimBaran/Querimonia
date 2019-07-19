@@ -28,6 +28,7 @@ public class RuleParser {
    *
    * @param rulesXml the xml as a string. The xml must be well formatted in the correct xml schema
    *                 as given in the docs folder.
+   *
    * @return the root rule, parsed from the xml string.
    */
   public static Rule parseRules(String rulesXml) {
@@ -106,7 +107,12 @@ public class RuleParser {
     if (element.hasAttribute("min")) {
       min = Double.parseDouble(element.getAttribute("min"));
     }
-    return new SentimentRule(min, max);
+    String emotion = null;
+    if (element.hasAttribute("emotion")) {
+      emotion = element.getAttribute("emotion");
+    }
+
+    return new SentimentRule(min, max, emotion);
   }
 
   private static Rule getPredecessorCountRule(Element element) {

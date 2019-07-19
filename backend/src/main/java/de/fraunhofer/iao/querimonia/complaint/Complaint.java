@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -48,8 +49,7 @@ import java.util.Map;
     "configuration",
     "receiveDate",
     "receiveTime",
-    "subject",
-    "emotion",
+    "sentiment",
     "entities"
 })
 public class Complaint implements Identifiable<Long> {
@@ -97,7 +97,9 @@ public class Complaint implements Identifiable<Long> {
    * A value that represents the sentiment of the text. Negative values represent negative
    * sentiment, positive value means positive sentiment.
    */
-  private double sentiment;
+  @OneToOne(cascade = CascadeType.ALL)
+  @NonNull
+  private Sentiment sentiment = new Sentiment();
 
   /**
    * The list of all named entities in the complaint text.
@@ -154,7 +156,7 @@ public class Complaint implements Identifiable<Long> {
       @NonNull String preview,
       @NonNull ComplaintState state,
       @NonNull List<ComplaintProperty> properties,
-      double sentiment,
+      @NonNull Sentiment sentiment,
       @NonNull List<NamedEntity> entities,
       @NonNull ResponseSuggestion responseSuggestion,
       @NonNull Map<String, Integer> wordList,
@@ -206,7 +208,7 @@ public class Complaint implements Identifiable<Long> {
 
   @JsonIgnore
   public ComplaintProperty getEmotion() {
-    return ComplaintUtility.getPropertyOfComplaint(this, "Emotion");
+    return sentiment.getEmotion();
   }
 
   @NonNull
@@ -263,7 +265,8 @@ public class Complaint implements Identifiable<Long> {
     return properties;
   }
 
-  public double getSentiment() {
+  @NonNull
+  public Sentiment getSentiment() {
     return sentiment;
   }
 

@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -24,7 +25,8 @@ public class ComplaintBuilder {
   private ComplaintState state = ComplaintState.NEW;
   @NonNull
   private List<ComplaintProperty> properties = new ArrayList<>();
-  private double sentiment = 0.0;
+  @Nullable
+  private Sentiment sentiment;
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();
   @NonNull
@@ -98,7 +100,7 @@ public class ComplaintBuilder {
     return this;
   }
 
-  public ComplaintBuilder setSentiment(double sentiment) {
+  public ComplaintBuilder setSentiment(Sentiment sentiment) {
     this.sentiment = sentiment;
     return this;
   }
@@ -165,7 +167,8 @@ public class ComplaintBuilder {
     return properties;
   }
 
-  public double getSentiment() {
+  @Nullable
+  public Sentiment getSentiment() {
     return sentiment;
   }
 
