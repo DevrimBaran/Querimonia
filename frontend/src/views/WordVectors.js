@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import Block from './../components/Block';
 import Input from '../components/Input';
 import Content from './../components/Content';
+import Autocomplete from '../components/Autocomplete';
 
 // TODO Api anpassen/backend ändern
 const Api = {
@@ -28,6 +29,7 @@ const Api = {
 class WordVectors extends Component {
   constructor () {
     super();
+    this.input = React.createRef();
     this.corpora = [
       { label: 'Beispielbeschwerden', value: 'beschwerden3kPolished.bin' },
       { label: 'FastText', value: 'cc.de.300.bin' },
@@ -38,12 +40,13 @@ class WordVectors extends Component {
     this.state = {
       result: [],
       analogy: [],
+      value: '',
       error: false,
       corpora: this.corpora[0].value
     };
   };
 
-  parseText = (e) => {
+  parseText = (text) => {
     const precedence = (o) => {
       if (o === '*' || o === '/') {
         return 3;
@@ -54,7 +57,7 @@ class WordVectors extends Component {
       return 0;
     };
     // Shunting-yard algorithm
-    let chars = e.target.value.replace(/\s+/g, '').split('');
+    let chars = text.replace(/\s+/g, '').split('');
     let outputQueue = [];
     let operatorStack = [];
     while (chars.length > 0) {
@@ -130,6 +133,7 @@ class WordVectors extends Component {
   };
 
   calculate = () => {
+    this.parseText(this.input.current.value);
     let analogy = this.state.analogy.slice();
     const normalize = (x) => {
       let len = Math.sqrt(x.reduce((len, a) => len + a * a, 0));
@@ -235,7 +239,7 @@ class WordVectors extends Component {
               {this.renderDescription()}
             </div>
             <div className='smallmargin'>
-              <Input id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} onChange={this.parseText} />
+              <Autocomplete model={this.state.corpora} ref={this.input} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
               <div className='smallmargin'>
                 <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
               </div>

@@ -15,7 +15,7 @@ const fetchJson = function (action, options) {
       .then(response => { return response.json(); });
   }
 };
-const options = function (method, data) {
+const options = function (method, data, additional = {}) {
   data = data || {};
 
   let options = {
@@ -23,7 +23,8 @@ const options = function (method, data) {
     mode: 'cors',
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    ...additional
   };
   if (method === 'post' || method === 'put' || method === 'PATCH') {
     if (data instanceof FormData) {
