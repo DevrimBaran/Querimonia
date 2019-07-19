@@ -1,0 +1,196 @@
+image: docker:latest
+services:
+  - docker:dind
+stages:
+  - build
+  - test
+  - deploy
+  - admin
+
+variables:
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+#frontend
+build-frontend-dev: &base-frontend
+  stage: build
+  image: node:8.16.0-jessie
+  script:
+    - cd frontend/
+    - npm ci --no-progress
+    - npm run build-dev
+  artifacts:
+    paths:
+      - frontend/build/
+  allow_failure: true
+  only:
+    - /^frontend.*$/
+
+build-frontend-mock:
+  <<: *base-frontend
+  script:
+    - cd frontend/
+    - npm ci --no-progress
+    - npm run build-mock
+    - mkdir mock
+    - cp -r build/* mock/
+  artifacts:
+    paths:
+      - frontend/mock/
+
+build-frontend-master:
+  <<: *base-frontend
+  script:
+    - cd frontend/
+    - npm ci --no-progress
+    - npm run build-prod
+  allow_failure: false
+  only:
+    - master
+
+test-frontend:
+  stage: test
+  image: node:8.16.0-jessie
+  script:
+    - echo 'no tests'
+  artifacts:
+    paths:
+      - frontend/build/
+      - frontend/mock/
+  allow_failure: false
+  only:
+    - /^frontend.*$/
+    - master
+
+deploy-frontend-mock:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - chmod -R +rw frontend/mock/
+    - cp -r frontend/mock/* /home/beschwerdemanagement/export/frontend-mock/
+  allow_failure: true
+  only:
+    - frontend
+
+deploy-frontend-dev:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - chmod -R +rw frontend/build/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-dev/
+  allow_failure: true
+  only:
+    - frontend
+
+# python
+build-python:
+  stage: build
+  image: python
+  script:
+    - cd python/
+    - pip3 install pipenv --user
+    - pip3 install flake8 --user
+    - ~/.local/bin/pipenv install
+    - ~/.local/bin/flake8 --ignore E501 .
+  artifacts:
+    paths:
+      - python/
+  only:
+    - /^python.*$/
+
+test-python:
+  stage: test
+  tags:
+    - shell
+  script:
+    - echo 'no tests'
+  artifacts:
+    paths:
+      - python/
+  only:
+    - /^python.*$/
+
+deploy-python:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    # copy python to destination and systemd script
+    - chmod -R +rw python/
+    - cp -r python/* /home/beschwerdemanagement/export/python-dev/
+    - sudo systemctl restart stupropython_dev
+  only:
+    - /^python.*$/
+# backend
+build-backend-dev: &base-backend
+  stage: build
+  image: maven:3.6.1-jdk-11
+  script:
+    - cd backend/
+    - mvn -B -ntp package
+  artifacts:
+    paths:
+      - backend/target/*.jar
+      - backend/doc/openapi.yaml
+  allow_failure: true
+  only:
+    - /^backend.*$/
+
+build-backend-master:
+  <<: *base-backend
+  allow_failure: false
+  only:
+    - master
+
+test-backend-dev:
+  <<: *base-backend
+  stage: test
+  script:
+    - echo 'no tests'
+  only:
+    - /^backend.*$/
+    - master
+
+deploy-backend-dev:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    - chmod +x backend/target/*.jar
+    - cp backend/target/*.jar /home/gitlab-runner/
+    - echo 'start server in background'
+    - sudo systemctl restart stuprojavaserver_dev
+    - echo 'copy current openapi to destination'
+    - chmod +rx backend/doc/openapi.yaml
+    - sudo cp backend/doc/openapi.yaml /home/beschwerdemanagement/export/data/
+    - cd /home/gitlab-runner/
+    - ./convert.sh
+  allow_failure: true
+  only:
+    - backend
+
+# all
+master:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    # frontend
+    - chmod -R +rw frontend/build/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/master/frontend/
+    # backend
+    - chmod +x backend/target/*.jar
+    - cp -r backend/target/*.jar /home/gitlab-runner/
+    - echo 'start server in background'
+    - sudo systemctl restart stuprojavaserver
+  only:
+    - master
+
+last:
+  stage: admin
+  tags:
+    - shell
+  script:
+    - sudo systemctl restart stuproadmin

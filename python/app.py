@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_restplus import Resource, Api, fields
+from flask_restplus import Resource, Api
 import numpy as np
 import sentiment_analyse
 import wordvector
@@ -7,19 +7,23 @@ import wordvector
 app = Flask(__name__)
 # TODO change base url
 # app.wsgi_app = PrefixMiddleware(app.wsgi_app, prefix='/python')
-api = Api(app, version='0.1', title='Python API', description='API für Wortvektoren und Sentimentanaylse')
+api = Api(
+    app,
+    version="0.1",
+    title="Python API",
+    description="API für Wortvektoren und Sentimentanaylse",
+)
 
 
-@api.route('/python/sentiment_analyse')
+@api.route("/python/sentiment_analyse")
 class Sentiment(Resource):
     def post(self):
-        # Example: python -c "import requests; res = requests.post('http://localhost:5000/sentiment', json={'text':'Ich hasse Hawaiipizza'}); print(res.json())"
         # get complaint text
         content = request.get_json()
-        if 'text' not in content:
+        if "text" not in content:
             # TODO create error class
             return jsonify({"error": "wrong json"})
-        query = content['text']
+        query = content["text"]
         sentiment_value = sentiment_analyse.main(query)
         return jsonify({"sentiment": sentiment_value})
 
@@ -39,8 +43,8 @@ class Word_to_vec(Resource):
     def post(self):
         '''Gibt den Vektor zu einem gegebenen Wort im spezifizierten Korpus zurück.'''
         content = request.get_json()
-        word = content['word']
-        model_name = content['model']
+        word = content["word"]
+        model_name = content["model"]
         result = wordvector.Calc.vectorize(word, model_name)
         return jsonify(result.tolist())
 
@@ -59,8 +63,8 @@ class Vec_to_word(Resource):
     def post(self):
         '''Gibt das Wort zu einem gegebenen Vektor im spezifizierten Korpus zurück.'''
         content = request.get_json()
-        vector = content['vector']
-        model_name = content['model']
+        vector = content["vector"]
+        model_name = content["model"]
         result = wordvector.Calc.getword(np.asarray(vector), model_name)
         return jsonify(result)
 
@@ -81,11 +85,11 @@ class Predict_word(Resource):
     def post(self):
         '''Gibt eine Liste aller Wörter mit den angefragten Anfangsbuchstaben im spezifizierten Korpus zurück'''
         content = request.get_json()
-        query = content['query']
-        model_name = content['model']
+        query = content["query"]
+        model_name = content["model"]
         result = wordvector.Calc.predict_words(query, model_name)
         return jsonify(result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=False)

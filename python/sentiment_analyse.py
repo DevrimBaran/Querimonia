@@ -13,13 +13,13 @@ datafolder = Path("data/")
 
 
 def positive_sentiment(query):
-    sentiment = round(analyze(query, 'SentiWS_v2.0_Positive.txt'), 2)
+    sentiment = round(analyze(query, "SentiWS_v2.0_Positive.txt"), 2)
     print(sentiment)
     return sentiment
 
 
 def negative_sentiment(query):
-    sentiment = round(analyze(query, 'SentiWS_v2.0_Negative.txt'), 2)
+    sentiment = round(analyze(query, "SentiWS_v2.0_Negative.txt"), 2)
     print(sentiment)
     return sentiment
 
@@ -30,14 +30,14 @@ def analyze(query, dict):
     dict = datafolder / dict
     sentiment_value = 0
     for j in tokens:
-        with open(dict, 'r', encoding='utf-8') as sentis:
+        with open(dict, "r", encoding="utf-8") as sentis:
             for s in sentis:
-                cells = s.split('\t')
-                lemma = cells[0].split('|')[0]
+                cells = s.split("\t")
+                lemma = cells[0].split("|")[0]
 
                 value = float(cells[1].strip())
 
-                infl = cells[2].split(',')
+                infl = cells[2].split(",")
                 # delete the \n in the last word
                 infl[len(infl) - 1] = infl[len(infl) - 1].strip()
                 # loop over inflections
@@ -50,9 +50,8 @@ def analyze(query, dict):
 
 def filter_query(query):
     # tokenize, erase punctuation(#, $, %, ., ~, ...), erase whitespaces
-    tokens = nltk.tokenize.word_tokenize(query, 'german')
-    tokens = [''.join(i for i in s if i not in string.punctuation)
-              for s in tokens]
+    tokens = nltk.tokenize.word_tokenize(query, "german")
+    tokens = ["".join(i for i in s if i not in string.punctuation) for s in tokens]
     return tokens
 
 
@@ -69,12 +68,12 @@ def main(query):
     return positive_sentiment(query) + negative_sentiment(query)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print('In cmd " python sentiment_analyse.py *query* \n or use examples in comments')
 
     # for example
     # test_pos = 'liebe ist was schönes'
-    test_neg = 'Ich hasse Zerstörung und Gewalt'
+    test_neg = "Ich hasse Zerstörung und Gewalt"
     main(test_neg)
 
     # for cmd
