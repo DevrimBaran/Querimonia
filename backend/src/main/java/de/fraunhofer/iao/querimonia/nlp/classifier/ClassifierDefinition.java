@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.Column;
@@ -100,7 +101,7 @@ public class ClassifierDefinition {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("classifierType", classifierType)
         .append("name", name)
         .append("categoryName", categoryName)

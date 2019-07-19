@@ -32,6 +32,6 @@ public class SentimentRule implements Rule {
     }
     return complaint.getSentiment().getTendency() >= min
         && complaint.getSentiment().getTendency() <= max
-        && (emotion == null || complaint.getSentiment().getEmotion().getValue().equals(emotion));
+        && (emotion == null || complaint.getSentiment().getEmotion().getValue().matches(emotion));
   }
 }

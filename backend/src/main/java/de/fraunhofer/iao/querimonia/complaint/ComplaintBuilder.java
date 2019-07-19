@@ -142,7 +142,7 @@ public class ComplaintBuilder {
 
   public Complaint createComplaint() {
     return new Complaint(id, text, Objects.requireNonNull(preview), state,
-        Objects.requireNonNull(properties), sentiment, Objects.requireNonNull(entities),
+        Objects.requireNonNull(properties), Objects.requireNonNull(sentiment), Objects.requireNonNull(entities),
         Objects.requireNonNull(responseSuggestion), Objects.requireNonNull(wordList), receiveDate,
         receiveTime, configuration);
   }

@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.TestEntities;
 import de.fraunhofer.iao.querimonia.response.component.TestComponents;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
@@ -28,6 +29,7 @@ public class TestComplaints {
       .setState(ComplaintState.NEW)
       .setProperties(TestProperties.PROPERTIES_A)
       .setResponseSuggestion(TestResponses.SUGGESTION_A)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
       .createComplaint();
 
   public static final Complaint COMPLAINT_B = new ComplaintBuilder(TEXT_B)
@@ -39,6 +41,7 @@ public class TestComplaints {
       .setState(ComplaintState.NEW)
       .setProperties(TestProperties.PROPERTIES_A)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.1))
       .createComplaint();
 
   public static final Complaint COMPLAINT_C = new ComplaintBuilder(TEXT_C)
@@ -50,6 +53,7 @@ public class TestComplaints {
       .setState(ComplaintState.IN_PROGRESS)
       .setProperties(TestProperties.PROPERTIES_B)
       .setResponseSuggestion(TestResponses.SUGGESTION_A)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), -0.5))
       .createComplaint();
 
   public static final Complaint COMPLAINT_D = new ComplaintBuilder(TEXT_D)
@@ -61,6 +65,7 @@ public class TestComplaints {
       .setState(ComplaintState.CLOSED)
       .setProperties(TestProperties.PROPERTIES_B)
       .setResponseSuggestion(TestResponses.SUGGESTION_A)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
       .createComplaint();
 
   public static final Complaint COMPLAINT_E = new ComplaintBuilder(TEXT_E)
@@ -71,6 +76,7 @@ public class TestComplaints {
       .setConfiguration(TestConfigurations.CONFIGURATION_B)
       .setProperties(TestProperties.PROPERTIES_B)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), -0.1))
       .createComplaint();
 
   public static final Complaint COMPLAINT_F = new ComplaintBuilder(TEXT_F)
@@ -82,6 +88,7 @@ public class TestComplaints {
       .setProperties(TestProperties.PROPERTIES_C)
       .setState(ComplaintState.NEW)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
       .createComplaint();
 
   public static final Complaint COMPLAINT_G = new ComplaintBuilder(TEXT_G)
@@ -93,6 +100,7 @@ public class TestComplaints {
       .setState(ComplaintState.IN_PROGRESS)
       .setProperties(TestProperties.PROPERTIES_C)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
       .createComplaint();
 
   public static class TestProperties {
@@ -101,21 +109,18 @@ public class TestComplaints {
 
     public static final List<ComplaintProperty> PROPERTIES_A
         = List.of(
-        new ComplaintProperty(baseMap, "Kategorie"),
-        new ComplaintProperty(baseMap, "Emotion")
+        new ComplaintProperty(baseMap, "Kategorie")
     );
 
     public static final List<ComplaintProperty> PROPERTIES_B
         = List.of(
         new ComplaintProperty("Kategorie", "Fahrer unfreundlich"),
-        new ComplaintProperty("Emotion", "Wut"),
         new ComplaintProperty("Domäne", "Wuppertal")
     );
 
     public static final List<ComplaintProperty> PROPERTIES_C
         = List.of(
-        new ComplaintProperty("Kategorie", "Sonstiges"),
-        new ComplaintProperty("Emotion", "Trauer")
+        new ComplaintProperty("Kategorie", "Sonstiges")
     );
   }
 

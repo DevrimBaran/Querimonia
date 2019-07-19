@@ -183,6 +183,7 @@ public class Configuration implements Identifiable<Long> {
         .append(extractors, that.extractors)
         .append(classifiers, that.classifiers)
         .append(sentimentAnalyzer, that.sentimentAnalyzer)
+        .append(emotionAnalyzer, that.emotionAnalyzer)
         .isEquals();
   }
 
@@ -193,6 +194,7 @@ public class Configuration implements Identifiable<Long> {
         .append(extractors)
         .append(classifiers)
         .append(sentimentAnalyzer)
+        .append(emotionAnalyzer)
         .toHashCode();
   }
 
@@ -202,8 +204,9 @@ public class Configuration implements Identifiable<Long> {
         .append("configId", configId)
         .append("name", name)
         .append("extractors", extractors)
-        .append("classifier", classifiers)
+        .append("classifiers", classifiers)
         .append("sentimentAnalyzer", sentimentAnalyzer)
+        .append("emotionAnalyzer", emotionAnalyzer)
         .toString();
   }
 }

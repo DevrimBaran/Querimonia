@@ -2,6 +2,8 @@ package de.fraunhofer.iao.querimonia.config;
 
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierType;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerDefinition;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerType;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorType;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
@@ -18,6 +20,7 @@ public class TestConfigurations {
       .setClassifiers(new ArrayList<>())
       .setExtractors(new ArrayList<>())
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .createConfiguration();
 
   public static final Configuration CONFIGURATION_B = new ConfigurationBuilder()
@@ -26,6 +29,7 @@ public class TestConfigurations {
       .setClassifiers(List.of(new ClassifierDefinition(ClassifierType.NONE, "", "Kategorie")))
       .setExtractors(new ArrayList<>())
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .createConfiguration();
 
   public static final Configuration CONFIGURATION_C = new ConfigurationBuilder()
@@ -34,6 +38,7 @@ public class TestConfigurations {
       .setClassifiers(List.of())
       .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .createConfiguration();
 
 }

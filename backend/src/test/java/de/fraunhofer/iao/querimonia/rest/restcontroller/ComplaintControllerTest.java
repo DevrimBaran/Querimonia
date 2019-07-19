@@ -5,6 +5,7 @@ import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
 import de.fraunhofer.iao.querimonia.db.repositories.*;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
 import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
@@ -60,12 +61,12 @@ public class ComplaintControllerTest {
   // TC 1
   @Test
   public void getComplaints() {
-    // TODO get complaints test
+    // a lot TODO get complaints test
   }
 
   // TC 2
   @Test
-  public void uploadComplaint() {
+  public void uploadComplaint1() {
     // various config parameters and other equivalency classes are tested in TC 3
     String testText = TestComplaints.TestTexts.TEXT_A;
     Configuration testConfiguration = TestConfigurations.CONFIGURATION_A;
@@ -86,9 +87,71 @@ public class ComplaintControllerTest {
         TestComplaints.COMPLAINT_A);
   }
 
+  @Test
+  public void uploadComplaint2() {
+    String testText = TestComplaints.TestTexts.TEXT_A;
+    Configuration testConfiguration = TestConfigurations.CONFIGURATION_A;
+    configurationRepository.save(testConfiguration);
+
+    // TC 2.2 illegal file format
+    var responseEntity =
+        complaintController.uploadComplaint(new MockMultipartFile("TestFile.xlsx", "TestFile.xlsx",
+            "text/plain",
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1));
+    assertEquals("Wrong status code on success", HttpStatus.BAD_REQUEST,
+        responseEntity.getStatusCode());
+    var exceptionBody = (QuerimoniaException) responseEntity.getBody();
+    assertNotNull("Missing body", exceptionBody);
+    assertEquals("db does contain anything", 0, complaintRepository.count());
+  }
+
+  @Test
+  public void uploadComplaint3() {
+    String testText = TestComplaints.TestTexts.TEXT_A;
+    Configuration testConfiguration = TestConfigurations.CONFIGURATION_A;
+    configurationRepository.save(testConfiguration);
+
+    // TC 2.2 illegal file contents
+    var responseEntity =
+        complaintController.uploadComplaint(new MockMultipartFile("TestFile.pdf", "TestFile.pdf",
+            "text/plain",
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1));
+    assertEquals("Wrong status code on fail", HttpStatus.INTERNAL_SERVER_ERROR,
+        responseEntity.getStatusCode());
+    var exceptionBody = (QuerimoniaException) responseEntity.getBody();
+    assertNotNull("Missing body", exceptionBody);
+    assertEquals("db does contain anything", 0, complaintRepository.count());
+  }
+
+  @Test
+  public void uploadComplaint4() {
+    String testText = TestComplaints.TestTexts.TEXT_A;
+    Configuration testConfiguration = TestConfigurations.CONFIGURATION_A;
+    configurationRepository.save(testConfiguration);
+
+    // TC 2.2 illegal file format docx
+    var responseEntity =
+        complaintController.uploadComplaint(new MockMultipartFile("TestFile.docx", "TestFile.docx",
+            "text/plain",
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1));
+    assertEquals("Wrong status code on fail", HttpStatus.INTERNAL_SERVER_ERROR,
+        responseEntity.getStatusCode());
+    var exceptionBody = (QuerimoniaException) responseEntity.getBody();
+    assertNotNull("Missing body", exceptionBody);
+    assertEquals("db does contain anything", 0, complaintRepository.count());
+  }
+
   // TC 3
   @Test
   public void uploadText() {
+    // setup
+    String testText = TestComplaints.TestTexts.TEXT_E;
+    Configuration testConfiguration = TestConfigurations.CONFIGURATION_A.withActive(true);
+    configurationRepository.save(testConfiguration);
+    Configuration testConfiguration2 = TestConfigurations.CONFIGURATION_B;
+    configurationRepository.save(testConfiguration2);
+
+
   }
 
   @Test
