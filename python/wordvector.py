@@ -68,4 +68,3 @@ class Calc:
                         break
 
         return result
-        
