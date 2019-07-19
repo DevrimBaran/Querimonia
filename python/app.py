@@ -74,7 +74,7 @@ class Vec_to_word(Resource):
     params={
         'query': 'Die Buchstaben, zu denen die Wörter im Korpus angefragt werden. Nur drei oder mehr Buchstaben erzeugen eine Antwort',
         'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen',
-        'limit': fields.Integer(description="Maximale Anzahl zurückgegebener Wörter")
+        'limit': 'Maximale Anzahl zurückgegebener Wörter als Integer'
     },
     responses={
         200: 'Success'
@@ -86,7 +86,7 @@ class Predict_word(Resource):
         content = request.get_json()
         query = content["query"]
         model_name = content["model"]
-        limmit = content["limit"]
+        limit = content["limit"]
         result = wordvector.Calc.predict_words(query, model_name, limit)
         return jsonify(result)
 
