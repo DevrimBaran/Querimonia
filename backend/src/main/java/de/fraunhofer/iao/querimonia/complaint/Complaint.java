@@ -8,6 +8,8 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 import tec.uom.lib.common.function.Identifiable;
 
@@ -35,8 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is represents a complaint. It contains the complaint text, the preview text, the
- * subject, the emotion and the date of the complaint.
+ * This class is represents a complaint.
  */
 @Entity
 @JsonPropertyOrder(value = {
@@ -59,6 +60,7 @@ public class Complaint implements Identifiable<Long> {
   @Id
   @JsonProperty("id")
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "id")
   private long complaintId;
 
   /**
@@ -87,6 +89,7 @@ public class Complaint implements Identifiable<Long> {
    * Additional properties for the complaint like the category, that get found by classifiers.
    */
   @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "complaint_id")
   @NonNull
   private List<ComplaintProperty> properties = Collections.emptyList();
 
@@ -100,6 +103,7 @@ public class Complaint implements Identifiable<Long> {
    * The list of all named entities in the complaint text.
    */
   @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "complaint_id")
   @JsonIgnore
   @NonNull
   private List<NamedEntity> entities = Collections.emptyList();
@@ -116,7 +120,7 @@ public class Complaint implements Identifiable<Long> {
    * A list of all words in the complaint text, which are not stop words, mapped to their absolute
    * count.
    */
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "word_list_table", joinColumns = @JoinColumn(name = "complaintId"))
   @MapKeyColumn(name = "words")
   @Column(name = "count")
@@ -139,7 +143,6 @@ public class Complaint implements Identifiable<Long> {
    */
   @ManyToOne(cascade = CascadeType.MERGE)
   @NonNull
-  @Column(nullable = false)
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
 
   /**
@@ -292,8 +295,6 @@ public class Complaint implements Identifiable<Long> {
         .append(properties, complaint.properties)
         .append(entities, complaint.entities)
         .append(responseSuggestion, complaint.responseSuggestion)
-        .append(receiveDate, complaint.receiveDate)
-        .append(receiveTime, complaint.receiveTime)
         .isEquals();
   }
 
@@ -306,8 +307,24 @@ public class Complaint implements Identifiable<Long> {
         .append(sentiment)
         .append(entities)
         .append(responseSuggestion)
-        .append(receiveDate)
-        .append(receiveTime)
         .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        .append("complaintId", complaintId)
+        .append("text", text)
+        .append("preview", preview)
+        .append("state", state)
+        .append("properties", properties)
+        .append("sentiment", sentiment)
+        .append("entities", entities)
+        .append("responseSuggestion", responseSuggestion)
+        .append("wordList", wordList)
+        .append("receiveDate", receiveDate)
+        .append("receiveTime", receiveTime)
+        .append("configuration", configuration)
+        .toString();
   }
 }

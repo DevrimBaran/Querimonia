@@ -21,6 +21,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import java.util.ArrayList;
@@ -66,10 +67,12 @@ public class Configuration implements Identifiable<Long> {
   private String name = "";
 
   @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "config_id")
   @NonNull
   private List<ExtractorDefinition> extractors = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "config_id")
   @NonNull
   private List<ClassifierDefinition> classifiers = new ArrayList<>();
 

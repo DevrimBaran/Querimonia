@@ -15,7 +15,7 @@ public class MockRepository<T extends Identifiable<Long>> implements
     PagingAndSortingRepository<T, Long> {
 
   private HashMap<Long, T> mockDatabase = new HashMap<>();
-  private static long counter = 0;
+  private long counter = 1;
 
   @Override
   public <S extends T> S save(S entity) {

@@ -78,6 +78,8 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    * The list of actions.
    */
   @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "component_id")
+  @Column(name = "action_id")
   @NonNull
   private List<Action> actions = List.of();
 

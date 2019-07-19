@@ -19,12 +19,6 @@ import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +27,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -125,21 +112,9 @@ public class ComplaintManager {
    */
   public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Integer> configId) {
     String fileName = fileStorageService.storeFile(file);
-    String fullFilePath = "src/main/resources/uploads/" + fileName;
 
-    Complaint complaint;
-
-    try (FileInputStream fileInputStream = new FileInputStream(fullFilePath)) {
-
-      String text = getTextFromData(fullFilePath, fileInputStream);
-      complaint = uploadText(new TextInput(text), configId);
-
-    } catch (IOException e) {
-      logger.error("Fehler beim Datei-Upload");
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
-    }
-    return complaint;
+    String text = fileStorageService.getTextFromData(fileName);
+    return uploadText(new TextInput(text), configId);
   }
 
   /**
@@ -367,54 +342,4 @@ public class ComplaintManager {
     }
   }
 
-  /**
-   * Extracts text out of a file.
-   *
-   * @param fullFilePath    the file path
-   * @param fileInputStream a input stream of that file
-   *
-   * @return the extracted complaint text.
-   * @throws IOException on an io-error.
-   */
-  private String getTextFromData(String fullFilePath, InputStream fileInputStream)
-      throws IOException {
-
-    String text = null;
-    String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
-    switch (suffix) {
-      case ".txt":
-        text = Files.readString(Paths.get(fullFilePath), Charset.defaultCharset());
-        break;
-      case ".pdf":
-        PDDocument document = PDDocument.load(new File(fullFilePath));
-        if (!document.isEncrypted()) {
-          PDFTextStripper stripper = new PDFTextStripper();
-          text = stripper.getText(document);
-        }
-        document.close();
-        break;
-      //read a word file (docx)
-      case ".docx":
-        XWPFDocument docxDocument = new XWPFDocument(fileInputStream);
-        XWPFWordExtractor extractor = new XWPFWordExtractor(docxDocument);
-        text = extractor.getText();
-        extractor.close();
-        break;
-      //read word file (doc)
-      case ".doc":
-        HWPFDocument docDocument = new HWPFDocument(fileInputStream);
-        WordExtractor docExtractor = new WordExtractor(docDocument);
-        text = docExtractor.getText();
-        docExtractor.close();
-        break;
-      default:
-        throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Das Dateiformat " + suffix
-            + " wird nicht unterstützt!", "Ungültiges Dateiformat");
-    }
-
-    if (text == null) {
-      throw new IllegalStateException();
-    }
-    return text;
-  }
 }

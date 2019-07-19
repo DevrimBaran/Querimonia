@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
@@ -45,7 +46,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
    */
   @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "probability_table", joinColumns = @JoinColumn(name = "id"))
-  @MapKeyColumn(name = "probabilities")
+  @MapKeyColumn(name = "value")
   @Column(name = "probability")
   @NonNull
   private Map<String, Double> probabilities = new HashMap<>();
@@ -145,7 +146,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("id", id)
         .append("value", value)
         .append("name", name)
@@ -156,6 +157,6 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   @Override
   public int compareTo(@NotNull ComplaintProperty o) {
-    return this.getValue().compareTo(o.getValue());
+    return this.getName().compareTo(o.getName());
   }
 }

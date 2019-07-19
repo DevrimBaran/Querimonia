@@ -9,6 +9,7 @@ import org.springframework.lang.Nullable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -21,15 +22,15 @@ public class ComplaintBuilder {
   private String preview;
   @NonNull
   private ComplaintState state = ComplaintState.NEW;
-  @Nullable
-  private List<ComplaintProperty> properties;
+  @NonNull
+  private List<ComplaintProperty> properties = new ArrayList<>();
   private double sentiment = 0.0;
-  @Nullable
-  private List<NamedEntity> entities;
-  @Nullable
-  private ResponseSuggestion responseSuggestion;
-  @Nullable
-  private Map<String, Integer> wordList;
+  @NonNull
+  private List<NamedEntity> entities = new ArrayList<>();
+  @NonNull
+  private ResponseSuggestion responseSuggestion = new ResponseSuggestion();
+  @NonNull
+  private Map<String, Integer> wordList = new HashMap<>();
   @NonNull
   private LocalDate receiveDate = LocalDate.now();
   @NonNull
@@ -76,7 +77,7 @@ public class ComplaintBuilder {
     return this;
   }
 
-  public ComplaintBuilder setProperties(@Nullable List<ComplaintProperty> properties) {
+  public ComplaintBuilder setProperties(@NonNull List<ComplaintProperty> properties) {
     this.properties = properties;
     return this;
   }
@@ -89,13 +90,9 @@ public class ComplaintBuilder {
 
     ComplaintProperty newProperty = new ComplaintProperty(propertyName, value);
     if (property.isPresent()) {
-      assert properties != null;
       properties.remove(property.get());
       newProperty = new ComplaintProperty(propertyName, value, property.get().getProbabilities(),
           true);
-    }
-    if (properties == null) {
-      properties = new ArrayList<>();
     }
     properties.add(newProperty);
     return this;
@@ -106,12 +103,12 @@ public class ComplaintBuilder {
     return this;
   }
 
-  public ComplaintBuilder setEntities(@Nullable List<NamedEntity> entities) {
+  public ComplaintBuilder setEntities(@NonNull List<NamedEntity> entities) {
     this.entities = entities;
     return this;
   }
 
-  public ComplaintBuilder setResponseSuggestion(@Nullable ResponseSuggestion responseSuggestion) {
+  public ComplaintBuilder setResponseSuggestion(@NonNull ResponseSuggestion responseSuggestion) {
     this.responseSuggestion = responseSuggestion;
     return this;
   }
@@ -163,7 +160,7 @@ public class ComplaintBuilder {
     return state;
   }
 
-  @Nullable
+  @NonNull
   public List<ComplaintProperty> getProperties() {
     return properties;
   }
@@ -172,17 +169,17 @@ public class ComplaintBuilder {
     return sentiment;
   }
 
-  @Nullable
+  @NonNull
   public List<NamedEntity> getEntities() {
     return entities;
   }
 
-  @Nullable
+  @NonNull
   public ResponseSuggestion getResponseSuggestion() {
     return responseSuggestion;
   }
 
-  @Nullable
+  @NonNull
   public Map<String, Integer> getWordList() {
     return wordList;
   }

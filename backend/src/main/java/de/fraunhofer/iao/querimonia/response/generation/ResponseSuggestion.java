@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.CascadeType;
@@ -30,7 +33,7 @@ public class ResponseSuggestion {
   private List<CompletedResponseComponent> responseComponents = new ArrayList<>();
 
   @NonNull
-  @Column(nullable = false)
+  @Column(name = "action_id", nullable = false)
   @OneToMany(cascade = CascadeType.ALL)
   private List<Action> actions = new ArrayList<>();
 
@@ -58,5 +61,40 @@ public class ResponseSuggestion {
 
   public long getId() {
     return id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ResponseSuggestion that = (ResponseSuggestion) o;
+
+    return new EqualsBuilder()
+        .append(responseComponents, that.responseComponents)
+        .append(actions, that.actions)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(responseComponents)
+        .append(actions)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("id", id)
+        .append("responseComponents", responseComponents)
+        .append("actions", actions)
+        .toString();
   }
 }

@@ -1,81 +1,108 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
+import de.fraunhofer.iao.querimonia.config.TestConfigurations;
+import de.fraunhofer.iao.querimonia.nlp.TestEntities;
+import de.fraunhofer.iao.querimonia.response.component.TestComponents;
+import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.DATE_B;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.DATE_C;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.DATE_D;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.DATE_E;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.DATE_F;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.DATE_G;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.TIME_B;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.TIME_C;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.TIME_D;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.TIME_E;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.TIME_F;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.TIME_G;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.PREVIEW_B;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.PREVIEW_C;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.PREVIEW_D;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.PREVIEW_E;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.PREVIEW_F;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.PREVIEW_G;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.TEXT_B;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.TEXT_C;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.TEXT_D;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.TEXT_E;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.TEXT_F;
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.TEXT_G;
+import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.*;
+import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.*;
 
 // TODO add more attributes to the test complaints
 public class TestComplaints {
 
-  public static final Complaint COMPLAINT_A = new Complaint();
+  public static final Complaint COMPLAINT_A = new ComplaintBuilder(TEXT_A)
+      .setId(1)
+      .setPreview(PREVIEW_A)
+      .setReceiveDate(DATE_A)
+      .setReceiveTime(TIME_A)
+      .setConfiguration(TestConfigurations.CONFIGURATION_A)
+      .setState(ComplaintState.NEW)
+      .setProperties(TestProperties.PROPERTIES_A)
+      .setResponseSuggestion(TestResponses.SUGGESTION_A)
+      .createComplaint();
 
   public static final Complaint COMPLAINT_B = new ComplaintBuilder(TEXT_B)
+      .setId(2)
       .setPreview(PREVIEW_B)
       .setReceiveDate(DATE_B)
       .setReceiveTime(TIME_B)
+      .setConfiguration(TestConfigurations.CONFIGURATION_A)
+      .setState(ComplaintState.NEW)
+      .setProperties(TestProperties.PROPERTIES_A)
+      .setResponseSuggestion(TestResponses.SUGGESTION_B)
       .createComplaint();
 
   public static final Complaint COMPLAINT_C = new ComplaintBuilder(TEXT_C)
+      .setId(3)
       .setPreview(PREVIEW_C)
       .setReceiveDate(DATE_C)
       .setReceiveTime(TIME_C)
+      .setConfiguration(TestConfigurations.CONFIGURATION_B)
+      .setState(ComplaintState.IN_PROGRESS)
+      .setProperties(TestProperties.PROPERTIES_B)
+      .setResponseSuggestion(TestResponses.SUGGESTION_A)
       .createComplaint();
 
   public static final Complaint COMPLAINT_D = new ComplaintBuilder(TEXT_D)
+      .setId(4)
       .setPreview(PREVIEW_D)
       .setReceiveDate(DATE_D)
       .setReceiveTime(TIME_D)
+      .setConfiguration(TestConfigurations.CONFIGURATION_B)
+      .setState(ComplaintState.CLOSED)
+      .setProperties(TestProperties.PROPERTIES_B)
+      .setResponseSuggestion(TestResponses.SUGGESTION_A)
       .createComplaint();
 
   public static final Complaint COMPLAINT_E = new ComplaintBuilder(TEXT_E)
+      .setId(5)
       .setPreview(PREVIEW_E)
       .setReceiveDate(DATE_E)
       .setReceiveTime(TIME_E)
+      .setConfiguration(TestConfigurations.CONFIGURATION_B)
+      .setProperties(TestProperties.PROPERTIES_B)
+      .setResponseSuggestion(TestResponses.SUGGESTION_B)
       .createComplaint();
 
   public static final Complaint COMPLAINT_F = new ComplaintBuilder(TEXT_F)
+      .setId(6)
       .setPreview(PREVIEW_F)
       .setReceiveDate(DATE_F)
       .setReceiveTime(TIME_F)
+      .setConfiguration(TestConfigurations.CONFIGURATION_C)
+      .setProperties(TestProperties.PROPERTIES_C)
+      .setState(ComplaintState.NEW)
+      .setResponseSuggestion(TestResponses.SUGGESTION_B)
       .createComplaint();
 
   public static final Complaint COMPLAINT_G = new ComplaintBuilder(TEXT_G)
+      .setId(7)
       .setPreview(PREVIEW_G)
       .setReceiveDate(DATE_G)
       .setReceiveTime(TIME_G)
+      .setConfiguration(TestConfigurations.CONFIGURATION_A)
+      .setState(ComplaintState.IN_PROGRESS)
+      .setProperties(TestProperties.PROPERTIES_C)
+      .setResponseSuggestion(TestResponses.SUGGESTION_B)
       .createComplaint();
 
   public static class TestProperties {
 
+    public static final Map<String, Double> baseMap = Collections.singletonMap("Unbekannt", 1.0);
+
     public static final List<ComplaintProperty> PROPERTIES_A
         = List.of(
-        new ComplaintProperty("Kategorie", "Fahrt nicht erfolgt"),
-        new ComplaintProperty("Emotion", "Wut")
+        new ComplaintProperty(baseMap, "Kategorie"),
+        new ComplaintProperty(baseMap, "Emotion")
     );
 
     public static final List<ComplaintProperty> PROPERTIES_B
@@ -87,8 +114,27 @@ public class TestComplaints {
 
     public static final List<ComplaintProperty> PROPERTIES_C
         = List.of(
-            new ComplaintProperty("Kategorie", "Sonstiges"),
-            new ComplaintProperty("Emotion", "Trauer")
+        new ComplaintProperty("Kategorie", "Sonstiges"),
+        new ComplaintProperty("Emotion", "Trauer")
+    );
+  }
+
+  public static class TestResponses {
+
+    public static final ResponseSuggestion SUGGESTION_A = new ResponseSuggestion(
+        List.of(), List.of()
+    );
+
+    public static final ResponseSuggestion SUGGESTION_B = new ResponseSuggestion(
+        List.of(new CompletedResponseComponent(
+                TestComponents.COMPONENT_A,
+                List.of(TestEntities.ENTITY_A)
+            ), new CompletedResponseComponent(
+                TestComponents.COMPONENT_B,
+                Collections.emptyList()
+            )
+        ),
+        List.of()
     );
   }
 
