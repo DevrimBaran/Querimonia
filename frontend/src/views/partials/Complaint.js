@@ -15,6 +15,8 @@ import Collapsible from './../../components/Collapsible';
 import Tabbed from './../../components/Tabbed';
 import TextBuilder from './../../components/TextBuilder';
 import ReactTooltip from 'react-tooltip';
+import Tooltip from './../../components/Tooltip';
+import Modal from './../../components/Modal';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
@@ -83,7 +85,10 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             {
               !editCategorieBool ? (
                 <span>
-                  <i data-tip data-for='subjects'>{active.subject.value}</i>
+                  <i id='subjects'>{active.subject.value}</i>
+                  <Tooltip htmlFor='subjects'>
+                    {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
+                  </Tooltip>
                   {/* eslint-disable-next-line */}
                   <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
@@ -104,7 +109,10 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             {
               !editSentimentBool ? (
                 <span>
-                  <i data-tip data-for='sentiments'>{active.sentiment.value}</i>
+                  <i id='sentiments'>{active.sentiment.value}</i>
+                  <Tooltip htmlFor='sentiments'>
+                    {Object.keys(active.sentiment.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
+                  </Tooltip>
                   {/* eslint-disable-next-line */}
                   <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
@@ -121,12 +129,6 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
               )
             }
           </div>
-          <ReactTooltip id='subjects' aria-haspopup='true'>
-            {Object.keys(active.subject.probabilities).map(subject => <div key={subject}>{`${subject}: ${active.subject.probabilities[subject]}`} <br /></div>)}
-          </ReactTooltip>
-          <ReactTooltip id='sentiments' aria-haspopup='true'>
-            {Object.keys(active.sentiment.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.probabilities[sentiment]}`} <br /></div>)}
-          </ReactTooltip>
           <Collapsible label='Entitäten' />
           <Content>
             {active.entities.length > 0 ? (<ul>

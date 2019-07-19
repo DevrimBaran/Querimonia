@@ -6,7 +6,8 @@
  */
 
 import React, { Component } from 'react';
-import ReactTooltip from 'react-tooltip';
+import Tooltip from './Tooltip';
+import Modal from './Modal';
 import Api from '../utility/Api';
 
 import merge from 'deepmerge';
@@ -44,7 +45,7 @@ class TaggedText extends Component {
         // String before next entity
         !taggedText.text.substring(cpos, tag.start) || html.push(<span key={key++} data-key={html.length}>{taggedText.text.substring(cpos, tag.start)}</span>);
         // String that is entity
-        html.push(<span data-tip data-for={id} key={key++} data-key={html.length} className='tag' style={this.createBackground(tag)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
+        html.push(<span id={id} key={key++} data-key={html.length} className='tag' style={this.createBackground(tag)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
         // Tooltip for that entity
         html.push(this.createTooltip(tag, id, key++, false));
         if (this.props.editable) {
@@ -178,17 +179,17 @@ class TaggedText extends Component {
       </div>;
     });
     if (showOptions) {
-      return <ReactTooltip effect='solid' clickable key={key + labels.length + 1 + showOptions} id={id} aria-haspopup='true' event='click' globalEventOff='click'>
+      return <Modal key={key + labels.length + 1 + showOptions} htmlFor={id}>
         {
           labelArray
         }
-      </ReactTooltip>;
+      </Modal>;
     } else {
-      return <ReactTooltip effect='solid' key={key + labels.length + 1 + showOptions} id={id} aria-haspopup='true'>
+      return <Tooltip key={key + labels.length + 1 + showOptions} htmlFor={id}>
         {
           labelArray
         }
-      </ReactTooltip>;
+      </Tooltip>;
     }
   };
 
