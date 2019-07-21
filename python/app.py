@@ -50,15 +50,6 @@ class Word_to_vec(Resource):
 
 
 @api.route('/python/vec_to_word')
-@api.doc(
-    params={
-        'vector': 'Vektor als Array',
-        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
-    },
-    responses={
-        200: 'Success'
-    }
-)
 class Vec_to_word(Resource):
     def post(self):
         '''Gibt das Wort zu einem gegebenen Vektor im spezifizierten Korpus zurück.'''
