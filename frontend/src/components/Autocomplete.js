@@ -7,12 +7,9 @@
 
 import React, { Component } from 'react';
 
-import Input from '../components/Input';
-
 class Autocomplete extends Component {
   constructor (props) {
     super(props);
-    this.input = React.createRef();
     this.controller = null;
     this.lastWord = '';
     this.state = {
@@ -54,8 +51,9 @@ class Autocomplete extends Component {
     this.setState({ words: words });
   }
   onChange = (e) => {
-    this.setState({ value: e.value });
-    const match = e.value.match(/\w{3,}$/);
+    const value = e.target.value;
+    this.setState({ value: value });
+    const match = value.match(/\w{3,}$/);
     if (match) {
       this.lastWord = match[0];
       this.fetchPredictions(this.lastWord);
@@ -67,7 +65,7 @@ class Autocomplete extends Component {
   }
   render () {
     const classes = 'autocomplete';
-    const { className, onChange, type, label, values, value, model, ref, ...passThroughProps } = this.props;
+    const { className, onChange, type, label, values, value, id, model, ref, ...passThroughProps } = this.props;
 
     let injectedProp = {
       className: className ? className + ' ' + classes : classes
@@ -76,12 +74,15 @@ class Autocomplete extends Component {
       <div {...injectedProp}>
         {model ? (
           <React.Fragment>
-            <Input value={this.state.value} ref={this.input} type='text' label={label} onChange={this.onChange} {...passThroughProps} />
-            {this.state.words.length > 0 && (
-              <div>
-                {this.state.words.map(this.mapWords)}
-              </div>
-            )}
+            {label && (<label htmlFor={id}>{label}</label>)}
+            <div className='input'>
+              <input value={this.state.value} id={id} autoComplete='off' type='text' onChange={this.onChange} {...passThroughProps} />
+              {this.state.words.length > 0 && (
+                <div className='predictions'>
+                  {this.state.words.map(this.mapWords)}
+                </div>
+              )}
+            </div>
           </React.Fragment>
         ) : (
           <p>Wählen Sie einen Textkorpus aus.</p>

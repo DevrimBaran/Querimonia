@@ -146,6 +146,31 @@
     }
 }
 
+.autocomplete {
+    .input {
+        display: inline-flex;
+        flex-direction: column;
+        input {
+            width: 100%;
+        }
+    }
+    .predictions {
+        @extend %inputs;
+        display: flex;
+        flex-direction: column;
+        border-top: none;
+        width: 100%;
+        & > input {
+            margin: 0;
+            border: none;
+            cursor: pointer;
+            &:hover {
+                background-color: $lightgrey;
+            }
+        }
+    }
+}
+
 .CodeMirror {
     width: 100%;
     height: 100%;
