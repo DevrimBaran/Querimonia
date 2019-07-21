@@ -54,12 +54,10 @@ class Calc:
 
         # Pfad zu den Listen
         basepath = "/home/beschwerdemanagement/wortvektoren/fastText/predictionLists/"
-
         word_file = model_name.split(".")[0] + ".txt"
-        model_file = open(basepath + word_file, "r")
-        words = model_file.read().split("\n")
+        with open(basepath + word_file, "r") as model_file:
+            words = model_file.read().split("\n")
         result = []
-
         if len(query) >= 3:
             for word in words:
                 if word[0:len(query)] == query:
@@ -67,5 +65,4 @@ class Calc:
                         result.append(word)
                     else:
                         break
-        model_file.close()
         return result
