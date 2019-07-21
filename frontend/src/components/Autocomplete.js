@@ -24,25 +24,6 @@ class Autocomplete extends Component {
     this.controller && this.controller.abort();
     this.controller = new AbortController();
     const signal = this.controller.signal;
-    const words = [
-      'auto',
-      'haus',
-      'automat',
-      'automatisch',
-      'atomar',
-      'aural',
-      'aura',
-      'hallo',
-      'haribo',
-      'otto',
-      'hanuta',
-      'bus', 'busfahrer', 'bushaltestelle'
-    ];
-    const fakefetch = function (word) {
-      return new Promise((resolve, reject) => {
-        resolve(words.filter(w => w.substr(0, word.length) === word));
-      });
-    };
     fetch('https://querimonia.iao.fraunhofer.de/python/predict_word',
       {
         method: 'post',
@@ -57,9 +38,9 @@ class Autocomplete extends Component {
           limit: 5
         })
       }
-    ).catch(() => {
-      return fakefetch(word);
-    }).then(this.onFetch);
+    )
+      .then((response) => response.json())
+      .then(this.onFetch);
   }
   selectWord = (e) => {
     const toAdd = e.target.value.substr(this.lastWord.length);
@@ -74,7 +55,7 @@ class Autocomplete extends Component {
   }
   onChange = (e) => {
     this.setState({ value: e.value });
-    const match = e.value.match(/\w+$/);
+    const match = e.value.match(/\w{3,}$/);
     if (match) {
       this.lastWord = match[0];
       this.fetchPredictions(this.lastWord);
