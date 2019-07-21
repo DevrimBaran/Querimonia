@@ -64,7 +64,7 @@ class WordVectors extends Component {
       let char = chars.shift();
       let token = char;
       if (char.match(/\w/)) {
-        while (chars.length > 0 && chars[0].match(/\w/)) {
+        while (chars.length > 0 && chars[0].match(/\w|[äöüßÄÖÜ]/)) {
           token += chars.shift();
         }
       }

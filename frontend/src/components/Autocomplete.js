@@ -54,7 +54,7 @@ class Autocomplete extends Component {
   onChange = (e) => {
     const value = e.target.value;
     this.setState({ value: value, selected: 0 });
-    const match = value.match(/\w{3,}$/);
+    const match = value.match(/(\w|[äöüßÄÖÜ]){3,}$/);
     if (match) {
       this.lastWord = match[0];
       this.fetchPredictions(this.lastWord);
