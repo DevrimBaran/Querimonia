@@ -67,5 +67,5 @@ class Calc:
                         result.append(word)
                     else:
                         break
-
+        model_file.close()
         return result
