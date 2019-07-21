@@ -23,7 +23,7 @@ function Home () {
               <div className='header'>
                 <img src={logo} className='logo' alt='logo' width='40%' />
               </div>
-              <div className='body'>
+              <div className='margin'>
                 <br />
                 <p>
                 Im Rahmen des Studienprojektes der Universität Stuttgart im Sommersemester 2019
@@ -79,10 +79,10 @@ function Home () {
                 <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
               </div>
               <br />
-              <div className='footer'>
+              <div className=''>
                 <br />
-                <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank' ><img src={iaoPartner} className='iaoPartner' alt='logo' width='20%' /></a>
-                <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank' ><img src={iatPartner} className='iatPartner' alt='logo' width='20%' /></a>
+                <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank' ><img src={iaoPartner} className=' center margin' alt='logo' width='20%' /></a>
+                <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank' ><img src={iatPartner} className=' center margin' alt='logo' width='20%' /></a>
               </div>
             </center>
           </Content>
