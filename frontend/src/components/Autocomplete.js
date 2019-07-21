@@ -14,7 +14,8 @@ class Autocomplete extends Component {
     this.lastWord = '';
     this.state = {
       words: [],
-      value: ''
+      value: '',
+      selected: 0
     };
   }
   fetchPredictions = (word) => {
@@ -43,8 +44,8 @@ class Autocomplete extends Component {
     const toAdd = e.target.value.substr(this.lastWord.length);
     this.setState((state) => ({ words: [], value: state.value + toAdd }));
   }
-  mapWords = (word) => {
-    return (<input type='text' readOnly key={word} value={word} onClick={this.selectWord} />);
+  mapWords = (word, index) => {
+    return (<input type='text' className={this.state.selected === index + 1 ? 'active' : ''} readOnly key={word} value={word} onClick={this.selectWord} />);
   }
   onFetch = (words) => {
     console.log(words);
@@ -52,7 +53,7 @@ class Autocomplete extends Component {
   }
   onChange = (e) => {
     const value = e.target.value;
-    this.setState({ value: value });
+    this.setState({ value: value, selected: 0 });
     const match = value.match(/\w{3,}$/);
     if (match) {
       this.lastWord = match[0];
@@ -63,9 +64,36 @@ class Autocomplete extends Component {
     }
     this.props.onChange && this.props.onChange(e);
   }
+  onKeyUp = (e) => {
+    switch (e.keyCode) {
+      case 38: { // Up
+        this.setState((state) => ({ selected: state.selected === 0 ? state.words.length : state.selected - 1 }));
+        return;
+      }
+      case 40: { // Down
+        this.setState((state) => ({ selected: state.selected === state.words.length ? 0 : state.selected + 1 }));
+        return;
+      }
+      case 13: { // Enter
+        if (this.state.words.length !== 0 && this.state.selected !== 0) {
+          const predictions = e.target.parentNode.getElementsByClassName('predictions')[0];
+          if (predictions) {
+            const active = predictions.getElementsByClassName('active')[0];
+            this.selectWord({ target: active });
+            return;
+          }
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    this.props.onKeyUp && this.props.onKeyUp(e);
+  }
   render () {
     const classes = 'autocomplete';
-    const { className, onChange, type, label, values, value, id, model, ref, ...passThroughProps } = this.props;
+    const { className, onChange, onKeyUp, type, label, values, value, id, model, ref, ...passThroughProps } = this.props;
 
     let injectedProp = {
       className: className ? className + ' ' + classes : classes
@@ -76,7 +104,7 @@ class Autocomplete extends Component {
           <React.Fragment>
             {label && (<label htmlFor={id}>{label}</label>)}
             <div className='input'>
-              <input value={this.state.value} id={id} autoComplete='off' type='text' onChange={this.onChange} {...passThroughProps} />
+              <input value={this.state.value} onKeyUp={this.onKeyUp} id={id} autoComplete='off' type='text' onChange={this.onChange} {...passThroughProps} />
               {this.state.words.length > 0 && (
                 <div className='predictions'>
                   {this.state.words.map(this.mapWords)}

@@ -164,8 +164,11 @@
             margin: 0;
             border: none;
             cursor: pointer;
-            &:hover {
+            &:hover, &.active {
                 background-color: $lightgrey;
+            };
+            &.active {
+                color: $primary;
             }
         }
     }
