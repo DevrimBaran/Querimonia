@@ -212,7 +212,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
-                
+
   /api/complaints/{complaintId}/close:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
@@ -222,7 +222,7 @@ paths:
         - complaints
       summary: Schließt eine Beschwerde ab und führt alle Aktionen aus.
       description: Die Beschwerde mit der gegebenen ID wird auf geschlossenen gesetzt, wodurch sie nicht mehr bearbeitet werden kann. Alle Aktionen, die zu dieser Beschwerde gehören, werden ausgeführt.
-      
+
       operationId: closeComplaint
       responses:
         200:
@@ -283,7 +283,7 @@ paths:
         - complaints
       summary: Gibt die Entitäten der Beschwerde zurück.
       description: Gibt alle Entitäten, die in der Beschwerde gefunden wurden, als Liste zurück.
-      
+
       operationId: getEntities
       responses:
         200:
@@ -298,7 +298,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
-  
+
     post:
       tags:
         - complaints
@@ -843,6 +843,23 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/config/allExtractors:
+    get:
+      tags:
+        - config
+      summary: Gibt alle KiKuKo-Extraktoren zurück.
+      description: Gibt alle KiKuKo-Extraktoren gelistet nach Tool, Pipeline und Domain zurück.
+      operationId: getAllExtractors
+      responses:
+        200:
+          description: Gibt alle verfügbaren Extraktoren von KiKuKo zurück.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiKuKoExtractors'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
   /api/stats/tagcloud:
     get:
       tags:
@@ -1210,7 +1227,7 @@ components:
           description: Ein Name zur Identifikation und besseren Unterscheidung für den Nutzer. Muss **eindeutig** sein.
           example: "Default-Konfiguration"
         extractors:
-          type: array
+
           items:
             $ref: '#/components/schemas/Extractor'
         classifiers:
@@ -1221,6 +1238,43 @@ components:
           $ref: '#/components/schemas/SentimentAnalyzer'
         emotionAnalyzer:
           $ref: '#/components/schemas/EmotionAnalyzer'
+
+    KiKuKoExtractors:
+      description: Alle verfügbaren Extraktoren sind aufgelistet.
+      type: object
+      properties:
+        tool:
+          type: array
+          items:
+            type: string
+          example:
+            - "2706 Geldbetrag Extraktor"
+            - "Beschwerde3Klassifikator"
+            - "[Extern] Date & Time"
+            - "[Fuzzy] Haltestellen"
+            - "[ML] Anliegen Klassifikator"
+            - "[Regex] Bahn Klassifikator"
+
+        pipeline:
+          type: array
+          items:
+            type: string
+          example:
+            - "2706 Datum [Klassifikation]"
+            - "Beschwerde3Klassifikator"
+            - "[Extern]  Orte"
+            - "[Fuzzy] Haltestellen"
+            - "[ML] Datum Klassifikationr"
+            - "[Regex] Datum Klassifikator"
+
+        domain:
+          type: array
+          items:
+            type: string
+          example:
+            - '2706 Buchhaltung'
+            - 'Beschwerde'
+            - 'QuerimoniaExtract'
 
     Classifier:
       description: Ein Klassifizierer bestimmt die Kategorie (Subject) einer Beschwerde.
