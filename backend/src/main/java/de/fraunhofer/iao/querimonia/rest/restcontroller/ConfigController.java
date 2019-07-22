@@ -188,4 +188,9 @@ public class ConfigController {
   public ResponseEntity<?> deleteAllConfigurations() {
     return ControllerUtility.tryAndCatch(configurationManager::deleteAllConfigurations);
   }
+
+  @GetMapping("api/config/allExtractors")
+  public ResponseEntity<?> getAllExtractors() {
+    return ControllerUtility.tryAndCatch(configurationManager::getAllExtractors);
+  }
 }
