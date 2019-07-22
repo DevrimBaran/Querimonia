@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 
 /**
- * Extractors displays all extractors by tool, pipeline, and domain
+ * Extractors displays all extractors by tool, pipeline, and domain.
  */
 
 @JsonPropertyOrder(value = {
@@ -16,60 +16,55 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 })
 public class Extractors {
 
+  private String[] tool;
+  private String[] pipeline;
+  private String[] domain;
 
+  @JsonCreator
+  public Extractors(String[] tool, String[] pipeline, String[] domain) {
+    this.tool = tool;
+    this.pipeline = pipeline;
+    this.domain = domain;
+  }
 
-    private String[] tool;
+  @SuppressWarnings("unused")
+  private Extractors() {
+    // for hibernate
+  }
 
-    private String[] pipeline;
+  public String[] getTool() {
+    return tool;
+  }
 
-    private String[] domain;
+  public Extractors setTool(String[] tool) {
+    this.tool = tool;
+    return this;
+  }
 
+  public String[] getPipeline() {
+    return pipeline;
+  }
 
-    @JsonCreator
-    public Extractors(String[] tool, String[] pipeline, String[] domain) {
-        this.tool = tool;
-        this.pipeline = pipeline;
-        this.domain = domain;
-    }
+  public Extractors setPipeline(String[] pipeline) {
+    this.pipeline = pipeline;
+    return this;
+  }
 
-    private Extractors() {
-        // for hibernate
-    }
+  public String[] getDomain() {
+    return domain;
+  }
 
-    public String[] getTool() {
-        return tool;
-    }
+  public Extractors setDomain(String[] domain) {
+    this.domain = domain;
+    return this;
+  }
 
-    public Extractors setTool(String[] tool) {
-        this.tool = tool;
-        return this;
-    }
-
-    public String[] getPipeline() {
-        return pipeline;
-    }
-
-    public Extractors setPipeline(String[] pipeline) {
-        this.pipeline = pipeline;
-        return this;
-    }
-
-    public String[] getDomain() {
-        return domain;
-    }
-
-    public Extractors setDomain(String[] domain) {
-        this.domain = domain;
-        return this;
-    }
-
-
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this)
-                .append("tool", tool)
-                .append("pipeline", pipeline)
-                .append("domain", domain)
-                .toString();
-    }
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this)
+        .append("tool", tool)
+        .append("pipeline", pipeline)
+        .append("domain", domain)
+        .toString();
+  }
 }
