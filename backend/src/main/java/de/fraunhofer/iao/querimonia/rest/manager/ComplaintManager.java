@@ -110,7 +110,7 @@ public class ComplaintManager {
    *
    * @see ComplaintController#uploadComplaint(MultipartFile, Optional) uploadComplaint
    */
-  public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Integer> configId) {
+  public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Long> configId) {
     String fileName = fileStorageService.storeFile(file);
 
     String text = fileStorageService.getTextFromData(fileName);
@@ -122,7 +122,7 @@ public class ComplaintManager {
    *
    * @see ComplaintController#uploadText(TextInput, Optional) uploadText
    */
-  public Complaint uploadText(TextInput input, Optional<Integer> configId) {
+  public Complaint uploadText(TextInput input, Optional<Long> configId) {
     Configuration configuration = configId
         // if given use the configuration with that id
         .map(configurationManager::getConfiguration)

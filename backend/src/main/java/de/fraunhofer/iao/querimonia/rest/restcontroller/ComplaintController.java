@@ -108,7 +108,7 @@ public class ComplaintController {
                consumes = "multipart/form-data")
   public ResponseEntity<?> uploadComplaint(
       @RequestParam("file") MultipartFile file,
-      @RequestParam("configId") Optional<Integer> configId) {
+      @RequestParam("configId") Optional<Long> configId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.uploadComplaint(file, configId),
         HttpStatus.CREATED);
   }
@@ -133,7 +133,7 @@ public class ComplaintController {
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/json")
   public ResponseEntity<?> uploadText(@RequestBody TextInput input,
-                                      @RequestParam Optional<Integer> configId) {
+                                      @RequestParam Optional<Long> configId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.uploadText(input, configId),
         HttpStatus.CREATED);
   }
