@@ -79,10 +79,10 @@ public class Action implements RuledInterface {
 
   @JsonCreator
   @SuppressWarnings("unused")
-  public Action(@NonNull @JsonProperty String name,
-                @NonNull @JsonProperty ActionCode actionCode,
-                @NonNull @JsonProperty String rulesXml,
-                @NonNull @JsonProperty HashMap<String, String> parameters) {
+  public Action(@NonNull @JsonProperty("name") String name,
+                @NonNull @JsonProperty("actionCode") ActionCode actionCode,
+                @NonNull @JsonProperty("rulesXml") String rulesXml,
+                @NonNull @JsonProperty("parameters") HashMap<String, String> parameters) {
     this.name = name;
     this.actionCode = actionCode;
     this.rulesXml = rulesXml;

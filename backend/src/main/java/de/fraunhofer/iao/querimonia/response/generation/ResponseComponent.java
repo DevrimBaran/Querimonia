@@ -126,12 +126,12 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
 
   @SuppressWarnings("unused")
   @JsonCreator
-  public ResponseComponent(@JsonProperty() String componentName,
-                           @JsonProperty() int priority,
-                           @JsonProperty(defaultValue = "[]") List<String> componentTexts,
-                           @JsonProperty() String rulesXml,
-                           @JsonProperty(defaultValue = "[]") List<Action> actions,
-                           @JsonProperty(defaultValue = "[]") List<String> requiredEntities) {
+  public ResponseComponent(@JsonProperty("name") String componentName,
+                           @JsonProperty("priority") int priority,
+                           @JsonProperty(value = "componentTexts", defaultValue = "[]") List<String> componentTexts,
+                           @JsonProperty("rulesXml") String rulesXml,
+                           @JsonProperty(value = "actions", defaultValue = "[]") List<Action> actions,
+                           @JsonProperty(value = "requiredEntities", defaultValue = "[]") List<String> requiredEntities) {
     // work around to allow json creation with required entities property
     this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
