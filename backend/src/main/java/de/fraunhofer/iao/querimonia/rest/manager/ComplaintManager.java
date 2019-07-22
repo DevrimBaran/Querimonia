@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
@@ -10,6 +11,7 @@ import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
@@ -155,7 +157,8 @@ public class ComplaintManager {
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
 
     if (updateRequest.getNewEmotion().isPresent()) {
-      builder.setValueOfProperty("Emotion", updateRequest.getNewEmotion().get());
+      builder.setSentiment(complaint.getSentiment().withEmotion(new ComplaintProperty("Emotion",
+          updateRequest.getNewEmotion().get())));
     }
     if (updateRequest.getNewSubject().isPresent()) {
       builder.setValueOfProperty("Kategorie", updateRequest.getNewSubject().get());
@@ -208,6 +211,12 @@ public class ComplaintManager {
     return complaint;
   }
 
+  /**
+   * Sets the state of a complaint to closed and executes all actions.
+   *
+   * @param complaintId the id of the complaint that should be closed.
+   * @return the closed complaint.
+   */
   public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);

@@ -58,13 +58,13 @@ public class ComplaintFilterTest {
     testSentimentProbabilityMap.put("Anger", 0.75);
     testSentimentProbabilityMap.put("Sadness", 0.5);
     testSentimentProbabilityMap.put("Joy", 0.1);
-    testSentiment = new ComplaintProperty(testSentimentProbabilityMap, "Emotion");
+    testSentiment = new ComplaintProperty("Emotion", testSentimentProbabilityMap);
 
     HashMap<String, Double> testSubjectProbabilityMap = new HashMap<>();
     testSubjectProbabilityMap.put("Late arrival", 0.75);
     testSubjectProbabilityMap.put("Impolite driver", 0.25);
     testSubjectProbabilityMap.put("Other", 0.1);
-    testSubject = new ComplaintProperty(testSubjectProbabilityMap, "Kategorie");
+    testSubject = new ComplaintProperty("Kategorie", testSubjectProbabilityMap);
 
     testReceiveDate = LocalDate.of(1970, 1, 1);
 
@@ -300,7 +300,7 @@ public class ComplaintFilterTest {
 
   @Test
   public void testFilterBySentimentNoComplaintSentiment() {
-    ComplaintProperty complaintSentiment = new ComplaintProperty(new HashMap<>(), "Emotion");
+    ComplaintProperty complaintSentiment = new ComplaintProperty("Emotion", new HashMap<>());
 
     String[] sentiments = {"Anger"};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
@@ -363,7 +363,7 @@ public class ComplaintFilterTest {
 
   @Test
   public void testFilterBySubjectNoComplaintSubjects() {
-    ComplaintProperty complaintSubject = new ComplaintProperty(new HashMap<>(), "Kategorie");
+    ComplaintProperty complaintSubject = new ComplaintProperty("Kategorie", new HashMap<>());
 
     String[] subjects = {"Late arrival"};
     Optional<String[]> optionalSubjects = Optional.of(subjects);

@@ -45,6 +45,7 @@ public class ComplaintUtility {
     }
   }
 
+
   /**
    * Returns a certain property of the complaint.
    *
@@ -52,14 +53,6 @@ public class ComplaintUtility {
    * @param name the name of the property that should be extracted.
    * @return the property with the given name.
    */
-  public static ComplaintProperty getPropertyOfComplaint(ComplaintBuilder complaint, String name) {
-    return Objects.requireNonNull(complaint.getProperties())
-        .stream()
-        .filter(complaintProperty -> complaintProperty.getName().equals(name))
-        .findAny()
-        .orElseThrow(IllegalStateException::new);
-  }
-
   public static ComplaintProperty getPropertyOfComplaint(Complaint complaint, String name) {
     return complaint.getProperties()
         .stream()

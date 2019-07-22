@@ -10,7 +10,6 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,7 +108,7 @@ public class TestComplaints {
 
     public static final List<ComplaintProperty> PROPERTIES_A
         = List.of(
-        new ComplaintProperty(baseMap, "Kategorie")
+        new ComplaintProperty("Kategorie", baseMap)
     );
 
     public static final List<ComplaintProperty> PROPERTIES_B
