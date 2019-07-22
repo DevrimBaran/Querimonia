@@ -78,6 +78,11 @@ public class ResponseComponentController {
         .getAllComponents(count, page, sortBy, keyWords));
   }
 
+  /**
+   * Returns the number of saved components.
+   * @param keyWords if given, only counts components containing these keywords
+   * @return number of saved components
+   */
   @GetMapping("api/components/count")
   public ResponseEntity<?> getComponentCount(
       @RequestParam("keywords") Optional<String[]> keyWords) {
@@ -121,8 +126,8 @@ public class ResponseComponentController {
   /**
    * Updates components by ID that are already in the database.
    *
-   * @param componentId       Is the component ID.
-   * @param responseComponent Is the component itself.
+   * @param componentId       ID of the component to update
+   * @param responseComponent updated version of the component
    */
   @PutMapping("api/components/{componentId}")
   public ResponseEntity<?> updateComponent(@PathVariable long componentId,
