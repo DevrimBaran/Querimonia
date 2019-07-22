@@ -137,7 +137,7 @@ public class ComplaintFilter {
         .append("state", Complaint::getState)
         .append("emotion", Complaint::getEmotion)
         .append("subject", Complaint::getSubject)
-        .build(sortBy.orElse(new String[]{"state", "upload_date_desc"}));
+        .build(sortBy.orElse(new String[]{"state_asc", "upload_date_desc"}));
   }
 
 }
