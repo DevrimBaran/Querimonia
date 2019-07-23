@@ -9,6 +9,10 @@
 @import 'TextBuilder';
 @import 'components/select';
 @import 'components/templates';
+@import 'components/collapsible';
+@import 'components/filter';
+@import 'components/pagination';
+@import 'components/tabbed';
 
 #root {
     display: flex;
@@ -282,47 +286,6 @@
     }
 }
 
-.collapsible {
-    position: relative;
-    overflow: hidden;
-    .handle {
-        position: relative;
-        display: block;
-        line-height: 15px;
-        width: 100%;
-        height: 40px;
-        cursor: pointer;
-        color: $black;
-        font-size: 15px;
-        //padding: 10px 0;
-        z-index: 1;
-        &::before {
-            position: relative;
-            display: block;
-            content: '';
-            top: 7px;
-            border-top: 1px solid $grey;
-        }
-        i {
-            position: relative;
-            padding: 0 5px 0 10px;
-            margin-left: 10px;
-            background-color: $white;
-        }
-        span {
-            position: relative;
-            padding-right: 10px;
-            background-color: $white;
-        }
-    }
-    &[data-collapse=true] {
-        min-height: 30px !important;
-        max-height: 30px !important;
-        &+* {
-            display: none;
-        }
-    }
-}
 .dynamic-textarea {
     position: relative;
     overflow: hidden;
@@ -385,4 +348,8 @@
         display: block;
         margin-bottom: 1em;
     }
+}
+
+table {
+    border: 1px solid black;
 }
