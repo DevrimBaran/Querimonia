@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_restplus import Resource, Api
 import numpy as np
 import sentiment_analyse
+import emotion_analyse
 import wordvector
 
 app = Flask(__name__)
