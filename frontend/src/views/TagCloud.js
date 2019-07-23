@@ -147,6 +147,10 @@ class TagCloud extends Component {
                   <label htmlFor='count'>Wortanzahl:</label><br />
                   <input type='number' id='count' ref='count' defaultValue='70' min='0' />
                 </div>
+                <div>
+                <label htmlFor='cloudActive'>Listenansicht</label><br />
+                <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
+              </div>
               </Row>
             </div>
             <div className='center'>
@@ -166,28 +170,33 @@ class TagCloud extends Component {
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
-                <ul>
-                  <li><h4>Wort : Anzahl</h4></li>
+              <div className ='responsive-table'>
+                <table className = 'table'>
+                <thead>
+                <tr>
+                <th>Wort</th> 
+                <th>Anzahl</th>
+                </tr>
+                </thead>
+                <tbody>
                   {this.createWordArray(this.state.words).map((element) => {
-                    return (<li>{element['text'] + ' : ' + (element['size'])}</li>);
+                    return (
+                    <tr><td>{element['text']}</td> 
+                    <td>{element['size']}</td>
+                    </tr>);
                   })}
-                </ul>
-              </Content>)}
-            <div>
-              <div>
-                <label htmlFor='cloudActive'>Listenansicht</label><br />
-                <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
+                </tbody>
+                </table>
               </div>
-              <Row vertical={false} style={{ justifyContent: 'center' }}>
-                <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
-                  onClick={this.exportCsv} />
-                <div style={{ width: '2em' }} />
-                <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
-                  onClick={this.exportSvg} />
+              </Content>)}
               </Row>
-            </div>
-            <br />
-          </Row>
+              {this.state.cloudActive
+              ?(<Content className='center' id='TagCloud'>  
+              <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
+                onClick={this.exportSvg} /></Content>)  
+              :(<Content className='center' id='TagCloud'>
+              <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
+                onClick={this.exportCsv} /> </Content>)}
         </Block>
       </React.Fragment>
     );
