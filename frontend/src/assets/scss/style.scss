@@ -125,12 +125,12 @@
     }
 }
 .responsive-table {
-    width: calc(100% + 30px);
+    width: calc(100%);
     height: 100%;
     overflow: auto;
     padding-right: 30px;
     table {
-        min-width: 100%;
+        width: 100%;
         border-collapse: collapse;
     }
     tr:hover {
@@ -140,10 +140,16 @@
         background-color: $white;
         position: sticky;
         top: 0px;
-        text-align: right;
+        text-align: left;
+        max-width: 600px;
+        border-bottom-style: solid;
+        border-width: 5px;
     }
     td {
-        text-align: right;
+        max-width: 600px;
+        text-align: left;
+        border-bottom-style: solid;
+        border-width: 1px;
     }
 }
 

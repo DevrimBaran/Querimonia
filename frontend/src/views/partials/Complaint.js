@@ -19,31 +19,37 @@ import Tooltip from './../../components/Tooltip';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-function List (data) {
+function Header () {
   return (
-    <React.Fragment key={data.id}>
-      {
-        data && (
-          <Link to={'/complaints/' + data.id}>
-            <div className='complaintSummary'>
-              <div className='title'>
-                <h3><span>Anliegen {data.id} - </span>
-                  <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
-                    {data.sentiment.value + ' ' + (data.sentiment.probabilities[data.sentiment.value] * 100) + '%'}
-                  </span>
-                  &nbsp;
-                  <span className='small' style={{ fontWeight: 'normal' }}>
-                    {data.subject.value + ' ' + (data.subject.probabilities[data.subject.value] * 100) + '%'}
-                  </span>
-                </h3>
-              </div>
-              <div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div>
-              <p>{data.preview}</p>
-            </div>
-          </Link>
-        )
-      }
-    </React.Fragment>
+    <thead>
+      <tr>
+        <th>Anliegen</th>
+        <th>Vorschau</th>
+        <th>Emotion</th>
+        <th>Sentiment</th>
+        <th>Kategorie</th>
+        <th>Datum</th>
+      </tr>
+    </thead>
+  );
+}
+
+function List (data) {
+  let sent = data.sentiment.tendency;
+  return (
+    <tr key={data.id}>
+      <td><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
+      <td>
+        <span className='sentiment'>
+        fröhlich, wütend
+        </span></td>
+      <td> <span role='img' className='emotion'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span></td>
+      <td> <span className='small' style={{ fontWeight: 'normal' }}>
+        {data.properties[0].value + ' (' + (data.properties[0].probabilities[data.properties[0].value] * 100) + '%)'}
+      </span></td>
+      <td><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></td>
+    </tr>
   );
 }
 function Single (active, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
@@ -152,4 +158,4 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
   );
 }
 
-export default { List, Single };
+export default { Header, List, Single };

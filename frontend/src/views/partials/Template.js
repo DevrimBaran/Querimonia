@@ -21,26 +21,27 @@ import Textarea from '../../components/Textarea';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
+function Header () {
+  return (
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Antwortvariationen</th>
+        <th>Entitäten</th>
+      </tr>
+    </thead>
+  );
+}
+
 function List (data, index) {
   return (
-    <React.Fragment key={data.id}>
-      {
-        data && (
-          <Link to={'/templates/' + data.id}>
-            <div className='Template'>
-              <div className='floatLeft'>
-                <p className='h3'>{data.componentName}</p>
-                <p>ID: {data.id}</p>
-              </div>
-              <div className='floatRight'>
-                <p>Antwortvariationen: {data.templateTexts.length}</p>
-                <p>Entitäten: {data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p>
-              </div>
-            </div>
-          </Link>
-        )
-      }
-    </React.Fragment>
+    <tr key={data.id}>
+      <td><Link to={'/templates/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td><Link to={'/templates/' + data.id}><p>{data.componentName}</p></Link></td>
+      <td><Link to={'/templates/' + data.id}><p>{data.templateTexts.length}</p></Link></td>
+      <td><Link to={'/templates/' + data.id}>  <p>{data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p></Link></td>
+    </tr>
   );
 }
 
@@ -141,4 +142,4 @@ function Single (active, dispatch) {
   );
 }
 
-export default { Single, List };
+export default { Header, Single, List };

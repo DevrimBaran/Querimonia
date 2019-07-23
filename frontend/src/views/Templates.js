@@ -20,6 +20,7 @@ import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
 import Input from './../components/Input';
+import Table from './../components/Table';
 
 class Templates extends Component {
   componentDidMount = () => {
@@ -35,7 +36,14 @@ class Templates extends Component {
         <Content className='padding'>
           {this.props.data.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => Template.List(this.props.data.byId[id])))
+            : (
+              <Table>
+                {Template.Header()}
+                <tbody>
+                  {this.props.data && this.props.data.ids.map(id => Template.List(this.props.data.byId[id]))}
+                </tbody>
+              </Table>
+            )
           }
         </Content>
         <Pagination endpoint='templates' />

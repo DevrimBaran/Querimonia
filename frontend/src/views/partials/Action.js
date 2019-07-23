@@ -18,27 +18,29 @@ import Input from '../../components/Input';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
+function Header () {
+  return (
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Aktionscode</th>
+        <th>E-Mail</th>
+        <th>Wert</th>
+      </tr>
+    </thead>
+  );
+}
+
 function List (data, index) {
   return (
-    <React.Fragment key={data.id}>
-      {
-        data && (
-          <Link to={'/templates/' + data.id}>
-            <div className='Template'>
-              <div className='floatLeft'>
-                <p className='h3'>{data.name}</p>
-                <p>ID: {data.actionId}</p>
-              </div>
-              <div className='floatRight'>
-                <p>Aktionscode: {data.actionCode}</p>
-                <p>E-Mail: {data.parameters['E-Mail']}</p>
-                <p>Wert: {data.parameters['Wert']}</p>
-              </div>
-            </div>
-          </Link>
-        )
-      }
-    </React.Fragment>
+    <tr key={data.id}>
+      <td><Link to={'/templates/' + data.id}><h3>{data.actionId}</h3></Link></td>
+      <td><Link to={'/templates/' + data.id}><p>{data.name}</p></Link></td>
+      <td><Link to={'/templates/' + data.id}><p>{data.actionCode}</p></Link></td>
+      <td><Link to={'/templates/' + data.id}><p>{data.parameters['E-Mail']}</p></Link></td>
+      <td><Link to={'/templates/' + data.id}><p>{data.parameters['Wert']}</p></Link></td>
+    </tr>
   );
 }
 
@@ -107,4 +109,4 @@ function Single (active, dispatch) {
   );
 }
 
-export default { Single, List };
+export default { Header, Single, List };

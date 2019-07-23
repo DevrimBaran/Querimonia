@@ -17,6 +17,7 @@ import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
+import Table from './../components/Table';
 
 class Complaints extends Component {
   constructor (props) {
@@ -78,15 +79,21 @@ class Complaints extends Component {
       this.componentDidMount();
     }, 10);
   }
-
   renderList = () => {
     return (<Block>
       <Row vertical>
         <Filter endpoint='complaints' />
-        <Content>
+        <Content className='padding'>
           { this.props.data.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id])))
+            : (
+              <Table>
+                {Complaint.Header()}
+                <tbody>
+                  {this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id]))}
+                </tbody>
+              </Table>
+            )
           }
         </Content>
         <Pagination endpoint='complaints' />

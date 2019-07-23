@@ -36,12 +36,12 @@ function Header () {
 function List (dispatch, data, currentConfig) {
   return (
     <tr key={data.id}>
-      <td><Link to={'/config/' + data.id}>{data.id}</Link></td>
-      <td>{ data.id === currentConfig.id ? <input defaultChecked type='radio' name='active' /> : <input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' /> }</td>
+      <td><Link to={'/config/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td><Link to={'/config/' + data.id}>{ data.id === currentConfig.id ? <input defaultChecked type='radio' name='active' /> : <input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' /> }</Link></td>
       <td><Link to={'/config/' + data.id}>{data.name}</Link></td>
-      <td>{data.extractors.length}</td>
-      <td>{data.classifier.name}</td>
-      <td>{data.sentimentAnalyzer.name}</td>
+      <td><Link to={'/config/' + data.id}>{data.extractors.length}</Link></td>
+      <td><Link to={'/config/' + data.id}>{data.classifier.name}</Link></td>
+      <td><Link to={'/config/' + data.id}>{data.sentimentAnalyzer.name}</Link></td>
     </tr>
   );
 }
