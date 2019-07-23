@@ -49,7 +49,7 @@ public class ComplaintControllerTest {
   private ConfigurationRepository configurationRepository;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     complaintRepository = new MockComplaintRepository();
     responseComponentRepository = new MockComponentRepository();
     configurationRepository = new MockConfigurationRepository();
@@ -72,7 +72,7 @@ public class ComplaintControllerTest {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
   }
 
   // TC 1
@@ -418,23 +418,23 @@ public class ComplaintControllerTest {
     var response = complaintController.countComplaints(Optional.empty(), Optional.empty(),
         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.OK));
-    assertThat(response.getBody(), is(0));
+    assertThat(response.getBody(), is("0"));
 
     response = complaintController.countComplaints(Optional.of(new String[] {"CLOSED"}),
         Optional.empty(),
         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.OK));
-    assertThat(response.getBody(), is(0));
+    assertThat(response.getBody(), is("0"));
 
     response = complaintController.countComplaints(Optional.empty(), Optional.empty(),
         Optional.empty(), Optional.of(new String[] {"Anger"}), Optional.empty(), Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.OK));
-    assertThat(response.getBody(), is(0));
+    assertThat(response.getBody(), is("0"));
 
     response = complaintController.countComplaints(Optional.empty(), Optional.empty(),
         Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.OK));
-    assertThat(response.getBody(), is(0));
+    assertThat(response.getBody(), is("0"));
   }
 
   @Test
