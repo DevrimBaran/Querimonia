@@ -28,6 +28,7 @@ class Sentiment(Resource):
         return sentiment_value
 
 
+@api.route("/python/emotion_analyse")
 class Emotion(Resource):
     def post(self):
         # get complaint text
