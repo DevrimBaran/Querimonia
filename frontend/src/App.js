@@ -50,7 +50,7 @@ function App () {
             <NavLink activeClassName='active' to='/config'>Konfiguration</NavLink>
           </li>
           <li>
-            <NavLink activeClassName='active' to='/wordvectors'>Wordvektoren</NavLink>
+            <NavLink activeClassName='active' to='/wordvectors'>Wortvektoren</NavLink>
           </li>
           <li>
             <NavLink activeClassName='active' to='/tagcloud'>Worthäufigkeiten</NavLink>
