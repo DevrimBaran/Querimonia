@@ -18,6 +18,7 @@ import Tooltip from './../../components/Tooltip';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
+import EditableEntityText from './EditableEntityText';
 
 function List (data) {
   return (
@@ -61,7 +62,7 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
           <Content>
             <Tabbed style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} editable />
+                <EditableEntityText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} />
               </div>
               <div label='Original'>
                 {active.text}
