@@ -1,11 +1,12 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import de.fraunhofer.iao.querimonia.response.component.ResponseComponent;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,26 +21,26 @@ import java.util.List;
  * replaced by the actual content of the entities in the complaint.
  */
 @Entity
-@JsonPropertyOrder(value = {"responsePartId", "alternatives", "component"})
+@JsonPropertyOrder(value = {"responsePartId", "component"})
 public class CompletedResponseComponent {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonProperty("id")
-  private int responsePartId;
-
-  @OneToMany(cascade = CascadeType.ALL)
-  @JoinColumn
-  private List<SingleCompletedComponent> alternatives;
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @JsonIgnore
+  @Column(name = "id")
+  private long responsePartId;
 
   @JoinColumn(name = "component_id")
   @ManyToOne(cascade = CascadeType.MERGE)
   private ResponseComponent component;
 
+  @OneToMany(cascade = CascadeType.MERGE)
+  @JoinColumn(name = "component_id")
+  private List<NamedEntity> entities;
+
   @JsonCreator
-  public CompletedResponseComponent(List<SingleCompletedComponent> alternatives,
-                                    ResponseComponent component) {
-    this.alternatives = alternatives;
+  public CompletedResponseComponent(ResponseComponent component, List<NamedEntity> entities) {
+    this.entities = entities;
     this.component = component;
   }
 
@@ -47,11 +48,11 @@ public class CompletedResponseComponent {
   public CompletedResponseComponent() {
   }
 
-  public List<SingleCompletedComponent> getAlternatives() {
-    return alternatives;
+  public List<NamedEntity> getEntities() {
+    return entities;
   }
 
-  public int getResponsePartId() {
+  public long getResponsePartId() {
     return responsePartId;
   }
 

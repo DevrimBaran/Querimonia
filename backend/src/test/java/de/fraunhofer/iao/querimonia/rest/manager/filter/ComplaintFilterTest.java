@@ -2,13 +2,17 @@
 package de.fraunhofer.iao.querimonia.rest.manager.filter;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
@@ -27,7 +31,6 @@ import static org.junit.Assert.assertFalse;
  *
  * @author Simon Weiler
  */
-
 public class ComplaintFilterTest {
 
   private static String testText;
@@ -36,10 +39,15 @@ public class ComplaintFilterTest {
   private static LocalDate testReceiveDate;
   private static Optional<String> optionalMinDateString;
   private static Optional<String> optionalMaxDateString;
-  private final String TEST_PREVIEW = "preview";
-  private final ComplaintState TEST_STATE = ComplaintState.NEW;
-  private final LocalTime TEST_RECEIVE_TIME = LocalTime.NOON;
-  private final List<NamedEntity> TEST_ENTITIES = new ArrayList<>();
+  private static final String TEST_PREVIEW = "preview";
+  private static final ComplaintState TEST_STATE = ComplaintState.NEW;
+  private static final LocalTime TEST_RECEIVE_TIME = LocalTime.NOON;
+  private static final List<NamedEntity> TEST_ENTITIES = new ArrayList<>();
+  private static final ResponseSuggestion TEST_SUGGESTION = new ResponseSuggestion();
+  private static final HashMap<String, Integer> wordList = new HashMap<>();
+
+  private static ComplaintBuilder baseComplaintBuilder;
+
 
   @BeforeClass
   public static void initialize() {
@@ -50,33 +58,46 @@ public class ComplaintFilterTest {
     testSentimentProbabilityMap.put("Anger", 0.75);
     testSentimentProbabilityMap.put("Sadness", 0.5);
     testSentimentProbabilityMap.put("Joy", 0.1);
-    testSentiment = new ComplaintProperty(testSentimentProbabilityMap);
+    testSentiment = new ComplaintProperty("Emotion", testSentimentProbabilityMap);
 
     HashMap<String, Double> testSubjectProbabilityMap = new HashMap<>();
     testSubjectProbabilityMap.put("Late arrival", 0.75);
     testSubjectProbabilityMap.put("Impolite driver", 0.25);
     testSubjectProbabilityMap.put("Other", 0.1);
-    testSubject = new ComplaintProperty(testSubjectProbabilityMap);
+    testSubject = new ComplaintProperty("Kategorie", testSubjectProbabilityMap);
 
     testReceiveDate = LocalDate.of(1970, 1, 1);
 
     optionalMinDateString = Optional.of("2019-01-01");
     optionalMaxDateString = Optional.of("2019-12-31");
+
+  }
+
+  @Before
+  public void setUp() {
+
+    baseComplaintBuilder = new ComplaintBuilder()
+        .setText(testText)
+        .setPreview(TEST_PREVIEW)
+        .setState(TEST_STATE)
+        .setProperties(List.of(testSubject))
+        .setSentiment(new Sentiment(testSentiment, 0.0))
+        .setEntities(TEST_ENTITIES)
+        .setResponseSuggestion(TEST_SUGGESTION)
+        .setWordList(wordList)
+        .setReceiveDate(testReceiveDate)
+        .setReceiveTime(TEST_RECEIVE_TIME)
+        .setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+
   }
 
   @Test
   public void testFilterByDateStandard() {
     LocalDate receiveDate = LocalDate.of(2019, 6, 15);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertTrue(
         ComplaintFilter.filterByDate(testComplaint, optionalMinDateString, optionalMaxDateString));
@@ -87,15 +108,9 @@ public class ComplaintFilterTest {
 
     LocalDate receiveDate = LocalDate.of(2019, 1, 1);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertTrue(
         ComplaintFilter.filterByDate(testComplaint, optionalMinDateString, optionalMaxDateString));
@@ -106,15 +121,9 @@ public class ComplaintFilterTest {
 
     LocalDate receiveDate = LocalDate.of(2019, 12, 31);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertTrue(
         ComplaintFilter.filterByDate(testComplaint, optionalMinDateString, optionalMaxDateString));
@@ -124,15 +133,9 @@ public class ComplaintFilterTest {
   public void testFilterByDateBelowMinDate() {
     LocalDate receiveDate = LocalDate.of(2018, 6, 15);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertFalse(
         ComplaintFilter.filterByDate(testComplaint, optionalMinDateString, optionalMaxDateString));
@@ -142,15 +145,9 @@ public class ComplaintFilterTest {
   public void testFilterByDateAboveMaxDate() {
     LocalDate receiveDate = LocalDate.of(2020, 6, 15);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertFalse(
         ComplaintFilter.filterByDate(testComplaint, optionalMinDateString, optionalMaxDateString));
@@ -160,15 +157,9 @@ public class ComplaintFilterTest {
   public void testFilterByDateNoMinDate() {
     LocalDate receiveDate = LocalDate.of(2019, 6, 15);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertTrue(
         ComplaintFilter.filterByDate(testComplaint, Optional.empty(), optionalMaxDateString));
@@ -178,15 +169,9 @@ public class ComplaintFilterTest {
   public void testFilterByDateNoMaxDate() {
     LocalDate receiveDate = LocalDate.of(2019, 6, 15);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertTrue(
         ComplaintFilter.filterByDate(testComplaint, optionalMinDateString, Optional.empty()));
@@ -196,15 +181,9 @@ public class ComplaintFilterTest {
   public void testFilterByDateNoLimits() {
     LocalDate receiveDate = LocalDate.of(2019, 6, 15);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        receiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setReceiveDate(receiveDate)
+        .createComplaint();
 
     assertTrue(ComplaintFilter.filterByDate(testComplaint, Optional.empty(), Optional.empty()));
   }
@@ -214,15 +193,7 @@ public class ComplaintFilterTest {
     String[] keywords = {"over", "Anakin", "high ground"};
     Optional<String[]> optionalKeywords = Optional.of(keywords);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertTrue(ComplaintFilter.filterByKeywords(testComplaint, optionalKeywords));
   }
@@ -232,33 +203,17 @@ public class ComplaintFilterTest {
     String[] keywords = {"over", "Anakin", "high ground", "Obi-Wan"};
     Optional<String[]> optionalKeywords = Optional.of(keywords);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertFalse(ComplaintFilter.filterByKeywords(testComplaint, optionalKeywords));
   }
 
   @Test
   public void testFilterByKeywordsCases() {
-    String[] keywords = {"OVER", "anakin", "hIgH gRoUnD"};
+    String[] keywords = {"OVER", "anakin", "High Ground"};
     Optional<String[]> optionalKeywords = Optional.of(keywords);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertTrue(ComplaintFilter.filterByKeywords(testComplaint, optionalKeywords));
   }
@@ -268,15 +223,7 @@ public class ComplaintFilterTest {
     String[] keywords = {};
     Optional<String[]> optionalKeywords = Optional.of(keywords);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertTrue(ComplaintFilter.filterByKeywords(testComplaint, optionalKeywords));
   }
@@ -285,15 +232,7 @@ public class ComplaintFilterTest {
   public void testFilterByKeywordsEmptyKeywords() {
     Optional<String[]> optionalKeywords = Optional.empty();
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertTrue(ComplaintFilter.filterByKeywords(testComplaint, optionalKeywords));
   }
@@ -303,15 +242,9 @@ public class ComplaintFilterTest {
     String[] keywords = {"over", "Anakin", "high ground"};
     Optional<String[]> optionalKeywords = Optional.of(keywords);
 
-    Complaint testComplaint = new Complaint(null,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setText("")
+        .createComplaint();
 
     assertFalse(ComplaintFilter.filterByKeywords(testComplaint, optionalKeywords));
   }
@@ -321,17 +254,9 @@ public class ComplaintFilterTest {
     String[] sentiments = {"Fury", "Anger", "Rage"};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
-    assertTrue(ComplaintFilter.filterBySentiment(testComplaint, optionalSentiments));
+    assertTrue(ComplaintFilter.filterByEmotion(testComplaint, optionalSentiments));
   }
 
   @Test
@@ -339,17 +264,9 @@ public class ComplaintFilterTest {
     String[] sentiments = {"Fury", "Unhappiness", "Rage"};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
-    assertFalse(ComplaintFilter.filterBySentiment(testComplaint, optionalSentiments));
+    assertFalse(ComplaintFilter.filterByEmotion(testComplaint, optionalSentiments));
   }
 
   @Test
@@ -357,17 +274,9 @@ public class ComplaintFilterTest {
     String[] sentiments = {"Sadness"};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
-    assertFalse(ComplaintFilter.filterBySentiment(testComplaint, optionalSentiments));
+    assertFalse(ComplaintFilter.filterByEmotion(testComplaint, optionalSentiments));
   }
 
   @Test
@@ -375,54 +284,32 @@ public class ComplaintFilterTest {
     String[] sentiments = {};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
-    assertFalse(ComplaintFilter.filterBySentiment(testComplaint, optionalSentiments));
+    assertFalse(ComplaintFilter.filterByEmotion(testComplaint, optionalSentiments));
   }
 
   @Test
   public void testFilterBySentimentEmptySentiments() {
     Optional<String[]> optionalSentiments = Optional.empty();
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
-    assertTrue(ComplaintFilter.filterBySentiment(testComplaint, optionalSentiments));
+    assertTrue(ComplaintFilter.filterByEmotion(testComplaint, optionalSentiments));
   }
 
   @Test
   public void testFilterBySentimentNoComplaintSentiment() {
-    ComplaintProperty complaintSentiment = new ComplaintProperty(new HashMap<>());
+    ComplaintProperty complaintSentiment = new ComplaintProperty("Emotion", new HashMap<>());
 
     String[] sentiments = {"Anger"};
     Optional<String[]> optionalSentiments = Optional.of(sentiments);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        complaintSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setSentiment(new Sentiment(complaintSentiment, 0.0))
+        .createComplaint();
 
-    assertFalse(ComplaintFilter.filterBySentiment(testComplaint, optionalSentiments));
+    assertFalse(ComplaintFilter.filterByEmotion(testComplaint, optionalSentiments));
   }
 
   @Test
@@ -430,15 +317,7 @@ public class ComplaintFilterTest {
     String[] subjects = {"Late arrival"};
     Optional<String[]> optionalSubjects = Optional.of(subjects);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertTrue(ComplaintFilter.filterBySubject(testComplaint, optionalSubjects));
   }
@@ -448,15 +327,7 @@ public class ComplaintFilterTest {
     String[] subjects = {"Bad service"};
     Optional<String[]> optionalSubjects = Optional.of(subjects);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertFalse(ComplaintFilter.filterBySubject(testComplaint, optionalSubjects));
   }
@@ -466,15 +337,7 @@ public class ComplaintFilterTest {
     String[] subjects = {"Impolite driver"};
     Optional<String[]> optionalSubjects = Optional.of(subjects);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertFalse(ComplaintFilter.filterBySubject(testComplaint, optionalSubjects));
   }
@@ -484,15 +347,7 @@ public class ComplaintFilterTest {
     String[] subjects = {};
     Optional<String[]> optionalSubjects = Optional.of(subjects);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertFalse(ComplaintFilter.filterBySubject(testComplaint, optionalSubjects));
   }
@@ -501,35 +356,21 @@ public class ComplaintFilterTest {
   public void testFilterBySubjectEmptySubjects() {
     Optional<String[]> optionalSubjects = Optional.empty();
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder.createComplaint();
 
     assertTrue(ComplaintFilter.filterBySubject(testComplaint, optionalSubjects));
   }
 
   @Test
   public void testFilterBySubjectNoComplaintSubjects() {
-    ComplaintProperty complaintSubject = new ComplaintProperty(new HashMap<>());
+    ComplaintProperty complaintSubject = new ComplaintProperty("Kategorie", new HashMap<>());
 
     String[] subjects = {"Late arrival"};
     Optional<String[]> optionalSubjects = Optional.of(subjects);
 
-    Complaint testComplaint = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        complaintSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint = baseComplaintBuilder
+        .setProperties(List.of(complaintSubject))
+        .createComplaint();
 
     assertFalse(ComplaintFilter.filterBySubject(testComplaint, optionalSubjects));
   }
@@ -539,25 +380,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(Optional.empty());
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 15),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 15))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 16),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 16))
+        .createComplaint();
 
     assertEquals(1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -567,25 +396,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(Optional.empty());
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 16),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 16))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 15),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 15))
+        .createComplaint();
 
     assertEquals(-1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -595,25 +412,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(Optional.empty());
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 30),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 30))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 45),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 45))
+        .createComplaint();
 
     assertEquals(1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -623,25 +428,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(Optional.empty());
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 45),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 45))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 30),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 30))
+        .createComplaint();
 
     assertEquals(-1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -651,175 +444,95 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(Optional.empty());
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder.createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder.createComplaint();
 
     assertEquals(0, complaintComparator.compare(testComplaint1, testComplaint2));
   }
 
   @Test
   public void testCreateComplaintComparatorUploadDateSortingByDatesPositive() {
-    String[] sortBy = {"upload_date_"};
+    String[] sortBy = {"upload_date_asc"};
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 15),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 15))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 16),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 16))
+        .createComplaint();
 
     assertEquals(-1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
 
   @Test
   public void testCreateComplaintComparatorUploadDateSortingByDatesNegative() {
-    String[] sortBy = {"upload_date_"};
+    String[] sortBy = {"upload_date_asc"};
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 16),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 16))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 15),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 15))
+        .createComplaint();
 
     assertEquals(1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
 
   @Test
   public void testCreateComplaintComparatorUploadDateSortingByTimesPositive() {
-    String[] sortBy = {"upload_date_"};
+    String[] sortBy = {"upload_date_asc"};
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 30),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 30))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 45),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 45))
+        .createComplaint();
 
     assertEquals(-1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
 
   @Test
   public void testCreateComplaintComparatorUploadDateSortingByTimesNegative() {
-    String[] sortBy = {"upload_date_"};
+    String[] sortBy = {"upload_date_asc"};
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 45),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 45))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 30),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 30))
+        .createComplaint();
 
     assertEquals(1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
 
   @Test
   public void testCreateComplaintComparatorUploadDateSortingEqualTimes() {
-    String[] sortBy = {"upload_date_"};
+    String[] sortBy = {"upload_date_asc"};
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder.createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder.createComplaint();
 
     assertEquals(0, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -831,25 +544,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 15),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 15))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 16),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 16))
+        .createComplaint();
 
     assertEquals(1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -860,26 +561,13 @@ public class ComplaintFilterTest {
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 16))
+        .createComplaint();
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 16),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
-
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        LocalDate.of(2019, 6, 15),
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveDate(LocalDate.of(2019, 6, 15))
+        .createComplaint();
 
     assertEquals(-1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -891,25 +579,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 30),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 30))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 45),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 45))
+        .createComplaint();
 
     assertEquals(1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -921,25 +597,13 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 45),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 45))
+        .createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        LocalTime.of(12, 30),
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder
+        .setReceiveTime(LocalTime.of(12, 30))
+        .createComplaint();
 
     assertEquals(-1, complaintComparator.compare(testComplaint1, testComplaint2));
   }
@@ -951,56 +615,25 @@ public class ComplaintFilterTest {
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder.createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder.createComplaint();
 
     assertEquals(0, complaintComparator.compare(testComplaint1, testComplaint2));
   }
 
-  @Test(expected = ResponseStatusException.class)
+  @Test(expected = QuerimoniaException.class)
   public void testCreateComplaintComparatorIllegalSortingParameter() {
     String[] sortBy = {"cool_sorting_parameter"};
     Optional<String[]> optionalSortBy = Optional.of(sortBy);
     Comparator<Complaint> complaintComparator =
         ComplaintFilter.createComplaintComparator(optionalSortBy);
 
-    Complaint testComplaint1 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint1 = baseComplaintBuilder.createComplaint();
 
-    Complaint testComplaint2 = new Complaint(testText,
-        TEST_PREVIEW,
-        TEST_STATE,
-        testSentiment,
-        testSubject,
-        testReceiveDate,
-        TEST_RECEIVE_TIME,
-        TEST_ENTITIES,
-        Configuration.FALLBACK_CONFIGURATION);
+    Complaint testComplaint2 = baseComplaintBuilder.createComplaint();
 
-    int comparison = complaintComparator.compare(testComplaint1, testComplaint2);
+    //noinspection ResultOfMethodCallIgnored
+    complaintComparator.compare(testComplaint1, testComplaint2);
   }
 }

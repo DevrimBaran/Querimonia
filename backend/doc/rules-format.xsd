@@ -16,21 +16,25 @@
 
     <xs:group name="possibleChildren">
         <xs:choice>
-            <xs:element name="Subject">
+            <xs:element name="Property">
                 <xs:complexType>
-                    <xs:attribute name="value" type="xs:string" use="required"/>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                    <xs:attribute name="matches" type="xs:string" use="required"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="Sentiment">
                 <xs:complexType>
-                    <xs:attribute name="value" type="xs:string" use="required"/>
+                    <xs:attribute name="min" type="xs:double"/>
+                    <xs:attribute name="max" type="xs:double"/>
+                    <xs:attribute name="emotion" type="xs:string">
+                    </xs:attribute>
                 </xs:complexType>
             </xs:element>
 
             <xs:element name="EntityAvailable">
                 <xs:complexType>
                     <xs:attribute name="label" type="xs:string" use="required"/>
-                    <xs:attribute name="value" type="xs:string"/>
+                    <xs:attribute name="matches" type="xs:string"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="Predecessor">

@@ -1,22 +1,27 @@
 package de.fraunhofer.iao.querimonia.nlp.extractor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
+import javax.persistence.Embeddable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is used to define the extractor which should be used in the a configuration.
@@ -25,29 +30,33 @@ import java.util.Map;
 public class ExtractorDefinition {
 
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonIgnore
   private int id;
 
-  private String name;
+  @NonNull
+  private String name = "";
 
   @Enumerated(EnumType.STRING)
-  private ExtractorType type;
+  @NonNull
+  private ExtractorType type = ExtractorType.NONE;
 
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "color_table", joinColumns = @JoinColumn(name = "id"))
-  @MapKeyColumn(name = "label")
   @Column(name = "color")
-  private Map<String, String> colors;
+  @NonNull
+  private List<ColorDefinition> colors = new ArrayList<>();
 
   @SuppressWarnings("unused")
   public ExtractorDefinition() {
     // for hibernate
   }
 
-  public ExtractorDefinition(String name,
-                             ExtractorType type,
-                             Map<String, String> colors) {
+  @JsonCreator
+  @SuppressWarnings("unused")
+  public ExtractorDefinition(@NonNull String name,
+                             @NonNull ExtractorType type,
+                             @NonNull List<ColorDefinition> colors) {
     this.name = name;
     this.type = type;
     this.colors = colors;
@@ -57,15 +66,18 @@ public class ExtractorDefinition {
     return id;
   }
 
+  @NonNull
   public String getName() {
     return name;
   }
 
+  @NonNull
   public ExtractorType getType() {
     return type;
   }
 
-  public Map<String, String> getColors() {
+  @NonNull
+  public List<ColorDefinition> getColors() {
     return colors;
   }
 
@@ -99,11 +111,29 @@ public class ExtractorDefinition {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("id", id)
         .append("name", name)
         .append("type", type)
         .append("colors", colors)
         .toString();
+  }
+
+  @Embeddable
+  private static class ColorDefinition {
+
+    String label;
+    String color;
+
+    @SuppressWarnings("unused")
+    public ColorDefinition() {
+    }
+
+    @JsonCreator
+    @SuppressWarnings("unused")
+    public ColorDefinition(String label, String color) {
+      this.label = label;
+      this.color = color;
+    }
   }
 }

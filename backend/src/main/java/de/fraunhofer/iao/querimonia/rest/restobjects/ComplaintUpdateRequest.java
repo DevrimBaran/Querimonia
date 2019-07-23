@@ -13,23 +13,23 @@ import java.util.Optional;
 public class ComplaintUpdateRequest {
 
   @Nullable
-  private final String newSentiment;
+  private final String newEmotion;
   @Nullable
   private final String newSubject;
   @Nullable
   private final ComplaintState newState;
 
   @JsonCreator
-  public ComplaintUpdateRequest(@JsonProperty("sentiment") String newSentiment,
-                                @JsonProperty("subject") String newSubject,
-                                @JsonProperty("state") ComplaintState newState) {
-    this.newSentiment = newSentiment;
+  public ComplaintUpdateRequest(@Nullable @JsonProperty("sentiment") String newEmotion,
+                                @Nullable @JsonProperty("subject") String newSubject,
+                                @Nullable @JsonProperty("state") ComplaintState newState) {
+    this.newEmotion = newEmotion;
     this.newSubject = newSubject;
     this.newState = newState;
   }
 
-  public Optional<String> getNewSentiment() {
-    return Optional.ofNullable(newSentiment);
+  public Optional<String> getNewEmotion() {
+    return Optional.ofNullable(newEmotion);
   }
 
   public Optional<String> getNewSubject() {

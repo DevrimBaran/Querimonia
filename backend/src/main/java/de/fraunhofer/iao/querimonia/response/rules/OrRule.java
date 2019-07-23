@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 
 import java.util.List;
@@ -17,14 +17,14 @@ public class OrRule implements Rule {
   }
 
   @Override
-  public boolean isRespected(ComplaintData complaint,
+  public boolean isRespected(ComplaintBuilder complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return children.stream()
         .anyMatch(rule -> rule.isRespected(complaint, currentResponseState));
   }
 
   @Override
-  public boolean isPotentiallyRespected(ComplaintData complaint) {
+  public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     return children.stream()
         .anyMatch(rule -> rule.isPotentiallyRespected(complaint));
   }

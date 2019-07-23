@@ -1,29 +1,37 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
+import org.springframework.lang.Nullable;
 
 import java.util.List;
 
 public class SentimentRule implements Rule {
 
-  private final String sentiment;
+  private final double min;
+  private final double max;
+  @Nullable
+  private final String emotion;
 
-  public SentimentRule(String sentiment) {
-    this.sentiment = sentiment;
+  public SentimentRule(double min, double max, @Nullable String emotion) {
+    this.min = min;
+    this.max = max;
+    this.emotion = emotion;
   }
 
   @Override
-  public boolean isRespected(ComplaintData complaint,
+  public boolean isRespected(ComplaintBuilder complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return isPotentiallyRespected(complaint);
   }
 
   @Override
-  public boolean isPotentiallyRespected(ComplaintData complaint) {
-    return ComplaintUtility.getEntryWithHighestProbability(complaint.getSentimentMap())
-        .map(sentiment::equals)
-        .orElse(false);
+  public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
+    if (complaint.getSentiment() == null) {
+      return false;
+    }
+    return complaint.getSentiment().getTendency() >= min
+        && complaint.getSentiment().getTendency() <= max
+        && (emotion == null || complaint.getSentiment().getEmotion().getValue().matches(emotion));
   }
 }

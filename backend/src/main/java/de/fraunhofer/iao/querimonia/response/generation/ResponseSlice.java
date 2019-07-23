@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.response.component;
+package de.fraunhofer.iao.querimonia.response.generation;
 
 import java.util.ArrayList;
 import java.util.List;

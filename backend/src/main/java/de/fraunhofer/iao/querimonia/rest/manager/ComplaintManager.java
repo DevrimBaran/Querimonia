@@ -1,19 +1,19 @@
 package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.CompletedResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.SingleCompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
+import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
@@ -21,26 +21,14 @@ import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
-import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,11 +44,8 @@ public class ComplaintManager {
   private static final Logger logger = LoggerFactory.getLogger(ComplaintManager.class);
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
-  private final CompletedResponseComponentRepository completedResponseComponentRepository;
   private final ComplaintFactory complaintFactory;
   private final ConfigurationManager configurationManager;
-  private final ResponseComponentRepository responseComponentRepository;
-  private final SingleCompletedComponentRepository singleCompletedComponentRepository;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint manager.
@@ -68,26 +53,20 @@ public class ComplaintManager {
   @Autowired
   public ComplaintManager(FileStorageService fileStorageService,
                           ComplaintRepository complaintRepository,
-                          ResponseComponentRepository templateRepository,
-                          ActionRepository actionRepository,
-                          CompletedResponseComponentRepository
-                              completedResponseComponentRepository,
-                          ConfigurationManager configurationManager,
-                          SingleCompletedComponentRepository singleCompletedComponentRepository) {
+                          @Qualifier("responseComponentRepository")
+                              ResponseComponentRepository templateRepository,
+                          ConfigurationManager configurationManager) {
 
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
-    this.completedResponseComponentRepository = completedResponseComponentRepository;
     this.configurationManager = configurationManager;
-    this.responseComponentRepository = templateRepository;
-    this.singleCompletedComponentRepository = singleCompletedComponentRepository;
 
     complaintFactory =
-        new ComplaintFactory(new DefaultResponseGenerator(templateRepository, actionRepository),
+        new ComplaintFactory(new DefaultResponseGenerator(templateRepository),
             new TokenAnalyzer());
   }
 
-  private static QuerimoniaException getNotFoundException(int complaintId) {
+  private static QuerimoniaException getNotFoundException(long complaintId) {
     return new NotFoundException("Es existiert keine Beschwerde mit der ID " + complaintId,
         complaintId);
   }
@@ -110,7 +89,7 @@ public class ComplaintManager {
         result.stream()
             .filter(complaint -> ComplaintFilter.filterByState(complaint, state))
             .filter(complaint -> ComplaintFilter.filterByDate(complaint, dateMin, dateMax))
-            .filter(complaint -> ComplaintFilter.filterBySentiment(complaint, sentiment))
+            .filter(complaint -> ComplaintFilter.filterByEmotion(complaint, sentiment))
             .filter(complaint -> ComplaintFilter.filterBySubject(complaint, subject))
             .filter(complaint -> ComplaintFilter.filterByKeywords(complaint, keywords))
             .sorted(ComplaintFilter.createComplaintComparator(sortBy));
@@ -133,23 +112,11 @@ public class ComplaintManager {
    *
    * @see ComplaintController#uploadComplaint(MultipartFile, Optional) uploadComplaint
    */
-  public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Integer> configId) {
+  public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Long> configId) {
     String fileName = fileStorageService.storeFile(file);
-    String fullFilePath = "src/main/resources/uploads/" + fileName;
 
-    Complaint complaint;
-
-    try (FileInputStream fileInputStream = new FileInputStream(fullFilePath)) {
-
-      String text = getTextFromData(fullFilePath, fileInputStream);
-      complaint = uploadText(new TextInput(text), configId);
-
-    } catch (IOException e) {
-      logger.error("Fehler beim Datei-Upload");
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
-    }
-    return complaint;
+    String text = fileStorageService.getTextFromData(fileName);
+    return uploadText(new TextInput(text), configId);
   }
 
   /**
@@ -157,7 +124,7 @@ public class ComplaintManager {
    *
    * @see ComplaintController#uploadText(TextInput, Optional) uploadText
    */
-  public Complaint uploadText(TextInput input, Optional<Integer> configId) {
+  public Complaint uploadText(TextInput input, Optional<Long> configId) {
     Configuration configuration = configId
         // if given use the configuration with that id
         .map(configurationManager::getConfiguration)
@@ -172,9 +139,9 @@ public class ComplaintManager {
   /**
    * Method for getting a complaint with an id.
    *
-   * @see ComplaintController#getComplaint(int) getComplaint
+   * @see ComplaintController#getComplaint(long) getComplaint
    */
-  public synchronized Complaint getComplaint(int complaintId) {
+  public synchronized Complaint getComplaint(long complaintId) {
     return complaintRepository.findById(complaintId)
         .orElseThrow(() -> getNotFoundException(complaintId));
   }
@@ -182,19 +149,24 @@ public class ComplaintManager {
   /**
    * Method for updating complaints.
    *
-   * @see ComplaintController#updateComplaint(int, ComplaintUpdateRequest) updateComplaint
+   * @see ComplaintController#updateComplaint(long, ComplaintUpdateRequest) updateComplaint
    */
-  public Complaint updateComplaint(int complaintId, ComplaintUpdateRequest updateRequest) {
+  public Complaint updateComplaint(long complaintId, ComplaintUpdateRequest updateRequest) {
     Complaint complaint = getComplaint(complaintId);
     checkState(complaint);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
 
-    updateRequest.getNewSentiment()
-        .ifPresent(sentiment -> complaint.getSentiment().setValue(sentiment));
-    updateRequest.getNewSubject()
-        .ifPresent(subject -> complaint.getSubject().setValue(subject));
-    updateRequest.getNewState()
-        .ifPresent(complaint::setState);
-
+    if (updateRequest.getNewEmotion().isPresent()) {
+      builder.setSentiment(complaint.getSentiment().withEmotion(new ComplaintProperty("Emotion",
+          updateRequest.getNewEmotion().get())));
+    }
+    if (updateRequest.getNewSubject().isPresent()) {
+      builder.setValueOfProperty("Kategorie", updateRequest.getNewSubject().get());
+    }
+    if (updateRequest.getNewState().isPresent()) {
+      builder.setState(updateRequest.getNewState().get());
+    }
+    complaint = builder.createComplaint();
     storeComplaint(complaint);
     return complaint;
   }
@@ -202,9 +174,9 @@ public class ComplaintManager {
   /**
    * Deletes a complaint with the given id.
    *
-   * @see ComplaintController#deleteComplaint(int) deleteComplaint
+   * @see ComplaintController#deleteComplaint(long) deleteComplaint
    */
-  public synchronized void deleteComplaint(int complaintId) {
+  public synchronized void deleteComplaint(long complaintId) {
     if (complaintRepository.existsById(complaintId)) {
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
@@ -216,13 +188,14 @@ public class ComplaintManager {
   /**
    * Reanalyzes a complaint.
    *
-   * @see ComplaintController#refreshComplaint(int, Optional, Optional) refreshComplaint
+   * @see ComplaintController#refreshComplaint(long, Optional, Optional) refreshComplaint
    */
   public synchronized Complaint refreshComplaint(
-      int complaintId,
+      long complaintId,
       Optional<Boolean> keepUserInformation,
-      Optional<Integer> configId) {
+      Optional<Long> configId) {
     Complaint complaint = getComplaint(complaintId);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkState(complaint);
 
     Configuration configuration = configId
@@ -230,10 +203,33 @@ public class ComplaintManager {
         .map(configurationManager::getConfiguration)
         // use the currently active configuration else
         .orElseGet(configurationManager::getCurrentConfiguration);
+    builder.setConfiguration(configuration);
 
-    complaint = complaintFactory.analyzeComplaint(complaint, configuration,
+    complaint = complaintFactory.analyzeComplaint(builder,
         keepUserInformation.orElse(false));
     storeComplaint(complaint);
+    return complaint;
+  }
+
+  /**
+   * Sets the state of a complaint to closed and executes all actions.
+   *
+   * @param complaintId the id of the complaint that should be closed.
+   * @return the closed complaint.
+   */
+  public synchronized Complaint closeComplaint(long complaintId) {
+    Complaint complaint = getComplaint(complaintId);
+    checkState(complaint);
+    complaint = complaint.withState(ComplaintState.CLOSED);
+
+    // execute actions of the complaint
+    complaint
+        .getResponseSuggestion()
+        .getActions()
+        .forEach(Action::executeAction);
+
+    storeComplaint(complaint);
+
     return complaint;
   }
 
@@ -251,17 +247,21 @@ public class ComplaintManager {
         dateMax, sentiment, subject, keywords).size());
   }
 
+  public List<NamedEntity> getEntities(long complaintId) {
+    return getComplaint(complaintId).getEntities();
+  }
+
   /**
    * Adds a named entity to a complaint.
    *
-   * @see ComplaintController#addEntity(int, NamedEntity) addEntity
+   * @see ComplaintController#addEntity(long, NamedEntity) addEntity
    */
-  public List<NamedEntity> addEntity(int complaintId, NamedEntity entity) {
+  public List<NamedEntity> addEntity(long complaintId, NamedEntity entity) {
     Complaint complaint = getComplaint(complaintId);
     // check validity of entity
     int start = entity.getStartIndex();
     int end = entity.getEndIndex();
-    if (start < 0 || end <= start || end >= complaint.getText().length()) {
+    if (start < 0 || end <= start || end > complaint.getText().length()) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
           + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
           + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
@@ -274,7 +274,7 @@ public class ComplaintManager {
     } else {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
           "Die Entität mit Label " + entity.getLabel()
-          + "existiert bereits!", "Entität bereits vorhanden");
+              + "existiert bereits!", "Entität bereits vorhanden");
     }
 
     storeComplaint(complaint);
@@ -284,19 +284,22 @@ public class ComplaintManager {
   /**
    * Removes an entity in the database.
    *
-   * @see ComplaintController#removeEntity(int, String, int, int, String) removeEntity
+   * @see ComplaintController#removeEntity(long, long) removeEntity
    */
-  public List<NamedEntity> removeEntity(int complaintId, String label, int start,
-                                        int end, String extractor) {
+  public List<NamedEntity> removeEntity(long complaintId, long entityId) {
     Complaint complaint = getComplaint(complaintId);
-    NamedEntity newEntity = new NamedEntity(label, start, end, extractor);
+
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
-    boolean removed = complaintEntities.remove(newEntity);
-    if (!removed) {
+    List<NamedEntity> entitiesToRemove = complaintEntities
+        .stream()
+        .filter(namedEntity -> namedEntity.getId() == entityId)
+        .collect(Collectors.toList());
+    if (entitiesToRemove.isEmpty()) {
       throw new QuerimoniaException(HttpStatus.NOT_FOUND, "Die gegebene Entität existiert nicht "
           + "in der Beschwerde.", "Ungültige Entity");
     }
+    entitiesToRemove.forEach(complaintEntities::remove);
     storeComplaint(complaint);
     return complaintEntities;
   }
@@ -308,18 +311,19 @@ public class ComplaintManager {
    */
   public void deleteAllComplaints() {
     complaintRepository.deleteAll();
-    completedResponseComponentRepository.deleteAll();
   }
 
   /**
    * Refreshed the response for a complaint.
    */
-  public ResponseSuggestion refreshResponse(int complaintId) {
+  public ResponseSuggestion refreshResponse(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    var suggestion = complaintFactory.createResponse(new ComplaintData(complaint));
-    complaint.setResponseSuggestion(suggestion);
-    storeComplaint(complaint);
-    return complaint.getResponseSuggestion();
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    var suggestion = complaintFactory.createResponse(builder);
+    builder.setResponseSuggestion(suggestion);
+
+    storeComplaint(builder.createComplaint());
+    return suggestion;
   }
 
   private synchronized void storeComplaint(Complaint complaint) {
@@ -337,7 +341,7 @@ public class ComplaintManager {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
           + "Beschwerde", e, "Beschwerde");
     }
-    logger.info("Saved complaint with id {}", complaint.getComplaintId());
+    logger.info("Saved complaint with id {}", complaint.getId());
   }
 
   private void checkState(Complaint complaint) {
@@ -347,54 +351,4 @@ public class ComplaintManager {
     }
   }
 
-  /**
-   * Extracts text out of a file.
-   *
-   * @param fullFilePath    the file path
-   * @param fileInputStream a input stream of that file
-   *
-   * @return the extracted complaint text.
-   * @throws IOException on an io-error.
-   */
-  private String getTextFromData(String fullFilePath, InputStream fileInputStream)
-      throws IOException {
-
-    String text = null;
-    String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
-    switch (suffix) {
-      case ".txt":
-        text = Files.readString(Paths.get(fullFilePath), Charset.defaultCharset());
-        break;
-      case ".pdf":
-        PDDocument document = PDDocument.load(new File(fullFilePath));
-        if (!document.isEncrypted()) {
-          PDFTextStripper stripper = new PDFTextStripper();
-          text = stripper.getText(document);
-        }
-        document.close();
-        break;
-      //read a word file (docx)
-      case ".docx":
-        XWPFDocument docxDocument = new XWPFDocument(fileInputStream);
-        XWPFWordExtractor extractor = new XWPFWordExtractor(docxDocument);
-        text = extractor.getText();
-        extractor.close();
-        break;
-      //read word file (doc)
-      case ".doc":
-        HWPFDocument docDocument = new HWPFDocument(fileInputStream);
-        WordExtractor docExtractor = new WordExtractor(docDocument);
-        text = docExtractor.getText();
-        docExtractor.close();
-        break;
-      default:
-        throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Das Dateiformat " + suffix
-            + " wird nicht unterstützt!", "Ungültiges Dateiformat");
-    }
-
-    if (text == null) {
-      throw new IllegalStateException();
-    }
-    return text;
-  }
 }

@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import org.springframework.lang.Nullable;
 
@@ -21,14 +21,14 @@ public class UploadDateRule implements Rule {
   }
 
   @Override
-  public boolean isRespected(ComplaintData complaint,
+  public boolean isRespected(ComplaintBuilder complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return isPotentiallyRespected(complaint);
   }
 
   @Override
-  public boolean isPotentiallyRespected(ComplaintData complaint) {
-    LocalDate uploadDate = complaint.getUploadTime().toLocalDate();
+  public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
+    LocalDate uploadDate = complaint.getReceiveDate();
     return !uploadDate.isBefore(uploadDateMin) && !uploadDate.isAfter(uploadDateMax);
   }
 }

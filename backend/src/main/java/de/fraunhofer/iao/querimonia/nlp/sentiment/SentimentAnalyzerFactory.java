@@ -1,5 +1,7 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
+
 import java.util.HashMap;
 
 /**
@@ -18,9 +20,7 @@ public class SentimentAnalyzerFactory {
   public static SentimentAnalyzer getFromDefinition(SentimentAnalyzerDefinition definition) {
     switch (definition.getType()) {
       case NONE:
-        var baseMap = new HashMap<String, Double>();
-        baseMap.put("Unbekannt", 1.0);
-        return text -> baseMap;
+        return complaintText -> 0.0;
       case QUERIMONIA_SENTIMENT:
         return new FlaskSentiment();
       default:

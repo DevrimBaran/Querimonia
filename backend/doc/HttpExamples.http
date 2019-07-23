@@ -105,11 +105,11 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8080/api/stats/tagcloud?words_only=true&subject=Sonstiges,Fahrt nicht erfolgt
+GET http://localhost:8080/api/stats/tagcloud?words_only=true&name=Sonstiges,Fahrt nicht erfolgt
 
 ###
 
-GET http://localhost:8080/api/complaints?subject=Fahrt nicht erfolgt
+GET http://localhost:8080/api/complaints?name=Fahrt nicht erfolgt
 ###
 
 POST https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/templates
@@ -121,7 +121,7 @@ Content-Type: application/json
   "successorParts": [
     "Datumsangabe"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -135,7 +135,7 @@ Content-Type: application/json
   "successorParts": [
     "Verabschiedung"
   ],
-  "subject": null
+  "name": null
 }
 
 ###
@@ -148,7 +148,7 @@ Content-Type: application/json
   "responsePart": "Verabschiedung",
   "successorParts": [
   ],
-  "subject": null
+  "name": null
 }
 
 ###
