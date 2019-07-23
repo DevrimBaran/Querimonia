@@ -58,7 +58,15 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     // for hibernate
   }
 
-  public ComplaintProperty( @NonNull String name, @NonNull String value,
+  /**
+   * Creates a new complaint property with all possible parameters.
+   *
+   * @param name          the name of the property.
+   * @param value         the value of the property.
+   * @param probabilities the probability map for the property.
+   * @param isSetByUser   the flag if the property is set by the user.
+   */
+  public ComplaintProperty(@NonNull String name, @NonNull String value,
                            @NonNull Map<String, Double> probabilities, boolean isSetByUser) {
     this.value = value;
     this.name = name;
@@ -72,7 +80,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
    *
    * @param probabilities the probability map, that maps each value to its probability.
    */
-  public ComplaintProperty(@NonNull Map<String, Double> probabilities, @NonNull String name) {
+  public ComplaintProperty(@NonNull String name, @NonNull Map<String, Double> probabilities) {
     this.probabilities = probabilities;
     this.value = ComplaintUtility.getEntryWithHighestProbability(probabilities)
         .orElse("");

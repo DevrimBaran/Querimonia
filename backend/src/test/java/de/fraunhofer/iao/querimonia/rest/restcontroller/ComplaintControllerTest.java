@@ -1,19 +1,22 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
 import de.fraunhofer.iao.querimonia.db.repositories.*;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.matchers.EmptyMatcher;
 import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
 import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
 import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.service.FileStorageService;
-import io.micrometer.core.ipc.http.HttpSender;
+import org.apache.commons.collections4.IteratorUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +26,21 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.CLOSED;
+import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.NEW;
+import static de.fraunhofer.iao.querimonia.matchers.OptionalPresentMatcher.present;
+import static de.fraunhofer.iao.querimonia.matchers.ResponseStatusCodeMatcher.hasStatusCode;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static de.fraunhofer.iao.querimonia.matchers.EmptyMatcher.empty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class ComplaintControllerTest {
 
   private ComplaintController complaintController;
@@ -36,7 +49,7 @@ public class ComplaintControllerTest {
   private ConfigurationRepository configurationRepository;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     complaintRepository = new MockComplaintRepository();
     responseComponentRepository = new MockComponentRepository();
     configurationRepository = new MockConfigurationRepository();
@@ -59,7 +72,7 @@ public class ComplaintControllerTest {
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
   }
 
   // TC 1
@@ -157,7 +170,7 @@ public class ComplaintControllerTest {
 
     // TC 3.1 using default configuration
     var response = complaintController.uploadText(new TextInput(testText), Optional.empty());
-    assertEquals("Wrong status code on success", HttpStatus.CREATED, response.getStatusCode());
+    assertThat(response, hasStatusCode(HttpStatus.CREATED));
     assertNotNull("Missing response body", response.getBody());
     var complaint = (Complaint) response.getBody();
     assertEquals("wrong text", TestComplaints.TestTexts.TEXT_E, complaint.getText());
@@ -178,7 +191,7 @@ public class ComplaintControllerTest {
 
     // TC 3.2 using a given configuration
     var response = complaintController.uploadText(new TextInput(testText), Optional.of(2L));
-    assertEquals("Wrong status code on success", HttpStatus.CREATED, response.getStatusCode());
+    assertThat(response, hasStatusCode(HttpStatus.CREATED));
     assertNotNull("Missing response body", response.getBody());
     var complaint = (Complaint) response.getBody();
     assertEquals("wrong text", TestComplaints.TestTexts.TEXT_E, complaint.getText());
@@ -199,7 +212,7 @@ public class ComplaintControllerTest {
 
     // TC 3.1 illegal configuration
     var response = complaintController.uploadText(new TextInput(testText), Optional.of(3L));
-    assertEquals("Wrong status code on success", HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
     assertNotNull("Missing response body", response.getBody());
     var body = (NotFoundException) response.getBody();
     assertEquals("Wrong id", 3L, body.getId());
@@ -212,24 +225,158 @@ public class ComplaintControllerTest {
     Complaint testComplaint2 = TestComplaints.COMPLAINT_B;
     complaintRepository.save(testComplaint2);
 
-    var response = complaintController.getComplaint(1L);
+    ResponseEntity<?> response = complaintController.getComplaint(1L);
     assertEquals(testComplaint, response.getBody());
-    assertEquals("wrong status code", HttpStatus.OK, response.getStatusCode());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
 
     response = complaintController.getComplaint(2L);
     assertEquals(testComplaint2, response.getBody());
-    assertEquals("wrong status code", HttpStatus.OK, response.getStatusCode());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
 
     response = complaintController.getComplaint(3L);
-    assertEquals("wrong status code", HttpStatus.NOT_FOUND, response.getStatusCode());
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, is(instanceOf(NotFoundException.class)));
   }
 
   @Test
-  public void updateComplaint() {
+  public void updateComplaint1() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, null);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, is(equalTo(testComplaint)));
   }
 
   @Test
-  public void deleteComplaint() {
+  public void updateComplaint2() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest("Insanity", null,
+        null);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, not(equalTo(testComplaint)));
+    assertThat(body, is(instanceOf(Complaint.class)));
+    var complaint = (Complaint) body;
+    assertThat(complaint.getSentiment().getEmotion(),
+        is(equalTo(new ComplaintProperty("Emotion", "Insanity"))));
+    assertThat(complaint.getSentiment().getEmotion().isSetByUser(), is(true));
+    assertThat(body, is(equalTo(complaintRepository.findById(1L).orElse(null))));
+  }
+
+  @Test
+  public void updateComplaint3() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, "Bad driver",
+        null);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, not(equalTo(testComplaint)));
+    assertThat(body, is(instanceOf(Complaint.class)));
+    var complaint = (Complaint) body;
+    assertThat(complaint.getSubject().isSetByUser(), is(true));
+    assertThat(complaint.getSubject().getValue(), is(equalTo("Bad driver")));
+    assertThat(body, is(equalTo(complaintRepository.findById(1L).orElse(null))));
+  }
+
+  @Test
+  public void updateComplaint4() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null,
+        CLOSED);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, not(equalTo(testComplaint)));
+    assertThat(body, is(instanceOf(Complaint.class)));
+    var complaint = (Complaint) body;
+    assertThat(complaint.getState(), is(CLOSED));
+    var repositoryComplaint = complaintRepository.findById(1L).orElse(null);
+    assertThat(body, is(equalTo(repositoryComplaint)));
+  }
+
+  @Test
+  public void updateComplaint5() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest("Anger", null,
+        CLOSED);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, is(instanceOf(NotFoundException.class)));
+  }
+
+  @Test
+  public void updateComplaint6() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A.withState(CLOSED);
+    complaintRepository.save(testComplaint);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, NEW);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.BAD_REQUEST));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, is(instanceOf(QuerimoniaException.class)));
+  }
+
+  @Test
+  public void deleteComplaint1() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.deleteComplaint(2L);
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(NotFoundException.class)));
+
+    response = complaintController.deleteComplaint(testComplaint.getId());
+    assertThat(response, hasStatusCode(HttpStatus.NO_CONTENT));
+    assertThat(response.getBody(), is(nullValue()));
+    assertThat(complaintRepository.findAll(), is(empty()));
+
+    response = complaintController.deleteComplaint(1L);
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(NotFoundException.class)));
+  }
+
+  @Test
+  public void deleteComplaint2() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+    complaintRepository.save(TestComplaints.COMPLAINT_B);
+
+    var response = complaintController.deleteComplaint(2L);
+    assertThat(response, hasStatusCode(HttpStatus.NO_CONTENT));
+    assertThat(response.getBody(), is(nullValue()));
+
+    List<Complaint> complaints = IteratorUtils.toList(complaintRepository.findAll().iterator(), 1);
+    assertThat(complaints, hasSize(1));
+    assertThat(complaints.get(0), is(equalTo(testComplaint)));
   }
 
   @Test
@@ -238,10 +385,56 @@ public class ComplaintControllerTest {
 
   @Test
   public void closeComplaint() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.closeComplaint(1L);
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, is(instanceOf(Complaint.class)));
+    var complaint = (Complaint) body;
+    assertThat(complaint.getState(), is(CLOSED));
+    assertThat(complaintRepository.findById(1L), is(present()));
+    assertThat(complaintRepository.findById(1L).get().getState(), is(CLOSED));
   }
 
   @Test
-  public void countComplaints() {
+  public void closeComplaint2() {
+    // complaint already closed
+    Complaint testComplaint = TestComplaints.COMPLAINT_A.withState(CLOSED);
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.closeComplaint(1L);
+    assertThat(response, hasStatusCode(HttpStatus.BAD_REQUEST));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, is(instanceOf(QuerimoniaException.class)));
+  }
+
+  @Test
+  public void countComplaints1() {
+    // empty repository
+    var response = complaintController.countComplaints(Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is("0"));
+
+    response = complaintController.countComplaints(Optional.of(new String[] {"CLOSED"}),
+        Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is("0"));
+
+    response = complaintController.countComplaints(Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.of(new String[] {"Anger"}), Optional.empty(), Optional.empty());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is("0"));
+
+    response = complaintController.countComplaints(Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is("0"));
   }
 
   @Test
@@ -257,6 +450,19 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void deleteAllComplaints() {
+  public void deleteAllComplaints1() {
+    var response = complaintController.deleteAllComplaints();
+    assertThat(response, hasStatusCode(HttpStatus.NO_CONTENT));
+    assertThat(complaintRepository.findAll(), is(empty()));
+  }
+
+  @Test
+  public void deleteAllComplaints2() {
+    complaintRepository.save(TestComplaints.COMPLAINT_A);
+    complaintRepository.save(TestComplaints.COMPLAINT_B);
+
+    var response = complaintController.deleteAllComplaints();
+    assertThat(response, hasStatusCode(HttpStatus.NO_CONTENT));
+    assertThat(complaintRepository.findAll(), is(empty()));
   }
 }

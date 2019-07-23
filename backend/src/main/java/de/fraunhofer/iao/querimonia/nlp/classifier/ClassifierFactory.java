@@ -25,7 +25,7 @@ public class ClassifierFactory {
       case NONE:
         var baseMap = new HashMap<String, Double>();
         baseMap.put("Unbekannt", 1.0);
-        return text -> new ComplaintProperty(baseMap, "Kategorie");
+        return text -> new ComplaintProperty("Kategorie", baseMap);
       case KIKUKO_CLASSIFIER:
         return new KiKuKoClassifier(definition.getName(), definition.getCategoryName());
       default:

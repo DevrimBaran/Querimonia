@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -51,6 +52,10 @@ public class Sentiment implements Comparable<Sentiment> {
 
   public double getTendency() {
     return tendency;
+  }
+
+  public Sentiment withEmotion(ComplaintProperty emotionProperty) {
+    return new Sentiment(emotionProperty, this.tendency);
   }
 
   @Override
