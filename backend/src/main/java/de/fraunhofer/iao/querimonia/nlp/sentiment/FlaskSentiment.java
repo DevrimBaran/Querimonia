@@ -16,19 +16,6 @@ import java.util.Map;
  */
 public class FlaskSentiment implements SentimentAnalyzer {
 
-  @Override
-  public ComplaintProperty analyzeEmotion(String text) {
-    JSONObject jsonText = new JSONObject();
-    try {
-      jsonText.put("text", text);
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
-
-    Map<String, Double> flaskResult = FlaskContact.receiveJson(jsonText, "emotion_analyse");
-
-    return new ComplaintProperty(flaskResult, "Emotion");
-  }
 
   @Override
   public double analyzeSentiment(String text) {
