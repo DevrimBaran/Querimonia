@@ -37,7 +37,7 @@ class Emotion(Resource):
             # TODO create error class
             return jsonify({"error": "wrong json"})
         query = content["text"]
-        emotion_value = emotion_value.main(query)
+        emotion_value = emotion_analyse.main(query)
         return emotion_value
 
 
