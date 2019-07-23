@@ -40,7 +40,7 @@ function List (dispatch, data, currentConfig) {
       <td><Link to={'/config/' + data.id}>{ data.id === currentConfig.id ? <input defaultChecked type='radio' name='active' /> : <input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' /> }</Link></td>
       <td><Link to={'/config/' + data.id}>{data.name}</Link></td>
       <td><Link to={'/config/' + data.id}>{data.extractors.length}</Link></td>
-      <td><Link to={'/config/' + data.id}>{data.classifier.name}</Link></td>
+      <td><Link to={'/config/' + data.id}>{data.classifiers[0].name}</Link></td>
       <td><Link to={'/config/' + data.id}>{data.sentimentAnalyzer.name}</Link></td>
     </tr>
   );
@@ -183,8 +183,8 @@ function Single (active, dispatch, currentConfig) {
             </div>
             <div>
               <h6>Klassifikator</h6>
-              <Input type='text' value={active.classifier.name} label='Name' onChange={(e) => modify({ classifier: { name: e.value } })} />
-              <Input type='text' value={active.classifier.type} label='Typ' onChange={(e) => modify({ classifier: { type: e.value } })} />
+              <Input type='text' value={active.classifiers ? active.classifiers[0].name : ''} label='Name' onChange={(e) => modify({ classifier: { name: e.value } })} />
+              <Input type='text' value={active.classifiers ? active.classifiers[0].type : ''} label='Typ' onChange={(e) => modify({ classifier: { type: e.value } })} />
             </div>
             <div>
               <h6>Stimmungsanalysator</h6>

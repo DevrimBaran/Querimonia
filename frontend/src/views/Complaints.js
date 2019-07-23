@@ -42,7 +42,7 @@ class Complaints extends Component {
       let data = {};
       data['subject'] = document.getElementById('chooseCategorie').value;
       Api.patch('/api/complaints/' + active.id, data);
-      active.subject.value = data['subject'];
+      active.properties[0].value = data['subject'];
     }
     this.setState({ editCategorie: !this.state.editCategorie });
   }
@@ -103,7 +103,9 @@ class Complaints extends Component {
 
   render () {
     let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
-    return (
+    if (active) {
+      active.entities = [];
+    } return (
       <React.Fragment>
         { active ? (
           this.renderSingle(active)
