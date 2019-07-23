@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -25,6 +27,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -36,6 +43,7 @@ import java.util.Map;
  * This class is represents a complaint. It contains the complaint text, the preview text, the
  * subject, the emotion and the date of the complaint.
  */
+@XmlRootElement(name = "fraunhoferTextDocument")
 @Entity
 @JsonPropertyOrder(value = {
     "id",
@@ -293,5 +301,16 @@ public class Complaint {
         .append(receiveDate)
         .append(receiveTime)
         .toHashCode();
+  }
+
+  public static void main(String[] args) throws JAXBException, IOException {
+    // create JAXB context and instantiate marshaller
+    JAXBContext context = JAXBContextFactory.createContext(new Class[]{Complaint.class}, null);
+    System.out.println(context.getClass().getName());
+    Marshaller m = context.createMarshaller();
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    m.setProperty(Marshaller.JAXB_FRAGMENT, true);
+
+
   }
 }
