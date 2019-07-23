@@ -148,9 +148,9 @@ class TagCloud extends Component {
                   <input type='number' id='count' ref='count' defaultValue='70' min='0' />
                 </div>
                 <div>
-                <label htmlFor='cloudActive'>Listenansicht</label><br />
-                <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
-              </div>
+                  <label htmlFor='cloudActive'>Listenansicht</label><br />
+                  <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
+                </div>
               </Row>
             </div>
             <div className='center'>
@@ -170,33 +170,33 @@ class TagCloud extends Component {
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
-              <div className ='responsive-table'>
-                <table className = 'table'>
-                <thead>
-                <tr>
-                <th>Wort</th> 
-                <th>Anzahl</th>
-                </tr>
-                </thead>
-                <tbody>
-                  {this.createWordArray(this.state.words).map((element) => {
-                    return (
-                    <tr><td>{element['text']}</td> 
-                    <td>{element['size']}</td>
-                    </tr>);
-                  })}
-                </tbody>
-                </table>
-              </div>
+                  <table className='table'>
+                    <thead>
+                      <tr>
+                        <th>Wort</th>
+                        <th>Anzahl</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {this.createWordArray(this.state.words).map((element) => {
+                        return (
+                          <tr><td>{element['text']}</td>
+                            <td>{element['size']}</td>
+                          </tr>);
+                      })}
+                    </tbody>
+                  </table>
+           
               </Content>)}
               </Row>
-              {this.state.cloudActive
-              ?(<Content className='center' id='TagCloud'>  
+          {this.state.cloudActive
+            ? (<Content className='center' id='TagCloud'>
               <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
-                onClick={this.exportSvg} /></Content>)  
-              :(<Content className='center' id='TagCloud'>
+                onClick={this.exportSvg} /></Content>)
+            : (<Content className='center' id='TagCloud'>
               <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
                 onClick={this.exportCsv} /> </Content>)}
+  
         </Block>
       </React.Fragment>
     );
