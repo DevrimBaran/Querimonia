@@ -25,7 +25,19 @@ class Sentiment(Resource):
             return jsonify({"error": "wrong json"})
         query = content["text"]
         sentiment_value = sentiment_analyse.main(query)
-        return jsonify({"sentiment": sentiment_value})
+        return sentiment_value
+
+class Emotion(Resource):
+    def post(self):
+        # get complaint text
+        content = request.get_json()
+        if "text" not in content:
+            # TODO create error class
+            return jsonify({"error": "wrong json"})
+        query = content["text"]
+        emotion_value = emotion_value.main(query)
+        return emotion_value
+
 
 
 @api.route('/python/word_to_vec')
