@@ -47,12 +47,12 @@ class Calc:
     @staticmethod
     def vectorize(word, model_name):
         model = Calc.set_model(model_name)
-        try:
-            result = np.array(model[word])
-        except:
-            result = np.array(model["bus"])
-            for n in range(0, len(result)):
-                result[n] = 0
+        #try:
+        result = np.array(model[word])
+        #except:
+        #    result = np.array(model["bus"])
+        #    for n in range(0, len(result)):
+        #        result[n] = 0
         return result
 
     @staticmethod
