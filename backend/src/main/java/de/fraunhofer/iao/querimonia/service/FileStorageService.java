@@ -2,13 +2,23 @@ package de.fraunhofer.iao.querimonia.service;
 
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -78,4 +88,58 @@ public class FileStorageService {
     }
   }
 
+  /**
+   * Extracts text out of a file.
+   *
+   * @param fileName the name of the file
+   *
+   * @return the extracted complaint text.
+   */
+  public String getTextFromData(String fileName) {
+    String fullFilePath = fileStorageLocation.toString() + File.separator + fileName;
+
+    try (InputStream fileInputStream = new FileInputStream(fullFilePath)) {
+
+      String text = null;
+      String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
+      switch (suffix) {
+        case ".txt":
+          text = Files.readString(Paths.get(fullFilePath), Charset.defaultCharset());
+          break;
+        case ".pdf":
+          PDDocument document = PDDocument.load(new File(fullFilePath));
+          if (!document.isEncrypted()) {
+            PDFTextStripper stripper = new PDFTextStripper();
+            text = stripper.getText(document);
+          }
+          document.close();
+          break;
+        //read a word file (docx)
+        case ".docx":
+          XWPFDocument docxDocument = new XWPFDocument(fileInputStream);
+          XWPFWordExtractor extractor = new XWPFWordExtractor(docxDocument);
+          text = extractor.getText();
+          extractor.close();
+          break;
+        //read word file (doc)
+        case ".doc":
+          HWPFDocument docDocument = new HWPFDocument(fileInputStream);
+          WordExtractor docExtractor = new WordExtractor(docDocument);
+          text = docExtractor.getText();
+          docExtractor.close();
+          break;
+        default:
+          throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Das Dateiformat " + suffix
+              + " wird nicht unterstützt!", "Ungültiges Dateiformat");
+      }
+
+      if (text == null) {
+        throw new IllegalStateException();
+      }
+      return text;
+    } catch (IOException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
+    }
+  }
 }

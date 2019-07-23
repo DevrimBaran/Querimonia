@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 
@@ -20,20 +20,20 @@ public class PropertyRule implements Rule {
   }
 
   @Override
-  public boolean isRespected(ComplaintData complaint,
+  public boolean isRespected(ComplaintBuilder complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     return isPotentiallyRespected(complaint);
   }
 
   @Override
-  public boolean isPotentiallyRespected(ComplaintData complaint) {
+  public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     // check if the name of the complaint matches
-    return complaint
-        .getProperties()
-        .stream()
-        .filter(complaintProperty -> complaintProperty.getName().equals(name))
-        .map(ComplaintProperty::getValue)
-        .allMatch(value -> value.matches(propertyRegex))
-        || (name.equals("Emotion") && complaint.getEmotion().getValue().matches(propertyRegex));
+    return
+        complaint.getProperties() != null
+            && complaint.getProperties()
+            .stream()
+            .filter(complaintProperty -> complaintProperty.getName().equals(name))
+            .map(ComplaintProperty::getValue)
+            .allMatch(value -> value.matches(propertyRegex));
   }
 }

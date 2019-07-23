@@ -84,6 +84,44 @@ deploy-frontend-dev:
   only:
     - frontend
 
+# python
+build-python:
+  stage: build
+  tags:
+    - shell
+  script:
+    - cd python/
+    - pipenv install
+    - pipenv run flake8 .
+  artifacts:
+    paths:
+      - python/
+  only:
+    - /^python.*$/
+
+test-python:
+  stage: test
+  tags:
+    - shell
+  script:
+    - echo 'no tests'
+  artifacts:
+    paths:
+      - python/
+  only:
+    - /^python.*$/
+
+deploy-python:
+  stage: deploy
+  tags:
+    - shell
+  script:
+    # copy python to destination and systemd script
+    - chmod -R +rw python/
+    - cp -r python/* /home/beschwerdemanagement/export/python-dev/
+    - sudo systemctl restart stupropython_dev
+  only:
+    - /^python.*$/
 # backend
 build-backend-dev: &base-backend
   stage: build

@@ -42,7 +42,7 @@ public class ResponseComponentFilter {
   public static Comparator<ResponseComponent> createComponentComparator(Optional<String[]> sortBy) {
     return new ComparatorBuilder<ResponseComponent>()
         .append("name", ResponseComponent::getComponentName)
-        .append("id", ResponseComponent::getComponentId)
+        .append("id", ResponseComponent::getId)
         .append("priority", ResponseComponent::getPriority)
         .build(sortBy.orElse(new String[] {"id_asc"}));
   }

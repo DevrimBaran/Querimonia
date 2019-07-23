@@ -6,12 +6,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierType;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerDefinition;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerType;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.springframework.lang.NonNull;
+import tec.uom.lib.common.function.Identifiable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,8 +23,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +43,7 @@ import java.util.List;
     "classifiers",
     "sentimentAnalyzer"
 })
-public class Configuration {
+public class Configuration implements Identifiable<Long> {
 
   /**
    * This configuration is used as fallback, when the database does not contain any configurations.
@@ -45,28 +51,42 @@ public class Configuration {
    */
   @Transient
   @JsonIgnore
-  public static final Configuration FALLBACK_CONFIGURATION = new Configuration()
+  public static final Configuration FALLBACK_CONFIGURATION = new ConfigurationBuilder()
       .setName("Default")
       .setExtractors(Collections.emptyList())
       .setClassifiers(List.of(
           new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie")))
-      .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, "Default"));
+      .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, "Default"))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, "Default"))
+      .setActive(false)
+      .createConfiguration();
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonProperty("id")
   private long configId;
 
-  @Column(name = "config_name")
-  private String name;
+  @Column(name = "config_name", nullable = false)
+  @NonNull
+  private String name = "";
 
   @OneToMany(cascade = CascadeType.ALL)
-  private List<ExtractorDefinition> extractors;
+  @JoinColumn(name = "config_id")
+  @NonNull
+  private List<ExtractorDefinition> extractors = new ArrayList<>();
 
   @OneToMany(cascade = CascadeType.ALL)
-  private List<ClassifierDefinition> classifiers;
+  @JoinColumn(name = "config_id")
+  @NonNull
+  private List<ClassifierDefinition> classifiers = new ArrayList<>();
 
-  private SentimentAnalyzerDefinition sentimentAnalyzer;
+  @NonNull
+  private SentimentAnalyzerDefinition sentimentAnalyzer = new SentimentAnalyzerDefinition();
+
+  @NonNull
+  private EmotionAnalyzerDefinition emotionAnalyzer = new EmotionAnalyzerDefinition();
+
+  private boolean active = false;
 
   /**
    * Creates a new configuration object.
@@ -77,66 +97,73 @@ public class Configuration {
    * @param sentimentAnalyzer the sentiment analyzer.
    */
   @JsonCreator
-  public Configuration(String name,
-                       List<ExtractorDefinition> extractors,
-                       List<ClassifierDefinition> classifiers,
-                       SentimentAnalyzerDefinition sentimentAnalyzer) {
+  Configuration(
+      long id,
+      @NonNull String name,
+      @NonNull List<ExtractorDefinition> extractors,
+      @NonNull List<ClassifierDefinition> classifiers,
+      @NonNull SentimentAnalyzerDefinition sentimentAnalyzer,
+      @NonNull EmotionAnalyzerDefinition emotionAnalyzer,
+      boolean active) {
+    this.configId = id;
     this.name = name;
     this.extractors = extractors;
     this.classifiers = classifiers;
     this.sentimentAnalyzer = sentimentAnalyzer;
+    this.emotionAnalyzer = emotionAnalyzer;
+    this.active = active;
   }
 
+  @SuppressWarnings("unused")
   private Configuration() {
     // for hibernate
   }
 
-  public long getConfigId() {
-    return configId;
+  public Configuration withConfigId(long configId) {
+    return new ConfigurationBuilder(this)
+        .setId(configId)
+        .createConfiguration();
   }
 
-  public Configuration setConfigId(long configId) {
-    this.configId = configId;
-    return this;
-  }
-
+  @NonNull
   public String getName() {
     return name;
   }
 
-  public Configuration setName(String name) {
-    this.name = name;
-    return this;
-  }
-
+  @NonNull
   public List<ExtractorDefinition> getExtractors() {
     return extractors;
   }
 
-  private Configuration setExtractors(
-      List<ExtractorDefinition> extractors) {
-    this.extractors = extractors;
-    return this;
-  }
-
+  @NonNull
   public List<ClassifierDefinition> getClassifiers() {
     return classifiers;
   }
 
-  private Configuration setClassifiers(
-      List<ClassifierDefinition> classifiers) {
-    this.classifiers = classifiers;
-    return this;
-  }
-
+  @NonNull
   public SentimentAnalyzerDefinition getSentimentAnalyzer() {
     return sentimentAnalyzer;
   }
 
-  private Configuration setSentimentAnalyzer(
-      SentimentAnalyzerDefinition sentimentAnalyzer) {
-    this.sentimentAnalyzer = sentimentAnalyzer;
-    return this;
+  @NonNull
+  public EmotionAnalyzerDefinition getEmotionAnalyzer() {
+    return emotionAnalyzer;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public Configuration withActive(boolean active) {
+    return new ConfigurationBuilder(this)
+        .setActive(active)
+        .createConfiguration();
+  }
+
+  @Override
+  @JsonProperty("id")
+  public Long getId() {
+    return configId;
   }
 
   @Override
@@ -156,6 +183,7 @@ public class Configuration {
         .append(extractors, that.extractors)
         .append(classifiers, that.classifiers)
         .append(sentimentAnalyzer, that.sentimentAnalyzer)
+        .append(emotionAnalyzer, that.emotionAnalyzer)
         .isEquals();
   }
 
@@ -166,6 +194,7 @@ public class Configuration {
         .append(extractors)
         .append(classifiers)
         .append(sentimentAnalyzer)
+        .append(emotionAnalyzer)
         .toHashCode();
   }
 
@@ -175,8 +204,9 @@ public class Configuration {
         .append("configId", configId)
         .append("name", name)
         .append("extractors", extractors)
-        .append("classifier", classifiers)
+        .append("classifiers", classifiers)
         .append("sentimentAnalyzer", sentimentAnalyzer)
+        .append("emotionAnalyzer", emotionAnalyzer)
         .toString();
   }
 }

@@ -33,10 +33,10 @@ public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements C
   public ComplaintProperty classifyText(String input) {
     KikukoResponse response = executeKikukoRequest(input, KikukoResponse[].class);
 
-    return new ComplaintProperty(response.getPipelines()
+    return new ComplaintProperty(categoryName, response.getPipelines()
         .getTempPipeline()
         .get(0)
-        .getTyp(), categoryName);
+        .getTyp());
   }
 
 }

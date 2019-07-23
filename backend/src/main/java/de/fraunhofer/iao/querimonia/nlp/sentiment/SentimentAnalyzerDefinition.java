@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.nlp.sentiment;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -68,7 +69,7 @@ public class SentimentAnalyzerDefinition {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("type", type)
         .append("name", name)
         .toString();

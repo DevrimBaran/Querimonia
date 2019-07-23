@@ -188,4 +188,13 @@ public class ConfigController {
   public ResponseEntity<?> deleteAllConfigurations() {
     return ControllerUtility.tryAndCatch(configurationManager::deleteAllConfigurations);
   }
+
+  /**
+   * Returns the configuration that is currently active.
+   * @return Extractors listed by tool, pipeline and domain
+   */
+  @GetMapping("api/config/allExtractors")
+  public ResponseEntity<?> getAllExtractors() {
+    return ControllerUtility.tryAndCatch(configurationManager::getAllExtractors);
+  }
 }

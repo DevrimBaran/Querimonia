@@ -2,9 +2,12 @@ package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierFactory;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzer;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerFactory;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorFactory;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerFactory;
@@ -12,11 +15,10 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,98 +49,111 @@ public class ComplaintFactory {
    * the date, sentiment and subject.
    *
    * @param complaintText the text of the complaint.
+   *
    * @return the generated complaint object.
    */
   public Complaint createComplaint(String complaintText, Configuration configuration) {
-    Complaint complaint = new Complaint(
-        complaintText,
-        makePreview(complaintText),
-        LocalDate.now(),
-        LocalTime.now());
-    return analyzeComplaint(complaint, configuration, false);
+    ComplaintBuilder complaint = new ComplaintBuilder(complaintText)
+        .setConfiguration(configuration)
+        .setPreview(makePreview(complaintText))
+        .setReceiveDate(LocalDate.now())
+        .setReceiveTime(LocalTime.now());
+    return analyzeComplaint(complaint, false);
   }
 
   /**
    * Runs the analyze process on a given complaint.
    *
    * @param complaint           the complaint, which gets modified.
-   * @param configuration       the configuration that should be used for the analysis.
    * @param keepUserInformation if true, no information gets overwritten where setByUser is true.
+   *
    * @return the modified complaint.
    */
-  public Complaint analyzeComplaint(Complaint complaint, Configuration configuration,
+  public Complaint analyzeComplaint(ComplaintBuilder complaint,
                                     boolean keepUserInformation) {
+    Configuration configuration = complaint.getConfiguration();
     // get the analysis tools from the configuration
     List<Classifier> classifiers =
         ClassifierFactory.getFromDefinition(configuration.getClassifiers());
     SentimentAnalyzer sentimentAnalyzer =
         SentimentAnalyzerFactory.getFromDefinition(configuration.getSentimentAnalyzer());
+    EmotionAnalyzer emotionAnalyzer
+        = EmotionAnalyzerFactory.getFromDefinition(configuration.getEmotionAnalyzer());
     // the text of the complaint
     String complaintText = complaint.getText();
 
     // analysis
-    List<ComplaintProperty> complaintProperties = classifiers.stream().parallel()
-        .map(classifier -> classifier.classifyText(complaintText))
-        .collect(Collectors.toList());
-    complaint.setProperties(complaintProperties);
+    var complaintPropertiesFuture =
+        CompletableFuture.supplyAsync(() -> classifiers.stream().parallel()
+            .map(classifier -> classifier.classifyText(complaintText))
+            .collect(Collectors.toList()));
 
-    List<NamedEntity> entities =
-        extractEntities(complaint, configuration, keepUserInformation);
-    Map<String, Integer> words = stopWordFilter.filterStopWords(complaintText);
-    ComplaintProperty emotionProperty = sentimentAnalyzer.analyzeEmotion(complaintText);
-    complaint.getProperties().add(emotionProperty);
-    complaint.setEntities(entities);
+    var entitiesFuture = CompletableFuture.supplyAsync(() ->
+        extractEntities(complaint, configuration, keepUserInformation));
 
-    double sentiment = sentimentAnalyzer.analyzeSentiment(complaintText);
+    var wordsFuture =
+        CompletableFuture.supplyAsync(() -> stopWordFilter.filterStopWords(complaintText));
 
-    // generate response
-    ComplaintData complaintData = new ComplaintData(
-        complaintText,
-        complaintProperties,
-        emotionProperty,
-        entities,
-        LocalDateTime.of(complaint.getReceiveDate(), complaint.getReceiveTime()),
-        sentiment);
-    ResponseSuggestion responseSuggestion = createResponse(complaintData);
+    var emotionPropertyFuture =
+        CompletableFuture.supplyAsync(() -> emotionAnalyzer.analyzeEmotion(complaintText));
 
+    var sentimentFuture =
+        CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeSentiment(complaintText));
+
+    Stream.of(complaintPropertiesFuture, emotionPropertyFuture, entitiesFuture,
+        wordsFuture, sentimentFuture).parallel().forEach(CompletableFuture::join);
+
+    var complaintProperties = complaintPropertiesFuture.join();
+    var emotionProperty = emotionPropertyFuture.join();
+    var entities = entitiesFuture.join();
+    var tendency = sentimentFuture.join();
+    var sentiment = new Sentiment(emotionProperty, tendency);
+
+    ResponseSuggestion responseSuggestion = createResponse(complaint);
     return complaint
+        .setEntities(entities)
         .setSentiment(sentiment)
-        .setConfiguration(configuration)
         .setResponseSuggestion(responseSuggestion)
-        .setWordList(words);
+        .setProperties(complaintProperties)
+        .setWordList(wordsFuture.join())
+        .createComplaint();
   }
 
   /**
    * Uses the response generator of the factory to generate a response suggestion.
    *
-   * @param complaintData contains the necessary information about the complaint to generate the
-   *                      answer.
+   * @param complaintBuilder contains the necessary information about the complaint to generate the
+   *                         answer.
+   *
    * @return a response suggestion for the complaint.
    */
-  public ResponseSuggestion createResponse(ComplaintData complaintData) {
-    return responseGenerator.generateResponse(complaintData);
+  public ResponseSuggestion createResponse(ComplaintBuilder complaintBuilder) {
+    return responseGenerator.generateResponse(complaintBuilder);
   }
 
   /**
    * Analyzes the complaint for named entities.
    */
-  private List<NamedEntity> extractEntities(Complaint complaint,
+  private List<NamedEntity> extractEntities(ComplaintBuilder complaintBuilder,
                                             Configuration configuration,
                                             boolean keepUserInformation) {
-    String complaintText = complaint.getText();
+    String complaintText = complaintBuilder.getText();
     // use entity extractors
     Stream<NamedEntity> entityStream = configuration
         .getExtractors()
         .stream()
+        .parallel()
         .map(ExtractorFactory::getFromDefinition)
         .map(entityExtractor -> entityExtractor.extractEntities(complaintText))
         .flatMap(List::stream)
         .distinct();
 
     // keep old entities if necessary
-    Stream<NamedEntity> oldEntityStream = complaint.getEntities()
-        .stream()
-        .filter(NamedEntity::isSetByUser);
+    List<NamedEntity> oldEntities = complaintBuilder.getEntities();
+    Stream<NamedEntity> oldEntityStream =
+        oldEntities
+            .stream()
+            .filter(NamedEntity::isSetByUser);
     if (keepUserInformation) {
       entityStream = Stream.concat(entityStream, oldEntityStream).distinct();
     }
@@ -152,6 +167,7 @@ public class ComplaintFactory {
    * Generates a small preview of the complaint text.
    *
    * @param text the full text of the complaint.
+   *
    * @return the first two lines of the complaint, empty lines ignored, limited to 500 characters.
    */
   private String makePreview(String text) {

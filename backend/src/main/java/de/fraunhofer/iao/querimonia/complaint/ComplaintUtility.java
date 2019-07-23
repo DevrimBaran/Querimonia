@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -44,6 +45,7 @@ public class ComplaintUtility {
     }
   }
 
+
   /**
    * Returns a certain property of the complaint.
    *
@@ -51,14 +53,6 @@ public class ComplaintUtility {
    * @param name the name of the property that should be extracted.
    * @return the property with the given name.
    */
-  public static ComplaintProperty getPropertyOfComplaint(ComplaintData complaint, String name) {
-    return complaint.getProperties()
-        .stream()
-        .filter(complaintProperty -> complaintProperty.getName().equals(name))
-        .findAny()
-        .orElseThrow(IllegalStateException::new);
-  }
-
   public static ComplaintProperty getPropertyOfComplaint(Complaint complaint, String name) {
     return complaint.getProperties()
         .stream()

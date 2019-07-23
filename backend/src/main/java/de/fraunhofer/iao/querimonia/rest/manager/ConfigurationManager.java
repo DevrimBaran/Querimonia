@@ -2,10 +2,11 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.config.Extractors;
 import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repositories.ConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
-import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
+import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContactExtractors;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComparatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,23 +24,19 @@ import java.util.stream.StreamSupport;
 @Service
 public class ConfigurationManager {
 
-  private final AnalyzerConfigProperties analyzerConfigProperties;
   private final ConfigurationRepository configurationRepository;
   private final ComplaintRepository complaintRepository;
 
   /**
    * Creates new configuration manager.
    *
-   * @param analyzerConfigProperties the properties object for getting the current configuration.
-   * @param configurationRepository  the repository for properties.
-   * @param complaintRepository      the repository for complaints.
+   * @param configurationRepository the repository for properties.
+   * @param complaintRepository     the repository for complaints.
    */
   @Autowired
   public ConfigurationManager(
-      AnalyzerConfigProperties analyzerConfigProperties,
       ConfigurationRepository configurationRepository,
       ComplaintRepository complaintRepository) {
-    this.analyzerConfigProperties = analyzerConfigProperties;
     this.configurationRepository = configurationRepository;
     this.complaintRepository = complaintRepository;
   }
@@ -106,20 +103,18 @@ public class ConfigurationManager {
     if (configurationRepository.existsById(configId)) {
       // remove reference in all complaints
       for (Complaint complaint : complaintRepository.findAll()) {
-        if (complaint.getConfiguration().getConfigId() == configId) {
-          complaint.setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+        if (complaint.getConfiguration().getId() == configId) {
+          complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
         }
         complaintRepository.save(complaint);
       }
 
       // dont delete fallback configuration
-      if (configId != Configuration.FALLBACK_CONFIGURATION.getConfigId()) {
+      if (configId != Configuration.FALLBACK_CONFIGURATION.getId()) {
         configurationRepository.deleteById(configId);
       }
       // check if current configuration gets removed
-      if (analyzerConfigProperties.getId() == configId) {
-        analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getConfigId());
-      }
+      this.storeConfiguration(Configuration.FALLBACK_CONFIGURATION.withActive(true));
     } else {
       throw new NotFoundException(configId);
     }
@@ -136,7 +131,7 @@ public class ConfigurationManager {
   public synchronized Configuration updateConfiguration(long configId,
                                                         Configuration configuration) {
     if (configurationRepository.existsById(configId)) {
-      configuration.setConfigId(configId);
+      configuration = configuration.withConfigId(configId);
       return configurationRepository.save(configuration);
     }
     throw new NotFoundException(configId);
@@ -157,9 +152,18 @@ public class ConfigurationManager {
    * @return the configuration that is currently active.
    */
   public synchronized Configuration getCurrentConfiguration() {
-    return configurationRepository
-        .findById(analyzerConfigProperties.getId())
-        .orElse(Configuration.FALLBACK_CONFIGURATION);
+    var activeConfigs = configurationRepository.findAllByActive(true);
+    Configuration currentConfig;
+    if (activeConfigs.isEmpty()) {
+      // fall back if no config is active
+      currentConfig = Configuration.FALLBACK_CONFIGURATION.withActive(true);
+      storeConfiguration(currentConfig);
+    } else {
+      // fix if multiple active configs are in the db
+      currentConfig = activeConfigs.remove(0);
+      activeConfigs.forEach(configuration -> storeConfiguration(configuration.withActive(false)));
+    }
+    return currentConfig;
   }
 
   /**
@@ -170,31 +174,44 @@ public class ConfigurationManager {
    * @return the now active configuration.
    */
   public synchronized Configuration updateCurrentConfiguration(long configId) {
-    if (configurationRepository.existsById(configId)) {
-      analyzerConfigProperties.setId(configId);
-    }
-    return getConfiguration(configId);
+    var currentConfig = getConfiguration(configId).withActive(true);
+    var activeConfigs = configurationRepository.findAllByActive(true);
+    activeConfigs.stream()
+        .map(configuration -> configuration.withActive(false))
+        .forEach(this::storeConfiguration);
+    storeConfiguration(currentConfig);
+    return currentConfig;
   }
+
 
   /**
    * Deletes all configurations of the database.
    */
   public synchronized void deleteAllConfigurations() {
     for (Complaint complaint : complaintRepository.findAll()) {
-      complaint.setConfiguration(Configuration.FALLBACK_CONFIGURATION);
+      complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
       complaintRepository.save(complaint);
     }
     for (Configuration configuration : configurationRepository.findAll()) {
-      if (configuration.getConfigId() != Configuration.FALLBACK_CONFIGURATION.getConfigId()) {
-        configurationRepository.deleteById(configuration.getConfigId());
+      if (!configuration.getId().equals(Configuration.FALLBACK_CONFIGURATION.getId())) {
+        configurationRepository.deleteById(configuration.getId());
       }
     }
-    analyzerConfigProperties.setId(Configuration.FALLBACK_CONFIGURATION.getConfigId());
+  }
+
+  /**
+   * Returns all Extractors of KiKuKo.
+   */
+  public synchronized Extractors getAllExtractors() {
+    KiKuKoContactExtractors contact = new KiKuKoContactExtractors();
+    return new Extractors(
+        contact.executeKikukoRequest("tools"),
+        contact.executeKikukoRequest("pipelines"),
+        contact.executeKikukoRequest("domains"));
   }
 
   /**
    * Stores the configuration in the database.
-   *
    * @param configuration the configuration that should be stored.
    */
   synchronized void storeConfiguration(Configuration configuration) {
@@ -206,7 +223,7 @@ public class ConfigurationManager {
    */
   private Comparator<Configuration> getConfigComparator(Optional<String[]> sortBy) {
     return new ComparatorBuilder<Configuration>()
-        .append("id", Configuration::getConfigId)
+        .append("id", Configuration::getId)
         .append("name", Configuration::getName)
         .build(sortBy.orElse(new String[] {"id_asc"}));
   }

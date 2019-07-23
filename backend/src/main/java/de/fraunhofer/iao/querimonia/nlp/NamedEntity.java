@@ -6,15 +6,19 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 /**
- * This is a simple POJO that represents a named entity in a text. It has a label (for example
- * "Date", "Org") and the indices where the entity starts and ends in the text.
+ * This is a simple POJO that represents a named entity in a text. A named entity is a part of a
+ * text that belongs to a certain category, for example organisation or location. This class
+ * contains the indices of the named entity in the text, the text of it and their label.<p>
+ * An instance can be created using a {@link NamedEntityBuilder}</p>
  */
 @Entity
 public class NamedEntity implements Comparable<NamedEntity> {
@@ -23,26 +27,29 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
-  private String label;
-  private String value;
+  @NonNull
+  @Column(nullable = false)
+  private String label = "";
+  @NonNull
+  @Column(nullable = false)
+  private String value = "";
   private int start;
   private int end;
   private boolean setByUser = false;
-  private String extractor;
+  @NonNull
+  @Column(nullable = false)
+  private String extractor = "";
 
   /**
-   * Simple constructor for creating a new named entity object.
-   *
-   * @param label     the label of the entity, like name.
-   * @param start     the start index of the entity.
-   * @param end       the end index of the entity.
-   * @param setByUser if the named entity was set by the user.
-   * @param extractor the name of the extractor that was used to find this entity.
+   * constructor for creating a new named entity object, only used for the builder.
    */
   @JsonCreator
-  public NamedEntity(@JsonProperty String label, @JsonProperty("start") int start, @JsonProperty(
-      "end") int end, @JsonProperty boolean setByUser, @JsonProperty String extractor,
-                     @JsonProperty String value) {
+  NamedEntity(@NonNull @JsonProperty String label,
+              @JsonProperty("start") int start,
+              @JsonProperty("end") int end,
+              @JsonProperty boolean setByUser,
+              @NonNull @JsonProperty String extractor,
+              @NonNull @JsonProperty String value) {
     this.label = label;
     this.start = start;
     this.end = end;
@@ -51,24 +58,11 @@ public class NamedEntity implements Comparable<NamedEntity> {
     this.extractor = extractor;
   }
 
-  /**
-   * Simple constructor for creating a new named entity object which setByUser property is set to
-   * false.
-   *
-   * @param label     the label of the entity, like name.
-   * @param start     the start index of the entity.
-   * @param end       the end index of the entity.
-   * @param value     the text of the entity.
-   * @param extractor the name of the extractor that was used to find this entity.
-   */
-  public NamedEntity(String label, int start, int end, String extractor, String value) {
-    this(label, start, end, false, extractor, value);
-  }
-
   public NamedEntity() {
     // constructor for hibernate
   }
 
+  @NonNull
   public String getLabel() {
     return label;
   }
@@ -88,6 +82,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return setByUser;
   }
 
+  @NonNull
   public String getExtractor() {
     return extractor;
   }
@@ -96,6 +91,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return id;
   }
 
+  @NonNull
   public String getValue() {
     return value;
   }
@@ -123,7 +119,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(19, 37)
+    return new HashCodeBuilder(19, 59)
         .append(label)
         .append(start)
         .append(end)

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -27,33 +29,40 @@ public class ClassifierDefinition {
 
   @Enumerated(EnumType.STRING)
   @JsonProperty("type")
-  private ClassifierType classifierType;
+  @NonNull
+  private ClassifierType classifierType = ClassifierType.NONE;
 
   @Column(name = "classifier_name")
-  private String name;
+  @NonNull
+  private String name = "";
 
-  private String categoryName;
+  @NonNull
+  private String categoryName = "Kategorie";
 
   @SuppressWarnings("unused")
   private ClassifierDefinition() {
     // for hibernate
   }
 
-  public ClassifierDefinition(ClassifierType classifierType, String name, String categoryName) {
+  public ClassifierDefinition(@NonNull ClassifierType classifierType,
+                              @NonNull String name,
+                              @NonNull String categoryName) {
     this.classifierType = classifierType;
     this.name = name;
     this.categoryName = categoryName;
   }
 
+  @NonNull
   public ClassifierType getClassifierType() {
     return classifierType;
   }
 
+  @NonNull
   public String getName() {
     return name;
   }
 
-
+  @NonNull
   public String getCategoryName() {
     return categoryName;
   }
@@ -92,7 +101,7 @@ public class ClassifierDefinition {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("classifierType", classifierType)
         .append("name", name)
         .append("categoryName", categoryName)
