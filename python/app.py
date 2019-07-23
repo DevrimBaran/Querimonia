@@ -27,6 +27,7 @@ class Sentiment(Resource):
         sentiment_value = sentiment_analyse.main(query)
         return sentiment_value
 
+
 class Emotion(Resource):
     def post(self):
         # get complaint text
@@ -37,7 +38,6 @@ class Emotion(Resource):
         query = content["text"]
         emotion_value = emotion_value.main(query)
         return emotion_value
-
 
 
 @api.route('/python/word_to_vec')
