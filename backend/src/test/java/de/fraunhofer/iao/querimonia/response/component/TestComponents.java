@@ -44,9 +44,9 @@ public class TestComponents {
       .setPriority(0)
       .createResponseComponent();
 
-  public static final ResponseComponent COMPONENT_STANDARD = new ResponseComponentBuilder()
+  public static final ResponseComponent COMPONENT_E = new ResponseComponentBuilder()
       .setId(5)
-      .setComponentName("KomponenteStandard")
+      .setComponentName("E")
       .setActions(Collections.emptyList())
       .setComponentTexts(List.of("Die Linie ${Linie} ist leider ausgefallen.",
               "Die Linie ${Linie} konnte heute nicht fahren"))

@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static de.fraunhofer.iao.querimonia.response.component.TestComponents.*;
@@ -44,9 +45,9 @@ public class ResponseComponentControllerTest {
 
   @Test
   public void testAddComponent() {
-    responseComponentController.addComponent(COMPONENT_STANDARD);
+    responseComponentController.addComponent(COMPONENT_E);
     ResponseComponent component = componentRepository.findAll().iterator().next();
-    assertTrue(equalsComponent(component, COMPONENT_STANDARD));
+    assertTrue(equalsComponent(component, COMPONENT_E));
   }
 
   @Test
@@ -57,8 +58,161 @@ public class ResponseComponentControllerTest {
   }
 
   @Test
-  public void testGetAllComponents() {
-    //TODO: Write tests
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsSimple() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(3, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
+    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
+    assertTrue(equalsComponent(responseComponents.get(2), COMPONENT_E));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsCount() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(2), Optional.of(0), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(2, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
+    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsPaging() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(2), Optional.of(1), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(1, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_E));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsSorting() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    String[] sortBy = {"name_desc"};
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(3, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_E));
+    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
+    assertTrue(equalsComponent(responseComponents.get(2), COMPONENT_A));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsKeywordsComponentText() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    String[] keywords = {"Guten", "Herr"};
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(0), Optional.empty(), Optional.of(keywords));
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(1, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsKeywordsComponentName() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    String[] keywords = {"B"};
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(0), Optional.empty(), Optional.of(keywords));
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(1, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_B));
+  }
+
+  @Test
+  public void testGetAllComponentsInvalidSortBy1() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    String[] sortBy = {"magic"};
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
+  }
+
+  @Test
+  public void testGetAllComponentsInvalidSortBy2() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    String[] sortBy = {"magic_asc"};
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsCountOversize() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(4), Optional.of(0), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(3, responseComponents.size());
+    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
+    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
+    assertTrue(equalsComponent(responseComponents.get(2), COMPONENT_E));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsCountEmpty() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(0), Optional.of(0), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(0, responseComponents.size());
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetAllComponentsPageEmpty() {
+    responseComponentController.addComponent(COMPONENT_A);
+    responseComponentController.addComponent(COMPONENT_B);
+    responseComponentController.addComponent(COMPONENT_E);
+    ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
+            Optional.of(3), Optional.of(1), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
+    assertEquals(0, responseComponents.size());
   }
 
   @Test
