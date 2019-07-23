@@ -38,14 +38,14 @@ def analyze(query, dict):
             for j in tokens:
                 if j in infl or j in lemma:
                     try:
-                        if tokens[tokens.index(j)-1] in negative:
-                            sentiment_value += value *-1
-                        elif tokens[tokens.index(j)+1] in negative:
+                        if tokens[tokens.index(j) - 1] in negative:
+                            sentiment_value += value * -1
+                        elif tokens[tokens.index(j) + 1] in negative:
                             sentiment_value += value * -1
                         else:
                             sentiment_value += value
                     except IndexError:
-                            sentiment_value += value
+                        sentiment_value += value
 
     return sentiment_value
 
@@ -101,7 +101,7 @@ def main(query):
         return {'Erfreut': value}
 
     elif value < 0.1 and value > -0.1:
-        return {'Neutral':value}
+        return {'Neutral': value}
 
     elif value < -0.1 and value > -0.4:
         return {'Betrübt': value}
@@ -111,8 +111,6 @@ def main(query):
         return {'Verärgert': value}
     elif value < -0.8:
         return {'Sauer': value}
-
-
 
 
 if __name__ == '__main__':
