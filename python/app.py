@@ -29,6 +29,15 @@ class Sentiment(Resource):
 
 
 @api.route('/python/word_to_vec')
+@api.doc(
+    params={
+        'word': 'Wort als String',
+        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
+    },
+    responses={
+        200: 'Success'
+    }
+)
 class Word_to_vec(Resource):
     def post(self):
         '''Gibt den Vektor zu einem gegebenen Wort im spezifizierten Korpus zurück.'''
@@ -40,15 +49,6 @@ class Word_to_vec(Resource):
 
 
 @api.route('/python/vec_to_word')
-@api.doc(
-    params={
-        'word': 'Wort als String',
-        'model': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen'
-    },
-    responses={
-        200: 'Success'
-    }
-)
 class Vec_to_word(Resource):
     def post(self):
         '''Gibt das Wort zu einem gegebenen Vektor im spezifizierten Korpus zurück.'''
@@ -78,6 +78,30 @@ class Predict_word(Resource):
         model_name = content["model"]
         limit = content["limit"]
         result = wordvector.Calc.predict_words(query, model_name, limit)
+        return jsonify(result)
+
+
+@api.route('/python/analogy')
+@api.doc(
+    params={
+        'word1': 'Die Buchstaben, zu denen die Wörter im Korpus angefragt werden. Nur drei oder mehr Buchstaben erzeugen eine Antwort',
+        'word2': 'Das Modell, aus dem die Wörter vorhergesagt werden sollen',
+        'word3': 'Maximale Anzahl zurückgegebener Wörter als Integer',
+        'model': 'Das Modell, auf dem die Analogie berechnet werden soll'
+    },
+    responses={
+        200: 'Success'
+    }
+)
+class Analogy(Resource):
+    def post(self):
+        '''Gibt das Ergebnis der Analogie word1 - word2 + word3 zurück'''
+        content = request.get_json()
+        word1 = content["word1"]
+        word2 = content["word2"]
+        word3 = content["word3"]
+        model_name = content["model"]
+        result = wordvector.Calc.analogy(word1, word2, word3, model_name)
         return jsonify(result)
 
 

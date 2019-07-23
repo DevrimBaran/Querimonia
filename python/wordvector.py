@@ -6,15 +6,15 @@ import logging
 basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
 # Lade Modelle
 model_beschwerden3kPolished = FastText.load_fasttext_format(
-    basepath + "beschwerden3kPolished.bin"
+    "/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin"
 )
-model_cc_de_300 = FastText.load_fasttext_format(basepath + "cc.de.300.bin")
-model_ngram_ger = FastText.load_fasttext_format(basepath + "ngram_ger.bin")
+model_cc_de_300 = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
+model_ngram_ger = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
 model_beschwerden_CAT_leipzig = FastText.load_fasttext_format(
-    basepath + "BeschwerdenCATLeipzig.bin"
+    "/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin"
 )
 model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format(
-    basepath + "leipzigCorporaCollection1M.bin"
+    "/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin"
 )
 
 # Standardmodell
@@ -47,7 +47,13 @@ class Calc:
     @staticmethod
     def vectorize(word, model_name):
         model = Calc.set_model(model_name)
-        return np.array(model[word])
+        try:
+            result = np.array(model[word])
+        except:
+            result = np.array(model["bus"])
+            for n in range(0, len(result)):
+                result[n] = 0
+        return result
 
     @staticmethod
     def predict_words(query, model_name, limit):
@@ -66,3 +72,11 @@ class Calc:
                     else:
                         break
         return result
+
+    @staticmethod
+    def analogy(word1, word2, word3, model_name):
+        vec1 = Calc.vectorize(word1, model_name)
+        vec2 = Calc.vectorize(word2, model_name)
+        vec3 = Calc.vectorize(word3, model_name)
+        result = np.add(np.subtract(vec1, vec2), vec3)
+        return Calc.getword(result, model_name)
