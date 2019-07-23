@@ -1,4 +1,4 @@
-Abmachung|NN	0.0040	Abmachungen
+﻿Abmachung|NN	0.0040	Abmachungen
 Abschluß|NN	0.0040	Abschluss,Abschlusse,Abschlusses,Abschlüsse,Abschlüssen
 Abstimmung|NN	0.0040	Abstimmungen
 Agilität|NN	0.0040	
@@ -1312,7 +1312,7 @@ schnell|ADJX	0.1169	schnelles,schneller,schnellen,schnelleres,schnellerer,schnel
 schuldlos|ADJX	0.0040	schuldlosere,schuldloseste,schuldlose,schuldlosem,schuldlosestes,schuldlosester,schuldlosen,schuldloserer,schuldlosesten,schuldloses,schuldloser,schuldloseres,schuldloseren,schuldloserem,schuldlosestem
 schwunghaft|ADJX	0.0040	schwunghaftere,schwunghaftestem,schwunghaftesten,schwunghafteren,schwunghaften,schwunghaftester,schwunghaftem,schwunghafterem,schwunghaftestes,schwunghafteste,schwunghafter,schwunghaftes,schwunghafteres,schwunghafte,schwunghafterer
 schätzen|VVINF	0.1175	schätzet,schätz,schätzte,schätztet,schätzest,schätzt,geschätzt,schätze,schätzten,schätztest,schätzend
-schön|ADJX	0.0081	schönerem,schöneren,schönste,schöneres,schönerer,schönere,schönstem,schönen,schönsten,schönem,schöne,schönes,schönstes,schöner,schönster
+schön|ADJX	0.01	schönerem,schöneren,schönste,schöneres,schönerer,schönere,schönstem,schönen,schönsten,schönem,schöne,schönes,schönstes,schöner,schönster
 sehenswert|ADJX	0.0947	sehenswerterem,sehenswerteste,sehenswertestes,sehenswerteren,sehenswerte,sehenswerterer,sehenswerteres,sehenswerten,sehenswertem,sehenswertere,sehenswerter,sehenswertes,sehenswertesten,sehenswertestem,sehenswertester
 selbstständig|ADJX	0.0040	selbstständiger,selbstständiges,selbstständige,selbstständigem,selbstständigen,selbstständigerer,selbstständigeres,selbstständigere,selbstständigerem,selbstständigeren,selbstständigster,selbstständigstes,selbstständigste,selbstständigstem,selbstständigsten,selbständiger
 sensationell|ADJX	0.086	sensationellerer,sensationellen,sensationelleres,sensationelles,sensationeller,sensationellste,sensationellere,sensationelle,sensationellster,sensationellerem,sensationellstes,sensationelleren,sensationellsten,sensationellstem,sensationellem
