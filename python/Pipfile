@@ -4,16 +4,20 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+flake8 = "*"
+autopep8 = "*"
 
 [packages]
 flask = "*"
-spacy = "*"
-fasttext = "*"
-cython = "*"
+flask_restplus = "*"
 nltk = "*"
 gensim = "*"
+black = "*"
 sqlalchemy = "*"
 pymysql = "*"
 
 [requires]
 python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true

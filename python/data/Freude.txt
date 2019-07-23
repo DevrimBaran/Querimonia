@@ -1,4 +1,4 @@
-Abschluss
+﻿Abschluss
 Adventsfreude
 Akklamation
 Amüsement
@@ -230,7 +230,6 @@ Seligkeit
 Sensation
 Serenität
 Sieg
-Sohn
 Sonnenschein
 Spass
 Spaß

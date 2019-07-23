@@ -1,4 +1,4 @@
-Abgrund
+﻿Abgrund
 Abhauen
 Abhängigkeit
 Abreibung
@@ -325,6 +325,7 @@ infernalisch
 jammern
 jammervoll
 katastrophal
+kauern
 klaustrophobisch
 kläglich
 kneifen
