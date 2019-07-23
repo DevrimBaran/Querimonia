@@ -15,9 +15,10 @@ class EditableEntityText extends Component {
     super(props);
     this.state = {
       id: null,
-      taggedText: null,
+      taggedText: this.props.taggedText,
       editFormActive: false,
-      editActive: false
+      editActive: false,
+      originalLabels: null
     };
   }
 
@@ -179,10 +180,11 @@ class EditableEntityText extends Component {
     });
   }
 
-  renderModal = (tag, id, key) => {
+  renderModal = (tag, id) => {
     let labels = tag.label;
     let labelArray = labels.map((label, i) => {
       return <div key={i}>
+        {`${label.label}: `}
         {/* eslint-disable-next-line */}
       <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
         {/* eslint-disable-next-line */}
@@ -191,6 +193,7 @@ class EditableEntityText extends Component {
       <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
       </div>;
     });
+    labelArray.unshift(this.state.taggedText.text.substring(tag.start, tag.end));
     return <Modal key={id + '_modal'} htmlFor={id}>
       {
         labelArray
@@ -207,7 +210,7 @@ class EditableEntityText extends Component {
       {this.state.editFormActive ? <div style={{ marginTop: '5px' }}> <div>{this.state.newEntityString}</div>
         <b> Entität: </b>
         <select id='chooseExtractor'>
-          {this.state.extractorList.map(extractor => <option>{`${extractor}`}</option>)};
+          {this.state.extractorList.map((extractor, i) => <option key={i}>{`${extractor}`}</option>)};
         </select> <br />
         <i style={{ color: 'green', cursor: 'pointer', padding: '5px' }} onClick={this.addEntity} className='far fa-check-circle fa-2x' />
         <i style={{ color: 'red', cursor: 'pointer', padding: '5px' }} onClick={this.abortEdit} className='far fa-times-circle fa-2x' /> </div> : null}
@@ -216,7 +219,7 @@ class EditableEntityText extends Component {
 
   render () {
     return <div>
-      <TaggedText taggedText={this.props.taggedText} onClick={this.renderModal} setOriginalLabels={this.setOriginalLabels} />
+      <TaggedText taggedText={this.props.taggedText} onClickHtml={this.renderModal} setOriginalLabels={this.setOriginalLabels} />
       { this.renderAddButton() }
     </div>;
   }

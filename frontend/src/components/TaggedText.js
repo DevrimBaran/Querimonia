@@ -36,15 +36,15 @@ class TaggedText extends Component {
       this.prepareEntities(taggedText.entities);
       for (const tag of taggedText.entities) {
         // TODO: uuid
-        const id = String(Math.floor(Math.random() * (50000)));
+        const id = String(Math.floor(Math.random() * (10000000)));
         // String before next entity
         !taggedText.text.substring(cpos, tag.start) || html.push(<span key={key++} data-key={html.length}>{taggedText.text.substring(cpos, tag.start)}</span>);
         // String that is entity
         html.push(<span id={id} key={key++} data-key={html.length} className='tag' style={this.createBackground(tag)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
         // Tooltip for that entity
         html.push(this.createTooltip(tag, id));
-        if (this.props.onClick) {
-          html.push(this.createTooltip(tag, id));
+        if (this.props.onClickHtml) {
+          html.push(this.props.onClickHtml(tag, id));
         }
         cpos = tag.end;
       }
@@ -164,9 +164,6 @@ class TaggedText extends Component {
         } /> {label.label} <br />
       </div>;
     });
-    if (this.props.onClick) {
-      return this.props.onClick(tag, id);
-    }
     return <Tooltip key={id + '_tooltip'} htmlFor={id}>
       {
         labelArray
