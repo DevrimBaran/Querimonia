@@ -6,15 +6,15 @@ import logging
 basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
 # Lade Modelle
 model_beschwerden3kPolished = FastText.load_fasttext_format(
-    "/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin"
+    basepath + "beschwerden3k.bin"
 )
-model_cc_de_300 = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
-model_ngram_ger = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
+model_cc_de_300 = FastText.load_fasttext_format(basepath + "cc.de.300.bin")
+model_ngram_ger = FastText.load_fasttext_format(basepath + "ngram_ger.bin")
 model_beschwerden_CAT_leipzig = FastText.load_fasttext_format(
-    "/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin"
+    basepath + "beschwerdenCATLeipzig"
 )
 model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format(
-    "/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin"
+    basepath + "leipzigCorporaCollection1M.bin"
 )
 
 # Standardmodell
