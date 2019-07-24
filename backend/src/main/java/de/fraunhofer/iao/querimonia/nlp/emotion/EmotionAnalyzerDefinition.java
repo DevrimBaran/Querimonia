@@ -45,6 +45,14 @@ public class EmotionAnalyzerDefinition {
         .isEquals();
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public EmotionAnalyzerType getType() {
+    return type;
+  }
+
   @Override
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
