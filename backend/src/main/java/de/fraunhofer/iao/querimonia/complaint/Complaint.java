@@ -14,22 +14,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 import tec.uom.lib.common.function.Identifiable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
@@ -38,7 +23,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class is represents a complaint.
+ * This class is represents a complaint. A complaint is the main data structure of querimonia
+ * that contains all information about a complaint or a different kind of message. This includes
+ * the results of the analysis processes of Querimonia.
+ * <p>
+ * To create a complaint, use a {@link ComplaintBuilder} to create or modify a complaint with all
+ * properties. For creating a complaint from only its text, use a {@link ComplaintFactory}.
+ * </p>
  */
 @Entity
 @JsonPropertyOrder(value = {
@@ -50,9 +41,22 @@ import java.util.Map;
     "receiveDate",
     "receiveTime",
     "sentiment",
+    "properties",
     "entities"
 })
 public class Complaint implements Identifiable<Long> {
+
+  /**
+   * This is the size of the text column in the database. Complaint texts must not be longer than
+   * this.
+   */
+  public static final int TEXT_MAX_LENGTH = 10000;
+
+  /**
+   * This is the size of the preview column in the database. The preview string may not be longer
+   * than this.
+   */
+  public static final int PREVIEW_MAX_LENGTH = 250;
 
   /**
    * The primary key for the complaints in the database.
@@ -64,23 +68,24 @@ public class Complaint implements Identifiable<Long> {
   private long complaintId;
 
   /**
-   * The complaint message, is limited to 10000 characters.
+   * The complaint message, is limited to {@value TEXT_MAX_LENGTH} characters.
    */
-  @Column(length = 10000, nullable = false)
+  @Column(length = TEXT_MAX_LENGTH, nullable = false)
   @NonNull
   private String text = "";
 
   /**
-   * A preview of the complaint message, should be the first two lines.
+   * A preview of the complaint message, should be the first two lines. Length is limited to
+   * {@value PREVIEW_MAX_LENGTH} characters
    */
-  @Column(length = 500, nullable = false)
+  @Column(length = PREVIEW_MAX_LENGTH, nullable = false)
   @NonNull
   private String preview = "";
 
   /**
    * The state of the complaint. A complaint is either new, in progress or closed.
    */
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   @Column(nullable = false)
   @NonNull
   private ComplaintState state = ComplaintState.NEW;
@@ -106,7 +111,6 @@ public class Complaint implements Identifiable<Long> {
    */
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "complaint_id")
-  @JsonIgnore
   @NonNull
   private List<NamedEntity> entities = Collections.emptyList();
 
@@ -163,6 +167,10 @@ public class Complaint implements Identifiable<Long> {
       @NonNull LocalDate receiveDate,
       @NonNull LocalTime receiveTime,
       @NonNull Configuration configuration) {
+
+    ComplaintUtility.checkStringLength(text, TEXT_MAX_LENGTH);
+    ComplaintUtility.checkStringLength(preview, PREVIEW_MAX_LENGTH);
+
     this.complaintId = id;
     this.text = text;
     this.preview = preview;
@@ -181,90 +189,176 @@ public class Complaint implements Identifiable<Long> {
    * Empty default constructor (only used for hibernate).
    */
   @SuppressWarnings("unused")
-  public Complaint() {
+  private Complaint() {
 
   }
 
+  /**
+   * Returns the property of the complaint which is labeled with category.
+   *
+   * @return the property of the complaint which is labeled with category.
+   */
   @JsonIgnore
   public ComplaintProperty getSubject() {
     return ComplaintUtility.getPropertyOfComplaint(this, "Kategorie");
   }
 
+  /**
+   * Returns the unique id of the complaint. This is the primary key in the database. Each
+   * complaint can be identified with this id.
+   *
+   * @return the unique id of the complaint.
+   */
   @JsonProperty("id")
   @Override
+  @NonNull
   public Long getId() {
     return complaintId;
   }
 
+  /**
+   * Returns the complaint text.
+   *
+   * @return the complaint text.
+   */
   @NonNull
   public String getText() {
     return text;
   }
 
+  /**
+   * Returns the preview of the complaint text. The preview consists usually of the first to
+   * paragraphs or sentences of the complaint, limited to {@value PREVIEW_MAX_LENGTH} characters.
+   *
+   * @return the preview of the complaint text.
+   */
   @NonNull
   public String getPreview() {
     return preview;
   }
 
-  @JsonIgnore
-  public ComplaintProperty getEmotion() {
-    return sentiment.getEmotion();
-  }
-
+  /**
+   * Returns the date when the complaint was imported into querimonia.
+   *
+   * @return the date when the complaint was imported into querimonia.
+   */
   @NonNull
   public LocalDate getReceiveDate() {
     return receiveDate;
   }
 
+  /**
+   * Returns the time when the complaint was imported into querimonia.
+   *
+   * @return the time when the complaint was imported into querimonia.
+   */
   @NonNull
   public LocalTime getReceiveTime() {
     return receiveTime;
   }
 
+  /**
+   * Returns the list of {@link NamedEntity named entities} that occur in the complaint text.
+   *
+   * @return the list of {@link NamedEntity named entities} that occur in the complaint text.
+   */
   @NonNull
   public List<NamedEntity> getEntities() {
-    return entities;
+    return Collections.unmodifiableList(entities);
   }
 
+  /**
+   * Returns a map that maps the words of the complaint text to their frequency. Note that not
+   * possibly not every word is listed here as key, since stop words get filtered out in the
+   * analysis process.
+   *
+   * @return a map that maps the words of the complaint text to their frequency.
+   */
   @NonNull
   @JsonIgnore
-  public Map<String, Integer> getWordList() {
-    return wordList;
+  public Map<String, Integer> getWordCounts() {
+    return Collections.unmodifiableMap(wordList);
   }
 
+  /**
+   * Returns the generated {@link ResponseSuggestion response} of the complaint.
+   *
+   * @return the generated {@link ResponseSuggestion response} of the complaint.
+   */
   @NonNull
   @JsonIgnore
   public ResponseSuggestion getResponseSuggestion() {
     return responseSuggestion;
   }
 
+  /**
+   * Returns the {@link ComplaintState state} of the complaint.
+   *
+   * @return the {@link ComplaintState state} of the complaint.
+   */
   @NonNull
   public ComplaintState getState() {
     return state;
   }
 
-  public Complaint withState(ComplaintState state) {
+  /**
+   * Returns a new complaint with all the properties of this complaint but with the given state
+   * as the complaint state attribute.
+   *
+   * @param state the new state, which the copied complaint should have.
+   *
+   * @return a new complaint with all the properties of this complaint but with the given state
+   *     as the complaint state attribute.
+   */
+  @NonNull
+  public Complaint withState(@NonNull ComplaintState state) {
     return new ComplaintBuilder(this)
         .setState(state)
         .createComplaint();
   }
 
+  /**
+   * Returns the configuration that was used to analyze this complaint. The configuration
+   * contains information about the tools that where used in the analysis process.
+   *
+   * @return the configuration used to analyze this complaint.
+   */
   @NonNull
   public Configuration getConfiguration() {
     return configuration;
   }
 
+  /**
+   * Returns a new complaint with all the properties of this complaint but with the given
+   * configuration as attribute.
+   *
+   * @param configuration the new configuration, which the copied complaint should have.
+   *
+   * @return a new complaint with all the properties of this complaint but with the given
+   *     configuration as attribute.
+   */
   public Complaint withConfiguration(Configuration configuration) {
     return new ComplaintBuilder(this)
         .setConfiguration(configuration)
         .createComplaint();
   }
 
+  /**
+   * Returns the {@link ComplaintProperty properties} of the complaint. The properties represent
+   * the results of the analyzers that were used to analyze the complaint.
+   *
+   * @return the {@link ComplaintProperty properties} of the complaint.
+   */
   @NonNull
   public List<ComplaintProperty> getProperties() {
-    return properties;
+    return Collections.unmodifiableList(properties);
   }
 
+  /**
+   * Returns the {@link Sentiment sentiment} of the complaint text.
+   *
+   * @return the {@link Sentiment sentiment} of the complaint text.
+   */
   @NonNull
   public Sentiment getSentiment() {
     return sentiment;
@@ -303,7 +397,7 @@ public class Complaint implements Identifiable<Long> {
 
   @Override
   public int hashCode() {
-    return new HashCodeBuilder(17, 37)
+    return new HashCodeBuilder(17, 19)
         .append(text)
         .append(state)
         .append(properties)

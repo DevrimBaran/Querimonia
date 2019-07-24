@@ -17,6 +17,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import java.util.Collections;
+import java.util.HashMap;
+
 import static javax.persistence.CascadeType.ALL;
 
 /**
@@ -25,6 +28,12 @@ import static javax.persistence.CascadeType.ALL;
 @Entity
 public class Sentiment implements Comparable<Sentiment> {
 
+  /**
+   * Fallback sentiment when no sentiment is available.
+   */
+  public static final Sentiment DEFAULT_SENTIMENT
+      = new Sentiment(ComplaintProperty.DEFAULT_PROPERTY, 0.0);
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonIgnore
@@ -32,7 +41,7 @@ public class Sentiment implements Comparable<Sentiment> {
 
   @OneToOne(cascade = ALL)
   @NonNull
-  private ComplaintProperty emotion = new ComplaintProperty();
+  private ComplaintProperty emotion = ComplaintProperty.DEFAULT_PROPERTY;
   private double tendency;
 
   @JsonCreator

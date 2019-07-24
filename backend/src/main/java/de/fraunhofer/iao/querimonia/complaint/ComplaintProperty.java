@@ -18,21 +18,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class is used for sentiments and subjects of complaints. It contains a value for the
+ * This class is used for emotions and subjects of complaints. It contains a value for the
  * property and a map that maps possible values to their probability.
  */
 @Entity
 public class ComplaintProperty implements Comparable<ComplaintProperty> {
+
+  /**
+   * The default property that contains no information.
+   */
+  public static final ComplaintProperty DEFAULT_PROPERTY =
+      new ComplaintProperty("Emotion", "Unbekannt", new HashMap<>(
+          Collections.singletonMap("Unbekannt", 1.0)), false);
 
   @JsonIgnore
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
+  /**
+   * The value of the property.
+   */
   @Column(nullable = false)
   @NonNull
   private String value = "";
@@ -54,7 +65,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
   private boolean isSetByUser = false;
 
   @SuppressWarnings("unused")
-  public ComplaintProperty() {
+  private ComplaintProperty() {
     // for hibernate
   }
 
@@ -111,10 +122,6 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   public boolean isSetByUser() {
     return isSetByUser;
-  }
-
-  public ComplaintProperty withValue(String value) {
-    return new ComplaintProperty(this.name, value, this.probabilities, true);
   }
 
   @NonNull

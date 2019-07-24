@@ -2,8 +2,8 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
-import de.fraunhofer.iao.querimonia.db.repositories.ActionRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ActionRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import org.junit.Before;

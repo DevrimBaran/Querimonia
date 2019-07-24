@@ -2,8 +2,8 @@ package de.fraunhofer.iao.querimonia.rest.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;

@@ -2,7 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
-import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -76,7 +76,7 @@ public class StatsController {
           .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
           .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
           // get their word lists
-          .map(Complaint::getWordList)
+          .map(Complaint::getWordCounts)
           // combine all count maps together
           .reduce(new HashMap<>(), StatsController::combineCountMaps)
           .entrySet()

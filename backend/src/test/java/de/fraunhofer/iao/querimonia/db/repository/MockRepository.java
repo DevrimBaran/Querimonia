@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.db.repositories;
+package de.fraunhofer.iao.querimonia.db.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -19,11 +19,16 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * This factory is used to create complaint objects.
+ * This factory is used to create complaint objects. It manages the analysis and response
+ * generation process.
+ * <p>Plaint complaints can be created with {@link #createBaseComplaint(String, Configuration)
+ * createBaseComplaint}. These can be analyzed with
+ * {@link #analyzeComplaint(ComplaintBuilder, boolean) analyzeComplaint}.</p>
  */
 public class ComplaintFactory {
 
@@ -45,33 +50,34 @@ public class ComplaintFactory {
 
 
   /**
-   * This factory method creates a complaint out of the plain text, which contains information about
-   * the date, sentiment and subject.
+   * This factory method creates a complaint out of the plain text, which contains the basic
+   * information: receive date and time, preview, configuration.
    *
    * @param complaintText the text of the complaint.
    *
-   * @return the generated complaint object.
+   * @return the generated complaint builder with the basic information but without any analysis.
    */
-  public Complaint createComplaint(String complaintText, Configuration configuration) {
-    ComplaintBuilder complaint = new ComplaintBuilder(complaintText)
+  public ComplaintBuilder createBaseComplaint(String complaintText, Configuration configuration) {
+    return new ComplaintBuilder(complaintText)
         .setConfiguration(configuration)
         .setPreview(makePreview(complaintText))
         .setReceiveDate(LocalDate.now())
         .setReceiveTime(LocalTime.now());
-    return analyzeComplaint(complaint, false);
   }
 
   /**
-   * Runs the analyze process on a given complaint.
+   * Runs the analysis process on a given complaint.
    *
-   * @param complaint           the complaint, which gets modified.
+   * @param complaintBuilder    the complaint builder, which gets modified with the results of
+   *                            the analysis.
    * @param keepUserInformation if true, no information gets overwritten where setByUser is true.
    *
-   * @return the modified complaint.
+   * @return the analyzed complaint.
    */
-  public Complaint analyzeComplaint(ComplaintBuilder complaint,
-                                    boolean keepUserInformation) {
-    Configuration configuration = complaint.getConfiguration();
+  public ComplaintBuilder analyzeComplaint(ComplaintBuilder complaintBuilder,
+                                           boolean keepUserInformation) {
+
+    Configuration configuration = complaintBuilder.getConfiguration();
     // get the analysis tools from the configuration
     List<Classifier> classifiers =
         ClassifierFactory.getFromDefinition(configuration.getClassifiers());
@@ -79,44 +85,27 @@ public class ComplaintFactory {
         SentimentAnalyzerFactory.getFromDefinition(configuration.getSentimentAnalyzer());
     EmotionAnalyzer emotionAnalyzer
         = EmotionAnalyzerFactory.getFromDefinition(configuration.getEmotionAnalyzer());
+
     // the text of the complaint
-    String complaintText = complaint.getText();
+    String complaintText = complaintBuilder.getText();
 
     // analysis
-    var complaintPropertiesFuture =
-        CompletableFuture.supplyAsync(() -> classifiers.stream().parallel()
-            .map(classifier -> classifier.classifyText(complaintText))
-            .collect(Collectors.toList()));
-
-    var entitiesFuture = CompletableFuture.supplyAsync(() ->
-        extractEntities(complaint, configuration, keepUserInformation));
-
-    var wordsFuture =
-        CompletableFuture.supplyAsync(() -> stopWordFilter.filterStopWords(complaintText));
-
-    var emotionPropertyFuture =
-        CompletableFuture.supplyAsync(() -> emotionAnalyzer.analyzeEmotion(complaintText));
-
-    var sentimentFuture =
-        CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeSentiment(complaintText));
-
-    Stream.of(complaintPropertiesFuture, emotionPropertyFuture, entitiesFuture,
-        wordsFuture, sentimentFuture).parallel().forEach(CompletableFuture::join);
-
-    var complaintProperties = complaintPropertiesFuture.join();
-    var emotionProperty = emotionPropertyFuture.join();
-    var entities = entitiesFuture.join();
-    var tendency = sentimentFuture.join();
+    var complaintProperties = classifiers.stream().parallel()
+        .map(classifier -> classifier.classifyText(complaintText))
+        .collect(Collectors.toList());
+    var emotionProperty = emotionAnalyzer.analyzeEmotion(complaintText);
+    var entities = extractEntities(complaintBuilder, configuration, keepUserInformation);
+    var tendency = sentimentAnalyzer.analyzeSentiment(complaintText);
     var sentiment = new Sentiment(emotionProperty, tendency);
+    var wordList = stopWordFilter.filterStopWords(complaintText);
 
-    ResponseSuggestion responseSuggestion = createResponse(complaint);
-    return complaint
+    ResponseSuggestion responseSuggestion = createResponse(complaintBuilder);
+    return complaintBuilder
         .setEntities(entities)
         .setSentiment(sentiment)
         .setResponseSuggestion(responseSuggestion)
         .setProperties(complaintProperties)
-        .setWordList(wordsFuture.join())
-        .createComplaint();
+        .setWordList(wordList);
   }
 
   /**
@@ -178,7 +167,7 @@ public class ComplaintFactory {
         .collect(Collectors.joining("\n"));
 
     // check for too long string
-    return preview.substring(0, Math.min(500, preview.length()));
+    return preview.substring(0, Math.min(Complaint.PREVIEW_MAX_LENGTH, preview.length()));
   }
 
 }

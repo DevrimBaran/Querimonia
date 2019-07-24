@@ -95,7 +95,7 @@ public class ComplaintFilter {
    *     highest probability that in one of the given emotions.
    */
   public static boolean filterByEmotion(Complaint complaint, Optional<String[]> emotions) {
-    return checkForParameters(complaint.getEmotion(), emotions);
+    return checkForParameters(complaint.getSentiment().getEmotion(), emotions);
   }
 
   /**
@@ -135,7 +135,7 @@ public class ComplaintFilter {
         .append("id", Complaint::getId)
         .append("sentiment", Complaint::getSentiment)
         .append("state", Complaint::getState)
-        .append("emotion", Complaint::getEmotion)
+        .append("emotion", complaint -> complaint.getSentiment().getEmotion())
         .append("subject", Complaint::getSubject)
         .build(sortBy.orElse(new String[]{"state_asc", "upload_date_desc"}));
   }

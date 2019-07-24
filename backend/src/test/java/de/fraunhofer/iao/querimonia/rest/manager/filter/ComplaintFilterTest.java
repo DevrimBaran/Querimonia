@@ -76,8 +76,7 @@ public class ComplaintFilterTest {
   @Before
   public void setUp() {
 
-    baseComplaintBuilder = new ComplaintBuilder()
-        .setText(testText)
+    baseComplaintBuilder = new ComplaintBuilder(testText)
         .setPreview(TEST_PREVIEW)
         .setState(TEST_STATE)
         .setProperties(List.of(testSubject))

@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.MockComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;

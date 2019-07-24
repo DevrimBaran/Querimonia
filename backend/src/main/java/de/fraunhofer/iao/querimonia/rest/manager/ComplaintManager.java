@@ -6,12 +6,11 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.db.repositories.ComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
@@ -26,12 +25,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -131,9 +132,46 @@ public class ComplaintManager {
         // use the currently active configuration else
         .orElseGet(configurationManager::getCurrentConfiguration);
 
-    Complaint complaint = complaintFactory.createComplaint(input.getText(), configuration);
+    var complaintBuilder = complaintFactory.createBaseComplaint(input.getText(), configuration);
+    complaintBuilder.setState(ComplaintState.ANALYSING);
+
+    var complaint = complaintBuilder.createComplaint();
+    // story unfinished state
     storeComplaint(complaint);
+    // update id
+    complaintBuilder.setId(complaint.getId());
+
+    // run analysis async
+    CompletableFuture.supplyAsync(() -> complaintFactory.analyzeComplaint(complaintBuilder, false))
+        // set state on error
+        .exceptionally(e -> onException(complaintBuilder, e))
+        // story complaint when finished
+        .whenComplete((this::onAnalysisFinished));
     return complaint;
+  }
+
+  @NonNull
+  private ComplaintBuilder onException(ComplaintBuilder complaintBuilder, Throwable e) {
+    complaintBuilder.setState(ComplaintState.ERROR);
+    storeComplaint(complaintBuilder.createComplaint());
+    // TODO exception handling
+    logger.error("Exception occurred", e);
+    return complaintBuilder;
+  }
+
+  private void onAnalysisFinished(ComplaintBuilder finishedComplaintBuilder, Throwable throwable) {
+    if (throwable == null) {
+      finishedComplaintBuilder.setState(ComplaintState.NEW);
+      storeComplaint(finishedComplaintBuilder.createComplaint());
+    } else {
+      // should never be executed
+      if (throwable instanceof QuerimoniaException) {
+        throw (QuerimoniaException) throwable;
+      } else {
+        throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, throwable,
+            "Unerwarteter Fehler");
+      }
+    }
   }
 
   /**
@@ -205,8 +243,8 @@ public class ComplaintManager {
         .orElseGet(configurationManager::getCurrentConfiguration);
     builder.setConfiguration(configuration);
 
-    complaint = complaintFactory.analyzeComplaint(builder,
-        keepUserInformation.orElse(false));
+    complaint = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false))
+        .createComplaint();
     storeComplaint(complaint);
     return complaint;
   }
@@ -215,6 +253,7 @@ public class ComplaintManager {
    * Sets the state of a complaint to closed and executes all actions.
    *
    * @param complaintId the id of the complaint that should be closed.
+   *
    * @return the closed complaint.
    */
   public synchronized Complaint closeComplaint(long complaintId) {
@@ -327,14 +366,7 @@ public class ComplaintManager {
   }
 
   private synchronized void storeComplaint(Complaint complaint) {
-    // save the components
-
-    try {
-      configurationManager.storeConfiguration(complaint.getConfiguration());
-    } catch (Exception e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
-          + "Konfiguration", e, "Konfiguration");
-    }
+    // store the configuration
     try {
       complaintRepository.save(complaint);
     } catch (Exception e) {
@@ -349,6 +381,11 @@ public class ComplaintManager {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
           + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
     }
+    if (complaint.getState().equals(ComplaintState.ANALYSING)) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
+          + "werden, während sie analysiert wird!", "Beschwerde wird analysiert");
+    }
   }
+
 
 }

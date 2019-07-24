@@ -9,6 +9,9 @@ import org.springframework.lang.Nullable;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This is builder class for {@link Configuration configurations}.
+ */
 public class ConfigurationBuilder {
   @Nullable
   private String name;
