@@ -162,6 +162,9 @@ public class ResponseComponentManager {
     }
   }
 
+  /**
+   * Deletes all components from the database.
+   */
   public synchronized void deleteAllComponents() {
     // remove references in complaints
     for (Complaint complaint : complaintRepository.findAll()) {
