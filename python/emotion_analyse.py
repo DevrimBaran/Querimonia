@@ -85,7 +85,7 @@ def emotion_analysis(query):
 def main(query):
     # :return dict of possible Emotions - dict like a hashmap.
     # Form like: {'Freude': 6, 'Furcht': 1, 'Ueberraschung': 1, 'Verachtung': 6}
-    emotion_analysis(query)
+    return emotion_analysis(query)
 
 
 if __name__ == "__main__":
