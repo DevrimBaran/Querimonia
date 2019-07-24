@@ -40,6 +40,7 @@ public class TestComplaints {
       .setState(ComplaintState.NEW)
       .setProperties(TestProperties.PROPERTIES_A)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setEntities(List.of(TestEntities.ENTITY_A, TestEntities.ENTITY_B))
       .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.1))
       .createComplaint();
 

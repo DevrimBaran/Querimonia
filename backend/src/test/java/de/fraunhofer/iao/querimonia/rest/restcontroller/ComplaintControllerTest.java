@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
 import de.fraunhofer.iao.querimonia.config.Configuration;
@@ -26,6 +27,7 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -438,7 +440,39 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void getEntities() {
+  public void getEntities1() {
+    // empty entity list
+    var testComplaint = new ComplaintBuilder(TestComplaints.COMPLAINT_A)
+        .setEntities(Collections.emptyList())
+        .createComplaint();
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.getEntities(testComplaint.getId());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(List.class)));
+    assertThat((List) response.getBody(), is(empty()));
+  }
+  @Test
+  public void getEntities2() {
+    // non empty entity list
+    var testComplaint = TestComplaints.COMPLAINT_B;
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.getEntities(testComplaint.getId());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(List.class)));
+    assertThat((List) response.getBody(), is(not(empty())));
+    assertThat(response.getBody(), is(equalTo(testComplaint.getEntities())));
+  }
+
+  @Test
+  public void getEntities3() {
+    var response = complaintController.getEntities(5L);
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(NotFoundException.class)));
   }
 
   @Test
