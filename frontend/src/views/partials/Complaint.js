@@ -39,10 +39,10 @@ function List (data) {
   return (
     <tr key={data.id}>
       <td><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
-      <td><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
+      <td style={{ textAlign: 'left' }}><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
       <td>
         <span className='sentiment'>
-          {Object.keys(data.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${data.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
+          {getMaxKey(data.sentiment.emotion.probabilities)}
         </span></td>
       <td> <span role='img' className='emotion'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span></td>
       <td> <span className='small' style={{ fontWeight: 'normal' }}>
@@ -143,6 +143,27 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
         </Row>
       </Block>
     </React.Fragment>
+  );
+}
+/**
+ * extracts the key with the maximal value
+ * @param {*} data Map (Key-Value)
+ */
+function getMaxKey (data) {
+  let keys = Object.keys(data);
+  if (keys.length === 0) {
+    return ('---');
+  }
+  let maxVal = data[keys[0]];
+  let maxIndex = 0;
+  for (let i = 1; i < keys.length; i++) {
+    if (data[keys[i]] > maxVal) {
+      maxVal = data[keys[i]];
+      maxIndex = i;
+    }
+  }
+  return (
+    keys[maxIndex] + ' (' + maxVal + ')'
   );
 }
 
