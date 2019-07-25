@@ -30,11 +30,11 @@ function List (data) {
               <div className='title'>
                 <h3><span>Anliegen {data.id} - </span>
                   <span className='sentiment' style={{ color: 'rgb( 200, 0, 0)' }}>
-                    {data.sentiment.value + ' ' + (data.sentiment.probabilities[data.sentiment.value] * 100) + '%'}
+                    {data.sentiment.emotion.value + ' ' + (data.sentiment.emotion.probabilities[data.sentiment.emotion.value] * 100) + '%'}
                   </span>
                   &nbsp;
                   <span className='small' style={{ fontWeight: 'normal' }}>
-                    {data.subject.value + ' ' + (data.subject.probabilities[data.subject.value] * 100) + '%'}
+                    {data.properties[0].value + ' ' + (data.properties[0].probabilities[data.properties[0].value] * 100) + '%'}
                   </span>
                 </h3>
               </div>
@@ -47,8 +47,8 @@ function List (data) {
     </React.Fragment>
   );
 }
-function Single (active, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
-  return (
+function Single (active, loadingEntitiesFinished, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
+  return loadingEntitiesFinished ? (
     <React.Fragment>
       <Block>
         <Row vertical>
@@ -148,9 +148,9 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             </ul>) : ''}
           </Content>
         </Row>
-      </Block>
+      </Block>)
     </React.Fragment>
-  );
+  ) : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>);
 }
 
 export default { List, Single };

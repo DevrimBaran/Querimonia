@@ -14,7 +14,7 @@ class EditableEntityText extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      id: null,
+      complaintId: null,
       taggedText: this.props.taggedText,
       editFormActive: false,
       editActive: false,
@@ -54,7 +54,7 @@ class EditableEntityText extends Component {
     if (!(query['label'] && query['extractor'])) {
       return;
     }
-    Api.post('/api/complaints/' + this.state.id + '/entities', query)
+    Api.post('/api/complaints/' + this.state.complaintId + '/entities', query)
       .then((data) => {
         if (Array.isArray(data)) {
           // deep copy of data
@@ -66,7 +66,7 @@ class EditableEntityText extends Component {
             editFormActive: false,
             editEntity: false
           });
-          // Api.patch('/api/responses/' + this.state.id + '/refresh');
+          // Api.patch('/api/responses/' + this.state.complaintId + '/refresh');
         }
       });
   };
@@ -176,7 +176,7 @@ class EditableEntityText extends Component {
 
   componentDidMount () {
     this.setState({
-      id: this.props.id
+      complaintId: this.props.complaintId
     });
   }
 
