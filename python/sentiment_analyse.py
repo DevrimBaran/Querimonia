@@ -117,12 +117,12 @@ if __name__ == '__main__':
     print('In cmd " python sentiment_analyse.py *query* \n or use examples in comments')
 
     # for example
-    #test = ' Sehr geehrte Damen und Herren,der vorstehende Bus ist - mal wieder - ausgefallen. Gestern fiel der Bus um 08.07 aus. Ich hoffe, dass ich auf die heutige Mail von Ihnen auch einmal eine Antwort erhalte, die letzten Hinweise auf Ausfälle der Linie 603 wurden von Ihnen ignoriert. Ich habe wirklich kein Verständnis mehr für die dauernden Ausfälle der Linie 603. Gehen Sie bitte davon aus, dass es durchaus Kunden gibt, die zur Arbeit müssen oder einen Zug erreichen müssen. Ich erwarte für die regelmäßigen Fahrpreiserhöhungen auch die entsprechende Leistung Ihrerseits!!!Ich erwarte nunmehr eine Antwort und ein Angebot der Entschädigung. Vielen Dank.'
-    #test_pos = 'Ich liebe Frieden und finde Blumen schön'
-    #test_neg = 'Ich mag Zerstörung und Gewalt und hasse Glück'
-    #neg_pos = 'Ich mag keine Pünktlichkeit und mag Höflichkeit nicht'
-    #neg_neg = 'Ich mag keine Verspätungen und finde Ausfälle nicht schön'
+    # test = ' Sehr geehrte Damen und Herren,der vorstehende Bus ist - mal wieder - ausgefallen. Gestern fiel der Bus um 08.07 aus. Ich hoffe, dass ich auf die heutige Mail von Ihnen auch einmal eine Antwort erhalte, die letzten Hinweise auf Ausfälle der Linie 603 wurden von Ihnen ignoriert. Ich habe wirklich kein Verständnis mehr für die dauernden Ausfälle der Linie 603. Gehen Sie bitte davon aus, dass es durchaus Kunden gibt, die zur Arbeit müssen oder einen Zug erreichen müssen. Ich erwarte für die regelmäßigen Fahrpreiserhöhungen auch die entsprechende Leistung Ihrerseits!!!Ich erwarte nunmehr eine Antwort und ein Angebot der Entschädigung. Vielen Dank.'
+    # test_pos = 'Ich liebe Frieden und finde Blumen schön'
+    # test_neg = 'Ich mag Zerstörung und Gewalt und hasse Glück'
+    # neg_pos = 'Ich mag keine Pünktlichkeit und mag Höflichkeit nicht'
+    # neg_neg = 'Ich mag keine Verspätungen und finde Ausfälle nicht schön'
 
-    #print(main(neg_neg))
+    # print(main(neg_neg))
     # for cmd
     # print("Sentiment Value is: " + (str)(parse_arg()))
