@@ -19,14 +19,14 @@ import java.util.List;
                     })
 public class ExtractorPipelines {
 
-  private List<TempPipeline> fuzhaltestellen;
-  private List<TempPipeline> linienExtraktor;
-  private List<TempPipeline> extpersonExtraktor;
-  private List<TempPipeline> extdatumExtraktor;
-  private List<TempPipeline> extgeldbetrag;
-  private List<TempPipeline> exttelefonnummer;
-  private List<TempPipeline> fuzortsnamen;
-  private List<TempPipeline> vorgangsnummer;
+  private List<Pipeline> fuzhaltestellen;
+  private List<Pipeline> linienExtraktor;
+  private List<Pipeline> extpersonExtraktor;
+  private List<Pipeline> extdatumExtraktor;
+  private List<Pipeline> extgeldbetrag;
+  private List<Pipeline> exttelefonnummer;
+  private List<Pipeline> fuzortsnamen;
+  private List<Pipeline> vorgangsnummer;
 
   /**
    * Extractorpipelines from Kikuko.
@@ -41,16 +41,16 @@ public class ExtractorPipelines {
    * @param vorgangsnummer     Results from operation-number extractor pipeline.
    */
   public ExtractorPipelines(
-      @JsonProperty("[Fuzzy] Haltestellen") List<TempPipeline> fuzhaltestellen,
-      @JsonProperty("Linien Extraktor") List<TempPipeline> linienExtraktor,
-      @JsonProperty("[Extern] Personen Extraktor") List<TempPipeline>
+      @JsonProperty("[Fuzzy] Haltestellen") List<Pipeline> fuzhaltestellen,
+      @JsonProperty("Linien Extraktor") List<Pipeline> linienExtraktor,
+      @JsonProperty("[Extern] Personen Extraktor") List<Pipeline>
           extpersonExtraktor,
-      @JsonProperty("[Extern] Datum Extraktor") List<TempPipeline>
+      @JsonProperty("[Extern] Datum Extraktor") List<Pipeline>
           extdatumExtraktor,
-      @JsonProperty("[Extern] Geldbetrag") List<TempPipeline> extgeldbetrag,
-      @JsonProperty("[Extern] Telefonnummer") List<TempPipeline> exttelefonnummer,
-      @JsonProperty("[Fuzzy] Ortsnamen") List<TempPipeline> fuzortsnamen,
-      @JsonProperty("Vorgangsnummer") List<TempPipeline> vorgangsnummer) {
+      @JsonProperty("[Extern] Geldbetrag") List<Pipeline> extgeldbetrag,
+      @JsonProperty("[Extern] Telefonnummer") List<Pipeline> exttelefonnummer,
+      @JsonProperty("[Fuzzy] Ortsnamen") List<Pipeline> fuzortsnamen,
+      @JsonProperty("Vorgangsnummer") List<Pipeline> vorgangsnummer) {
     this.fuzhaltestellen = fuzhaltestellen;
     this.linienExtraktor = linienExtraktor;
     this.extpersonExtraktor = extpersonExtraktor;
@@ -61,67 +61,67 @@ public class ExtractorPipelines {
     this.vorgangsnummer = vorgangsnummer;
   }
 
-  public List<TempPipeline> getFuzhaltestellen() {
+  public List<Pipeline> getFuzhaltestellen() {
     return fuzhaltestellen;
   }
 
-  public void setFuzhaltestellen(List<TempPipeline> fuzhaltestellen) {
+  public void setFuzhaltestellen(List<Pipeline> fuzhaltestellen) {
     this.fuzhaltestellen = fuzhaltestellen;
   }
 
-  public List<TempPipeline> getLinienExtraktor() {
+  public List<Pipeline> getLinienExtraktor() {
     return linienExtraktor;
   }
 
-  public void setLinienExtraktor(List<TempPipeline> linienExtraktor) {
+  public void setLinienExtraktor(List<Pipeline> linienExtraktor) {
     this.linienExtraktor = linienExtraktor;
   }
 
-  public List<TempPipeline> getExtpersonExtraktor() {
+  public List<Pipeline> getExtpersonExtraktor() {
     return extpersonExtraktor;
   }
 
-  public void setExtpersonExtraktor(List<TempPipeline> extpersonExtraktor) {
+  public void setExtpersonExtraktor(List<Pipeline> extpersonExtraktor) {
     this.extpersonExtraktor = extpersonExtraktor;
   }
 
-  public List<TempPipeline> getExtdatumExtraktor() {
+  public List<Pipeline> getExtdatumExtraktor() {
     return extdatumExtraktor;
   }
 
-  public void setExtdatumExtraktor(List<TempPipeline> extdatumExtraktor) {
+  public void setExtdatumExtraktor(List<Pipeline> extdatumExtraktor) {
     this.extdatumExtraktor = extdatumExtraktor;
   }
 
-  public List<TempPipeline> getExtgeldbetrag() {
+  public List<Pipeline> getExtgeldbetrag() {
     return extgeldbetrag;
   }
 
-  public void setExtgeldbetrag(List<TempPipeline> extgeldbetrag) {
+  public void setExtgeldbetrag(List<Pipeline> extgeldbetrag) {
     this.extgeldbetrag = extgeldbetrag;
   }
 
-  public List<TempPipeline> getExttelefonnummer() {
+  public List<Pipeline> getExttelefonnummer() {
     return exttelefonnummer;
   }
 
-  public void setExttelefonnummer(List<TempPipeline> exttelefonnummer) {
+  public void setExttelefonnummer(List<Pipeline> exttelefonnummer) {
     this.exttelefonnummer = exttelefonnummer;
   }
 
-  public List<TempPipeline> getFuzortsnamen() {
+  public List<Pipeline> getFuzortsnamen() {
     return fuzortsnamen;
   }
 
-  public void setFuzortsnamen(List<TempPipeline> fuzortsnamen) {
+  public void setFuzortsnamen(List<Pipeline> fuzortsnamen) {
     this.fuzortsnamen = fuzortsnamen;
   }
 
-  public List<TempPipeline> getVorgangsnummer() {
+  public List<Pipeline> getVorgangsnummer() {
     return vorgangsnummer;
   }
 
-  public void setVorgangsnummer(List<TempPipeline> vorgangsnummer) {
+  public void setVorgangsnummer(List<Pipeline> vorgangsnummer) {
     this.vorgangsnummer = vorgangsnummer;
   }
 

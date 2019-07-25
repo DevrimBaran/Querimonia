@@ -17,7 +17,7 @@ import java.util.LinkedHashMap;
                         "Typ",
                         "ContextAfter"
                     })
-public class TempPipeline {
+public class Pipeline {
 
   private int startposition;
   private String contextBefore;
@@ -36,12 +36,12 @@ public class TempPipeline {
    * @param contextAfter  Gets the text after the entity.
    */
   @JsonCreator
-  public TempPipeline(@JsonProperty("Startposition") int startposition,
-                      @JsonProperty("ContextBefore") String contextBefore,
-                      @JsonProperty("Endposition") int endposition,
-                      @JsonProperty("Text") String text,
-                      @JsonProperty("Typ") LinkedHashMap<String, Double> typ,
-                      @JsonProperty("ContextAfter") String contextAfter) {
+  public Pipeline(@JsonProperty("Startposition") int startposition,
+                  @JsonProperty("ContextBefore") String contextBefore,
+                  @JsonProperty("Endposition") int endposition,
+                  @JsonProperty("Text") String text,
+                  @JsonProperty("Typ") LinkedHashMap<String, Double> typ,
+                  @JsonProperty("ContextAfter") String contextAfter) {
     this.startposition = startposition;
     this.contextBefore = contextBefore;
     this.endposition = endposition;

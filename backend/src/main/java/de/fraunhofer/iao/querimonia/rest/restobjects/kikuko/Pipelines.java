@@ -10,24 +10,24 @@ import java.util.List;
 @SuppressWarnings("ALL")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder(value = {
-    "TempPipeline"
+    "Pipeline"
 })
 public class Pipelines {
 
-  private List<TempPipeline> tempPipeline = null;
+  private List<Pipeline> pipeline = null;
 
 
   @JsonCreator
-  public Pipelines(@JsonProperty("TempPipeline") List<TempPipeline> tempPipeline) {
-    this.tempPipeline = tempPipeline;
+  public Pipelines(@JsonProperty("Pipeline") List<Pipeline> pipeline) {
+    this.pipeline = pipeline;
   }
 
-  public List<TempPipeline> getTempPipeline() {
-    return tempPipeline;
+  public List<Pipeline> getPipeline() {
+    return pipeline;
   }
 
-  public void setTempPipeline(List<TempPipeline> tempPipeline) {
-    this.tempPipeline = tempPipeline;
+  public void setPipeline(List<Pipeline> pipeline) {
+    this.pipeline = pipeline;
   }
 
 }
