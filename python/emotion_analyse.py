@@ -7,6 +7,8 @@ from collections import defaultdict
 # This is an approach for emotion analysis in the german language
 # created by phuszár
 
+# intial loading
+nltk.download('punkt')
 # Variables
 datafolder = Path("data/")
 
