@@ -13,6 +13,8 @@ flask_restplus = "*"
 nltk = "*"
 gensim = "*"
 black = "*"
+sqlalchemy = "*"
+pymysql = "*"
 
 [requires]
 python_version = "3.7"
