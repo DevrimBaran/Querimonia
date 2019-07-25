@@ -53,9 +53,9 @@ public class Configuration implements Identifiable<Long> {
   @JsonIgnore
   public static final Configuration FALLBACK_CONFIGURATION = new ConfigurationBuilder()
       .setName("Default")
-      .setExtractors(Collections.emptyList())
-      .setClassifiers(List.of(
-          new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie")))
+      .setExtractors(new ArrayList<>())
+      .setClassifiers(new ArrayList<>(List.of(
+          new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie"))))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, "Default"))
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, "Default"))
       .setActive(false)
