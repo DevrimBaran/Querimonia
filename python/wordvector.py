@@ -1,6 +1,7 @@
 from gensim.models.wrappers import FastText
 import numpy as np
 import logging
+from collections import defaultdict
 
 # Pfad zu den Modellen
 basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
@@ -79,4 +80,8 @@ class Calc:
         vec2 = Calc.vectorize(word2, model_name)
         vec3 = Calc.vectorize(word3, model_name)
         result = np.add(np.subtract(vec1, vec2), vec3)
-        return Calc.getword(result, model_name)
+        words = Calc.getword(result, model_name)
+        json_map = defaultdict(float)
+        for pair in words:
+            json_map[pair[0]] = pair[1]
+        return json_map
