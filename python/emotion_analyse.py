@@ -3,7 +3,6 @@ from nltk.tokenize import word_tokenize
 from enum import Enum
 from pathlib import Path
 from collections import defaultdict
-import math
 
 # This is an approach for emotion analysis in the german language
 # created by phuszár
