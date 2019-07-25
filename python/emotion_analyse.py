@@ -1,5 +1,5 @@
 import string
-from nltk.tokenize import word_tokenize
+import nltk
 from enum import Enum
 from pathlib import Path
 from collections import defaultdict
