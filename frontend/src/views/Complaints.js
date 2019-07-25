@@ -25,13 +25,31 @@ class Complaints extends Component {
     this.state = {
       active: null,
       editCategorie: false,
-      editSentiment: false
+      editSentiment: false,
+      loadingEntitiesFinished: false
     };
   }
   componentDidMount = () => {
     this.props.dispatch(fetchData('complaints'));
     this.props.dispatch(fetchCurrentConfig());
   }
+
+  activateComplaint = (active) => {
+    Api.get('/api/complaints/' + active.id + '/entities', '')
+      .catch(() => {
+        return { status: 404 };
+      })
+      // eslint-disable-next-line no-return-assign
+      .then((data) => {
+        this.setState({
+          active: {
+            ...active,
+            entities: data
+          },
+          loadingEntitiesFinished: true
+        });
+      });
+  };
 
   /**
    *  switchs between edit and normal state of the Categorie label /
@@ -70,7 +88,8 @@ class Complaints extends Component {
   }
 
   renderSingle = (active) => {
-    return (Complaint.Single(active, this.state.editCategorie, this.state.editSentiment, this.editCategorie, this.editSentiment, this.refreshEntities));
+    if (this.state.active === null || this.state.active.id !== active.id) this.activateComplaint(active);
+    return (Complaint.Single(this.state.active, this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editSentiment, this.editCategorie, this.editSentiment, this.refreshEntities));
   }
 
   update = () => {

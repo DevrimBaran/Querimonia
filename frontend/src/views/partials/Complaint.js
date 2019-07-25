@@ -18,6 +18,7 @@ import Tooltip from './../../components/Tooltip';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
+import EditableEntityText from './EditableEntityText';
 
 function Header () {
   return (
@@ -52,9 +53,10 @@ function List (data) {
     </tr>
   );
 }
-function Single (active, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
-  let sent = active.sentiment.tendency;
-  return (
+
+function Single (active, loadingEntitiesFinished, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
+  let sent = active && active.sentiment ? active.sentiment.tendency : null;
+  return loadingEntitiesFinished ? (
     <React.Fragment>
       <Block>
         <Row vertical>
@@ -68,7 +70,7 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
           <Content>
             <Tabbed style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <TaggedText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} editable />
+                <EditableEntityText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} />
               </div>
               <div label='Original'>
                 {active.text}
@@ -112,13 +114,26 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             <br />
             <b> Sentiment: </b>
             {
+              !editSentimentBool ? (
               <span>
-                <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span>
-                <Tooltip htmlFor='sentiments'>
-                  {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
-                </Tooltip>
-                {/* eslint-disable-next-line */}
-              </span>
+              <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span>
+              <Tooltip htmlFor='sentiments'>
+              {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
+              </Tooltip>
+              {/* eslint-disable-next-line */}
+                  <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              ) : (
+                <span>
+                  <select id='chooseSentiment'>
+                    {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => sentiment === active.sentiment.emotion.value ? <option selected='selected'>{`${sentiment}`}</option> : <option >{`${sentiment}`}</option>)};
+                  </select>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-check-circle fa-lg'} onClick={editSentiment.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-times-circle fa-lg'} onClick={editSentiment.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              )
             }
           </div>
           <Collapsible label='Entitäten' />
@@ -141,9 +156,9 @@ function Single (active, editCategorieBool, editSentimentBool, editCategorie, ed
             </ul>) : ''}
           </Content>
         </Row>
-      </Block>
+      </Block>)
     </React.Fragment>
-  );
+  ) : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>);
 }
 /**
  * extracts the key with the maximal value

@@ -11,9 +11,9 @@ import Api from '../utility/Api';
 
 import Debug from './../components/Debug';
 import Collapsible from './../components/Collapsible';
-import TaggedText from './../components/TaggedText';
 import Content from './../components/Content';
 import Input from './../components/Input';
+import ChangeableEntityText from './ChangeableEntityText';
 
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
@@ -130,7 +130,7 @@ class TextBuilder extends Component {
               return (
                 <div className='response' key={id}>
                   <span className='content'>
-                    <TaggedText taggedText={{ text: answer.completedText, entities: answer.entities }} />
+                    <ChangeableEntityText taggedText={{ text: answer.completedText, entities: answer.entities }} />
                     <div className='part'>{component.component.componentName}</div>
                   </span>
                   <i className='fa fa-check add' onClick={() => { this.add(id); }} />
