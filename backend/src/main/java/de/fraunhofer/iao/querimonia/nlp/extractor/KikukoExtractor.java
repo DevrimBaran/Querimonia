@@ -3,15 +3,16 @@ package de.fraunhofer.iao.querimonia.nlp.extractor;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
-import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorPipelines;
-import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorResponse;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements EntityExtractor {
+public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
   private final String domainName;
 
@@ -22,67 +23,23 @@ public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements
 
   @Override
   public List<NamedEntity> extractEntities(String text) {
-    ExtractorResponse response = executeKikukoRequest(text, ExtractorResponse[].class);
-    ExtractorPipelines allPipes = response.getPipelines();
+    KikukoResponse response = executeKikukoRequest(text);
+    LinkedHashMap<String, List<FoundEntity>> allPipes = response.getPipelines();
 
     List<NamedEntity> entities = new LinkedList<>();
 
-    allPipes.getFuzhaltestellen().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Haltestelle")
-            .setStart(e.getStartposition())
-            .setEnd(e.getEndposition())
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getLinienExtraktor().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Linie")
-            .setStart(e.getStartposition() + matchesNumber(e.getText())[0])
-            .setEnd(e.getEndposition() - matchesNumber(e.getText())[1])
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getExtdatumExtraktor().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Datum")
-            .setStart(e.getStartposition())
-            .setEnd(e.getEndposition())
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getExtgeldbetrag().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Geldbetrag")
-            .setStart(e.getStartposition())
-            .setEnd(e.getEndposition())
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getExttelefonnummer().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Telefonnummer")
-            .setStart(e.getStartposition())
-            .setEnd(e.getEndposition())
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getFuzortsnamen().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Ortsname")
-            .setStart(e.getStartposition())
-            .setEnd(e.getEndposition())
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getVorgangsnummer().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Vorgangsnummer")
-            .setStart(e.getStartposition() + matchesNumber(e.getText())[0])
-            .setEnd(e.getEndposition() - matchesNumber(e.getText())[1])
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
-    allPipes.getExtpersonExtraktor().forEach(e -> entities.add(
-        new NamedEntityBuilder().setLabel("Name")
-            .setStart(e.getStartposition())
-            .setEnd(e.getEndposition())
-            .setExtractor(domainName)
-            .setValue(e.getText())
-            .createNamedEntity()));
+    allPipes.forEach((name, entityList) -> {
+      for (FoundEntity entity : entityList) {
+        entities.add(
+            new NamedEntityBuilder().setLabel("name")
+                .setStart(entity.getStartposition())
+                .setEnd(entity.getEndposition())
+                .setExtractor(domainName)
+                .setValue(entity.getText())
+                .createNamedEntity());
+      }
+    });
+
     return entities;
   }
 

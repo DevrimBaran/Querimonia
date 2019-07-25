@@ -8,7 +8,7 @@ import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */
-public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
+public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
 
   private String categoryName;
 
@@ -31,10 +31,10 @@ public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements C
    */
   @Override
   public ComplaintProperty classifyText(String input) {
-    KikukoResponse response = executeKikukoRequest(input, KikukoResponse[].class);
+    KikukoResponse response = executeKikukoRequest(input);
 
     return new ComplaintProperty(categoryName, response.getPipelines()
-        .getTempPipeline()
+        .get("TempPipeline")
         .get(0)
         .getTyp());
   }

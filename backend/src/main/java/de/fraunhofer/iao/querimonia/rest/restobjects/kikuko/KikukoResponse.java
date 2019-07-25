@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.text.MessageFormat;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -15,21 +16,21 @@ import java.util.LinkedHashMap;
                     })
 public class KikukoResponse {
 
-  private LinkedHashMap<String, Pipeline> pipelines;
+  private LinkedHashMap<String, List<FoundEntity>> pipelines;
   private String content;
 
   @JsonCreator
-  public KikukoResponse(@JsonProperty("pipelines") LinkedHashMap<String, Pipeline> pipelines,
+  public KikukoResponse(@JsonProperty("pipelines") LinkedHashMap<String, List<FoundEntity>> pipelines,
                         @JsonProperty("content") String content) {
     this.pipelines = pipelines;
     this.content = content;
   }
 
-  public LinkedHashMap<String, Pipeline> getPipelines() {
+  public LinkedHashMap<String, List<FoundEntity>> getPipelines() {
     return pipelines;
   }
 
-  public void setPipelines(LinkedHashMap<String, Pipeline> pipelines) {
+  public void setPipelines(LinkedHashMap<String, List<FoundEntity>> pipelines) {
     this.pipelines = pipelines;
   }
 
