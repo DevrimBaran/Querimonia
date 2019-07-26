@@ -37,9 +37,9 @@ function Header () {
 function List (data, index) {
   return (
     <tr key={data.id}>
-      <td><Link to={'/templates/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><h3>{data.id}</h3></Link></td>
       <td><Link to={'/templates/' + data.id}><p>{data.componentName}</p></Link></td>
-      <td><Link to={'/templates/' + data.id}><p>{data.templateTexts.length}</p></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><p>{data.templateTexts.length}</p></Link></td>
       <td><Link to={'/templates/' + data.id}>  <p>{data.templateTexts.requiredEntites ? data.templateTexts.requiredEntites.join(', ') : ''}</p></Link></td>
     </tr>
   );

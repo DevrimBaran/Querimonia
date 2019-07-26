@@ -35,11 +35,11 @@ function Header () {
 function List (data, index) {
   return (
     <tr key={data.id}>
-      <td><Link to={'/templates/' + data.id}><h3>{data.actionId}</h3></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><h3>{data.actionId}</h3></Link></td>
       <td><Link to={'/templates/' + data.id}><p>{data.name}</p></Link></td>
-      <td><Link to={'/templates/' + data.id}><p>{data.actionCode}</p></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><p>{data.actionCode}</p></Link></td>
       <td><Link to={'/templates/' + data.id}><p>{data.parameters['E-Mail']}</p></Link></td>
-      <td><Link to={'/templates/' + data.id}><p>{data.parameters['Wert']}</p></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><p>{data.parameters['Wert']}</p></Link></td>
     </tr>
   );
 }
