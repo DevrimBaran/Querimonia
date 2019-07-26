@@ -1,5 +1,6 @@
 import string
 from nltk.tokenize import word_tokenize
+from nltk import download
 from enum import Enum
 from pathlib import Path
 from collections import defaultdict
@@ -7,6 +8,8 @@ from collections import defaultdict
 # This is an approach for emotion analysis in the german language
 # created by phuszár
 
+# intial loading for nltk
+download('punkt')
 # Variables
 datafolder = Path("data/")
 
