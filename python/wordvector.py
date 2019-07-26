@@ -27,7 +27,6 @@ else:
     print("Lade dir ein Beispielkorpus herunter und lege es zwei Ordner weiter oben ab")
     print("Für Korpus: https://querimonia.iao.fraunhofer.de/infra/data/beschwerden3kPolished.bin")
     print("Für Predict Words: https://querimonia.iao.fraunhofer.de/infra/data/beschwerden3kPolished.txt")
-    
     path = "../../model/beschwerden3kPolished.bin"
     model_beschwerden3kPolished = FastText.load_fasttext_format(path)
     model_cc_de_300 = FastText.load_fasttext_format(path)
@@ -101,4 +100,3 @@ class Calc:
         for pair in words:
             json_map[pair[0]] = pair[1]
         return json_map
-
