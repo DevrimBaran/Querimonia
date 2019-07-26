@@ -88,6 +88,7 @@ public class TestComplaints {
       .setConfiguration(TestConfigurations.CONFIGURATION_D)
       .setProperties(TestProperties.PROPERTIES_C)
       .setState(ComplaintState.NEW)
+      .setResponseSuggestion(TestResponses.SUGGESTION_C)
       .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
       .setEntities(ENTITIES_F)
       .createComplaint();
@@ -137,6 +138,18 @@ public class TestComplaints {
                 List.of(TestEntities.ENTITY_A)
             ), new CompletedResponseComponent(
                 TestComponents.COMPONENT_B,
+                Collections.emptyList()
+            )
+        ),
+        List.of()
+    );
+
+    public static final ResponseSuggestion SUGGESTION_C = new ResponseSuggestion(
+        List.of(new CompletedResponseComponent(
+                TestComponents.COMPONENT_C,
+                ENTITIES_F
+            ), new CompletedResponseComponent(
+                TestComponents.COMPONENT_D,
                 Collections.emptyList()
             )
         ),
