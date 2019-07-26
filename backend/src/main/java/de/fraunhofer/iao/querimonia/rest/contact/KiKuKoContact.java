@@ -62,9 +62,10 @@ public class KiKuKoContact {
     // get response
     String returnValue;
     try {
-      returnValue = template.exchange(URL, HttpMethod.POST,
-          request, String.class).getBody();
+      returnValue = template.postForObject(URL,
+          request, String.class);
     } catch (RestClientException e) {
+      e.printStackTrace();
       throw kikukoException;
     }
     // map string to json

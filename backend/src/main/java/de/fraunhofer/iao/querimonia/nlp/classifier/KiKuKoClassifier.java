@@ -2,7 +2,13 @@ package de.fraunhofer.iao.querimonia.nlp.classifier;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
@@ -33,10 +39,17 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
   public ComplaintProperty classifyText(String input) {
     KikukoResponse response = executeKikukoRequest(input);
 
-    return new ComplaintProperty(categoryName, response.getPipelines()
-        .get("TempPipeline")
-        .get(0)
-        .getTyp());
+    Map<String, Double> probs = new LinkedHashMap<>();
+        response.getPipelines()
+        .values()
+        .iterator().next()
+        .forEach(entity -> entity.getTyp().forEach((c, v) -> probs.merge(c, v, Double::max)));
+
+    return new ComplaintProperty(categoryName, probs);
+  }
+
+  public static void main(String[] args) {
+    System.out.println(new KiKuKoClassifier("Klassifizierer"));
   }
 
 }
