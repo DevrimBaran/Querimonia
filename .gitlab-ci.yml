@@ -87,12 +87,14 @@ deploy-frontend-dev:
 # python
 build-python:
   stage: build
-  tags:
-    - shell
+  image: python
   script:
     - cd python/
-    - pipenv install
-    - pipenv run flake8 .
+    - pip3 install pipenv --user
+    - pip3 install flake8 --user
+    - ~/.local/bin/pipenv install
+    - ~/.local/bin/flake8 --ignore E501 .
+    - echo "DEPLOY=True" > .env
   artifacts:
     paths:
       - python/
