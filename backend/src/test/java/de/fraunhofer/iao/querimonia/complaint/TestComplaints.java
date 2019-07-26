@@ -85,7 +85,7 @@ public class TestComplaints {
       .setPreview(PREVIEW_F)
       .setReceiveDate(DATE_F)
       .setReceiveTime(TIME_F)
-      .setConfiguration(TestConfigurations.CONFIGURATION_C)
+      .setConfiguration(TestConfigurations.CONFIGURATION_D)
       .setProperties(TestProperties.PROPERTIES_C)
       .setState(ComplaintState.NEW)
       .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
