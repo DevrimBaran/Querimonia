@@ -11,6 +11,7 @@ import de.fraunhofer.iao.querimonia.rest.manager.filter.ComparatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -183,7 +184,6 @@ public class ConfigurationManager {
     return currentConfig;
   }
 
-
   /**
    * Deletes all configurations of the database.
    */
@@ -192,11 +192,13 @@ public class ConfigurationManager {
       complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
       complaintRepository.save(complaint);
     }
+    List<Configuration> toBeDeleted = new ArrayList<>();
     for (Configuration configuration : configurationRepository.findAll()) {
       if (!configuration.getId().equals(Configuration.FALLBACK_CONFIGURATION.getId())) {
-        configurationRepository.deleteById(configuration.getId());
+        toBeDeleted.add(configuration);
       }
     }
+    configurationRepository.deleteAll(toBeDeleted);
   }
 
   /**
