@@ -2,9 +2,10 @@ from gensim.models.wrappers import FastText
 import numpy as np
 import logging
 from collections import defaultdict
+import os
 
-
-if True:
+# setup
+if os.getenv("DEPLOY", "not found") == "not found":
     # Pfad zu den Modellen
     basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
     # Lade Modelle
@@ -19,15 +20,24 @@ if True:
     model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format(
         basepath + "leipzigCorporaCollection1M.bin"
     )
+    # base path for predict words
+    predict_basepath = "/home/beschwerdemanagement/wortvektoren/fastText/predictionLists/"
 else:
     # Lade Modelle
-    model_beschwerden3kPolished = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
-    model_cc_de_300 = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
-    model_ngram_ger = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
-    model_beschwerden_CAT_leipzig = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
-    model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format("/Volumes/SD-Speicher 1/Fasttext/beschwerden3k.bin")
+    print("Lade dir ein Beispielkorpus herunter und lege es zwei Ordner weiter oben ab")
+    print("Für Korpus: https://querimonia.iao.fraunhofer.de/infra/data/beschwerden3kPolished.bin")
+    print("Für Predict Words: https://querimonia.iao.fraunhofer.de/infra/data/beschwerden3kPolished.txt")
+    
+    path = "../../model/beschwerden3kPolished.bin"
+    model_beschwerden3kPolished = FastText.load_fasttext_format(path)
+    model_cc_de_300 = FastText.load_fasttext_format(path)
+    model_ngram_ger = FastText.load_fasttext_format(path)
+    model_beschwerden_CAT_leipzig = FastText.load_fasttext_format(path)
+    model_leipzig_Corpora_collection_1M = FastText.load_fasttext_format(path)
+    # base path for predict words
+    predict_basepath = "../../"
 
-# Standardmodell
+# standard model
 model = model_beschwerden3kPolished
 
 
@@ -67,11 +77,8 @@ class Calc:
 
     @staticmethod
     def predict_words(query, model_name, limit):
-
-        # Pfad zu den Listen
-        basepath = "/home/beschwerdemanagement/wortvektoren/fastText/predictionLists/"
         word_file = model_name.split(".")[0] + ".txt"
-        with open(basepath + word_file, "r") as model_file:
+        with open(predict_basepath + word_file, "r") as model_file:
             words = model_file.read().split("\n")
         result = []
         if len(query) >= 3:
@@ -94,3 +101,4 @@ class Calc:
         for pair in words:
             json_map[pair[0]] = pair[1]
         return json_map
+
