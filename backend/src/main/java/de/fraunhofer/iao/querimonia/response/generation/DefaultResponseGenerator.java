@@ -50,7 +50,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
     responseComponentsFiltered.addAll(actions);
 
-    List<NamedEntity> allEntities = new ArrayList<>();
+    List<NamedEntity> allEntities = new ArrayList<>(complaintBuilder.getEntities());
 
     String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
         .withLocale(Locale.GERMAN)
