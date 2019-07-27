@@ -162,7 +162,7 @@ public class Complaint implements Identifiable<Long> {
   private LocalTime receiveTime = LocalTime.now();
 
   /**
-   * The configuration which was used to analyze the configuration.
+   * The configuration which was used to analyze the complaint.
    */
   @ManyToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "config_id")

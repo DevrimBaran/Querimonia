@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import tec.uom.lib.common.function.Identifiable;
@@ -261,5 +263,37 @@ public class ResponseComponent implements Identifiable<Long> {
       List<Action> actions) {
     this.actions = actions;
     return this;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ResponseComponent that = (ResponseComponent) o;
+
+    return new EqualsBuilder()
+        .append(priority, that.priority)
+        .append(componentName, that.componentName)
+        .append(componentTexts, that.componentTexts)
+        .append(actions, that.actions)
+        .append(rulesXml, that.rulesXml)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(componentName)
+        .append(priority)
+        .append(componentTexts)
+        .append(actions)
+        .append(rulesXml)
+        .toHashCode();
   }
 }

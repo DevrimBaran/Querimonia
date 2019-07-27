@@ -29,14 +29,6 @@ public class ResponseComponentControllerTest {
     private MockComponentRepository componentRepository;
     private ResponseComponentController responseComponentController;
 
-  private boolean equalsComponent(ResponseComponent component1, ResponseComponent component2) {
-    return component1.getComponentName().equals(component2.getComponentName())
-            && component1.getActions().equals(component2.getActions())
-            && component1.getComponentTexts().equals(component2.getComponentTexts())
-            && component1.getRulesXml().equals(component2.getRulesXml())
-            && (component1.getPriority() == component2.getPriority());
-  }
-
   @Before
   public void setup() {
     componentRepository = new MockComponentRepository();
@@ -49,7 +41,7 @@ public class ResponseComponentControllerTest {
   public void testAddComponent() {
     responseComponentController.addComponent(COMPONENT_E);
     ResponseComponent component = componentRepository.findAll().iterator().next();
-    assertTrue(equalsComponent(component, COMPONENT_E));
+    assertEquals(component, COMPONENT_E);
   }
 
   @Test
@@ -70,9 +62,9 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
-    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
-    assertTrue(equalsComponent(responseComponents.get(2), COMPONENT_E));
+    assertEquals(responseComponents.get(0), COMPONENT_A);
+    assertEquals(responseComponents.get(1), COMPONENT_B);
+    assertEquals(responseComponents.get(2), COMPONENT_E);
   }
 
   @Test
@@ -86,8 +78,8 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(2, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
-    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
+    assertEquals(responseComponents.get(0), COMPONENT_A);
+    assertEquals(responseComponents.get(1), COMPONENT_B);
   }
 
   @Test
@@ -101,7 +93,7 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_E));
+    assertEquals(responseComponents.get(0), COMPONENT_E);
   }
 
   @Test
@@ -116,9 +108,9 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_E));
-    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
-    assertTrue(equalsComponent(responseComponents.get(2), COMPONENT_A));
+    assertEquals(responseComponents.get(0), COMPONENT_E);
+    assertEquals(responseComponents.get(1), COMPONENT_B);
+    assertEquals(responseComponents.get(2), COMPONENT_A);
   }
 
   @Test
@@ -133,7 +125,7 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
+    assertEquals(responseComponents.get(0), COMPONENT_A);
   }
 
   @Test
@@ -148,7 +140,7 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_B));
+    assertEquals(responseComponents.get(0), COMPONENT_B);
   }
 
   @Test
@@ -186,9 +178,9 @@ public class ResponseComponentControllerTest {
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
-    assertTrue(equalsComponent(responseComponents.get(0), COMPONENT_A));
-    assertTrue(equalsComponent(responseComponents.get(1), COMPONENT_B));
-    assertTrue(equalsComponent(responseComponents.get(2), COMPONENT_E));
+    assertEquals(responseComponents.get(0), COMPONENT_A);
+    assertEquals(responseComponents.get(1), COMPONENT_B);
+    assertEquals(responseComponents.get(2), COMPONENT_E);
   }
 
   @Test
@@ -244,7 +236,7 @@ public class ResponseComponentControllerTest {
     ResponseEntity<?> responseEntity = responseComponentController.getComponentByID(1);
     assertNotNull(responseEntity.getBody());
     ResponseComponent responseComponent = (ResponseComponent) responseEntity.getBody();
-    assertTrue(equalsComponent(responseComponent, COMPONENT_A));
+    assertEquals(responseComponent, COMPONENT_A);
   }
 
   @Test
@@ -283,6 +275,6 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_C);
     responseComponentController.updateComponent(1, COMPONENT_D);
     ResponseComponent responseComponent = componentRepository.findAll().iterator().next();
-    assertTrue(equalsComponent(responseComponent, COMPONENT_D));
+    assertEquals(responseComponent, COMPONENT_D);
   }
 }

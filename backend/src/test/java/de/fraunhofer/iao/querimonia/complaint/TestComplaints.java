@@ -1,6 +1,9 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.TestEntities;
 import de.fraunhofer.iao.querimonia.response.component.TestComponents;
@@ -84,11 +87,12 @@ public class TestComplaints {
       .setPreview(PREVIEW_F)
       .setReceiveDate(DATE_F)
       .setReceiveTime(TIME_F)
-      .setConfiguration(TestConfigurations.CONFIGURATION_C)
+      .setConfiguration(TestConfigurations.CONFIGURATION_D)
       .setProperties(TestProperties.PROPERTIES_C)
       .setState(ComplaintState.NEW)
-      .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setResponseSuggestion(TestResponses.SUGGESTION_C)
       .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
+      .setEntities(ENTITIES_F)
       .createComplaint();
 
   public static final Complaint COMPLAINT_G = new ComplaintBuilder(TEXT_G)
@@ -143,6 +147,18 @@ public class TestComplaints {
         ),
         List.of()
     );
+
+    public static final ResponseSuggestion SUGGESTION_C = new ResponseSuggestion(
+        List.of(new CompletedResponseComponent(
+                TestComponents.COMPONENT_C,
+                ENTITIES_F
+            ), new CompletedResponseComponent(
+                TestComponents.COMPONENT_D,
+                Collections.emptyList()
+            )
+        ),
+        List.of()
+    );
   }
 
   @SuppressWarnings("WeakerAccess")
@@ -167,7 +183,7 @@ public class TestComplaints {
 
     public static final LocalTime TIME_E = LocalTime.of(12, 0);
 
-    public static final LocalDate DATE_F = LocalDate.of(2019, 6, 6);
+    public static final LocalDate DATE_F = LocalDate.of(2019, 6, 20);
 
     public static final LocalTime TIME_F = LocalTime.of(12, 0);
 
@@ -293,8 +309,8 @@ public class TestComplaints {
 
     public static final String PREVIEW_E = TEXT_E.substring(0, 250);
 
-    public static final String TEXT_F = "Kunde legt Widerspruch zum Schreiben 35270-Ta ein.Kevin "
-        + "Adler hatte eine Erstattung von Taxikosten im Rahmen der Mobilitätsgarantie abgelehnt";
+    public static final String TEXT_F = "Hallo, ich bin Peter. Die Haltestelle Hauptbahnhof der" +
+        " Linie U6 ist schlecht. Gebt mir 20€!";
 
     public static final String PREVIEW_F = TEXT_F;
 
@@ -308,5 +324,44 @@ public class TestComplaints {
         + "Fahrers war also ein Lichtblick für viele Ihrer Kunden.";
 
     public static final String PREVIEW_G = TEXT_G.substring(0, 250);
+
+    private static final NamedEntity testEntityName = new NamedEntityBuilder()
+        .setLabel("Name")
+        .setStart(15)
+        .setEnd(19)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Peter")
+        .createNamedEntity();
+
+    private static final NamedEntity testEntityStop = new NamedEntityBuilder()
+        .setLabel("Haltestelle")
+        .setStart(38)
+        .setEnd(49)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Hauptbahnhof")
+        .createNamedEntity();
+
+    private static final NamedEntity testEntityLine = new NamedEntityBuilder()
+        .setLabel("Linie")
+        .setStart(61)
+        .setEnd(62)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("U6")
+        .createNamedEntity();
+
+    private static final NamedEntity testEntityMoney = new NamedEntityBuilder()
+        .setLabel("Geldbetrag")
+        .setStart(87)
+        .setEnd(88)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("20€")
+        .createNamedEntity();
+
+    public static final List<NamedEntity> ENTITIES_F = List.of(testEntityName, testEntityStop,
+        testEntityLine, testEntityMoney);
   }
 }
