@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.rest.manager;
+package de.fraunhofer.iao.querimonia.db.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
@@ -8,7 +8,7 @@ import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
-import de.fraunhofer.iao.querimonia.rest.manager.filter.ResponseComponentFilter;
+import de.fraunhofer.iao.querimonia.db.manager.filter.ResponseComponentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -162,6 +162,9 @@ public class ResponseComponentManager {
     }
   }
 
+  /**
+   * Deletes all components.
+   */
   public synchronized void deleteAllComponents() {
     // remove references in complaints
     for (Complaint complaint : complaintRepository.findAll()) {

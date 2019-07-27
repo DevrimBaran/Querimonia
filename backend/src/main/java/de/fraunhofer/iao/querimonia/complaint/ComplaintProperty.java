@@ -99,8 +99,15 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     this.name = name;
   }
 
+  /**
+   * Creates a new complaint property with the given name and the given value. The set by user
+   * flag is set to true. The probability map only has this one value.
+   *
+   * @param name  the name of the property.
+   * @param value the value of the property.
+   */
   public ComplaintProperty(@NonNull String name, @NonNull String value) {
-    this.probabilities = new HashMap<>();
+    this.probabilities = new HashMap<>(Collections.singletonMap(value, 1.0));
     this.value = value;
     this.name = name;
     this.isSetByUser = true;

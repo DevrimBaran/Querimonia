@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
-import de.fraunhofer.iao.querimonia.rest.manager.ResponseComponentManager;
+import de.fraunhofer.iao.querimonia.db.manager.ResponseComponentManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;

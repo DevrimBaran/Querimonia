@@ -991,7 +991,7 @@ components:
       schema:
         type: string
         format: date
-        example: 2019-03-29
+        example: "2019-03-29"
 
     DateMaxParameter:
       name: date_max
@@ -1001,7 +1001,7 @@ components:
       schema:
         type: string
         format: date
-        example: 2019-07-23
+        example: "2019-07-23"
 
     EmotionParameter:
       name: emotion
@@ -1147,7 +1147,7 @@ components:
     ComplaintState:
       type: string
       description: Definiert den Status einer Beschwerde. Eine Beschwerde kann neu, in Bearbeitung und abgeschlossen sein.
-      enum: [NEW, IN_PROGRESS, CLOSED]
+      enum: [ERROR, ANALYSING, NEW, IN_PROGRESS, CLOSED]
       example: "NEW"
 
     ComplaintUpdateRequest:
@@ -1349,7 +1349,7 @@ components:
         name:
           type: string
           description: Der Name des Extraktors. Bei KIKuKo Extraktoren muss ein Extraktor mit diesem Namen konfiguriert sein.
-          example: GeldbetragExtraktor
+          example: "QuerimoniaExtract"
         type:
           type: string
           enum:
@@ -1358,7 +1358,7 @@ components:
             - KIKUKO_DOMAIN
             - NONE
           description: Eine Bezeichner für den Typ von Entraktor. KIkukoTool wird für Tools von KIkuko verwendet.
-          example: KIKuKoTool
+          example: "KIKUKO_TOOL"
         colors:
           type: array
           description: Gibt für beliebige Entity-Labels einen Farbcode an, mit der die Entität dargestellt wird.
@@ -1396,11 +1396,11 @@ components:
           format: int64
           example: 100
           description: Eine Zahl, die die Priorität bei der Antwortgenerierung angibt. Bausteine mit hoher Priorität werden zuerst geprüft und ggf. verwendet.
-        componentName:
+        name:
           type: string
           description: Eine **eindeutige** Bezeichung, welchen Teil einer Antwort der Baustein widerspiegelt.
           example: 'Begrüßung'
-        componentTexts:
+        texts:
           type: array
           description: Die Textalternativen ggf. mit Platzhaltern, die in der Antwort verwendet werden können
           items:

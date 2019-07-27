@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PredecessorRule implements Rule {
 
-  private String position = "last";
+  private String position;
   private final String predecessorRegex;
 
   /**

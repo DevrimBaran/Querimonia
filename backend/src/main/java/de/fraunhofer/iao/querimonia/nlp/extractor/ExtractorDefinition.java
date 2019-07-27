@@ -119,6 +119,7 @@ public class ExtractorDefinition {
         .toString();
   }
 
+  @SuppressWarnings("unused")
   @Embeddable
   private static class ColorDefinition {
 

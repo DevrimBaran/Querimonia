@@ -20,8 +20,8 @@ public class ResponseSliceTest {
 
   private class TestResponseSlice {
 
-    private boolean isPlaceholder;
-    private String content;
+    private final boolean isPlaceholder;
+    private final String content;
 
     private TestResponseSlice(boolean isPlaceholder, String content) {
       this.isPlaceholder = isPlaceholder;

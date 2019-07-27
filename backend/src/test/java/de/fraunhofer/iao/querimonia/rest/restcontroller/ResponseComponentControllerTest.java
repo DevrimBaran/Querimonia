@@ -6,7 +6,7 @@ import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
-import de.fraunhofer.iao.querimonia.rest.manager.ResponseComponentManager;
+import de.fraunhofer.iao.querimonia.db.manager.ResponseComponentManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.fraunhofer.iao.querimonia.response.component.TestComponents.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -54,7 +56,7 @@ public class ResponseComponentControllerTest {
   public void testAddDefaultComponents() {
     ResponseEntity<?> responseEntity = responseComponentController.addDefaultComponents();
     assertNotNull(responseEntity.getBody());
-    assertNotEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
+    assertThat(responseEntity.getBody(), is(not(instanceOf(QuerimoniaException.class))));
   }
 
   @Test

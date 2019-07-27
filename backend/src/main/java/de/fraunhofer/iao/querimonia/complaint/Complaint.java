@@ -17,7 +17,7 @@ import tec.uom.lib.common.function.Identifiable;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +30,23 @@ import java.util.Map;
  * To create a complaint, use a {@link ComplaintBuilder} to create or modify a complaint with all
  * properties. For creating a complaint from only its text, use a {@link ComplaintFactory}.
  * </p>
+ * <p><h2>{@link ComplaintState States of complaints}</h2></p>
+ * <p>Complaints have different states during the workflow:</p>
+ * <ul>
+ *   <li>{@link ComplaintState#ANALYSING}: Complaint that get uploaded start in this state. The
+ *   analysis has started, but is not finished yet. The complaint has no entities, categories,
+ *   sentiment and response yet. Deleting and editing is not allowed in this state.
+ *   </li>
+ *   <li>{@link ComplaintState#ERROR}: If the analysis could not be finished, complaints will
+ *   be in this state. They can't be edited in this state, but removed and reanalysed.</li>
+ *   <li>{@link ComplaintState#NEW}: If the analysis has finished, complaints are in this state.
+ *   All editing and deleting is allowed.</li>
+ *   <li>{@link ComplaintState#IN_PROGRESS}: The complaint can be manually set to this state to
+ *   indicate, that the work by the user on this complaint has begun. All editing and deleting is
+ *   allowed.</li>
+ *   <li>{@link ComplaintState#CLOSED}: The work on the complaint is finished. All actions are
+ *   executed. Editing is not allowed in this state, but deleting.</li>
+ * </ul>
  */
 @Entity
 @JsonPropertyOrder(value = {
@@ -96,7 +113,7 @@ public class Complaint implements Identifiable<Long> {
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "complaint_id")
   @NonNull
-  private List<ComplaintProperty> properties = Collections.emptyList();
+  private List<ComplaintProperty> properties = new ArrayList<>();
 
   /**
    * A value that represents the sentiment of the text. Negative values represent negative
@@ -112,7 +129,7 @@ public class Complaint implements Identifiable<Long> {
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "complaint_id")
   @NonNull
-  private List<NamedEntity> entities = Collections.emptyList();
+  private List<NamedEntity> entities = new ArrayList<>();
 
   /**
    * The response for the complaint.
@@ -148,6 +165,7 @@ public class Complaint implements Identifiable<Long> {
    * The configuration which was used to analyze the configuration.
    */
   @ManyToOne(cascade = CascadeType.MERGE)
+  @JoinColumn(name = "config_id")
   @NonNull
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
 
@@ -264,7 +282,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @NonNull
   public List<NamedEntity> getEntities() {
-    return Collections.unmodifiableList(entities);
+    return entities;
   }
 
   /**
@@ -277,7 +295,7 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   @JsonIgnore
   public Map<String, Integer> getWordCounts() {
-    return Collections.unmodifiableMap(wordList);
+    return wordList;
   }
 
   /**
@@ -351,7 +369,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @NonNull
   public List<ComplaintProperty> getProperties() {
-    return Collections.unmodifiableList(properties);
+    return properties;
   }
 
   /**

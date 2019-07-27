@@ -1,13 +1,13 @@
-package de.fraunhofer.iao.querimonia.rest.manager;
+package de.fraunhofer.iao.querimonia.db.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.config.Extractors;
+import de.fraunhofer.iao.querimonia.rest.restobjects.AvailableExtractors;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContactExtractors;
-import de.fraunhofer.iao.querimonia.rest.manager.filter.ComparatorBuilder;
+import de.fraunhofer.iao.querimonia.db.manager.filter.ComparatorBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -202,9 +202,9 @@ public class ConfigurationManager {
   /**
    * Returns all Extractors of KiKuKo.
    */
-  public synchronized Extractors getAllExtractors() {
+  public synchronized AvailableExtractors getAllExtractors() {
     KiKuKoContactExtractors contact = new KiKuKoContactExtractors();
-    return new Extractors(
+    return new AvailableExtractors(
         contact.executeKikukoRequest("tools"),
         contact.executeKikukoRequest("pipelines"),
         contact.executeKikukoRequest("domains"));
@@ -214,7 +214,7 @@ public class ConfigurationManager {
    * Stores the configuration in the database.
    * @param configuration the configuration that should be stored.
    */
-  synchronized void storeConfiguration(Configuration configuration) {
+  private synchronized void storeConfiguration(Configuration configuration) {
     configurationRepository.save(configuration);
   }
 

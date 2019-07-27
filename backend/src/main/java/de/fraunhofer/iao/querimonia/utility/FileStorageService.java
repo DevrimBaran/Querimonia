@@ -1,7 +1,7 @@
-package de.fraunhofer.iao.querimonia.service;
+package de.fraunhofer.iao.querimonia.utility;
 
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
-import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -24,9 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
-
 /**
- * Service for saving files in filesystem and retrieving them. Inpired by
+ * Service for saving files in filesystem and retrieving them. Inspired by
  * https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
  */
 @Service

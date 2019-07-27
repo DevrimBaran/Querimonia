@@ -2,7 +2,6 @@ package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.rest.manager.filter;
+package de.fraunhofer.iao.querimonia.db.manager.filter;
 
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,7 @@ import java.util.function.Function;
  */
 public class ComparatorBuilder<T> {
 
-  private Map<String, Function<T, Comparable>> sortAttributes = new HashMap<>();
+  private final Map<String, Function<T, Comparable>> sortAttributes = new HashMap<>();
 
   /**
    * Creates a new comparator that compares objects of the type T. The array of sort aspects

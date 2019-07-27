@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.rest.manager;
+package de.fraunhofer.iao.querimonia.db.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.db.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
@@ -15,11 +16,10 @@ import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
-import de.fraunhofer.iao.querimonia.rest.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
-import de.fraunhofer.iao.querimonia.service.FileStorageService;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +30,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
 
 /**
  * Manager class for complaints.
@@ -133,32 +137,40 @@ public class ComplaintManager {
         .orElseGet(configurationManager::getCurrentConfiguration);
 
     var complaintBuilder = complaintFactory.createBaseComplaint(input.getText(), configuration);
-    complaintBuilder.setState(ComplaintState.ANALYSING);
+    complaintBuilder.setState(ANALYSING);
 
     var complaint = complaintBuilder.createComplaint();
-    // story unfinished state
+    // store unfinished state
     storeComplaint(complaint);
     // update id
     complaintBuilder.setId(complaint.getId());
 
     // run analysis async
-    CompletableFuture.supplyAsync(() -> complaintFactory.analyzeComplaint(complaintBuilder, false))
-        // set state on error
-        .exceptionally(e -> onException(complaintBuilder, e))
-        // story complaint when finished
-        .whenComplete((this::onAnalysisFinished));
+    Executors.newCachedThreadPool().submit(() ->
+        CompletableFuture.supplyAsync(
+            () -> complaintFactory.analyzeComplaint(complaintBuilder, false))
+            // set state on error
+            .exceptionally(e -> onException(complaintBuilder, e))
+            // story complaint when finished
+            .whenComplete((this::onAnalysisFinished)).join());
     return complaint;
   }
 
+  /**
+   * It called when the analysis throws an exception. It stores the complaint with the error state.
+   */
   @NonNull
   private ComplaintBuilder onException(ComplaintBuilder complaintBuilder, Throwable e) {
-    complaintBuilder.setState(ComplaintState.ERROR);
+    complaintBuilder.setState(ERROR);
     storeComplaint(complaintBuilder.createComplaint());
     // TODO exception handling
     logger.error("Exception occurred", e);
     return complaintBuilder;
   }
 
+  /**
+   * Is called, when the analysis is finished. It saves the new complaint.
+   */
   private void onAnalysisFinished(ComplaintBuilder finishedComplaintBuilder, Throwable throwable) {
     if (throwable == null) {
       finishedComplaintBuilder.setState(ComplaintState.NEW);
@@ -191,7 +203,7 @@ public class ComplaintManager {
    */
   public Complaint updateComplaint(long complaintId, ComplaintUpdateRequest updateRequest) {
     Complaint complaint = getComplaint(complaintId);
-    checkState(complaint);
+    checkForbiddenStates(complaint);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
 
     if (updateRequest.getNewEmotion().isPresent()) {
@@ -234,7 +246,7 @@ public class ComplaintManager {
       Optional<Long> configId) {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
-    checkState(complaint);
+    checkForbiddenStates(complaint);
 
     Configuration configuration = configId
         // if given use the configuration with that id
@@ -258,8 +270,8 @@ public class ComplaintManager {
    */
   public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    checkState(complaint);
-    complaint = complaint.withState(ComplaintState.CLOSED);
+    checkForbiddenStates(complaint);
+    complaint = complaint.withState(CLOSED);
 
     // execute actions of the complaint
     complaint
@@ -376,14 +388,37 @@ public class ComplaintManager {
     logger.info("Saved complaint with id {}", complaint.getId());
   }
 
-  private void checkState(Complaint complaint) {
-    if (complaint.getState().equals(ComplaintState.CLOSED)) {
+  private void checkForbiddenStates(Complaint complaint) {
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+  }
+
+  /**
+   * Checks the state of the complaint. Throws an exception if the complaint state is one the
+   * given forbidden states.
+   *
+   * @param complaint       the complaint to check.
+   * @param forbiddenStates the states that are not allowed.
+   *
+   * @throws QuerimoniaException if the state of the complaint is one of the forbidden states.
+   */
+  private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
+    var forbiddenStatesList = Arrays.asList(forbiddenStates);
+    if (forbiddenStatesList.contains(CLOSED)
+        && complaint.getState().equals(CLOSED)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
           + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
     }
-    if (complaint.getState().equals(ComplaintState.ANALYSING)) {
+    if (forbiddenStatesList.contains(ANALYSING)
+        && complaint.getState().equals(ANALYSING)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
           + "werden, während sie analysiert wird!", "Beschwerde wird analysiert");
+    }
+    if (forbiddenStatesList.contains(ERROR)
+        && complaint.getState().equals(ERROR)) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
+          + "werden, da die Analyse nicht abgeschlossen werden konnte. Starten Sie die Analyse "
+          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.",
+          "Beschwerde wurde nicht analysiert.");
     }
   }
 

@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import org.springframework.lang.Nullable;
@@ -13,7 +12,7 @@ public class EntityRule implements Rule {
   private final String entityLabel;
   // if this is null, only check if entity is available
   @Nullable
-  private String expectedRegex;
+  private final String expectedRegex;
 
   public EntityRule(String entityLabel, @Nullable String expectedRegex) {
     this.entityLabel = entityLabel;

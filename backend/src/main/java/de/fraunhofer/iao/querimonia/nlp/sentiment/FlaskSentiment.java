@@ -1,12 +1,10 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.rest.contact.FlaskContact;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

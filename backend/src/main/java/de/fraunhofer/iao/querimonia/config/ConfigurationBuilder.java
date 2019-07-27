@@ -4,13 +4,22 @@ import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * This is builder class for {@link Configuration configurations}.
+ * This is builder class for {@link Configuration configurations}. It is used to create
+ * configuration instances.
+ *
+ * <p>Usage:</p>
+ * <pre>{@code Configuration config = new ConfigurationBuilder()
+ *        .setName("example")
+ *        .setClassifiers(exampleClassifiers)
+ *        ...
+ *        .createConfiguration();}</pre>
  */
 public class ConfigurationBuilder {
   @Nullable
@@ -26,10 +35,18 @@ public class ConfigurationBuilder {
   private long id;
   private boolean active;
 
+  /**
+   * Creates a new empty configuration builder.
+   */
   public ConfigurationBuilder() {
     // default constructor
   }
 
+  /**
+   * Creates a new configuration builder with the attributes of a configuration.
+   *
+   * @param configuration the builder will have the save attribute values as this configuration.
+   */
   public ConfigurationBuilder(Configuration configuration) {
     this.name = configuration.getName();
     this.extractors = configuration.getExtractors();
@@ -40,28 +57,60 @@ public class ConfigurationBuilder {
     this.emotionAnalyzer = configuration.getEmotionAnalyzer();
   }
 
+  /**
+   * Sets the {@link Configuration#getName() name} of the configuration.
+   *
+   * @param name the name of the configuration.
+   *
+   * @return this configuration builder.
+   */
   public ConfigurationBuilder setName(String name) {
     this.name = name;
     return this;
   }
 
+  /**
+   * Sets the {@link Configuration#getExtractors() extractors} of the configuration.
+   *
+   * @param extractors a list of {@link ExtractorDefinition extractor definitions} that defines
+   *                   which extractors should be used in the analysis.
+   *
+   * @return this configuration builder.
+   */
   public ConfigurationBuilder setExtractors(List<ExtractorDefinition> extractors) {
     this.extractors = extractors;
     return this;
   }
 
-  public ConfigurationBuilder setClassifiers(List<ClassifierDefinition> classifiers) {
+  /**
+   * Sets the {@link Configuration#getClassifiers() classifiers} of the configuration.
+   *
+   * @param classifiers a list of {@link ClassifierDefinition classifier definitions} that defines
+   *                    which classifiers should be used in the analysis.
+   *
+   * @return this configuration builder.
+   */
+  public ConfigurationBuilder setClassifiers(@NonNull List<ClassifierDefinition> classifiers) {
     this.classifiers = classifiers;
     return this;
   }
 
-  public ConfigurationBuilder setSentimentAnalyzer(SentimentAnalyzerDefinition sentimentAnalyzer) {
+  /**
+   * Sets the {@link Configuration#getSentimentAnalyzer() sentiment analyzer} of the configuration.
+   *
+   * @param sentimentAnalyzer the {@link SentimentAnalyzerDefinition definition} of the sentiment
+   *                          analyzer, that should be used for the analysis.
+   *
+   * @return this configuration builder.
+   */
+  public ConfigurationBuilder setSentimentAnalyzer(
+      @NonNull SentimentAnalyzerDefinition sentimentAnalyzer) {
     this.sentimentAnalyzer = sentimentAnalyzer;
     return this;
   }
 
   public ConfigurationBuilder setEmotionAnalyzer(
-      @Nullable EmotionAnalyzerDefinition emotionAnalyzer) {
+      @NonNull EmotionAnalyzerDefinition emotionAnalyzer) {
     this.emotionAnalyzer = emotionAnalyzer;
     return this;
   }
@@ -77,7 +126,15 @@ public class ConfigurationBuilder {
         Objects.requireNonNull(emotionAnalyzer), active);
   }
 
-  public ConfigurationBuilder setId(long id) {
+  /**
+   * Sets the id of the configuration. <b>Use with caution!</b> When adding new configurations to
+   * the database, the id will be generated automatically.
+   *
+   * @param id the unique id of the configuration.
+   *
+   * @return this configuration builder.
+   */
+  ConfigurationBuilder setId(long id) {
     this.id = id;
     return this;
   }

@@ -1,5 +1,5 @@
 
-package de.fraunhofer.iao.querimonia.rest.manager.filter;
+package de.fraunhofer.iao.querimonia.db.manager.filter;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;

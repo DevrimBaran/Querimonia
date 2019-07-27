@@ -10,9 +10,9 @@ import org.xml.sax.SAXParseException;
 public class XmlException extends QuerimoniaException {
 
   @JsonProperty("line")
-  private int line;
+  private final int line;
   @JsonProperty("column")
-  private int column;
+  private final int column;
 
   public XmlException(HttpStatus status, String message, SAXParseException exception) {
     super(status, message, exception, "XML-Fehler");

@@ -14,7 +14,7 @@ import java.util.stream.StreamSupport;
 public class MockRepository<T extends Identifiable<Long>> implements
     PagingAndSortingRepository<T, Long> {
 
-  private HashMap<Long, T> mockDatabase = new HashMap<>();
+  private final HashMap<Long, T> mockDatabase = new HashMap<>();
   private long counter = 1;
 
   @Override

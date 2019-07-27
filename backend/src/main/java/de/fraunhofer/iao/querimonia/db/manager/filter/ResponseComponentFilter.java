@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.rest.manager.filter;
+package de.fraunhofer.iao.querimonia.db.manager.filter;
 
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import org.apache.commons.lang3.StringUtils;

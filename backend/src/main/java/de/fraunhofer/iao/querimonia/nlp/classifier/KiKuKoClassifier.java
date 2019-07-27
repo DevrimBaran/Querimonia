@@ -10,7 +10,7 @@ import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
  */
 public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
 
-  private String categoryName;
+  private final String categoryName;
 
   public KiKuKoClassifier(String categoryName) {
     super("tool", "Beschwerde3Klassifikator2");

@@ -11,6 +11,7 @@ public class ExtractorResponse {
   private ExtractorPipelines pipelines;
   private String content;
 
+  @SuppressWarnings("unused")
   @JsonCreator
   public ExtractorResponse(@JsonProperty("pipelines") ExtractorPipelines pipelines,
                            @JsonProperty("content") String content) {

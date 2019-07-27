@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.property;
+package de.fraunhofer.iao.querimonia.utility;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

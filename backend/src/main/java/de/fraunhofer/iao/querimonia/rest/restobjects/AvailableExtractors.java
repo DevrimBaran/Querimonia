@@ -1,34 +1,32 @@
-package de.fraunhofer.iao.querimonia.config;
+package de.fraunhofer.iao.querimonia.rest.restobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-
 /**
  * Extractors displays all extractors by tool, pipeline, and domain.
  */
-
 @JsonPropertyOrder(value = {
         "tool",
         "pipeline",
         "domain"
 })
-public class Extractors {
+public class AvailableExtractors {
 
   private String[] tool;
   private String[] pipeline;
   private String[] domain;
 
   @JsonCreator
-  public Extractors(String[] tool, String[] pipeline, String[] domain) {
+  public AvailableExtractors(String[] tool, String[] pipeline, String[] domain) {
     this.tool = tool;
     this.pipeline = pipeline;
     this.domain = domain;
   }
 
   @SuppressWarnings("unused")
-  private Extractors() {
+  private AvailableExtractors() {
     // for hibernate
   }
 
@@ -36,7 +34,7 @@ public class Extractors {
     return tool;
   }
 
-  public Extractors setTool(String[] tool) {
+  public AvailableExtractors setTool(String[] tool) {
     this.tool = tool;
     return this;
   }
@@ -45,7 +43,7 @@ public class Extractors {
     return pipeline;
   }
 
-  public Extractors setPipeline(String[] pipeline) {
+  public AvailableExtractors setPipeline(String[] pipeline) {
     this.pipeline = pipeline;
     return this;
   }
@@ -54,7 +52,7 @@ public class Extractors {
     return domain;
   }
 
-  public Extractors setDomain(String[] domain) {
+  public AvailableExtractors setDomain(String[] domain) {
     this.domain = domain;
     return this;
   }

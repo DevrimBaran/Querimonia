@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
-import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import tec.uom.lib.common.function.Identifiable;
@@ -24,6 +23,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
     "componentTexts",
     "actions"
 })
-public class ResponseComponent implements RuledInterface, Identifiable<Long> {
+public class ResponseComponent implements Identifiable<Long> {
 
   /**
    * The unique primary key of the component.
@@ -55,6 +55,7 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    * A unique identifier for components.
    */
   @Column(name = "name", unique = true, nullable = false)
+  @JsonProperty("name")
   @NonNull
   private String componentName = "";
 
@@ -71,8 +72,9 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   @CollectionTable(name = "component_text_table",
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000, nullable = false)
+  @JsonProperty("texts")
   @NonNull
-  private List<String> componentTexts = List.of();
+  private List<String> componentTexts = new ArrayList<>();
 
   /**
    * The list of actions.
@@ -128,15 +130,16 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   @JsonCreator
   public ResponseComponent(@JsonProperty("name") String componentName,
                            @JsonProperty("priority") int priority,
-                           @JsonProperty(value = "componentTexts", defaultValue = "[]") List<String> componentTexts,
+                           @JsonProperty(value = "texts", defaultValue = "[]")
+                               List<String> componentTexts,
                            @JsonProperty("rulesXml") String rulesXml,
-                           @JsonProperty(value = "actions", defaultValue = "[]") List<Action> actions,
-                           @JsonProperty(value = "requiredEntities", defaultValue = "[]") List<String> requiredEntities) {
-    // work around to allow json creation with required entities property
+                           @JsonProperty(value = "actions", defaultValue = "[]")
+                               List<Action> actions) {
     this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
 
-  public ResponseComponent() {
+  @SuppressWarnings("unused")
+  private ResponseComponent() {
     // required for hibernate
   }
 
@@ -206,7 +209,6 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    *
    * @return the rule of the component.
    */
-  @Override
   @JsonIgnore
   @NonNull
   public Rule getRootRule() {

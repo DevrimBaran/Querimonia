@@ -5,10 +5,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("EmptyMethod")
 public class ConfigControllerTest {
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
   }
 
   @Test

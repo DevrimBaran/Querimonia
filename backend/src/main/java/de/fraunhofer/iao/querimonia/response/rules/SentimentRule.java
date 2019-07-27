@@ -27,9 +27,6 @@ public class SentimentRule implements Rule {
 
   @Override
   public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
-    if (complaint.getSentiment() == null) {
-      return false;
-    }
     return complaint.getSentiment().getTendency() >= min
         && complaint.getSentiment().getTendency() <= max
         && (emotion == null || complaint.getSentiment().getEmotion().getValue().matches(emotion));
