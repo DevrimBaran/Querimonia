@@ -39,11 +39,11 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
   public ComplaintProperty classifyText(String input) {
     KikukoResponse response = executeKikukoRequest(input);
 
-    Map<String, Double> probs = new LinkedHashMap<>();
+    Map<String, Double> probs =
         response.getPipelines()
-        .values()
-        .iterator().next()
-        .forEach(entity -> entity.getTyp().forEach((c, v) -> probs.merge(c, v, Double::max)));
+            .get("TempPipeline")
+            .get(0)
+            .getTyp();
 
     return new ComplaintProperty(categoryName, probs);
   }
