@@ -39,17 +39,21 @@ function List (data) {
   let sent = data.sentiment.tendency;
   return (
     <tr key={data.id}>
-      <td><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
       <td style={{ textAlign: 'left' }}><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
-      <td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
         <span className='sentiment'>
           {getMaxKey(data.sentiment.emotion.probabilities)}
-        </span></td>
-      <td> <span role='img' className='emotion'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span></td>
-      <td> <span className='small' style={{ fontWeight: 'normal' }}>
-        {data.properties[0].value + ' (' + (data.properties[0].probabilities[data.properties[0].value] * 100) + '%)'}
-      </span></td>
-      <td><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></td>
+        </span></Link></td>
+      <td><Link to={'/complaints/' + data.id}>
+        <span role='img' className='emotion'>
+          {sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})
+        </span></Link></td>
+      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
+        <span className='small' style={{ fontWeight: 'normal' }}>
+          {data.properties[0].value + ' (' + (data.properties[0].probabilities[data.properties[0].value] * 100) + '%)'}
+        </span></Link></td>
+      <td><Link to={'/complaints/' + data.id}><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></Link></td>
     </tr>
   );
 }
@@ -115,12 +119,12 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editSentime
             <b> Sentiment: </b>
             {
               !editSentimentBool ? (
-              <span>
-              <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span>
-              <Tooltip htmlFor='sentiments'>
-              {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
-              </Tooltip>
-              {/* eslint-disable-next-line */}
+                <span>
+                  <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span>
+                  <Tooltip htmlFor='sentiments'>
+                    {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
+                  </Tooltip>
+                  {/* eslint-disable-next-line */}
                   <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
               ) : (
@@ -177,9 +181,7 @@ function getMaxKey (data) {
       maxIndex = i;
     }
   }
-  return (
-    keys[maxIndex] + ' (' + maxVal + ')'
-  );
+  return (keys[maxIndex]);
 }
 
 export default { Header, List, Single };

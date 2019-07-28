@@ -16,7 +16,6 @@
 @import 'components/autocomplete';
 @import 'components/modal';
 @import 'components/tooltip';
-@import 'tables';
 #root {
     display: flex;
     overflow: hidden;
@@ -137,7 +136,8 @@
         background-color: $lightgrey;
     }
     th {
-        background-color: $white;
+        background: #179c7d;
+        color: white;
         position: sticky;
         top: 0px;
         text-align: center;
@@ -146,6 +146,7 @@
         border-width: 5px;
     }
     td {
+        background: rgb(247, 247, 247);
         max-width: 600px;
         text-align: center;
         border-bottom-style: solid;

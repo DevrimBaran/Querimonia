@@ -10,9 +10,9 @@ import React, { Component } from 'react';
 import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
-import Table from './../components/Table';
 import Api from './../utility/Api';
 import WordCloud from 'react-d3-cloud';
+import Table from './../components/Table';
 
 class TagCloud extends Component {
   constructor (props) {
@@ -174,15 +174,15 @@ class TagCloud extends Component {
                 <Table className='table'>
                   <thead>
                     <tr>
-                      <th>Wort</th>
-                      <th>Anzahl</th>
+                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>
+                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Anzahl</th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.createWordArray(this.state.words).map((element) => {
                       return (
-                        <tr><td>{element['text']}</td>
-                          <td>{element['size']}</td>
+                        <tr><td style={{ borderStyle: 'solid' }}>{element['text']}</td>
+                          <td style={{ borderStyle: 'solid', background: 'rgb(240, 240, 240)' }}>{element['size']}</td>
                         </tr>);
                     })}
                   </tbody>
