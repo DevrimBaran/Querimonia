@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
 
-  private String categoryName;
+  private final String categoryName;
 
   public KiKuKoClassifier(String categoryName) {
     super("tool", "Beschwerde3Klassifikator2");

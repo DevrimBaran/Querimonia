@@ -9,9 +9,9 @@ import java.util.Objects;
 
 public class ResponseStatusCodeMatcher<T extends ResponseEntity<?>> extends TypeSafeMatcher<T> {
 
-  private HttpStatus status;
+  private final HttpStatus status;
 
-  public ResponseStatusCodeMatcher(HttpStatus status) {
+  private ResponseStatusCodeMatcher(HttpStatus status) {
     this.status = status;
   }
 

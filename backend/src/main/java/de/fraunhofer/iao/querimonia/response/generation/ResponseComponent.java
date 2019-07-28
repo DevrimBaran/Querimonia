@@ -7,9 +7,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
-import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import tec.uom.lib.common.function.Identifiable;
@@ -26,6 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +45,7 @@ import java.util.stream.Collectors;
     "componentTexts",
     "actions"
 })
-public class ResponseComponent implements RuledInterface, Identifiable<Long> {
+public class ResponseComponent implements Identifiable<Long> {
 
   /**
    * The unique primary key of the component.
@@ -57,6 +59,7 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    * A unique identifier for components.
    */
   @Column(name = "name", unique = true, nullable = false)
+  @JsonProperty("name")
   @NonNull
   private String componentName = "";
 
@@ -73,8 +76,9 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   @CollectionTable(name = "component_text_table",
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000, nullable = false)
+  @JsonProperty("texts")
   @NonNull
-  private List<String> componentTexts = List.of();
+  private List<String> componentTexts = new ArrayList<>();
 
   /**
    * The list of actions.
@@ -97,7 +101,7 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    */
   @Transient
   @JsonIgnore
-  @Nullable
+  @NonNull
   private Rule rootRule;
 
   /**
@@ -105,7 +109,7 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    */
   @Transient
   @JsonIgnore
-  @Nullable
+  @NonNull
   private List<List<ResponseSlice>> componentSlices;
 
   // constructor for builder
@@ -130,16 +134,19 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   @JsonCreator
   public ResponseComponent(@JsonProperty("name") String componentName,
                            @JsonProperty("priority") int priority,
-                           @JsonProperty(value = "componentTexts", defaultValue = "[]") List<String> componentTexts,
+                           @JsonProperty(value = "texts", defaultValue = "[]")
+                               List<String> componentTexts,
                            @JsonProperty("rulesXml") String rulesXml,
-                           @JsonProperty(value = "actions", defaultValue = "[]") List<Action> actions,
-                           @JsonProperty(value = "requiredEntities", defaultValue = "[]") List<String> requiredEntities) {
-    // work around to allow json creation with required entities property
+                           @JsonProperty(value = "actions", defaultValue = "[]")
+                               List<Action> actions) {
     this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
 
-  public ResponseComponent() {
+  @SuppressWarnings("unused")
+  private ResponseComponent() {
     // required for hibernate
+    this.componentSlices = createSlices();
+    this.rootRule = parseRulesXml(this.rulesXml);
   }
 
   /**
@@ -160,6 +167,7 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
         .filter(ResponseSlice::isPlaceholder)
         // map the placeholders to their identifiers
         .map(ResponseSlice::getContent)
+        .distinct()
         .collect(Collectors.toList());
   }
 
@@ -169,8 +177,10 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
     return componentId;
   }
 
-  public void setComponentId(long componentId) {
-    this.componentId = componentId;
+  public ResponseComponent withId(long componentId) {
+    return new ResponseComponentBuilder(this)
+        .setId(componentId)
+        .createResponseComponent();
   }
 
   @NonNull
@@ -184,22 +194,8 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   }
 
   @NonNull
-  public ResponseComponent setComponentTexts(@NonNull List<String> componentTexts) {
-    this.componentTexts = componentTexts;
-    this.componentSlices = createSlices();
-    return this;
-  }
-
-  @NonNull
   public String getRulesXml() {
     return rulesXml;
-  }
-
-  @NonNull
-  private ResponseComponent setRulesXml(String rulesXml) {
-    this.rulesXml = rulesXml;
-    rootRule = parseRulesXml(rulesXml);
-    return this;
   }
 
   /**
@@ -208,24 +204,14 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
    *
    * @return the rule of the component.
    */
-  @Override
   @JsonIgnore
   @NonNull
   public Rule getRootRule() {
-    if (rootRule == null) {
-      rootRule = parseRulesXml(rulesXml);
-    }
     return rootRule;
   }
 
   public int getPriority() {
     return priority;
-  }
-
-  @NonNull
-  public ResponseComponent setPriority(int priority) {
-    this.priority = priority;
-    return this;
   }
 
   /**
@@ -235,9 +221,6 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   @Transient
   @NonNull
   private List<List<ResponseSlice>> getResponseSlices() {
-    if (componentSlices == null) {
-      componentSlices = createSlices();
-    }
     return componentSlices;
   }
 
@@ -254,13 +237,6 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
   @NonNull
   public List<Action> getActions() {
     return actions;
-  }
-
-  @NonNull
-  public ResponseComponent setActions(
-      List<Action> actions) {
-    this.actions = actions;
-    return this;
   }
 
   @Override
@@ -293,5 +269,19 @@ public class ResponseComponent implements RuledInterface, Identifiable<Long> {
         .append(actions)
         .append(rulesXml)
         .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        .append("componentId", componentId)
+        .append("componentName", componentName)
+        .append("priority", priority)
+        .append("componentTexts", componentTexts)
+        .append("actions", actions)
+        .append("rulesXml", rulesXml)
+        .append("rootRule", rootRule)
+        .append("componentSlices", componentSlices)
+        .toString();
   }
 }

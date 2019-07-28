@@ -1,9 +1,5 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
-
-import java.util.HashMap;
-
 /**
  * This factory creates {@link SentimentAnalyzer} objects from {@link SentimentAnalyzerDefinition
  * SentimentAnalyzerDefinitions}.

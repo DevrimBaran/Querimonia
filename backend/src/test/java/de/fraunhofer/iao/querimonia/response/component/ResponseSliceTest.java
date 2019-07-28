@@ -20,8 +20,8 @@ public class ResponseSliceTest {
 
   private class TestResponseSlice {
 
-    private boolean isPlaceholder;
-    private String content;
+    private final boolean isPlaceholder;
+    private final String content;
 
     private TestResponseSlice(boolean isPlaceholder, String content) {
       this.isPlaceholder = isPlaceholder;
@@ -144,9 +144,9 @@ public class ResponseSliceTest {
     String componentText =
         "Guten Tag, Herr ${Name}. Wir haben Ihnen am ${Datum} einen Betrag von ${Geldbetrag} überwiesen.";
     ResponseComponent responseComponent =
-        new ResponseComponentBuilder().createResponseComponent();
-    responseComponent =
-        responseComponent.setComponentTexts(Collections.singletonList(componentText));
+        new ResponseComponentBuilder()
+            .setComponentTexts(Collections.singletonList(componentText))
+            .createResponseComponent();
 
     List<String> correctRequiredEntities = new ArrayList<>();
     correctRequiredEntities.add("Name");
@@ -167,9 +167,8 @@ public class ResponseSliceTest {
             +
             "Auf Wiedersehen, Herr ${Name}!";
     ResponseComponent responseComponent =
-        new ResponseComponentBuilder().createResponseComponent();
-    responseComponent =
-        responseComponent.setComponentTexts(Collections.singletonList(componentText));
+        new ResponseComponentBuilder().setComponentTexts(Collections.singletonList(componentText))
+            .createResponseComponent();
 
     List<String> correctRequiredEntities = new ArrayList<>();
     correctRequiredEntities.add("Name");

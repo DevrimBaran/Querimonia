@@ -41,4 +41,32 @@ public class TestConfigurations {
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .createConfiguration();
 
+  public static final Configuration CONFIGURATION_D = new ConfigurationBuilder()
+      .setId(4)
+      .setName("D")
+      .setClassifiers(List.of())
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
+      .createConfiguration();
+
+  public static final Configuration CONFIGURATION_E = new ConfigurationBuilder()
+      .setId(5)
+      .setName("E")
+      .setClassifiers(List.of())
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
+      .setActive(true)
+      .createConfiguration();
+
+  public static final Configuration CONFIGURATION_F = new ConfigurationBuilder()
+      .setId(6)
+      .setName("F")
+      .setClassifiers(List.of())
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
+      .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
+      .setActive(true)
+      .createConfiguration();
 }

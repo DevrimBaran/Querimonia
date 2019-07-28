@@ -6,7 +6,17 @@ package de.fraunhofer.iao.querimonia.complaint;
 public enum ComplaintState {
 
   /**
-   * Complaint is new.
+   * Analysis could not be finished.
+   */
+  ERROR,
+
+  /**
+   * Analysis is in progress, complaint can not be edited in this time.
+   */
+  ANALYSING,
+
+  /**
+   * The client has not started working with the complaint.
    */
   NEW,
 

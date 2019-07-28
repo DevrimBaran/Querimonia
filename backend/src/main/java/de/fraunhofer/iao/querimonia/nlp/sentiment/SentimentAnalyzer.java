@@ -1,7 +1,5 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
-
 /**
  * This interface is used to analyze the sentiment of a text.
  */

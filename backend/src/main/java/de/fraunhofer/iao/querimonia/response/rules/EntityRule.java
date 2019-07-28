@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintUtility;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import org.springframework.lang.Nullable;
 
@@ -12,7 +12,7 @@ public class EntityRule implements Rule {
   private final String entityLabel;
   // if this is null, only check if entity is available
   @Nullable
-  private String expectedRegex;
+  private final String expectedRegex;
 
   public EntityRule(String entityLabel, @Nullable String expectedRegex) {
     this.entityLabel = entityLabel;
@@ -37,9 +37,9 @@ public class EntityRule implements Rule {
           || complaint.getReceiveTime().toString().equals(expectedRegex);
     }
 
-    if (complaint.getEntities() == null || complaint.getEntities()
-        .stream()
-        .noneMatch(namedEntity -> namedEntity.getLabel().equals(entityLabel))) {
+    if (complaint.getEntities()
+            .stream()
+            .noneMatch(namedEntity -> namedEntity.getLabel().equals(entityLabel))) {
       return false;
     }
     return expectedRegex == null
@@ -47,7 +47,7 @@ public class EntityRule implements Rule {
         // find matching entities
         .filter(namedEntity -> namedEntity.getLabel().equals(entityLabel))
         // map to entity values
-        .map(namedEntity -> ComplaintUtility.getValueOfEntity(complaint.getText(), namedEntity))
+        .map(NamedEntity::getValue)
         .anyMatch(value -> value.matches(expectedRegex));
   }
 }

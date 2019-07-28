@@ -8,7 +8,8 @@ import org.springframework.lang.Nullable;
 import java.util.Optional;
 
 /**
- * Rest object for updating complaints.
+ * Rest object that represents a request for updating complaints. It consists of optional
+ * attributes that the complaint should have.
  */
 public class ComplaintUpdateRequest {
 

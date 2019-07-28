@@ -1,21 +1,20 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
-import de.fraunhofer.iao.querimonia.db.repositories.*;
+import de.fraunhofer.iao.querimonia.db.repository.*;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
-import de.fraunhofer.iao.querimonia.matchers.EmptyMatcher;
-import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
-import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
-import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
+import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
-import de.fraunhofer.iao.querimonia.service.FileStorageService;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.apache.commons.collections4.IteratorUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -26,11 +25,11 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.CLOSED;
-import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.NEW;
+import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
 import static de.fraunhofer.iao.querimonia.matchers.OptionalPresentMatcher.present;
 import static de.fraunhofer.iao.querimonia.matchers.ResponseStatusCodeMatcher.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,7 +39,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
-@SuppressWarnings("OptionalGetWithoutIsPresent")
+@SuppressWarnings( {"OptionalGetWithoutIsPresent", "EmptyMethod"})
 public class ComplaintControllerTest {
 
   private ComplaintController complaintController;
@@ -56,9 +55,6 @@ public class ComplaintControllerTest {
 
     FileStorageProperties fileStorageProperties = new FileStorageProperties();
     fileStorageProperties.setUploadDir("src/test/resources/uploads/");
-
-    AnalyzerConfigProperties configProperties = new AnalyzerConfigProperties();
-    configProperties.setId(0);
 
     complaintController = new ComplaintController(new ComplaintManager(
         new FileStorageService(fileStorageProperties),
@@ -98,10 +94,11 @@ public class ComplaintControllerTest {
         responseEntity.getStatusCode());
     Complaint body = (Complaint) responseEntity.getBody();
     assertNotNull("Missing body", body);
-    assertEquals("complaint is not correct", TestComplaints.COMPLAINT_A, body);
+    assertThat(body.getState(), is(ANALYSING));
     assertTrue("db does not contain new complaint", complaintRepository.existsById(1L));
-    assertEquals("wrong complaint in db", complaintRepository.findById(1L).orElse(null),
-        TestComplaints.COMPLAINT_A);
+    assertEquals("wrong complaint in db",
+        complaintRepository.findById(1L).map(Complaint::getText).orElse(null),
+        TestComplaints.COMPLAINT_A.getText());
   }
 
   @Test
@@ -438,7 +435,39 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void getEntities() {
+  public void getEntities1() {
+    // empty entity list
+    var testComplaint = new ComplaintBuilder(TestComplaints.COMPLAINT_A)
+        .setEntities(Collections.emptyList())
+        .createComplaint();
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.getEntities(testComplaint.getId());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(List.class)));
+    assertThat((List) response.getBody(), is(empty()));
+  }
+  @Test
+  public void getEntities2() {
+    // non empty entity list
+    var testComplaint = TestComplaints.COMPLAINT_B;
+    complaintRepository.save(testComplaint);
+
+    var response = complaintController.getEntities(testComplaint.getId());
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(List.class)));
+    assertThat((List) response.getBody(), is(not(empty())));
+    assertThat(response.getBody(), is(equalTo(testComplaint.getEntities())));
+  }
+
+  @Test
+  public void getEntities3() {
+    var response = complaintController.getEntities(5L);
+    assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
+    assertThat(response.getBody(), is(notNullValue()));
+    assertThat(response.getBody(), is(instanceOf(NotFoundException.class)));
   }
 
   @Test

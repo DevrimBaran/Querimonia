@@ -8,8 +8,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 
 /**
- * The standard exception for Querimonia that extends the ResponseStatusException.
+ * The standard exception for Querimonia that extends the ResponseStatusException. This exception
+ * can be used as body for response entities.
  */
+@SuppressWarnings("EmptyMethod")
 public class QuerimoniaException extends ResponseStatusException {
 
   @JsonProperty
