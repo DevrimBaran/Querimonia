@@ -9,6 +9,8 @@ import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import tec.uom.lib.common.function.Identifiable;
@@ -99,7 +101,7 @@ public class ResponseComponent implements Identifiable<Long> {
    */
   @Transient
   @JsonIgnore
-  @Nullable
+  @NonNull
   private Rule rootRule;
 
   /**
@@ -107,7 +109,7 @@ public class ResponseComponent implements Identifiable<Long> {
    */
   @Transient
   @JsonIgnore
-  @Nullable
+  @NonNull
   private List<List<ResponseSlice>> componentSlices;
 
   // constructor for builder
@@ -143,6 +145,8 @@ public class ResponseComponent implements Identifiable<Long> {
   @SuppressWarnings("unused")
   private ResponseComponent() {
     // required for hibernate
+    this.componentSlices = createSlices();
+    this.rootRule = parseRulesXml(this.rulesXml);
   }
 
   /**
@@ -174,7 +178,7 @@ public class ResponseComponent implements Identifiable<Long> {
   }
 
   public ResponseComponent withId(long componentId) {
-    return new ResponseComponentBuilder()
+    return new ResponseComponentBuilder(this)
         .setId(componentId)
         .createResponseComponent();
   }
@@ -203,9 +207,6 @@ public class ResponseComponent implements Identifiable<Long> {
   @JsonIgnore
   @NonNull
   public Rule getRootRule() {
-    if (rootRule == null) {
-      rootRule = parseRulesXml(rulesXml);
-    }
     return rootRule;
   }
 
@@ -220,9 +221,6 @@ public class ResponseComponent implements Identifiable<Long> {
   @Transient
   @NonNull
   private List<List<ResponseSlice>> getResponseSlices() {
-    if (componentSlices == null) {
-      componentSlices = createSlices();
-    }
     return componentSlices;
   }
 
@@ -271,5 +269,19 @@ public class ResponseComponent implements Identifiable<Long> {
         .append(actions)
         .append(rulesXml)
         .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        .append("componentId", componentId)
+        .append("componentName", componentName)
+        .append("priority", priority)
+        .append("componentTexts", componentTexts)
+        .append("actions", actions)
+        .append("rulesXml", rulesXml)
+        .append("rootRule", rootRule)
+        .append("componentSlices", componentSlices)
+        .toString();
   }
 }

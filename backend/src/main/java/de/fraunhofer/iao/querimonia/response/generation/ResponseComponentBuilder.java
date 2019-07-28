@@ -19,6 +19,28 @@ public class ResponseComponentBuilder {
   private long id;
   private int priority;
 
+  /**
+   * Creates a new response component builder without any attributes set.
+   */
+  public ResponseComponentBuilder() {
+    // empty
+  }
+
+  /**
+   * Creates a response component builder out of a response component. The builder has the same
+   * attribute values as the given response component.
+   *
+   * @param responseComponent the response component which should be copied.
+   */
+  public ResponseComponentBuilder(ResponseComponent responseComponent) {
+    this.componentName = responseComponent.getComponentName();
+    this.componentTexts = new ArrayList<>(responseComponent.getComponentTexts());
+    this.rulesXml = responseComponent.getRulesXml();
+    this.actions = new ArrayList<>(responseComponent.getActions());
+    this.id = responseComponent.getId();
+    this.priority = responseComponent.getPriority();
+  }
+
   public ResponseComponentBuilder setComponentName(@NonNull String componentName) {
     this.componentName = componentName;
     return this;

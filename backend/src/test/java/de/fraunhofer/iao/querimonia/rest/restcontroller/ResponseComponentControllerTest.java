@@ -273,8 +273,8 @@ public class ResponseComponentControllerTest {
   @Test
   public void testUpdateComponent() {
     responseComponentController.addComponent(COMPONENT_C);
-    responseComponentController.updateComponent(1, COMPONENT_D);
-    ResponseComponent responseComponent = componentRepository.findAll().iterator().next();
+    responseComponentController.updateComponent(3, COMPONENT_D);
+    ResponseComponent responseComponent = componentRepository.findById(3L).orElseThrow();
     assertEquals(responseComponent, COMPONENT_D);
   }
 }

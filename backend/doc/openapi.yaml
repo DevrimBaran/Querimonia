@@ -20,15 +20,13 @@ tags:
     description: Hier werden Einstellungen verwaltet, es können Extraktoren, Klassifizierer und Sentiment-Analysierer festgelegt werden.
   - name: stats
     description: Hier können verschiedene Statistiken über die Beschwerden abgerufen werden.
-  - name: vector
-    description: Hier können veschieden Operationen mit Wordvektoren ausgeführt werden.
 paths:
   /api/complaints:
     get:
       tags:
         - complaints
       summary: Gibt Beschwerden zurück, die auf dem Server gespeichert sind.
-      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und das Offset der Beschwerden bestimmt werden.
+      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und die Seite der Beschwerden bestimmt werden.
       parameters:
         - $ref: '#/components/parameters/CountParameter'
         - $ref: '#/components/parameters/PageParameter'
@@ -50,6 +48,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Complaint'
+                example:
+
         400:
           $ref: '#/components/responses/IllegalParametersError'
         500:
@@ -1415,6 +1415,7 @@ components:
         rulesXml:
           type: string
           description: XML-Beschreibung der Regeln, die beschreiben, wann ein Antwortbaustein verwendet werden darf. Muss dem XSD-Schema entsprechen.
+          example: "<Rules><Property name=\"Kategorie\" value=\"Fahrt nicht erfolgt\"/></Rules>"
         requiredEntities:
           type: array
           description: Die nötigen Entitäts-Typen für den Antwortbaustein.
