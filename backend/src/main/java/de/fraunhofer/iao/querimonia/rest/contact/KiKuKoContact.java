@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -15,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 
-public class KiKuKoContact<T> {
+public class KiKuKoContact {
 
   private static final String URL = "https://kikuko.iao.fraunhofer.de/apitext";
   private final String domainType;
@@ -35,7 +36,7 @@ public class KiKuKoContact<T> {
    * @param input text that will be analysed
    * @return a Response Object
    */
-  protected T executeKikukoRequest(final String input, final Class<T[]> type) {
+  protected KikukoResponse executeKikukoRequest(final String input) {
 
     HttpHeaders header = new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -61,17 +62,18 @@ public class KiKuKoContact<T> {
     // get response
     String returnValue;
     try {
-      returnValue = template.exchange(URL, HttpMethod.POST,
-          request, String.class).getBody();
+      returnValue = template.postForObject(URL,
+          request, String.class);
     } catch (RestClientException e) {
+      e.printStackTrace();
       throw kikukoException;
     }
     // map string to json
     ObjectMapper mapper = new ObjectMapper();
-    T[] responses;
+    KikukoResponse[] responses;
 
     try {
-      responses = mapper.readValue(returnValue, type);
+      responses = mapper.readValue(returnValue, KikukoResponse[].class);
       // check for available response
       if (responses == null || responses.length == 0) {
         throw kikukoException;
@@ -82,5 +84,14 @@ public class KiKuKoContact<T> {
     }
 
     return responses[0];
+  }
+
+  public static void main(String[] args) {
+    KiKuKoContact contact = new KiKuKoContact("domain", "QuerimoniaExtract");
+    KikukoResponse response = contact.executeKikukoRequest("Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!");
+    response.getPipelines().forEach((a,b) -> {
+      System.out.println(a);
+      b.forEach(text -> System.out.println("\t"+ text));
+    });
   }
 }

@@ -2,13 +2,19 @@ package de.fraunhofer.iao.querimonia.nlp.classifier;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 /**
  * This class sends a text to the KIKuKo API to classify the text with a given classifier.
  */
-public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements Classifier {
+public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
 
   private final String categoryName;
 
@@ -31,12 +37,19 @@ public class KiKuKoClassifier extends KiKuKoContact<KikukoResponse> implements C
    */
   @Override
   public ComplaintProperty classifyText(String input) {
-    KikukoResponse response = executeKikukoRequest(input, KikukoResponse[].class);
+    KikukoResponse response = executeKikukoRequest(input);
 
-    return new ComplaintProperty(categoryName, response.getPipelines()
-        .getTempPipeline()
-        .get(0)
-        .getTyp());
+    Map<String, Double> probs =
+        response.getPipelines()
+            .get("TempPipeline")
+            .get(0)
+            .getTyp();
+
+    return new ComplaintProperty(categoryName, probs);
+  }
+
+  public static void main(String[] args) {
+    System.out.println(new KiKuKoClassifier("Klassifizierer"));
   }
 
 }
