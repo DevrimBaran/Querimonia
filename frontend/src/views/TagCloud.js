@@ -10,6 +10,7 @@ import React, { Component } from 'react';
 import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
+import Table from './../components/Table';
 import Api from './../utility/Api';
 import WordCloud from 'react-d3-cloud';
 
@@ -170,7 +171,7 @@ class TagCloud extends Component {
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
-                <table className='table'>
+                <Table className='table'>
                   <thead>
                     <tr>
                       <th>Wort</th>
@@ -185,7 +186,7 @@ class TagCloud extends Component {
                         </tr>);
                     })}
                   </tbody>
-                </table>
+                </Table>
 
               </Content>)}
           </Row>

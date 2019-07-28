@@ -101,6 +101,7 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       return {
         ...state,
         active: {
+          ...state.active,
           ...action.data
         }
       };

@@ -15,13 +15,15 @@ import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
 import Input from '../../components/Input';
+
 // eslint-disable-next-line
-import { BrowserRouter as Router, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
 function Header () {
   return (
     <thead>
       <tr>
+        <th />
         <th>ID</th>
         <th>Aktiv</th>
         <th>Name</th>
@@ -32,16 +34,48 @@ function Header () {
     </thead>
   );
 }
-
+const Copy = withRouter(class extends React.Component {
+  onClick = () => {
+    this.props.dispatch({
+      type: 'SET_ACTIVE',
+      endpoint: 'config',
+      id: this.props.id
+    });
+    this.props.dispatch({
+      type: 'MODIFY_ACTIVE',
+      endpoint: 'config',
+      data: { id: 0, name: '' }
+    });
+    this.props.history.push('/config/0');
+  }
+  render () {
+    return (
+      <i className='far fa-copy' onClick={this.onClick} />
+    );
+  }
+});
 function List (dispatch, data, currentConfig) {
   return (
     <tr key={data.id}>
-      <td><Link to={'/config/' + data.id}><h3>{data.id}</h3></Link></td>
-      <td><Link to={'/config/' + data.id}>{ data.id === currentConfig.id ? <input defaultChecked type='radio' name='active' /> : <input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' /> }</Link></td>
-      <td><Link to={'/config/' + data.id}>{data.name}</Link></td>
-      <td><Link to={'/config/' + data.id}>{data.extractors.length}</Link></td>
-      <td><Link to={'/config/' + data.id}>{data.classifiers[0].name}</Link></td>
-      <td><Link to={'/config/' + data.id}>{data.sentimentAnalyzer.name}</Link></td>
+      <td>
+        <Link to={'/config/' + data.id}>
+          <i className='far fa-edit' />
+        </Link>
+        <Copy id={data.id} dispatch={dispatch} />
+        <i className='far fa-trash-alt' />
+      </td>
+      <td><h3>{data.id}</h3></td>
+      <td>
+        {
+          data.id === currentConfig.id
+            ? (<input defaultChecked type='radio' name='active' />)
+            : (<input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' />)
+        }
+      </td>
+      <td>{data.name}</td>
+      <td>{data.extractors.length}</td>
+      <td>{data.classifiers[0].name}</td>
+      <td>{data.sentimentAnalyzer.name}</td>
     </tr>
   );
 }
