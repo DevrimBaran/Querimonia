@@ -228,6 +228,8 @@ public class ComplaintManager {
    */
   public synchronized void deleteComplaint(long complaintId) {
     if (complaintRepository.existsById(complaintId)) {
+      Complaint complaint = getComplaint(complaintId);
+      checkForbiddenStates(complaint, ANALYSING);
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
     } else {
@@ -246,7 +248,7 @@ public class ComplaintManager {
       Optional<Long> configId) {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
-    checkForbiddenStates(complaint);
+    checkForbiddenStates(complaint, ANALYSING, CLOSED);
 
     Configuration configuration = configId
         // if given use the configuration with that id
@@ -270,7 +272,7 @@ public class ComplaintManager {
    */
   public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    checkForbiddenStates(complaint);
+    checkForbiddenStates(complaint, ANALYSING, CLOSED);
     complaint = complaint.withState(CLOSED);
 
     // execute actions of the complaint
@@ -309,6 +311,8 @@ public class ComplaintManager {
    */
   public List<NamedEntity> addEntity(long complaintId, NamedEntity entity) {
     Complaint complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+
     // check validity of entity
     int start = entity.getStartIndex();
     int end = entity.getEndIndex();
@@ -339,7 +343,7 @@ public class ComplaintManager {
    */
   public List<NamedEntity> removeEntity(long complaintId, long entityId) {
     Complaint complaint = getComplaint(complaintId);
-
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
 
     List<NamedEntity> complaintEntities = complaint.getEntities();
     List<NamedEntity> entitiesToRemove = complaintEntities
@@ -369,6 +373,8 @@ public class ComplaintManager {
    */
   public ResponseSuggestion refreshResponse(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     var suggestion = complaintFactory.createResponse(builder);
     builder.setResponseSuggestion(suggestion);
