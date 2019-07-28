@@ -2,10 +2,10 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.db.repositories.MockComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.MockConfigurationRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
-import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;

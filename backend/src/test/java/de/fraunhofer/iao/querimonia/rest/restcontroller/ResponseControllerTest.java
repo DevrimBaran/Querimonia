@@ -1,12 +1,13 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.repositories.MockComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.MockComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repositories.MockConfigurationRepository;
-import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
-import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
-import de.fraunhofer.iao.querimonia.service.FileStorageService;
+
+import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockConfigurationRepository;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +32,12 @@ public class ResponseControllerTest {
     complaintRepository = new MockComplaintRepository();
     MockComponentRepository componentRepository = new MockComponentRepository();
     MockConfigurationRepository configurationRepository = new MockConfigurationRepository();
-    ConfigurationManager configurationManager = new ConfigurationManager(configurationRepository, complaintRepository);
-    ComplaintManager complaintManager = new ComplaintManager(fileStorageService, complaintRepository, componentRepository, configurationManager);
+    ConfigurationManager
+        configurationManager =
+        new ConfigurationManager(configurationRepository, complaintRepository);
+    ComplaintManager complaintManager =
+        new ComplaintManager(fileStorageService, complaintRepository, componentRepository,
+            configurationManager);
     responseController = new ResponseController(complaintManager);
   }
 

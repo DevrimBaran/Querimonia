@@ -73,7 +73,7 @@ public class Action {
    * Empty default constructor (only used for hibernate).
    */
   @SuppressWarnings("unused")
-  public Action() {
+  private Action() {
 
   }
 

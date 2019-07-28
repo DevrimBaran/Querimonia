@@ -2,7 +2,7 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.db.repositories.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import org.junit.Before;
