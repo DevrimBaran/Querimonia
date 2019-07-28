@@ -163,6 +163,7 @@ public class ResponseComponent implements Identifiable<Long> {
         .filter(ResponseSlice::isPlaceholder)
         // map the placeholders to their identifiers
         .map(ResponseSlice::getContent)
+        .distinct()
         .collect(Collectors.toList());
   }
 
@@ -172,8 +173,10 @@ public class ResponseComponent implements Identifiable<Long> {
     return componentId;
   }
 
-  public void setComponentId(long componentId) {
-    this.componentId = componentId;
+  public ResponseComponent withId(long componentId) {
+    return new ResponseComponentBuilder()
+        .setId(componentId)
+        .createResponseComponent();
   }
 
   @NonNull
@@ -187,22 +190,8 @@ public class ResponseComponent implements Identifiable<Long> {
   }
 
   @NonNull
-  public ResponseComponent setComponentTexts(@NonNull List<String> componentTexts) {
-    this.componentTexts = componentTexts;
-    this.componentSlices = createSlices();
-    return this;
-  }
-
-  @NonNull
   public String getRulesXml() {
     return rulesXml;
-  }
-
-  @NonNull
-  private ResponseComponent setRulesXml(String rulesXml) {
-    this.rulesXml = rulesXml;
-    rootRule = parseRulesXml(rulesXml);
-    return this;
   }
 
   /**
@@ -222,12 +211,6 @@ public class ResponseComponent implements Identifiable<Long> {
 
   public int getPriority() {
     return priority;
-  }
-
-  @NonNull
-  public ResponseComponent setPriority(int priority) {
-    this.priority = priority;
-    return this;
   }
 
   /**
@@ -256,13 +239,6 @@ public class ResponseComponent implements Identifiable<Long> {
   @NonNull
   public List<Action> getActions() {
     return actions;
-  }
-
-  @NonNull
-  public ResponseComponent setActions(
-      List<Action> actions) {
-    this.actions = actions;
-    return this;
   }
 
   @Override

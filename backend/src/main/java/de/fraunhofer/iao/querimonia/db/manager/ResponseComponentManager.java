@@ -179,7 +179,7 @@ public class ResponseComponentManager {
 
   public synchronized ResponseComponent updateComponent(long componentId,
                                                         ResponseComponent responseComponent) {
-    responseComponent.setComponentId(componentId);
+    responseComponent = responseComponent.withId(componentId);
     componentRepository.save(responseComponent);
     return responseComponent;
   }
