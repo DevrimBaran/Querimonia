@@ -23,14 +23,12 @@ import EditableEntityText from './EditableEntityText';
 function Header () {
   return (
     <thead>
-      <tr>
-        <th>Anliegen</th>
-        <th>Vorschau</th>
-        <th>Emotion</th>
-        <th>Sentiment</th>
-        <th>Kategorie</th>
-        <th>Datum</th>
-      </tr>
+      <th>Anliegen</th>
+      <th>Vorschau</th>
+      <th>Emotion</th>
+      <th>Sentiment</th>
+      <th>Kategorie</th>
+      <th>Datum</th>
     </thead>
   );
 }

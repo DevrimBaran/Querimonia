@@ -1,9 +1,10 @@
 const defaults = {
-  templates: {
+  components: {
     id: 0,
     priority: 0,
-    componentName: '',
-    templateTexts: [],
+    name: '',
+    texts: [],
+    actions: [],
     rulesXml: ''
   },
   config: {
@@ -18,13 +19,6 @@ const defaults = {
       name: 'DEFAULT',
       type: 'NONE'
     }
-  },
-  actions: {
-    id: 0,
-    name: '',
-    actionCode: '',
-    rulesXml: '',
-    parameters: {}
   }
 };
 
@@ -67,7 +61,7 @@ function pagination (state = { count: 0, limit: 10, max: 0 }, action, endpoint) 
     default:
       return state;
   }
-};
+}
 
 function data (state = { byId: {}, active: false, ids: [], fetching: false }, action, endpoint) {
   if (endpoint !== action.endpoint) return state;
@@ -135,7 +129,7 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
     default:
       return state;
   }
-};
+}
 function currentConfig (state = {}, action) {
   switch (action.type) {
     case 'CURRENT_CONFIG': {
@@ -162,7 +156,7 @@ const rootReducer = function (state, action) {
     complaints: fetchable(state.complaints, action, 'complaints'),
     actions: fetchable(state.actions, action, 'actions'),
     config: fetchable(state.config, action, 'config'),
-    templates: fetchable(state.templates, action, 'templates'),
+    components: fetchable(state.components, action, 'components'),
     currentConfig: currentConfig(state.currentConfig, action)
   };
 };

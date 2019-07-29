@@ -21,14 +21,12 @@ import { BrowserRouter as Router, Link } from 'react-router-dom';
 function Header () {
   return (
     <thead>
-      <tr>
-        <th>ID</th>
-        <th>Aktiv</th>
-        <th>Name</th>
-        <th>Extraktoren</th>
-        <th>Klassififkatoren</th>
-        <th>Stimmungsanalysator</th>
-      </tr>
+      <th>ID</th>
+      <th>Aktiv</th>
+      <th>Name</th>
+      <th>Extraktoren</th>
+      <th>Klassififkatoren</th>
+      <th>Stimmungsanalysator</th>
     </thead>
   );
 }

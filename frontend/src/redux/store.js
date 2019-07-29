@@ -88,41 +88,7 @@ const initialState = {
       max: 0
     }
   },
-  templates: {
-    data: {
-      byId: {},
-      ids: [],
-      active: false,
-      fetching: false
-    },
-    filter: [
-      {
-        label: 'Stichwort',
-        name: 'keywords',
-        multiple: true,
-        type: 'text'
-      },
-      {
-        label: 'Sortieren nach',
-        name: 'sort_by',
-        type: 'select',
-        values: [
-          { label: 'ID (absteigend)', value: 'id_desc' },
-          { label: 'ID (aufsteigend)', value: 'id_asc' },
-          { label: 'Priorität (absteigend)', value: 'priority_desc' },
-          { label: 'Priorität (aufsteigend)', value: 'priority_asc' },
-          { label: 'Name (absteigend)', value: 'name_desc' },
-          { label: 'Name (aufsteigend)', value: 'name_asc' }
-        ]
-      }
-    ],
-    pagination: {
-      count: 10,
-      page: 0,
-      max: 0
-    }
-  },
-  actions: {
+  components: {
     data: {
       byId: {},
       ids: [],
@@ -153,6 +119,8 @@ const initialState = {
         values: [
           { label: 'ID (absteigend)', value: 'id_desc' },
           { label: 'ID (aufsteigend)', value: 'id_asc' },
+          { label: 'Priorität (absteigend)', value: 'priority_desc' },
+          { label: 'Priorität (aufsteigend)', value: 'priority_asc' },
           { label: 'Name (absteigend)', value: 'name_desc' },
           { label: 'Name (aufsteigend)', value: 'name_asc' }
         ]
