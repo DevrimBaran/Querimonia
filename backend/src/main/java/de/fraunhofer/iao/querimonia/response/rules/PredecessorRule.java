@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintData;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 
@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class PredecessorRule implements Rule {
 
-  private String position = "last";
+  private String position;
   private final String predecessorRegex;
 
   /**
@@ -25,12 +25,8 @@ public class PredecessorRule implements Rule {
     this.predecessorRegex = predecessorRegex;
   }
 
-  public PredecessorRule(String predecessorRegex) {
-    this.predecessorRegex = predecessorRegex;
-  }
-
   @Override
-  public boolean isRespected(ComplaintData complaint,
+  public boolean isRespected(ComplaintBuilder complaint,
                              List<CompletedResponseComponent> currentResponseState) {
     // position does not matter
     if (position.equals("any")) {
@@ -59,7 +55,7 @@ public class PredecessorRule implements Rule {
   }
 
   @Override
-  public boolean isPotentiallyRespected(ComplaintData complaint) {
+  public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     // no assumption can be made
     return true;
   }

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class CompletedResponseComponent {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonIgnore
+  @Column(name = "id")
   private long responsePartId;
 
   @JoinColumn(name = "component_id")
@@ -33,6 +35,7 @@ public class CompletedResponseComponent {
   private ResponseComponent component;
 
   @OneToMany(cascade = CascadeType.MERGE)
+  @JoinColumn(name = "component_id")
   private List<NamedEntity> entities;
 
   @JsonCreator

@@ -26,6 +26,8 @@
                 <xs:complexType>
                     <xs:attribute name="min" type="xs:double"/>
                     <xs:attribute name="max" type="xs:double"/>
+                    <xs:attribute name="emotion" type="xs:string">
+                    </xs:attribute>
                 </xs:complexType>
             </xs:element>
 

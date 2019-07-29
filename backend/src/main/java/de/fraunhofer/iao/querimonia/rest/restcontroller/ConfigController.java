@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.rest.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -187,5 +187,14 @@ public class ConfigController {
   @DeleteMapping("api/config/all")
   public ResponseEntity<?> deleteAllConfigurations() {
     return ControllerUtility.tryAndCatch(configurationManager::deleteAllConfigurations);
+  }
+
+  /**
+   * Returns the configuration that is currently active.
+   * @return Extractors listed by tool, pipeline and domain
+   */
+  @GetMapping("api/config/allExtractors")
+  public ResponseEntity<?> getAllExtractors() {
+    return ControllerUtility.tryAndCatch(configurationManager::getAllExtractors);
   }
 }

@@ -1,19 +1,9 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
-import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
-
 /**
  * This interface is used to analyze the sentiment of a text.
  */
 public interface SentimentAnalyzer {
-
-  /**
-   * Analyzes the emotion of a given text.
-   *
-   * @param complaintText the text of the complaint.
-   * @return the property containing the emotions of the complaint.
-   */
-  ComplaintProperty analyzeEmotion(String complaintText);
 
   /**
    * Analyzes the sentiment of the given text.

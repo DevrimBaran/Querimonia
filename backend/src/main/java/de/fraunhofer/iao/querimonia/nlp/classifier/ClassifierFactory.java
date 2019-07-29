@@ -16,6 +16,7 @@ public class ClassifierFactory {
    * Creates a {@link Classifier} from a {@link ClassifierDefinition}.
    *
    * @param definition the definition of a classifier.
+   *
    * @return a classifier.
    * @throws IllegalArgumentException if the definition is invalid.
    */
@@ -24,7 +25,7 @@ public class ClassifierFactory {
       case NONE:
         var baseMap = new HashMap<String, Double>();
         baseMap.put("Unbekannt", 1.0);
-        return text -> new ComplaintProperty(baseMap, "Kategorie");
+        return text -> new ComplaintProperty("Kategorie", baseMap);
       case KIKUKO_CLASSIFIER:
         return new KiKuKoClassifier(definition.getName(), definition.getCategoryName());
       default:
@@ -36,10 +37,17 @@ public class ClassifierFactory {
   /**
    * Creates classifiers from their definitions.
    *
-   * @param definitions the list of definitions.
-   * @return a list of all creates classifiers.
+   * @param definitions the list of definitions. If this is empty, this will return a list of one
+   *                   classifier that sets the category to unknown.
+   *
+   * @return a list of all created classifiers.
    */
   public static List<Classifier> getFromDefinition(List<ClassifierDefinition> definitions) {
+    if (definitions.isEmpty()) {
+      return List.of(getFromDefinition(new ClassifierDefinition(ClassifierType.NONE, "Default",
+          "Kategorie")));
+    }
+
     return definitions
         .stream()
         .map(ClassifierFactory::getFromDefinition)

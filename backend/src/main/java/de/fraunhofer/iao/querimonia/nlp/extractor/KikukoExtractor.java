@@ -1,55 +1,47 @@
 package de.fraunhofer.iao.querimonia.nlp.extractor;
 
-import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorPipelines;
-import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.ExtractorResponse;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
+import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class KikukoExtractor extends KiKuKoContact<ExtractorResponse> implements EntityExtractor {
+public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
-  private static final String TEMP_NAME = "QuerimoniaExtract";
-
-  public KikukoExtractor() {
-    super("domain", "QuerimoniaExtract");
-  }
+  private final String domainName;
 
   public KikukoExtractor(String domainType, String domainName) {
     super(domainType, domainName);
+    this.domainName = domainName;
   }
 
   @Override
   public List<NamedEntity> extractEntities(String text) {
-    ExtractorResponse response = executeKikukoRequest(text, ExtractorResponse[].class);
-    ExtractorPipelines allPipes = response.getPipelines();
+    KikukoResponse response = executeKikukoRequest(text);
+    LinkedHashMap<String, List<FoundEntity>> allPipes = response.getPipelines();
 
     List<NamedEntity> entities = new LinkedList<>();
 
-    allPipes.getFuzhaltestellen().forEach(e -> entities.add(new NamedEntity("Haltestelle",
-        e.getStartposition(), e.getEndposition(), TEMP_NAME, e.getText())));
-    allPipes.getLinienExtraktor().forEach(e -> entities.add(new NamedEntity("Linie",
-        e.getStartposition() + matchesNumber(e.getText())[0],
-        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME, e.getText())));
-    allPipes.getExtdatumExtraktor().forEach(e -> entities.add(new NamedEntity("Datum",
-        e.getStartposition(), e.getEndposition(), TEMP_NAME, e.getText())));
-    allPipes.getExtgeldbetrag().forEach(e -> entities.add(new NamedEntity("Geldbetrag",
-        e.getStartposition(), e.getEndposition(), TEMP_NAME, e.getText())));
-    allPipes.getExttelefonnummer().forEach(e -> entities.add(new NamedEntity("Telefonnummer",
-        e.getStartposition(),
-        e.getEndposition(), TEMP_NAME, e.getText())));
-    allPipes.getFuzortsnamen().forEach(e -> entities.add(new NamedEntity("Ortsname",
-        e.getStartposition(),
-        e.getEndposition(), TEMP_NAME, e.getText())));
-    allPipes.getVorgangsnummer().forEach(e -> entities.add(new NamedEntity("Vorgangsnummer",
-        e.getStartposition() + matchesNumber(e.getText())[0],
-        e.getEndposition() - matchesNumber(e.getText())[1], TEMP_NAME, e.getText())));
-    allPipes.getExtpersonExtraktor().forEach(e -> entities.add(new NamedEntity("Name",
-        e.getStartposition(),
-        e.getEndposition(), TEMP_NAME, e.getText())));
+    allPipes.forEach((name, entityList) -> {
+      for (FoundEntity entity : entityList) {
+        entities.add(
+            new NamedEntityBuilder().setLabel(name)
+                .setStart(entity.getStartposition())
+                .setEnd(entity.getEndposition())
+                .setExtractor(domainName)
+                .setValue(entity.getTyp().containsValue(1.0d)?
+                    entity.getText():
+                    entity.getTyp().keySet().iterator().next())
+                .createNamedEntity());
+      }
+    });
+
     return entities;
   }
 

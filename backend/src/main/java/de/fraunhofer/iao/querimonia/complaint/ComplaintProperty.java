@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -16,39 +18,71 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyColumn;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * This class is used for sentiments and subjects of complaints. It contains a value for the
+ * This class is used for emotions and subjects of complaints. It contains a value for the
  * property and a map that maps possible values to their probability.
  */
 @Entity
 public class ComplaintProperty implements Comparable<ComplaintProperty> {
+
+  /**
+   * The default property that contains no information.
+   */
+  public static final ComplaintProperty DEFAULT_PROPERTY =
+      new ComplaintProperty("Emotion", "Unbekannt", new HashMap<>(
+          Collections.singletonMap("Unbekannt", 1.0)), false);
 
   @JsonIgnore
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private long id;
 
+  /**
+   * The value of the property.
+   */
+  @Column(nullable = false)
+  @NonNull
   private String value = "";
 
+  @Column(nullable = false)
+  @NonNull
   private String name = "";
 
   /**
    * This map contains the possible values of the property mapped to their probabilities.
    */
-  @ElementCollection(fetch = FetchType.EAGER)
+  @ElementCollection(fetch = FetchType.LAZY)
   @CollectionTable(name = "probability_table", joinColumns = @JoinColumn(name = "id"))
-  @MapKeyColumn(name = "probabilities")
+  @MapKeyColumn(name = "value")
   @Column(name = "probability")
+  @NonNull
   private Map<String, Double> probabilities = new HashMap<>();
 
   private boolean isSetByUser = false;
 
   @SuppressWarnings("unused")
-  public ComplaintProperty() {
+  private ComplaintProperty() {
     // for hibernate
+  }
+
+  /**
+   * Creates a new complaint property with all possible parameters.
+   *
+   * @param name          the name of the property.
+   * @param value         the value of the property.
+   * @param probabilities the probability map for the property.
+   * @param isSetByUser   the flag if the property is set by the user.
+   */
+  public ComplaintProperty(@NonNull String name, @NonNull String value,
+                           @NonNull Map<String, Double> probabilities, boolean isSetByUser) {
+    this.value = value;
+    this.name = name;
+    this.probabilities = probabilities;
+    this.isSetByUser = isSetByUser;
   }
 
   /**
@@ -57,7 +91,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
    *
    * @param probabilities the probability map, that maps each value to its probability.
    */
-  public ComplaintProperty(Map<String, Double> probabilities, String name) {
+  public ComplaintProperty(@NonNull String name, @NonNull Map<String, Double> probabilities) {
     this.probabilities = probabilities;
     this.value = ComplaintUtility.getEntryWithHighestProbability(probabilities)
         .orElse("");
@@ -65,14 +99,30 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     this.name = name;
   }
 
+  /**
+   * Creates a new complaint property with the given name and the given value. The set by user
+   * flag is set to true. The probability map only has this one value.
+   *
+   * @param name  the name of the property.
+   * @param value the value of the property.
+   */
+  public ComplaintProperty(@NonNull String name, @NonNull String value) {
+    this.probabilities = new HashMap<>(Collections.singletonMap(value, 1.0));
+    this.value = value;
+    this.name = name;
+    this.isSetByUser = true;
+  }
+
   public long getId() {
     return id;
   }
 
+  @NonNull
   public String getValue() {
     return value;
   }
 
+  @NonNull
   public Map<String, Double> getProbabilities() {
     return probabilities;
   }
@@ -81,34 +131,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     return isSetByUser;
   }
 
-  public ComplaintProperty setValue(String value) {
-    this.value = value;
-    isSetByUser = true;
-    return this;
-  }
-
-  /**
-   * Updates the probability map to a new map. If not setByUser and keepUserInformation, the
-   * value gets also updated.
-   *
-   * @param valueProbabilities  the map that maps values to their probabilities.
-   * @param keepUserInformation if true, the value attribute does not get overwritten.
-   */
-  public void updateValueProbabilities(
-      Map<String, Double> valueProbabilities, boolean keepUserInformation) {
-    this.probabilities = valueProbabilities;
-    if (!keepUserInformation || !isSetByUser) {
-      this.value = ComplaintUtility.getEntryWithHighestProbability(valueProbabilities)
-          .orElse("");
-      this.isSetByUser = false;
-    }
-  }
-
-  public ComplaintProperty setSetByUser(boolean setByUser) {
-    isSetByUser = setByUser;
-    return this;
-  }
-
+  @NonNull
   public String getName() {
     return name;
   }
@@ -145,7 +168,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("id", id)
         .append("value", value)
         .append("name", name)
@@ -156,6 +179,6 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   @Override
   public int compareTo(@NotNull ComplaintProperty o) {
-    return this.getValue().compareTo(o.getValue());
+    return this.getName().compareTo(o.getName());
   }
 }

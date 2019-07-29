@@ -20,15 +20,13 @@ tags:
     description: Hier werden Einstellungen verwaltet, es können Extraktoren, Klassifizierer und Sentiment-Analysierer festgelegt werden.
   - name: stats
     description: Hier können verschiedene Statistiken über die Beschwerden abgerufen werden.
-  - name: vector
-    description: Hier können veschieden Operationen mit Wordvektoren ausgeführt werden.
 paths:
   /api/complaints:
     get:
       tags:
         - complaints
       summary: Gibt Beschwerden zurück, die auf dem Server gespeichert sind.
-      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und das Offset der Beschwerden bestimmt werden.
+      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und die Seite der Beschwerden bestimmt werden.
       parameters:
         - $ref: '#/components/parameters/CountParameter'
         - $ref: '#/components/parameters/PageParameter'
@@ -50,6 +48,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Complaint'
+                example:
+
         400:
           $ref: '#/components/responses/IllegalParametersError'
         500:
@@ -212,7 +212,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
-                
+
   /api/complaints/{complaintId}/close:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
@@ -222,7 +222,7 @@ paths:
         - complaints
       summary: Schließt eine Beschwerde ab und führt alle Aktionen aus.
       description: Die Beschwerde mit der gegebenen ID wird auf geschlossenen gesetzt, wodurch sie nicht mehr bearbeitet werden kann. Alle Aktionen, die zu dieser Beschwerde gehören, werden ausgeführt.
-      
+
       operationId: closeComplaint
       responses:
         200:
@@ -283,7 +283,7 @@ paths:
         - complaints
       summary: Gibt die Entitäten der Beschwerde zurück.
       description: Gibt alle Entitäten, die in der Beschwerde gefunden wurden, als Liste zurück.
-      
+
       operationId: getEntities
       responses:
         200:
@@ -298,7 +298,7 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
-  
+
     post:
       tags:
         - complaints
@@ -843,6 +843,23 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/config/allExtractors:
+    get:
+      tags:
+        - config
+      summary: Gibt alle KiKuKo-Extraktoren zurück.
+      description: Gibt alle KiKuKo-Extraktoren gelistet nach Tool, Pipeline und Domain zurück.
+      operationId: getAllExtractors
+      responses:
+        200:
+          description: Gibt alle verfügbaren Extraktoren von KiKuKo zurück.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KiKuKoExtractors'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
   /api/stats/tagcloud:
     get:
       tags:
@@ -974,7 +991,7 @@ components:
       schema:
         type: string
         format: date
-        example: 2019-03-29
+        example: "2019-03-29"
 
     DateMaxParameter:
       name: date_max
@@ -984,7 +1001,7 @@ components:
       schema:
         type: string
         format: date
-        example: 2019-07-23
+        example: "2019-07-23"
 
     EmotionParameter:
       name: emotion
@@ -1085,14 +1102,16 @@ components:
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
           items:
             $ref: '#/components/schemas/ComplaintProperty'
-        subject:
-          $ref: '#/components/schemas/ComplaintProperty'
-        emotion:
-          $ref: '#/components/schemas/ComplaintProperty'
         sentiment:
-          type: number
-          description: Der Wert des Sentiments. Positive Werte bedeuten positives Sentiment, negative Werte bedeuten negatives Sentiment.
-          example: 0.4
+          type: object
+          description: Enthält die Ergbnisse der Sentiment-Analyse.
+          properties:
+            tendency:
+              type: number
+              description: Der Wert des Sentiments. Positive Werte bedeuten positives Sentiment, negative Werte bedeuten negatives Sentiment.
+              example: 0.4
+            emotion:
+              $ref: '#/components/schemas/ComplaintProperty'
 
     ComplaintProperty:
       type: object
@@ -1128,7 +1147,7 @@ components:
     ComplaintState:
       type: string
       description: Definiert den Status einer Beschwerde. Eine Beschwerde kann neu, in Bearbeitung und abgeschlossen sein.
-      enum: [NEW, IN_PROGRESS, CLOSED]
+      enum: [ERROR, ANALYSING, NEW, IN_PROGRESS, CLOSED]
       example: "NEW"
 
     ComplaintUpdateRequest:
@@ -1143,11 +1162,11 @@ components:
           example: "Fahrer unfreundlich"
         emotion:
           type: string
-          description: Die Emotion der Beschwerde, das übernommen werden soll.
+          description: Die Emotion der Beschwerde, die übernommen werden soll.
           example: "Freunde"
 
     NamedEntity:
-      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie. Außerdem ist angeben. ob die Entität von einem Nutzer gesetzt wurde und welcher Extraktor zur Findung gefunden wurde. Dieser wird nicht aktualisiert, wenn sich die Extraktoren-Einstellungen ändern! Der gegebene Farbwert, sollte also nur als Fallback verwendet werden.
+      description: Beschreibt den Anfangs- und Endindex einer *Named-Entity* einer bestimmten Kategorie. Außerdem ist angeben. ob die Entität von einem Nutzer gesetzt wurde und mit welcher Farbe die Entität angezeit werden soll. Dieser wird nicht angepasst, wenn sich die Extraktoren-Einstellungen ändern! Der gegebene Farbwert, sollte also nur als Fallback verwendet werden.
       type: object
       required:
         - label
@@ -1155,7 +1174,7 @@ components:
         - end
         - value
         - setByUser
-        - extractor
+        - color
       properties:
         id:
           type: integer
@@ -1184,9 +1203,9 @@ components:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
-        extractor:
+        color:
           type: string
-          description: The name of the extractor that es used to find this entity.
+          description: Die Farbe, mit der die Entität angezeigt werden soll.
           example: 'QuerimoniaExtract'
 
     AnalyzerConfiguration:
@@ -1208,7 +1227,7 @@ components:
           description: Ein Name zur Identifikation und besseren Unterscheidung für den Nutzer. Muss **eindeutig** sein.
           example: "Default-Konfiguration"
         extractors:
-          type: array
+
           items:
             $ref: '#/components/schemas/Extractor'
         classifiers:
@@ -1217,6 +1236,45 @@ components:
             $ref: '#/components/schemas/Classifier'
         sentimentAnalyzer:
           $ref: '#/components/schemas/SentimentAnalyzer'
+        emotionAnalyzer:
+          $ref: '#/components/schemas/EmotionAnalyzer'
+
+    KiKuKoExtractors:
+      description: Alle verfügbaren Extraktoren sind aufgelistet.
+      type: object
+      properties:
+        tool:
+          type: array
+          items:
+            type: string
+          example:
+            - "2706 Geldbetrag Extraktor"
+            - "Beschwerde3Klassifikator"
+            - "[Extern] Date & Time"
+            - "[Fuzzy] Haltestellen"
+            - "[ML] Anliegen Klassifikator"
+            - "[Regex] Bahn Klassifikator"
+
+        pipeline:
+          type: array
+          items:
+            type: string
+          example:
+            - "2706 Datum [Klassifikation]"
+            - "Beschwerde3Klassifikator"
+            - "[Extern]  Orte"
+            - "[Fuzzy] Haltestellen"
+            - "[ML] Datum Klassifikationr"
+            - "[Regex] Datum Klassifikator"
+
+        domain:
+          type: array
+          items:
+            type: string
+          example:
+            - '2706 Buchhaltung'
+            - 'Beschwerde'
+            - 'QuerimoniaExtract'
 
     Classifier:
       description: Ein Klassifizierer bestimmt die Kategorie (Subject) einer Beschwerde.
@@ -1228,7 +1286,7 @@ components:
       properties:
         name:
           description: Der Name des Klassifizierers. Bei KIKuKo-Klassifizieren muss in KIKuKu ein Klassifizierer mit diesem Namen existieren.
-          example: 'QuerimoniaExtract'
+          example: 'Beschwerde3Klassifikator2'
           type: string
         propertyName:
           description: Die Art von Eigenschaft, die vom Klassifizierer analysiert wird.
@@ -1242,8 +1300,8 @@ components:
           description: Gibt den Typ des Klassifizieres an.
           example: 'KIKUKO_CLASSIFIER'
 
-    SentimentAnalyzer:
-      description: Dient zur Analyse des Sentiments einer Beschwerde.
+    EmotionAnalyzer:
+      description: Dient zur Analyser der Emotion.
       type: object
       required:
         - name
@@ -1251,7 +1309,26 @@ components:
       properties:
         name:
           description: Der Name des Analysierers.
-          example: 'QuerimoniaExtract'
+          example: "QuerimoniaEmotion"
+          type: string
+        type:
+          description: Der Typ des Analysierers.
+          example: "QUERIMONIA_EMOTION"
+          type: string
+          enum:
+            - "QUERIMONIA_EMOTION"
+            - "NONE"
+
+    SentimentAnalyzer:
+      description: Dient zur Analyse des Sentiments einer Beschwerde. (Nur die Tendenz)
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          description: Der Name des Analysierers.
+          example: 'QuerimoniaSentiment'
           type: string
         type:
           type: string
@@ -1272,7 +1349,7 @@ components:
         name:
           type: string
           description: Der Name des Extraktors. Bei KIKuKo Extraktoren muss ein Extraktor mit diesem Namen konfiguriert sein.
-          example: GeldbetragExtraktor
+          example: "QuerimoniaExtract"
         type:
           type: string
           enum:
@@ -1281,7 +1358,7 @@ components:
             - KIKUKO_DOMAIN
             - NONE
           description: Eine Bezeichner für den Typ von Entraktor. KIkukoTool wird für Tools von KIkuko verwendet.
-          example: KIKuKoTool
+          example: "KIKUKO_TOOL"
         colors:
           type: array
           description: Gibt für beliebige Entity-Labels einen Farbcode an, mit der die Entität dargestellt wird.
@@ -1319,11 +1396,11 @@ components:
           format: int64
           example: 100
           description: Eine Zahl, die die Priorität bei der Antwortgenerierung angibt. Bausteine mit hoher Priorität werden zuerst geprüft und ggf. verwendet.
-        componentName:
+        name:
           type: string
           description: Eine **eindeutige** Bezeichung, welchen Teil einer Antwort der Baustein widerspiegelt.
           example: 'Begrüßung'
-        componentTexts:
+        texts:
           type: array
           description: Die Textalternativen ggf. mit Platzhaltern, die in der Antwort verwendet werden können
           items:
@@ -1338,6 +1415,7 @@ components:
         rulesXml:
           type: string
           description: XML-Beschreibung der Regeln, die beschreiben, wann ein Antwortbaustein verwendet werden darf. Muss dem XSD-Schema entsprechen.
+          example: "<Rules><Property name=\"Kategorie\" value=\"Fahrt nicht erfolgt\"/></Rules>"
         requiredEntities:
           type: array
           description: Die nötigen Entitäts-Typen für den Antwortbaustein.

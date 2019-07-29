@@ -7,9 +7,13 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
-import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import tec.uom.lib.common.function.Identifiable;
 
 import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
@@ -23,6 +27,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +45,7 @@ import java.util.stream.Collectors;
     "componentTexts",
     "actions"
 })
-public class ResponseComponent implements RuledInterface {
+public class ResponseComponent implements Identifiable<Long> {
 
   /**
    * The unique primary key of the component.
@@ -54,6 +59,7 @@ public class ResponseComponent implements RuledInterface {
    * A unique identifier for components.
    */
   @Column(name = "name", unique = true, nullable = false)
+  @JsonProperty("name")
   @NonNull
   private String componentName = "";
 
@@ -70,13 +76,16 @@ public class ResponseComponent implements RuledInterface {
   @CollectionTable(name = "component_text_table",
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000, nullable = false)
+  @JsonProperty("texts")
   @NonNull
-  private List<String> componentTexts = List.of();
+  private List<String> componentTexts = new ArrayList<>();
 
   /**
    * The list of actions.
    */
   @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "component_id")
+  @Column(name = "action_id")
   @NonNull
   private List<Action> actions = List.of();
 
@@ -92,7 +101,7 @@ public class ResponseComponent implements RuledInterface {
    */
   @Transient
   @JsonIgnore
-  @Nullable
+  @NonNull
   private Rule rootRule;
 
   /**
@@ -100,32 +109,44 @@ public class ResponseComponent implements RuledInterface {
    */
   @Transient
   @JsonIgnore
-  @Nullable
+  @NonNull
   private List<List<ResponseSlice>> componentSlices;
 
-  public ResponseComponent(@NonNull String componentName,
-                           List<String> componentTexts,
-                           String rulesXml,
-                           List<Action> actions) {
+  // constructor for builder
+  ResponseComponent(long id,
+                    @NonNull String componentName,
+                    int priority,
+                    @NonNull List<String> componentTexts,
+                    @NonNull List<Action> actions,
+                    @NonNull String rulesXml
+  ) {
+    this.componentId = id;
     this.componentName = componentName;
-    setComponentTexts(componentTexts);
-    setRulesXml(rulesXml);
-    setActions(actions);
+    this.priority = priority;
+    this.componentTexts = componentTexts;
+    this.actions = actions;
+    this.rulesXml = rulesXml;
+    this.rootRule = parseRulesXml(rulesXml);
+    this.componentSlices = createSlices();
   }
 
   @SuppressWarnings("unused")
   @JsonCreator
-  public ResponseComponent(@JsonProperty() String componentName,
-                           @JsonProperty(defaultValue = "[]") List<String> componentTexts,
-                           @JsonProperty() String rulesXml,
-                           @JsonProperty(defaultValue = "[]") List<Action> actions,
-                           @JsonProperty(defaultValue = "[]") List<String> requiredEntities) {
-    // work around to allow json creation with required entities property
-    this(componentName, componentTexts, rulesXml, actions);
+  public ResponseComponent(@JsonProperty("name") String componentName,
+                           @JsonProperty("priority") int priority,
+                           @JsonProperty(value = "texts", defaultValue = "[]")
+                               List<String> componentTexts,
+                           @JsonProperty("rulesXml") String rulesXml,
+                           @JsonProperty(value = "actions", defaultValue = "[]")
+                               List<Action> actions) {
+    this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
 
-  public ResponseComponent() {
+  @SuppressWarnings("unused")
+  private ResponseComponent() {
     // required for hibernate
+    this.componentSlices = createSlices();
+    this.rootRule = parseRulesXml(this.rulesXml);
   }
 
   /**
@@ -137,6 +158,7 @@ public class ResponseComponent implements RuledInterface {
    */
   @Transient
   @NonNull
+  @JsonProperty(value = "requiredEntities")
   public List<String> getRequiredEntities() {
     return getResponseSlices()
         .stream()
@@ -145,15 +167,20 @@ public class ResponseComponent implements RuledInterface {
         .filter(ResponseSlice::isPlaceholder)
         // map the placeholders to their identifiers
         .map(ResponseSlice::getContent)
+        .distinct()
         .collect(Collectors.toList());
   }
 
-  public long getComponentId() {
+  @JsonProperty("id")
+  @Override
+  public Long getId() {
     return componentId;
   }
 
-  public void setComponentId(long componentId) {
-    this.componentId = componentId;
+  public ResponseComponent withId(long componentId) {
+    return new ResponseComponentBuilder(this)
+        .setId(componentId)
+        .createResponseComponent();
   }
 
   @NonNull
@@ -167,22 +194,8 @@ public class ResponseComponent implements RuledInterface {
   }
 
   @NonNull
-  public ResponseComponent setComponentTexts(@NonNull List<String> componentTexts) {
-    this.componentTexts = componentTexts;
-    this.componentSlices = createSlices();
-    return this;
-  }
-
-  @NonNull
   public String getRulesXml() {
     return rulesXml;
-  }
-
-  @NonNull
-  private ResponseComponent setRulesXml(String rulesXml) {
-    this.rulesXml = rulesXml;
-    rootRule = parseRulesXml(rulesXml);
-    return this;
   }
 
   /**
@@ -191,23 +204,14 @@ public class ResponseComponent implements RuledInterface {
    *
    * @return the rule of the component.
    */
-  @Override
+  @JsonIgnore
   @NonNull
   public Rule getRootRule() {
-    if (rootRule == null) {
-      rootRule = parseRulesXml(rulesXml);
-    }
     return rootRule;
   }
 
   public int getPriority() {
     return priority;
-  }
-
-  @NonNull
-  public ResponseComponent setPriority(int priority) {
-    this.priority = priority;
-    return this;
   }
 
   /**
@@ -217,9 +221,6 @@ public class ResponseComponent implements RuledInterface {
   @Transient
   @NonNull
   private List<List<ResponseSlice>> getResponseSlices() {
-    if (componentSlices == null) {
-      componentSlices = createSlices();
-    }
     return componentSlices;
   }
 
@@ -238,10 +239,49 @@ public class ResponseComponent implements RuledInterface {
     return actions;
   }
 
-  @NonNull
-  public ResponseComponent setActions(
-      List<Action> actions) {
-    this.actions = actions;
-    return this;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    ResponseComponent that = (ResponseComponent) o;
+
+    return new EqualsBuilder()
+        .append(priority, that.priority)
+        .append(componentName, that.componentName)
+        .append(componentTexts, that.componentTexts)
+        .append(actions, that.actions)
+        .append(rulesXml, that.rulesXml)
+        .isEquals();
+  }
+
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder(17, 37)
+        .append(componentName)
+        .append(priority)
+        .append(componentTexts)
+        .append(actions)
+        .append(rulesXml)
+        .toHashCode();
+  }
+
+  @Override
+  public String toString() {
+    return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
+        .append("componentId", componentId)
+        .append("componentName", componentName)
+        .append("priority", priority)
+        .append("componentTexts", componentTexts)
+        .append("actions", actions)
+        .append("rulesXml", rulesXml)
+        .append("rootRule", rootRule)
+        .append("componentSlices", componentSlices)
+        .toString();
   }
 }

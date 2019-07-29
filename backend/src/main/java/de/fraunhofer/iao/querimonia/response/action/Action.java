@@ -4,13 +4,15 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import de.fraunhofer.iao.querimonia.response.rules.Rule;
-import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
-import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import java.util.Map;
     "rulesXml",
     "parameters"
 })
-public class Action implements RuledInterface {
+public class Action {
 
   /**
    * The unique primary key of the action.
@@ -36,46 +38,34 @@ public class Action implements RuledInterface {
   }
 
   /**
-   * A unique identifier for the actions to display.
+   * An identifier for the actions to display.
    */
-  @Column(name = "name", unique = true)
-  private String name;
+  @Column(name = "name", nullable = false)
+  @NonNull
+  private String name = "";
 
   /**
    * The action that could be executed.
    */
   @Enumerated(EnumType.STRING)
-  @Column(name = "actionCode")
-  private ActionCode actionCode;
-
-
-  /**
-   * The rules in xml format.
-   */
-  @Column(length = 5000)
-  private String rulesXml;
+  @Column(name = "actionCode", nullable = false)
+  @NonNull
+  private ActionCode actionCode = ActionCode.SEND_MAIL;
 
   /**
    * Here are parameters for the Action to be executed.
    */
-  @Column
-  private HashMap<String, String> parameters;
-
-  /**
-   * The root rule, gets parsed from xml.
-   */
-  @Transient
-  @JsonIgnore
-  private Rule rootRule;
+  @Column()
+  @NonNull
+  private HashMap<String, String> parameters = new HashMap<>();
 
   @JsonCreator
-  public Action(@JsonProperty String name,
-                @JsonProperty ActionCode actionCode,
-                @JsonProperty String rulesXml,
-                @JsonProperty HashMap<String, String> parameters) {
+  @SuppressWarnings("unused")
+  public Action(@NonNull @JsonProperty("name") String name,
+                @NonNull @JsonProperty("actionCode") ActionCode actionCode,
+                @NonNull @JsonProperty("parameters") HashMap<String, String> parameters) {
     this.name = name;
     this.actionCode = actionCode;
-    this.rulesXml = rulesXml;
     this.parameters = parameters;
   }
 
@@ -83,43 +73,33 @@ public class Action implements RuledInterface {
    * Empty default constructor (only used for hibernate).
    */
   @SuppressWarnings("unused")
-  public Action() {
+  private Action() {
 
-  }
-
-  public String getRulesXml() {
-    return rulesXml;
-  }
-
-  @Override
-  public Rule getRootRule() {
-    if (rootRule == null) {
-      rootRule = parseRulesXml(rulesXml);
-    }
-    return rootRule;
   }
 
   public long getActionId() {
     return actionId;
   }
 
+  @NonNull
   public String getName() {
     return name;
   }
 
+  @NonNull
   public ActionCode getActionCode() {
     return actionCode;
   }
 
+  @NonNull
   public Map<String, String> getParameters() {
     return parameters;
   }
 
-  private Rule parseRulesXml(String rulesXml) {
-    return RuleParser.parseRules(rulesXml);
-  }
-
-  public ResponseEntity<String> executeAction() {
+  /**
+   * Runs the action.
+   */
+  public void executeAction() {
     switch (actionCode) {
       case ATTACH_VOUCHER:
         //TODO Attach Voucher action
@@ -128,7 +108,6 @@ public class Action implements RuledInterface {
       case SEND_MAIL:
         //TODO Send Mail action
       default:
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
   }

@@ -2,7 +2,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.rest.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.http.HttpStatus;
@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
 
@@ -108,7 +107,7 @@ public class ComplaintController {
                consumes = "multipart/form-data")
   public ResponseEntity<?> uploadComplaint(
       @RequestParam("file") MultipartFile file,
-      @RequestParam("configId") Optional<Integer> configId) {
+      @RequestParam("configId") Optional<Long> configId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.uploadComplaint(file, configId),
         HttpStatus.CREATED);
   }
@@ -133,7 +132,7 @@ public class ComplaintController {
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/json")
   public ResponseEntity<?> uploadText(@RequestBody TextInput input,
-                                      @RequestParam Optional<Integer> configId) {
+                                      @RequestParam Optional<Long> configId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.uploadText(input, configId),
         HttpStatus.CREATED);
   }
