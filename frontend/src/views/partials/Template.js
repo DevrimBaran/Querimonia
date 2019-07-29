@@ -29,7 +29,7 @@ function Header () {
       <th>Name</th>
       <th>Priorität</th>
       <th>Entitäten</th>
-      <th>Antwortvariationen</th>
+      <th>Varianten</th>
       <th>Aktionen</th>
       <th />
     </thead>
@@ -43,7 +43,7 @@ function List (data, index) {
   return (
     <tr key={data.id}>
       <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><h3>{data.id}</h3></Link></td>
-      <td><Link to={'/templates/' + data.id}><p>{data.name}</p></Link></td>
+      <td style={{ textAlign: 'left' }}><Link to={'/templates/' + data.id}><p>{data.name}</p></Link></td>
       <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><p>{data.priority}</p></Link></td>
       <td><Link to={'/templates/' + data.id}>  <p>{data.requiredEntities ? data.requiredEntities.join(', ') : ''}</p></Link></td>
       <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/templates/' + data.id}><p>{data.texts.length}</p></Link></td>
@@ -182,7 +182,7 @@ function Single (active, dispatch) {
           <h6 ref='editor' className='center'>Regeln</h6>
           <div className='margin'>
             <Input type='text' label='Name ' value={active.name} style={{ marginTop: '0.5em', marginRight: '1em' }} onChange={(e) => { modifyText('name', e.value); }} />
-            <Input type='number' label='Priorität ' min='0' max='100' value={active.priority} onChange={(e) => { modifyText('priority', e.value); }} />
+            <Input type='number' label='Priorität ' min='0' max='100' value={active.priority} onChange={(e) => { modifyText('priority', Number(e.value)); }} />
           </div>
           <Content style={{ flexBasis: '100%' }}>
             <CodeMirror onChange={(value) => modifyText('rulesXml', value)} value={active.rulesXml} />
@@ -218,10 +218,10 @@ function Single (active, dispatch) {
                     <Input type='text' label='E-Mail ' value={action.parameters['E-Mail']} style={{ marginRight: '1em' }} onChange={(e) => { modifyAction('E-Mail', e.value, index); }} />
                     {action.actionCode !== 'SEND_MAIL'
                       ? <span className='input-symbol-euro'>
-                        <Input type='number' step='0.01' label='Wert ' value={action.parameters.Gutscheinwert} onChange={(e) => { modifyAction('Gutscheinwert', e.value, index); }} />
+                        <Input type='number' step='0.01' label='Wert ' value={action.parameters.Gutscheinwert} onChange={(e) => { modifyAction('Gutscheinwert', Number(e.value), index); }} />
                       </span> : null
                     }
-                    <Textarea max='5' placeholder='Text' value={action.parameters.Text} style={{ marginRight: '1em' }} onChange={(e) => { modifyAction('Text', e.value, index); }} />
+                    <Textarea max='5' placeholder='Text' value={action.parameters.Text} style={{ marginRight: '1em' }} onChange={(e) => { modifyAction('Text', e.target.value, index); }} />
                   </Content>
                   <hr style={{ marginTop: '0.5em', marginBottom: '0.5em' }} />
                 </div>
