@@ -9,6 +9,8 @@ import de.fraunhofer.iao.querimonia.config.TestConfigurations;
 import de.fraunhofer.iao.querimonia.db.repository.*;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
@@ -25,11 +27,14 @@ import org.springframework.mock.web.MockMultipartFile;
 
 import java.nio.charset.Charset;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
+import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.*;
+import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.ENTITIES_F;
 import static de.fraunhofer.iao.querimonia.matchers.OptionalPresentMatcher.present;
 import static de.fraunhofer.iao.querimonia.matchers.ResponseStatusCodeMatcher.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -73,8 +78,162 @@ public class ComplaintControllerTest {
 
   // TC 1
   @Test
-  public void getComplaints() {
-    // a lot TODO get complaints test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsEmptyParameters() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(3, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+    assertEquals(COMPLAINT_H, complaints.get(1));
+    assertEquals(COMPLAINT_G, complaints.get(2));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsCount() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.of(2),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(2, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+    assertEquals(COMPLAINT_H, complaints.get(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsPage() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.of(2),
+        Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(1, complaints.size());
+    assertEquals(COMPLAINT_G, complaints.get(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsSortBy() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.of(new String[] {"upload_date_asc"}), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(3, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+    assertEquals(COMPLAINT_G, complaints.get(1));
+    assertEquals(COMPLAINT_H, complaints.get(2));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsState() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.of(new String[] {"NEW"}), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(1, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsDateMin() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("2019-07-01"), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(2, complaints.size());
+    assertEquals(COMPLAINT_H, complaints.get(0));
+    assertEquals(COMPLAINT_G, complaints.get(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsDateMax() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.of("2019-07-30"),
+        Optional.empty(), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(2, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+    assertEquals(COMPLAINT_G, complaints.get(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsSentiment() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.of(new String[] {"Wut"}), Optional.empty(), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(2, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+    assertEquals(COMPLAINT_G, complaints.get(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsSubject() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.of(new String[] {"Beschwerde"}), Optional.empty());
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(2, complaints.size());
+    assertEquals(COMPLAINT_F, complaints.get(0));
+    assertEquals(COMPLAINT_H, complaints.get(1));
+  }
+
+  @Test
+  @SuppressWarnings("unchecked")
+  public void testGetComplaintsKeywords() {
+    complaintRepository.save(COMPLAINT_F);
+    complaintRepository.save(COMPLAINT_G);
+    complaintRepository.save(COMPLAINT_H);
+    ResponseEntity<?> responseEntity = complaintController.getComplaints(Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
+        Optional.empty(), Optional.empty(), Optional.of(new String[] {"123"}));
+    assertNotNull(responseEntity.getBody());
+    List<Complaint> complaints = (List<Complaint>) responseEntity.getBody();
+    assertEquals(1, complaints.size());
+    assertEquals(COMPLAINT_G, complaints.get(0));
   }
 
   // TC 2
@@ -471,7 +630,92 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void addEntity() {
+  public void testAddEntity() {
+    NamedEntity testEntity = new NamedEntityBuilder()
+        .setLabel("Test")
+        .setStart(50)
+        .setEnd(55)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("test")
+        .createNamedEntity();
+    List<NamedEntity> testEntities = new ArrayList<>(ENTITIES_F);
+    testEntities.add(testEntity);
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_F)
+        .setEntities(testEntities)
+        .createComplaint();
+    complaintRepository.save(testComplaint);
+    complaintController.addEntity(6L, testEntity);
+    List<NamedEntity> entities = complaintRepository.findById(6L).get().getEntities();
+    assertEquals(entities, testEntities);
+  }
+
+  @Test
+  public void testAddEntityNegativeStart() {
+    NamedEntity testEntity = new NamedEntityBuilder()
+        .setLabel("Test")
+        .setStart(-50)
+        .setEnd(55)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("test")
+        .createNamedEntity();
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_F).createComplaint();
+    complaintRepository.save(testComplaint);
+    ResponseEntity<?> responseEntity = complaintController.addEntity(6L, testEntity);
+    assertNotNull(responseEntity.getBody());
+    assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
+  }
+
+  @Test
+  public void testAddEntityNegativeLength() {
+    NamedEntity testEntity = new NamedEntityBuilder()
+        .setLabel("Test")
+        .setStart(50)
+        .setEnd(5)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("test")
+        .createNamedEntity();
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_F).createComplaint();
+    complaintRepository.save(testComplaint);
+    ResponseEntity<?> responseEntity = complaintController.addEntity(6L, testEntity);
+    assertNotNull(responseEntity.getBody());
+    assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
+  }
+
+  @Test
+  public void testAddEntityEndTooBig() {
+    NamedEntity testEntity = new NamedEntityBuilder()
+        .setLabel("Test")
+        .setStart(50)
+        .setEnd(500)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("test")
+        .createNamedEntity();
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_F).createComplaint();
+    complaintRepository.save(testComplaint);
+    ResponseEntity<?> responseEntity = complaintController.addEntity(6L, testEntity);
+    assertNotNull(responseEntity.getBody());
+    assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
+  }
+
+  @Test
+  public void testAddEntityEndExistingLabel() {
+    NamedEntity testEntity = new NamedEntityBuilder()
+        .setLabel("Name")
+        .setStart(15)
+        .setEnd(19)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Peter")
+        .createNamedEntity();
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_F).createComplaint();
+    complaintRepository.save(testComplaint);
+    ResponseEntity<?> responseEntity = complaintController.addEntity(6L, testEntity);
+    assertNotNull(responseEntity.getBody());
+    assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
   }
 
   @Test

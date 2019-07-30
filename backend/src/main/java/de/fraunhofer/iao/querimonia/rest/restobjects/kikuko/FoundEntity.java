@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.LinkedHashMap;
 
@@ -17,7 +19,7 @@ import java.util.LinkedHashMap;
                         "Typ",
                         "ContextAfter"
                     })
-public class TempPipeline {
+public class FoundEntity {
 
   private int startposition;
   private String contextBefore;
@@ -26,7 +28,7 @@ public class TempPipeline {
   private LinkedHashMap<String, Double> typ;
   private String contextAfter;
   /**
-   * Temporary Pipeline.
+   * Temporary FoundEntity.
    *
    * @param startposition Gets the startsposition of the entity.
    * @param contextBefore Gets the information which is before the entity.
@@ -36,12 +38,12 @@ public class TempPipeline {
    * @param contextAfter  Gets the text after the entity.
    */
   @JsonCreator
-  public TempPipeline(@JsonProperty("Startposition") int startposition,
-                      @JsonProperty("ContextBefore") String contextBefore,
-                      @JsonProperty("Endposition") int endposition,
-                      @JsonProperty("Text") String text,
-                      @JsonProperty("Typ") LinkedHashMap<String, Double> typ,
-                      @JsonProperty("ContextAfter") String contextAfter) {
+  public FoundEntity(@JsonProperty("Startposition") int startposition,
+                     @JsonProperty("ContextBefore") String contextBefore,
+                     @JsonProperty("Endposition") int endposition,
+                     @JsonProperty("Text") String text,
+                     @JsonProperty("Typ") LinkedHashMap<String, Double> typ,
+                     @JsonProperty("ContextAfter") String contextAfter) {
     this.startposition = startposition;
     this.contextBefore = contextBefore;
     this.endposition = endposition;
@@ -99,4 +101,14 @@ public class TempPipeline {
     this.contextAfter = contextAfter;
   }
 
+  @Override
+  public String toString() {
+    ObjectMapper mapper = new ObjectMapper();
+    try {
+      return mapper.writeValueAsString(this);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return text;
+  }
 }
