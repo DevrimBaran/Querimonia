@@ -35,9 +35,9 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
                 .setStart(entity.getStartposition())
                 .setEnd(entity.getEndposition())
                 .setExtractor(domainName)
-                .setValue(entity.getTyp().containsValue(1.0d)?
-                    entity.getText():
-                    entity.getTyp().keySet().iterator().next())
+                .setValue(entity.getTyp().containsValue(1.0d)
+                    ? entity.getText()
+                    : entity.getTyp().keySet().iterator().next())
                 .createNamedEntity());
       }
     });
@@ -50,8 +50,9 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
    * ignored).
    *
    * @param text text to be evaluated
+   *
    * @return Array containing the distance between start-index/end-index of the number range and the
-   * beginning/ending
+   *     beginning/ending
    */
   private static int[] matchesNumber(String text) {
     Pattern pattern = Pattern.compile("[0-9]+");

@@ -43,7 +43,7 @@ public class ComplaintUtility {
         .stream()
         .filter(complaintProperty -> complaintProperty.getName().equals(name))
         .findAny()
-        .orElse(ComplaintProperty.DEFAULT_PROPERTY);
+        .orElse(ComplaintProperty.getDefaultProperty("Kategorie"));
   }
 
   /**

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,12 +39,17 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private int start;
   private int end;
   private boolean setByUser = false;
+  private boolean prefered = false;
   @NonNull
   @Column(nullable = false)
   private String extractor = "";
+  @Nullable
+  @Column
+  private String color = "#22222";
 
   /**
-   * constructor for creating a new named entity object, only used for the builder.
+   * constructor for creating a new named entity object, used for the builder and as JSON
+   * constructor.
    */
   @JsonCreator
   NamedEntity(
@@ -56,12 +62,18 @@ public class NamedEntity implements Comparable<NamedEntity> {
           int end,
       @JsonProperty(value = "setByUser", required = true)
           boolean setByUser,
+      @JsonProperty(value = "preferred", defaultValue = "false")
+          boolean preferred,
       @NonNull
       @JsonProperty(value = "extractor", required = true)
           String extractor,
       @NonNull
       @JsonProperty(value = "value")
-          String value) {
+          String value,
+      @JsonProperty(value = "color")
+      @NonNull
+          String color
+  ) {
 
     this.label = label;
     this.start = start;
@@ -69,6 +81,8 @@ public class NamedEntity implements Comparable<NamedEntity> {
     this.value = value;
     this.setByUser = setByUser;
     this.extractor = extractor;
+    this.prefered = preferred;
+    this.color = color;
   }
 
   @SuppressWarnings("unused")

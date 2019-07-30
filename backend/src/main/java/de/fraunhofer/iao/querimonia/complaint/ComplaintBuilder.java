@@ -42,7 +42,7 @@ public class ComplaintBuilder {
   @NonNull
   private List<ComplaintProperty> properties = new ArrayList<>();
   @NonNull
-  private Sentiment sentiment = Sentiment.DEFAULT_SENTIMENT;
+  private Sentiment sentiment = Sentiment.getDefaultSentiment();
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();
   @NonNull

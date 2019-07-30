@@ -2,7 +2,7 @@ openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
   description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.6.1
+  version: 0.7.0
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
@@ -50,6 +50,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Complaint'
+                # TODO add examples
         400:
           $ref: '#/components/responses/IllegalParametersError'
         500:
@@ -78,6 +79,7 @@ paths:
                 text:
                   type: string
                   example: "Das ist eine Beispielbeschwerde"
+                  # TODO better text example
       operationId: importComplaint
       responses:
         201:
@@ -86,6 +88,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
+              # TODO add example
+
         400:
           description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
           content:
@@ -135,6 +139,7 @@ paths:
             example:
               "state": "CLOSED"
               "subject": "Fahrt nicht erfolgt"
+
       operationId: updateComplaint
       responses:
         200:
@@ -835,6 +840,7 @@ paths:
                 $ref: '#/components/schemas/AnalyzerConfiguration'
         500:
           $ref: '#/components/responses/UnexpectedError'
+
     put:
       tags:
         - config
@@ -1203,8 +1209,8 @@ components:
         - label
         - start
         - end
-        - value
         - setByUser
+        - preferred
         - color
       properties:
         id:
@@ -1229,11 +1235,16 @@ components:
           example: 29
         value:
           type: string
-          description: Der Text der Entität, ggf. korrigiert.
+          description: Der Text der Entität, ggf. korrigiert. Read-Only.
+          readOnly: true
           example: '23. Januar 2001'
         setByUser:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
+          example: false
+        preferred:
+          type: boolean
+          description: Gibt an, ob der Nutzer die Entität als bevorzugt markiert hat.
           example: false
         extractor:
           type: string
@@ -1243,6 +1254,16 @@ components:
           type: string
           description: Die Farbe, mit der die Entität angezeigt werden soll.
           example: '#9829DD'
+      example:
+        id: 2
+        label: 'Datum'
+        start: 14
+        end: 19
+        value: 'Heute'
+        setByUser: true
+        preferred: true
+        extractor: 'QuerimoniaExtract'
+        color: '#232323'
 
     AnalyzerConfiguration:
       description: In der Konfiguration ist festgelegt, welche Extraktoren, welcher Klassifikator und Sentiment-Analysierer verwerdet wird.
@@ -1640,6 +1661,9 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/QuerimoniaException'
+
+  examples:
+    # TODO add more examples
 
   securitySchemes:
     basicAuth:
