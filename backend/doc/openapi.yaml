@@ -12,6 +12,8 @@ servers:
 tags:
   - name: complaints
     description: Hier können Beschwerden hochgeladen, verwaltet und editiert werden.
+  - name: entities
+    description: Hier können die Named Entities einer Beschwerde bearbeitet werden.
   - name: responses
     description: Hier können Antworten abgerufen werden.
   - name: components
@@ -48,8 +50,6 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Complaint'
-                example:
-
         400:
           $ref: '#/components/responses/IllegalParametersError'
         500:
@@ -274,13 +274,51 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
-  /api/complaints/{complaintId}/entities:
+  /api/complaints/{complaintId}/log:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
 
     get:
       tags:
         - complaints
+      summary: Gibt den Log einer Beschwerde zurück
+      description: Gibt alle Logeinträge einer Beschwerde zurück. Logeinträge enthalten Informationen über den Analyse-Prozess sowie zu Fehlern, die beim diesem auftreten.
+
+      operationId: getLog
+      responses:
+        200:
+          description: Erfolgreiche Anfrage
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LogItem'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/complaints/all:
+    delete:
+      tags:
+        - complaints
+      summary: Löscht alle Beschwerden aus der Datenbank
+      description: Löscht alle Beschwerden aus der Datenbank.
+      operationId: deleteAllComplaints
+      responses:
+        204:
+          description: Löschen erfolgreich.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/complaints/{complaintId}/entities:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    get:
+      tags:
+        - entities
       summary: Gibt die Entitäten der Beschwerde zurück.
       description: Gibt alle Entitäten, die in der Beschwerde gefunden wurden, als Liste zurück.
 
@@ -301,7 +339,7 @@ paths:
 
     post:
       tags:
-        - complaints
+        - entities
       summary: Fügt eine neue Named Entity hinzu.
       description: Eine neue Named Entity wird der Liste der Entitäten der Beschwerde hinzugefügt.
 
@@ -338,7 +376,7 @@ paths:
 
     delete:
       tags:
-        - complaints
+        - entities
       summary: Löscht eine Named Entity.
       description: Eine neue Named Entity wird aus der Liste der Entitäten entfernt.
       parameters:
@@ -374,19 +412,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
-        500:
-          $ref: '#/components/responses/UnexpectedError'
-
-  /api/complaints/all:
-    delete:
-      tags:
-        - complaints
-      summary: Löscht alle Beschwerden aus der Datenbank
-      description: Löscht alle Beschwerden aus der Datenbank.
-      operationId: deleteAllComplaints
-      responses:
-        204:
-          description: Löschen erfolgreich.
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -1075,14 +1100,17 @@ components:
           minimum: 1
           example: 1
           description: Die eindeutige ID der Beschwerde.
+          readOnly: true
         text:
           type: string
           description: Der volle Beschwerdetext.
           example: "Guten Tag,\nMein Bus kam heute viel zu spät!\nSie müssen mir den Schaden ersetzen!!"
+          readOnly: true
         preview:
           type: string
           description: Die ersten zwei Zeilen der Beschwerde.
           example: "Guten Tag,\nMein Bus kam heute viel zu spät!"
+          readOnly: true
         state:
           $ref: '#/components/schemas/ComplaintState'
         configuration:
@@ -1092,11 +1120,13 @@ components:
           format: date
           description: Das Eingangsdatum der Beschwerde im Format yyyy-mm-dd.
           example: "2019-05-02"
+          readOnly: true
         receiveTime:
           type: string
           format: date-time
           description: Die Eingangszeit der Beschwerde im System im Format hh:mm:ss
           example: "13:45:00"
+          readOnly: true
         properties:
           type: array
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
@@ -1121,6 +1151,7 @@ components:
         - value
         - probabilities
         - setByUser
+      readOnly: true
       properties:
         name:
           type: string
@@ -1181,6 +1212,7 @@ components:
           description: Eine eindeutige ID der Named Entity.
           minimum: 1
           example: 1
+          readOnly: true
         label:
           type: string
           description: Die Kategorie der Entität.
@@ -1203,10 +1235,14 @@ components:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
+        extractor:
+          type: string
+          description: Der Name des Extraktors, der für die Analyse benutzt wurde.
+          example: "QuerimoniaExtract"
         color:
           type: string
           description: Die Farbe, mit der die Entität angezeigt werden soll.
-          example: 'QuerimoniaExtract'
+          example: '#9829DD'
 
     AnalyzerConfiguration:
       description: In der Konfiguration ist festgelegt, welche Extraktoren, welcher Klassifikator und Sentiment-Analysierer verwerdet wird.
@@ -1222,12 +1258,13 @@ components:
           description: Eindeutige ID der Konfiguration.
           minimum: 1
           example: 1
+          readOnly: true
         name:
           type: string
           description: Ein Name zur Identifikation und besseren Unterscheidung für den Nutzer. Muss **eindeutig** sein.
           example: "Default-Konfiguration"
         extractors:
-
+          type: array
           items:
             $ref: '#/components/schemas/Extractor'
         classifiers:
@@ -1375,6 +1412,34 @@ components:
                 type: string
                 example: '#CCAABB'
 
+    LogItem:
+      description: Ein Eintrag im Log zu einer Beschwerde.
+      type: object
+      required:
+      properties:
+        date:
+          description: Das Datum des Log-Eintrags
+          type: string
+          format: date
+          example: "2019-07-01"
+        time:
+          description: Die Uhrzeit des Log-Eintrags
+          type: string
+          format: date-time
+          example: "12:03:19"
+        category:
+          description: Die Kategorie des Log-Eintrags
+          type: string
+          enum:
+            - ANALYSIS
+            - GENERAL
+            - ERROR
+          example: 'ANALYSIS'
+        message:
+          description: Der Text des Log-Eintrags
+          type: string
+          example: "Sentiment-Analyse abgeschlossen"
+
     ResponseComponent:
       description: Ein generischer Antwortbaustein. Dieser besteht aus möglicherweise mehereren Alternativtexten, die Platzhalter enthalten können, sowie einer Regelbeschreibung, die angibt, wann der Baustein verwendet werden kann.
       type: object
@@ -1391,6 +1456,7 @@ components:
           description: Die eindeutige ID des Antwortbausteins.
           minimum: 1
           example: 1
+          readOnly: true
         priority:
           type: integer
           format: int64
@@ -1423,6 +1489,7 @@ components:
             type: string
             example: "Name"
             description: Eine Entity, die für den Antwortbaustein vorhanden sein muss. Muss **nicht** beim Posten eines Bausteins angegeben werden.
+          readOnly: true
 
     CompletedResponsePart:
       description: Ein Teil der Anwort mit Antworttextalternativen und den zugehörigen Entitäten.
