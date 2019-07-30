@@ -4,7 +4,6 @@ import numpy as np
 import sentiment_analyse
 import emotion_analyse
 import wordvector
-import nltk
 
 app = Flask(__name__)
 # TODO change base url
