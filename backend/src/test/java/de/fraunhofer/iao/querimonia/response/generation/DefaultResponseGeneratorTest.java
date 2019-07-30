@@ -13,7 +13,7 @@ import java.util.*;
 
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.*;
 import static de.fraunhofer.iao.querimonia.response.component.TestComponents.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 /**
@@ -130,11 +130,8 @@ public class DefaultResponseGeneratorTest {
       ResponseComponent correctComponent = correctCompletedComponent.getComponent();
       ResponseComponent testComponent = testCompletedComponent.getComponent();
 
-      /*
-      Note: This only works because the generator and the test use the same component objects.
-            Thus, if the generated response is correct, the components should be the same objects.
-            //TODO: In the future, replace this with a proper equals method
-       */
+      assertEquals(correctCompletedComponent.getResponsePartId(),
+          testCompletedComponent.getResponsePartId());
       assertEquals(correctComponent, testComponent);
 
       for (int j = 0; j < correctCompletedComponent.getEntities().size(); j++) {
