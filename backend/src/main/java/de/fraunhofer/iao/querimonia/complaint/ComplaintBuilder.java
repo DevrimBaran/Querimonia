@@ -1,6 +1,9 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.log.ComplaintLog;
+import de.fraunhofer.iao.querimonia.log.LogCategory;
+import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
@@ -52,6 +55,8 @@ public class ComplaintBuilder {
   private LocalTime receiveTime = LocalTime.now();
   @NonNull
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
+  @NonNull
+  private List<LogEntry> log = new ArrayList<>();
   private long id = 0;
 
   /**
@@ -82,6 +87,7 @@ public class ComplaintBuilder {
     this.receiveDate = complaint.getReceiveDate();
     this.receiveTime = complaint.getReceiveTime();
     this.configuration = complaint.getConfiguration();
+    this.log = new ArrayList<>(complaint.getLog());
   }
 
   /**
@@ -268,6 +274,31 @@ public class ComplaintBuilder {
   }
 
   /**
+   * Sets the log of the complaint.
+   *
+   * @param log the list of log entries.
+   *
+   * @return this complaint builder.
+   */
+  public ComplaintBuilder setLog(@NonNull List<LogEntry> log) {
+    this.log = log;
+    return this;
+  }
+
+  /**
+   * Adds a new log entry to the complaint and logs it in the console.
+   *
+   * @param category the category of the log entry.
+   * @param message  the log message.
+   *
+   * @return this complaint builder.
+   */
+  public ComplaintBuilder appendLogItem(LogCategory category, String message) {
+    log.add(ComplaintLog.createLogEntry(category, id, message));
+    return this;
+  }
+
+  /**
    * Creates a complaint from the attributes of this builder.
    *
    * @return a complaint with the attributes of this builder.
@@ -278,7 +309,7 @@ public class ComplaintBuilder {
     return new Complaint(id, text, Objects.requireNonNull(preview), state,
         Objects.requireNonNull(properties), Objects.requireNonNull(sentiment),
         Objects.requireNonNull(entities), Objects.requireNonNull(responseSuggestion),
-        Objects.requireNonNull(wordList), receiveDate, receiveTime, configuration);
+        Objects.requireNonNull(wordList), receiveDate, receiveTime, configuration, log);
   }
 
   /**
@@ -395,6 +426,17 @@ public class ComplaintBuilder {
   @NonNull
   public Configuration getConfiguration() {
     return configuration;
+  }
+
+  /**
+   * Returns the log of the complaint. The complaint log contains all information about the
+   * analysis and edits of the complaint. It also logs errors.
+   *
+   * @return a list of {@link LogEntry log entries}.
+   */
+  @NonNull
+  public List<LogEntry> getLog() {
+    return log;
   }
 
   /**

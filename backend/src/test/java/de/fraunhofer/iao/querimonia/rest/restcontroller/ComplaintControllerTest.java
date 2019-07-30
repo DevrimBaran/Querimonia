@@ -6,6 +6,8 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
+import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.db.repository.*;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
@@ -16,6 +18,7 @@ import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.apache.commons.collections4.IteratorUtils;
 import org.junit.After;
@@ -33,13 +36,13 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
+import static de.fraunhofer.iao.querimonia.matchers.EmptyMatcher.empty;
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.*;
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.ENTITIES_F;
 import static de.fraunhofer.iao.querimonia.matchers.OptionalPresentMatcher.present;
 import static de.fraunhofer.iao.querimonia.matchers.ResponseStatusCodeMatcher.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static de.fraunhofer.iao.querimonia.matchers.EmptyMatcher.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
@@ -428,6 +431,7 @@ public class ComplaintControllerTest {
     assertThat(complaint.getSentiment().getEmotion(),
         is(equalTo(new ComplaintProperty("Emotion", "Insanity"))));
     assertThat(complaint.getSentiment().getEmotion().isSetByUser(), is(true));
+    assertThat(complaint.getLog(), is(not(empty())));
     assertThat(body, is(equalTo(complaintRepository.findById(1L).orElse(null))));
   }
 
