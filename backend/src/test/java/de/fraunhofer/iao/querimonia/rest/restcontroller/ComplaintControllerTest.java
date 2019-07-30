@@ -13,9 +13,6 @@ import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
-import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
-import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
@@ -36,9 +33,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
-import static de.fraunhofer.iao.querimonia.matchers.EmptyMatcher.empty;
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.*;
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.ENTITIES_F;
+import static de.fraunhofer.iao.querimonia.matchers.EmptyMatcher.empty;
 import static de.fraunhofer.iao.querimonia.matchers.OptionalPresentMatcher.present;
 import static de.fraunhofer.iao.querimonia.matchers.ResponseStatusCodeMatcher.hasStatusCode;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -71,7 +68,8 @@ public class ComplaintControllerTest {
         new ConfigurationManager(
             configurationRepository,
             complaintRepository
-        )
+        ),
+        new MockCombinationRepository()
     ));
   }
 

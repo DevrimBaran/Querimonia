@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.db.repository.MockCombinationRepository;
 import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repository.MockConfigurationRepository;
@@ -14,7 +15,8 @@ import org.springframework.http.ResponseEntity;
 
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.COMPLAINT_F;
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestResponses.SUGGESTION_C;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit test class for ResponseController
@@ -37,7 +39,7 @@ public class ResponseControllerTest {
         new ConfigurationManager(configurationRepository, complaintRepository);
     ComplaintManager complaintManager =
         new ComplaintManager(fileStorageService, complaintRepository, componentRepository,
-            configurationManager);
+            configurationManager, new MockCombinationRepository());
     responseController = new ResponseController(complaintManager);
   }
 

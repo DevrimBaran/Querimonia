@@ -14,6 +14,8 @@ tags:
     description: Hier können Beschwerden hochgeladen, verwaltet und editiert werden.
   - name: entities
     description: Hier können die Named Entities einer Beschwerde bearbeitet werden.
+  - name: combinations
+    description: Hier können Kombinationen von Entitäten verwaltet werden.
   - name: responses
     description: Hier können Antworten abgerufen werden.
   - name: components
@@ -419,6 +421,73 @@ paths:
                 $ref: '#/components/schemas/QuerimoniaException'
         500:
           $ref: '#/components/responses/UnexpectedError'
+
+  /api/combinations:
+    get:
+      tags:
+        - combinations
+      summary: Gibt alle Kombinationen der Datenbank zurück.
+      description: Gibt alle Kombinationen der Datenbank zurück.
+
+      operationId: getAllCombinations
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LineStopCombination'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+    post:
+      tags:
+        - combinations
+      summary: Fügt Kombinationen in die Datenbank ein.
+      description: Fügt Kombinationen in die Datenbank ein.
+      operationId: addCombinations
+
+      requestBody:
+        description: Enthält ein array der Kombinationen.
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/LineStopCombination'
+      responses:
+        204:
+          description: Erfolgreiches hinzufügen
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/combinations/{complaintId}:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    get:
+      tags:
+        - combinations
+      summary: Gibt die Kombinationen einer Beschwerde zurück.
+      description: Gibt die Kombinationen einer Beschwerde zurück.
+
+      operationId: getCombinationsOfComplaint
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Combination'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
 
   /api/responses/{complaintId}:
     parameters:
@@ -1437,6 +1506,10 @@ components:
       description: Ein Eintrag im Log zu einer Beschwerde.
       type: object
       required:
+        - date
+        - time
+        - message
+        - category
       properties:
         date:
           description: Das Datum des Log-Eintrags
@@ -1640,6 +1713,32 @@ components:
           minimum: 0
           description: Der Zeichenindex des Fehlers, beginnend bei 0.
 
+    LineStopCombination:
+      description: Eine Kombination aus Linie, Haltestelle und Ort.
+      type: object
+      properties:
+        line:
+          type: string
+          example: "293"
+          description: Linienbezeichnung
+        stop:
+          description: Haltestellenbezeichnun
+          type: string
+          example: "Kirchplatz"
+        place:
+          description: Ortsname
+          type: string
+          example: "Wuppertal"
+
+    Combination:
+      description: Eine Kombination von zueinander gehörigen Entitäten
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamedEntity'
+
   responses:
     UnexpectedError:
       description: Unerwarteter Serverfehler
@@ -1663,7 +1762,7 @@ components:
             $ref: '#/components/schemas/QuerimoniaException'
 
   examples:
-    # TODO add more examples
+  # TODO add more examples
 
   securitySchemes:
     basicAuth:
