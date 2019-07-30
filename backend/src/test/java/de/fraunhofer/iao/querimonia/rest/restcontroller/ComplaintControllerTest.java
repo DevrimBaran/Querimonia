@@ -40,8 +40,7 @@ import static de.fraunhofer.iao.querimonia.matchers.ResponseStatusCodeMatcher.ha
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static de.fraunhofer.iao.querimonia.matchers.EmptyMatcher.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 @SuppressWarnings( {"OptionalGetWithoutIsPresent", "EmptyMethod"})
@@ -719,8 +718,31 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void removeEntity() {
+  public void testRemoveEntity() {
+    NamedEntity testEntity = new NamedEntityBuilder()
+        .setLabel("Name")
+        .setStart(15)
+        .setEnd(19)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Peter")
+        .createNamedEntity();
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_F).createComplaint();
+    complaintRepository.save(testComplaint);
+    complaintController.removeEntity(6L, 0);
+    List<NamedEntity> entities = complaintRepository.findById(6L).get().getEntities();
+    assertFalse(entities.contains(testEntity));
   }
+
+  @Test
+  public void testRemoveEntityInvalidEntity() {
+    Complaint testComplaint = new ComplaintBuilder(COMPLAINT_G).createComplaint();
+    complaintRepository.save(testComplaint);
+    ResponseEntity<?> responseEntity = complaintController.removeEntity(6L, 0);
+    assertNotNull(responseEntity.getBody());
+    assertEquals(NotFoundException.class, responseEntity.getBody().getClass());
+  }
+
 
   @Test
   public void deleteAllComplaints1() {
