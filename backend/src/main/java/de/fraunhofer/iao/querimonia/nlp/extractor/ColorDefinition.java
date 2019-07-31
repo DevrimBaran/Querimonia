@@ -19,7 +19,7 @@ class ColorDefinition {
   private String color;
 
   @SuppressWarnings("unused")
-  public ColorDefinition() {
+  private ColorDefinition() {
   }
 
   @JsonCreator

@@ -87,8 +87,6 @@ public class Configuration implements Identifiable<Long> {
   @JsonCreator
   @SuppressWarnings("unused")
   Configuration(
-      @JsonProperty("id")
-          long id,
 
       @JsonProperty("name")
       @NonNull
@@ -110,7 +108,6 @@ public class Configuration implements Identifiable<Long> {
       @NonNull
           EmotionAnalyzerDefinition emotionAnalyzer) {
 
-    this.configId = id;
     this.name = name;
     this.extractors = extractors;
     this.classifiers = classifiers;
