@@ -64,6 +64,10 @@ public class Sentiment implements Comparable<Sentiment> {
     return new Sentiment(emotionProperty, this.tendency);
   }
 
+  public Sentiment withTendency(double tendency) {
+    return new Sentiment(this.emotion, tendency);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

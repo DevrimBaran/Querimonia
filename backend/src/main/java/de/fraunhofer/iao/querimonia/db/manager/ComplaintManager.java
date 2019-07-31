@@ -209,6 +209,15 @@ public class ComplaintManager {
           .appendLogItem(LogCategory.GENERAL, "Emotion auf " + newEmotion.get() + " gesetzt");
     }
 
+    Optional<Double> newTendency = updateRequest.getNewTendency();
+
+    if (newTendency.isPresent()) {
+      var sentiment = complaint.getSentiment().withTendency(newTendency.get());
+      builder
+          .setSentiment(sentiment)
+          .appendLogItem(LogCategory.GENERAL, "Tendency auf " + newTendency.get() + " gesetzt");
+    }
+
     Optional<String> newSubject = updateRequest.getNewSubject();
     if (newSubject.isPresent()) {
       builder

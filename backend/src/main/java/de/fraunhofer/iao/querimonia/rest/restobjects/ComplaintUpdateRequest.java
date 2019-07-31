@@ -16,21 +16,29 @@ public class ComplaintUpdateRequest {
   @Nullable
   private final String newEmotion;
   @Nullable
+  private final Double newTendency;
+  @Nullable
   private final String newSubject;
   @Nullable
   private final ComplaintState newState;
 
   @JsonCreator
   public ComplaintUpdateRequest(@Nullable @JsonProperty("sentiment") String newEmotion,
+                                @Nullable @JsonProperty("tendency") Double newTendency,
                                 @Nullable @JsonProperty("subject") String newSubject,
                                 @Nullable @JsonProperty("state") ComplaintState newState) {
     this.newEmotion = newEmotion;
+    this.newTendency = newTendency;
     this.newSubject = newSubject;
     this.newState = newState;
   }
 
   public Optional<String> getNewEmotion() {
     return Optional.ofNullable(newEmotion);
+  }
+
+  public Optional<Double> getNewTendency() {
+    return Optional.ofNullable(newTendency);
   }
 
   public Optional<String> getNewSubject() {
