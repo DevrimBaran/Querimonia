@@ -76,7 +76,7 @@ class TextBuilder extends Component {
       return obj;
     }, { ids: [] });
     this.setState({ components, actions });
-    console.log({ components, actions });
+    console.log('blub', { components, actions });
   };
 
   fetch = () => {
@@ -126,6 +126,7 @@ class TextBuilder extends Component {
           {
             this.state.components.ids.map((id) => {
               const component = this.state.components[id];
+              console.log(this.state);
               const answer = component.alternatives[component.currentAlternative];
               return (
                 <div className='response' key={id}>

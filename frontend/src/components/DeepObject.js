@@ -30,7 +30,6 @@ class DeepObject extends Component {
         }
         return obj;
       }, {});
-      console.log(newData);
       return newData;
     } else {
       return t.type === 'number' ? 0 : '';
@@ -39,7 +38,6 @@ class DeepObject extends Component {
   add = () => {
     const newData = this.props.data.slice();
     newData.push(this.templateToDefault(this.props.template.children));
-    console.log('add', newData);
     if (this.props.deepChange) {
       this.props.deepChange(this.props.name, newData);
     } else {
@@ -48,7 +46,6 @@ class DeepObject extends Component {
   }
   remove = (index) => () => {
     const newData = this.props.data.filter((e, i) => i !== index);
-    console.log('remove', newData);
     if (this.props.deepChange) {
       this.props.deepChange(this.props.name, newData);
     } else {
@@ -56,7 +53,6 @@ class DeepObject extends Component {
     }
   }
   onChange = (e) => {
-    console.log('onChange', e.name, e.value);
     this.deepChange(e.name, e.value);
   }
   deepChange = (key, value) => {
@@ -71,7 +67,6 @@ class DeepObject extends Component {
           [key]: value
         }
       );
-    console.log('deepChange', key, value, newData);
     if (this.props.deepChange) {
       this.props.deepChange(this.props.name, newData);
     } else {
@@ -85,7 +80,7 @@ class DeepObject extends Component {
       if (template.children) {
         return (<DeepObject data={value} template={template} name={key} key={key} deepChange={this.deepChange} />);
       } else {
-        return (<Input type={template.type} key={key} label={template.label} {...template.attributes} value={value} name={key} onChange={this.onChange} />);
+        return (<Input type={template.type} key={key} label={template.label} {...template.attributes} value2={template.attributes && template.attributes.name2 && this.props.data[template.attributes.name2]} value={value} name={key} onChange={this.onChange} />);
       }
     }
   }
@@ -94,16 +89,15 @@ class DeepObject extends Component {
     if (template) {
       if (template.children) {
         return (
-          <span key={key}>
+          <span className='deep-array' key={key}>
             <DeepObject data={value} template={template} name={key} key={key} deepChange={this.deepChange} />
             <i className='fa fa-trash' onClick={this.remove(key)} />
           </span>
         );
       } else {
-        console.log(key, value, template);
         return (
-          <span key={key}>
-            <Input type={template.type} key={key} label={template.label} {...template.attributes} value={value} name={key} onChange={this.onChange} />
+          <span className='deep-array' key={key}>
+            <Input type={template.type} key={key} label={template.label.replace(/\$i/g, (Number(key) + 1))} {...template.attributes} value={value} name={key} onChange={this.onChange} />
             <i className='fa fa-trash' onClick={this.remove(key)} />
           </span>
         );
@@ -115,23 +109,40 @@ class DeepObject extends Component {
     if (template) {
       if (template.type === 'array') {
         return (
-          <div>
+          <React.Fragment>
             {data.map(this.renderIndex)}
             <i className='fa fa-plus' onClick={this.add} />
-          </div>
+          </React.Fragment>
         );
       } else if (template.type === 'object') {
-        return Object.keys(data).map(this.renderKey);
+        let keys = Object.keys(data);
+        if (this.props.filter) {
+          keys = keys.filter(this.props.filter);
+        }
+        return (keys.map(this.renderKey));
       }
     }
   }
   render () {
-    return (
-      <div>
-        {this.props.template && this.props.template.label && (<React.Fragment><strong>{this.props.template.label.replace(/\$i/g, (Number(this.props.name) + 1))}</strong><br /></React.Fragment>)}
-        {this.renderData(this.props.data)}
-      </div>
-    );
+    if (this.props.template && this.props.template.label) {
+      if (this.isArray()) {
+        return (
+          <div className='deep-object'>
+            {(<strong>{this.props.template.label.replace(/\$i/g, (Number(this.props.name) + 1))}</strong>)}
+            {this.renderData(this.props.data)}
+          </div>
+        );
+      } else {
+        return (
+          <React.Fragment>
+            {(<strong>{this.props.template.label.replace(/\$i/g, (Number(this.props.name) + 1))}</strong>)}
+            {this.renderData(this.props.data)}
+          </React.Fragment>
+        );
+      }
+    } else {
+      return (this.renderData(this.props.data));
+    }
   }
 }
 

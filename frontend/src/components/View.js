@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Link } from 'react-router-dom';
 
-import { fetchData } from '../redux/actions';
+import { saveActive, fetchData } from '../redux/actions';
 
 import Block from './Block';
 import Row from './Row';
@@ -19,10 +19,56 @@ import Table from './Table';
 import Filter from './Filter';
 import Pagination from './Pagination';
 
-const getEndpointView = (endpoint, partial) => {
-  return connect((state, props) => ({ ...state[endpoint].data }))(class extends Component {
+const getEndpointView = (endpoint, partial, stateToProps) => {
+  return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
+  // return connect((state, props) => ({ ...state[endpoint].data }))(class extends Component {
     componentDidMount = () => {
       this.props.dispatch(fetchData(endpoint));
+    }
+    edit = (id) => {
+      return (
+        <Link to={'/' + endpoint + '/' + id}>
+          <i className='far fa-edit' />
+        </Link>
+      );
+    }
+    copy = (id) => {
+      const dispatchCopy = () => {
+        this.props.dispatch({
+          type: 'SET_ACTIVE',
+          endpoint: endpoint,
+          id: id
+        });
+        this.props.dispatch({
+          type: 'MODIFY_ACTIVE',
+          endpoint: endpoint,
+          data: { id: 0, name: '' }
+        });
+      };
+      return (
+        <Link onClick={dispatchCopy} to={'/' + endpoint + '/0'}>
+          <i className='far fa-copy' />
+        </Link>
+      );
+    }
+    remove = (id) => {
+      return (
+        <Link to=''>
+          <i className='fas fa-trash' />
+        </Link>
+      );
+    }
+    save = () => {
+      return (
+        <button
+          type='button'
+          className='important'
+          disabled={this.props.active.saving}
+          onClick={(e) => {
+            this.props.dispatch(saveActive(endpoint));
+          }}
+        >Speichern</button>
+      );
     }
     renderList = () => {
       return (
@@ -38,7 +84,7 @@ const getEndpointView = (endpoint, partial) => {
                   <Table>
                     {partial.Header()}
                     <tbody>
-                      {this.props.ids.map(id => partial.List(this.props.byId[id], this.props.dispatch))}
+                      {this.props.ids.map(id => partial.List(this.props.byId[id], this.props.dispatch, { edit: this.edit, copy: this.copy, remove: this.remove }))}
                     </tbody>
                   </Table>
                 )
@@ -69,7 +115,7 @@ const getEndpointView = (endpoint, partial) => {
       return (
         <React.Fragment>
           {single ? (
-            partial.Single(this.props.active, this.props.dispatch)
+            partial.Single(this.props.active, this.props.dispatch, { save: this.save, props: this.props })
           ) : (
             this.renderList()
           )}
@@ -86,10 +132,10 @@ class View extends Component {
   }
 
   render () {
-    const { path, component, endpoint, ...injected } = { ...this.props };
+    const { path, component, endpoint, stateToProps, ...injected } = { ...this.props };
     if (endpoint) {
       return (
-        <Route {...injected} path={path} endpoint={endpoint} component={getEndpointView(endpoint, component)} />
+        <Route {...injected} path={path} endpoint={endpoint} component={getEndpointView(endpoint, component, stateToProps)} />
       );
     } else {
       return (

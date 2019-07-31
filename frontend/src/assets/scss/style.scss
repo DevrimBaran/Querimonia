@@ -138,13 +138,8 @@
     height: 100%;
     overflow: auto;
     table {
-<<<<<<< HEAD
-        width: 100%;
-        border-spacing: 0px;
-=======
         margin: 0px auto;
-        border-collapse: collapse;
->>>>>>> c0b4b681c5bb0dc598bfd774a29c8569416d9290
+        border-spacing: 0px;
     }
     tr:hover {
         filter: brightness(90%);
@@ -171,7 +166,43 @@
         padding-right:10px;
     }
 }
-
+.deep-array {
+    display: flex;
+    align-items: center;
+    background-color: $lightgrey;
+    & + .deep-array {
+        margin-top: 5px;
+    }
+    &:hover {
+        background-color: $grey;
+    }
+    & > div, & > input {
+        width: 100%;
+    }
+    & > label, & > i {
+        padding: 0 5px;
+    }
+}
+.deep-object {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    & + .deep-object {
+        margin-top: 5px;
+    }
+    & > div, & > input {
+        width: 100%;
+    }
+    & > strong {
+        padding: 0 5px;
+        text-align: center;
+    }
+    & > i {
+        padding: 0 5px;
+        text-align: center;
+        background-color: rgba($primary, 0.8);
+    }
+}
 .padding {
     padding: 0 30px;
 }

@@ -7,15 +7,13 @@
 
 import React from 'react';
 
-import { saveActive, setCurrentConfig } from '../../redux/actions';
+import { setCurrentConfig } from '../../redux/actions';
 import template from '../../redux/templates/config';
 
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
 import DeepObject from '../../components/DeepObject';
-import Tabbed from './../../components/Tabbed';
-import Debug from './../../components/Debug';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
@@ -35,35 +33,14 @@ function Header () {
     </thead>
   );
 }
-const Copy = withRouter(class extends React.Component {
-  onClick = () => {
-    this.props.dispatch({
-      type: 'SET_ACTIVE',
-      endpoint: 'config',
-      id: this.props.id
-    });
-    this.props.dispatch({
-      type: 'MODIFY_ACTIVE',
-      endpoint: 'config',
-      data: { id: 0, name: '' }
-    });
-    this.props.history.push('/config/0');
-  }
-  render () {
-    return (
-      <i className='far fa-copy' onClick={this.onClick} />
-    );
-  }
-});
-function List (data, dispatch) {
+
+function List (data, dispatch, helpers) {
   return (
     <tr key={data.id}>
       <td>
-        <Link to={'/config/' + data.id}>
-          <i className='far fa-edit' />
-        </Link>
-        <Copy id={data.id} dispatch={dispatch} />
-        <i className='far fa-trash-alt' />
+        {helpers.edit(data.id)}
+        {helpers.copy(data.id)}
+        {helpers.remove(data.id)}
       </td>
       <td><h3>{data.id}</h3></td>
       <td>
@@ -81,7 +58,7 @@ function List (data, dispatch) {
   );
 }
 
-function Single (active, dispatch) {
+function Single (active, dispatch, helpers) {
   const modifyActive = (data) => {
     dispatch({
       type: 'MODIFY_ACTIVE',
@@ -95,27 +72,10 @@ function Single (active, dispatch) {
         <Row vertical>
           <h6 className='center'>Konfiguration</h6>
           <Content className='margin'>
-            <Tabbed>
-              <div label='rendered'>
-                <DeepObject data={active} template={template} save={modifyActive} />
-              </div>
-              <div label='plain'>
-                <Debug data={active} />
-              </div>
-              <div label='template'>
-                <Debug data={template} />
-              </div>
-            </Tabbed>
+            <DeepObject data={active} template={template(helpers.props.allExtractors)} save={modifyActive} />
           </Content>
           <div className='center margin'>
-            <button
-              type='button'
-              className='important'
-              disabled={active.saving}
-              onClick={(e) => {
-                dispatch(saveActive('config'));
-              }}
-            >Speichern</button>
+            {helpers.save()}
           </div>
         </Row>
       </Block>

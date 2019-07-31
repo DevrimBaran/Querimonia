@@ -37,6 +37,27 @@ export function saveActive (endpoint) {
     });
   };
 }
+export function remove (endpoint, id) {
+  return function (dispatch, getState) {
+    const { active } = getState()[endpoint].data;
+    dispatch({
+      type: 'SAVE_START',
+      endpoint: endpoint
+    });
+    dispatch((dispatch) => {
+      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + (active.id === 0 ? '' : active.id), active)
+        .then(data => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'SAVE_END',
+            endpoint: endpoint
+          });
+        });
+    });
+  };
+}
 export function fetchData (endpoint) {
   return function (dispatch, getState) {
     const { filter, pagination } = getState()[endpoint];

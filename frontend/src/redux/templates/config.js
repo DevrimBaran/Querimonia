@@ -1,4 +1,4 @@
-export default {
+export default (extractors) => ({
   type: 'object',
   children: {
     id: {
@@ -17,19 +17,13 @@ export default {
         type: 'object',
         label: '#$i',
         children: {
-          name: {
-            type: 'text',
-            label: 'Name'
-          },
           type: {
-            type: 'select',
+            type: 'conditional',
             label: 'Typ',
             attributes: {
-              values: [
-                { value: 'KIKUKO_TOOL', label: 'KIKUKO_TOOL' },
-                { value: 'LOREM', label: 'LOREM' },
-                { value: 'IPSUM', label: 'IPSUM' }
-              ]
+              name2: 'name',
+              label2: 'Name',
+              values: extractors
             }
           },
           colors: {
@@ -72,12 +66,17 @@ export default {
             type: 'select',
             label: 'Typ',
             attributes: {
-              values: [
-                { value: 'KIKUKO_CLASSIFIER', label: 'KIKUKO_CLASSIFIER' },
-                { value: 'LOREM', label: 'LOREM' },
-                { value: 'IPSUM', label: 'IPSUM' }
-              ]
+              values: [{ label: 'NONE', value: 'NONE' }, { label: 'KIKUKO_CLASSIFIER', value: 'KIKUKO_CLASSIFIER' }]
             }
+            /*
+            type: 'conditional',
+            label: 'Typ',
+            attributes: {
+              name2: 'name',
+              label2: 'Name',
+              values: extractors
+            }
+            */
           }
         }
       }
@@ -116,4 +115,4 @@ export default {
       attributes: { readOnly: true }
     }
   }
-};
+});
