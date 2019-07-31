@@ -400,7 +400,7 @@ public class ComplaintControllerTest {
   public void updateComplaint1() {
     Complaint testComplaint = TestComplaints.COMPLAINT_A;
     complaintRepository.save(testComplaint);
-    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, null);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, null, null);
 
     var response =
         complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
@@ -415,7 +415,7 @@ public class ComplaintControllerTest {
     Complaint testComplaint = TestComplaints.COMPLAINT_A;
     complaintRepository.save(testComplaint);
     ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest("Insanity", null,
-        null);
+        null, null);
 
     var response =
         complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
@@ -436,7 +436,29 @@ public class ComplaintControllerTest {
   public void updateComplaint3() {
     Complaint testComplaint = TestComplaints.COMPLAINT_A;
     complaintRepository.save(testComplaint);
-    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, "Bad driver",
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, 0.5,null,
+        null);
+
+    var response =
+        complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
+    assertThat(response, hasStatusCode(HttpStatus.OK));
+    var body = response.getBody();
+    assertThat(body, is(notNullValue()));
+    assertThat(body, not(equalTo(testComplaint)));
+    assertThat(body, is(instanceOf(Complaint.class)));
+    var complaint = (Complaint) body;
+    assertThat(complaint.getSentiment().getTendency(),
+        is(equalTo(0.5)));
+    assertThat(complaint.getSentiment().getEmotion().isSetByUser(), is(true));
+    assertThat(complaint.getLog(), is(not(empty())));
+    assertThat(body, is(equalTo(complaintRepository.findById(1L).orElse(null))));
+  }
+
+  @Test
+  public void updateComplaint4() {
+    Complaint testComplaint = TestComplaints.COMPLAINT_A;
+    complaintRepository.save(testComplaint);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null,"Bad driver",
         null);
 
     var response =
@@ -453,10 +475,10 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void updateComplaint4() {
+  public void updateComplaint5() {
     Complaint testComplaint = TestComplaints.COMPLAINT_A;
     complaintRepository.save(testComplaint);
-    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null,
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, null,
         CLOSED);
 
     var response =
@@ -473,9 +495,9 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void updateComplaint5() {
+  public void updateComplaint6() {
     Complaint testComplaint = TestComplaints.COMPLAINT_A;
-    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest("Anger", null,
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest("Anger", null, null,
         CLOSED);
 
     var response =
@@ -487,10 +509,10 @@ public class ComplaintControllerTest {
   }
 
   @Test
-  public void updateComplaint6() {
+  public void updateComplaint7() {
     Complaint testComplaint = TestComplaints.COMPLAINT_A.withState(CLOSED);
     complaintRepository.save(testComplaint);
-    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, NEW);
+    ComplaintUpdateRequest complaintUpdateRequest = new ComplaintUpdateRequest(null, null, null, NEW);
 
     var response =
         complaintController.updateComplaint(testComplaint.getId(), complaintUpdateRequest);
