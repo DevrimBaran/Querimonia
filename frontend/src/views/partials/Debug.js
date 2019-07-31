@@ -7,28 +7,40 @@
 
 import React from 'react';
 
+// eslint-disable-next-line
 import Debug from '../../components/Debug';
+import DeepObject from '../../components/DeepObject';
+
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 
-function List (data) {
+function Header (data, dispatch) {
   return (
-    <React.Fragment key={data.id}>
-      {
-        data && (
-          <Link to={'./' + data.id}>
-            <Debug data={data} />
-          </Link>
-        )
-      }
-    </React.Fragment>
+    <thead>
+      <tr>
+        <th>ID</th>
+      </tr>
+    </thead>
   );
 }
 
-function Single (data) {
+function List (data, dispatch) {
   return (
-    <Debug data={data} />
+    <tr>
+      <td>{data.id}</td>
+    </tr>
   );
 }
 
-export default { List, Single };
+function Single (active, dispatch) {
+  const data = {
+    foo: 'foo',
+    faa: 'faa',
+    bar: 0
+  };
+  return (
+    <DeepObject data={data} save={console.log} />
+  );
+}
+
+export default { List, Single, Header };

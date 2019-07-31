@@ -7,6 +7,8 @@
 
 import React, { Component } from 'react';
 
+import Textarea from './Textarea';
+import CodeMirror from './CodeMirror';
 class Input extends Component {
     onChange = (e) => {
       let value = e.target.value;
@@ -18,13 +20,9 @@ class Input extends Component {
           }
           case 'select-multiple': {
             value = [].filter.call(e.target.options, o => o.selected).map(o => o.value);
-            console.log(value);
-            console.dir(e.target);
             break;
           }
           default: {
-            console.log('default');
-            console.dir(e.target);
             value = e.target.value;
             break;
           }
@@ -64,7 +62,11 @@ class Input extends Component {
           break;
         }
         case 'textarea': {
-          input = <textarea value={value} {...injectedProp} {...passThroughProps} />;
+          input = <Textarea value={value} {...injectedProp} {...passThroughProps} />;
+          break;
+        }
+        case 'codemirror': {
+          input = <CodeMirror value={value} {...injectedProp} {...passThroughProps} />;
           break;
         }
         default: {

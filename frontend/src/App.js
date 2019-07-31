@@ -6,15 +6,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
 
+import View from './components/View';
+
 import Home from './views/Home';
-import Complaints from './views/Complaints';
 import Import from './views/Import';
 import WordVectors from './views/WordVectors';
 import TagCloud from './views/TagCloud';
-import Templates from './views/Templates';
-import Actions from './views/Actions';
-import Config from './views/Config';
 import Impressum from './views/Impressum';
+import Complaints from './views/partials/Complaint';
+import Templates from './views/partials/Template';
+import Config from './views/partials/Config';
+import Test from './views/partials/Test';
 
 import logo from './assets/img/StuproLogo2.svg';
 import OpenApi from './components/OpenApi';
@@ -56,6 +58,9 @@ function App () {
             <NavLink activeClassName='active' to='/tagcloud'>Worthäufigkeiten</NavLink>
           </li>
           <li>
+            <NavLink activeClassName='active' to='/test'>Test</NavLink>
+          </li>
+          <li>
             { /* wird nur in development und mock gerendered */ }
             <OpenApi />
           </li>
@@ -67,19 +72,25 @@ function App () {
         </ul>
       </nav>
 
+      <View exact path='/' component={Home} />
+      <View endpoint='complaints' path='/complaints/:id?' component={Complaints} />
+      <View endpoint='templates' path='/templates/:id?' component={Templates} />
+      <View endpoint='config' path='/config/:id?' component={Config} />
+      <View path='/test' component={Test} />
+      <View path='/import' component={Import} />
+      {/*
       <Route exact path='/' component={Home} />
       <Route path='/complaints/:id?' component={Complaints} />
       <Route path='/templates/:id?' component={Templates} />
       <Route path='/actions/:id?' component={Actions} />
       <Route path='/config/:id?' component={Config} />
       <Route path='/import' component={Import} />
-      {/*
       <Route path='/export' component={Export} />
       <Route path='/statistics' component={Statistics} />
       */}
       <Route path='/wordvectors' component={WordVectors} />
       <Route path='/tagcloud' component={TagCloud} />
-      <Route path='/impressum' component={Impressum} />
+      <Route path='/impressum' foo='bar' component={Impressum} />
     </Router>
   );
 }
