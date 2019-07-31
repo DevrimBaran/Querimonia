@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,19 +42,23 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
     List<NamedEntity> entities = new LinkedList<>();
 
-    allPipes.forEach((name, entityList) -> {
-      for (FoundEntity entity : entityList) {
-        entities.add(
-            new NamedEntityBuilder().setLabel(knownExtractors.getOrDefault(name,name))
-                .setStart(entity.getStartposition())
-                .setEnd(entity.getEndposition())
-                .setExtractor(domainName)
-                .setValue(entity.getTyp().containsValue(1.0d)?
-                    entity.getText():
-                    entity.getTyp().keySet().iterator().next())
-                .createNamedEntity());
-      }
-    });
+    try {
+      allPipes.forEach((name, entityList) -> {
+        for (FoundEntity entity : entityList) {
+          entities.add(
+              new NamedEntityBuilder().setLabel(name)
+                  .setStart(entity.getStartposition())
+                  .setEnd(entity.getEndposition())
+                  .setExtractor(domainName)
+                  .setValue(entity.getTyp().containsValue(1.0d)
+                      ? entity.getText()
+                      : entity.getTyp().keySet().stream().findFirst().orElse(entity.getText()))
+                  .createNamedEntity());
+        }
+      });
+    } catch (NoSuchElementException ignored) {
+
+    }
 
     return entities;
   }
@@ -63,8 +68,9 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
    * ignored).
    *
    * @param text text to be evaluated
+   *
    * @return Array containing the distance between start-index/end-index of the number range and the
-   * beginning/ending
+   *     beginning/ending
    */
   private static int[] matchesNumber(String text) {
     Pattern pattern = Pattern.compile("[0-9]+");
@@ -81,15 +87,4 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
     return numberPosition;
   }
 
-  public static void main(String[] args) {
-    String text = "Köln Karoingerstraße Hallo, Wupperaall Hofnn  meine Fahrt ist leider nicht " +
-        "erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!";
-
-    List<NamedEntity> entities =
-        new KikukoExtractor("domain", "QuerimoniaExtract").extractEntities(text);
-
-    entities.forEach(System.out::println);
-
-
-  }
 }

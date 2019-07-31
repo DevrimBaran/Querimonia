@@ -8,15 +8,19 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.LineStopCombinationRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.log.LogCategory;
+import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
+import de.fraunhofer.iao.querimonia.rest.restobjects.Combination;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
@@ -31,9 +35,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +55,7 @@ public class ComplaintManager {
   private final ComplaintRepository complaintRepository;
   private final ComplaintFactory complaintFactory;
   private final ConfigurationManager configurationManager;
+  private final LineStopCombinationRepository lineStopCombinationRepository;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint manager.
@@ -60,11 +65,13 @@ public class ComplaintManager {
                           ComplaintRepository complaintRepository,
                           @Qualifier("responseComponentRepository")
                               ResponseComponentRepository templateRepository,
-                          ConfigurationManager configurationManager) {
+                          ConfigurationManager configurationManager,
+                          LineStopCombinationRepository lineStopCombinationRepository) {
 
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
     this.configurationManager = configurationManager;
+    this.lineStopCombinationRepository = lineStopCombinationRepository;
 
     complaintFactory =
         new ComplaintFactory(new DefaultResponseGenerator(templateRepository),
@@ -146,13 +153,15 @@ public class ComplaintManager {
     complaintBuilder.setId(complaint.getId());
 
     // run analysis async
-    Executors.newCachedThreadPool().submit(() ->
-        CompletableFuture.supplyAsync(
-            () -> complaintFactory.analyzeComplaint(complaintBuilder, false))
-            // set state on error
-            .exceptionally(e -> onException(complaintBuilder, e))
-            // story complaint when finished
-            .whenComplete((this::onAnalysisFinished)).join());
+    Executors.newCachedThreadPool().submit(() -> {
+      try {
+        var builder = complaintFactory.analyzeComplaint(complaintBuilder, false);
+        builder.setState(ComplaintState.NEW);
+        storeComplaint(builder.createComplaint());
+      } catch (Exception e) {
+        onException(complaintBuilder, e);
+      }
+    });
     return complaint;
   }
 
@@ -161,30 +170,13 @@ public class ComplaintManager {
    */
   @NonNull
   private ComplaintBuilder onException(ComplaintBuilder complaintBuilder, Throwable e) {
-    complaintBuilder.setState(ERROR);
+    complaintBuilder
+        .setState(ERROR)
+        .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
     storeComplaint(complaintBuilder.createComplaint());
-    // TODO exception handling
-    logger.error("Exception occurred", e);
     return complaintBuilder;
   }
 
-  /**
-   * Is called, when the analysis is finished. It saves the new complaint.
-   */
-  private void onAnalysisFinished(ComplaintBuilder finishedComplaintBuilder, Throwable throwable) {
-    if (throwable == null) {
-      finishedComplaintBuilder.setState(ComplaintState.NEW);
-      storeComplaint(finishedComplaintBuilder.createComplaint());
-    } else {
-      // should never be executed
-      if (throwable instanceof QuerimoniaException) {
-        throw (QuerimoniaException) throwable;
-      } else {
-        throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, throwable,
-            "Unerwarteter Fehler");
-      }
-    }
-  }
 
   /**
    * Method for getting a complaint with an id.
@@ -201,20 +193,35 @@ public class ComplaintManager {
    *
    * @see ComplaintController#updateComplaint(long, ComplaintUpdateRequest) updateComplaint
    */
+  @SuppressWarnings("OptionalIsPresent")
   public Complaint updateComplaint(long complaintId, ComplaintUpdateRequest updateRequest) {
     Complaint complaint = getComplaint(complaintId);
-    checkForbiddenStates(complaint);
+    checkForbiddenStates(complaint, ERROR, CLOSED);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
 
-    if (updateRequest.getNewEmotion().isPresent()) {
-      builder.setSentiment(complaint.getSentiment().withEmotion(new ComplaintProperty("Emotion",
-          updateRequest.getNewEmotion().get())));
+    Optional<String> newEmotion = updateRequest.getNewEmotion();
+
+    if (newEmotion.isPresent()) {
+      var sentiment = complaint.getSentiment().withEmotion(new ComplaintProperty("Emotion",
+          newEmotion.get()));
+      builder
+          .setSentiment(sentiment)
+          .appendLogItem(LogCategory.GENERAL, "Emotion auf " + newEmotion.get() + " gesetzt");
     }
-    if (updateRequest.getNewSubject().isPresent()) {
-      builder.setValueOfProperty("Kategorie", updateRequest.getNewSubject().get());
+
+    Optional<String> newSubject = updateRequest.getNewSubject();
+    if (newSubject.isPresent()) {
+      builder
+          .setValueOfProperty("Kategorie", newSubject.get())
+          .appendLogItem(LogCategory.GENERAL, "Kategorie auf " + newSubject.get() + " gesetzt");
     }
-    if (updateRequest.getNewState().isPresent()) {
-      builder.setState(updateRequest.getNewState().get());
+
+    Optional<ComplaintState> newState = updateRequest.getNewState();
+    if (newState.isPresent()) {
+      builder
+          .setState(newState.get())
+          .appendLogItem(LogCategory.GENERAL, "Status der Beschwerde auf " + newState.get()
+              + " gesetzt");
     }
     complaint = builder.createComplaint();
     storeComplaint(complaint);
@@ -228,6 +235,8 @@ public class ComplaintManager {
    */
   public synchronized void deleteComplaint(long complaintId) {
     if (complaintRepository.existsById(complaintId)) {
+      Complaint complaint = getComplaint(complaintId);
+      checkForbiddenStates(complaint, ANALYSING);
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
     } else {
@@ -244,19 +253,32 @@ public class ComplaintManager {
       long complaintId,
       Optional<Boolean> keepUserInformation,
       Optional<Long> configId) {
+
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
-    checkForbiddenStates(complaint);
+    checkForbiddenStates(complaint, ANALYSING, CLOSED);
 
     Configuration configuration = configId
         // if given use the configuration with that id
         .map(configurationManager::getConfiguration)
         // use the currently active configuration else
         .orElseGet(configurationManager::getCurrentConfiguration);
-    builder.setConfiguration(configuration);
+    builder
+        .setConfiguration(configuration)
+        .setState(ANALYSING);
 
-    complaint = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false))
-        .createComplaint();
+    Complaint finalComplaint = complaint;
+    Executors.newCachedThreadPool().submit(() -> {
+      try {
+        var newBuilder
+            = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false));
+        newBuilder.setState(finalComplaint.getState());
+        storeComplaint(newBuilder.createComplaint());
+      } catch (Exception e) {
+        onException(builder, e);
+      }
+    });
+    complaint = builder.createComplaint();
     storeComplaint(complaint);
     return complaint;
   }
@@ -270,8 +292,9 @@ public class ComplaintManager {
    */
   public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
-    checkForbiddenStates(complaint);
-    complaint = complaint.withState(CLOSED);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    checkForbiddenStates(complaint, ANALYSING, CLOSED);
+    builder.setState(CLOSED);
 
     // execute actions of the complaint
     complaint
@@ -279,6 +302,9 @@ public class ComplaintManager {
         .getActions()
         .forEach(Action::executeAction);
 
+    builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
+
+    complaint = builder.createComplaint();
     storeComplaint(complaint);
 
     return complaint;
@@ -298,6 +324,24 @@ public class ComplaintManager {
         dateMax, sentiment, subject, keywords).size());
   }
 
+  /**
+   * Returns the log of a complaint.
+   *
+   * @param complaintId the id of the complaint.
+   *
+   * @return the log of a complaint.
+   */
+  public List<LogEntry> getLog(long complaintId) {
+    return getComplaint(complaintId).getLog();
+  }
+
+  /**
+   * Returns all entities of a complaint.
+   *
+   * @param complaintId the id of the complaint.
+   *
+   * @return all entities of a complaint.
+   */
   public List<NamedEntity> getEntities(long complaintId) {
     return getComplaint(complaintId).getEntities();
   }
@@ -309,6 +353,9 @@ public class ComplaintManager {
    */
   public List<NamedEntity> addEntity(long complaintId, NamedEntity entity) {
     Complaint complaint = getComplaint(complaintId);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+
     // check validity of entity
     int start = entity.getStartIndex();
     int end = entity.getEndIndex();
@@ -319,16 +366,18 @@ public class ComplaintManager {
           + "Entität");
     }
 
-    List<NamedEntity> complaintEntities = complaint.getEntities();
+    List<NamedEntity> complaintEntities = builder.getEntities();
     if (!complaintEntities.contains(entity)) {
+      // todo value formatting!
       complaintEntities.add(entity);
+      builder.appendLogItem(LogCategory.GENERAL, "Entität " + entity + " hinzugefügt");
     } else {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
           "Die Entität mit Label " + entity.getLabel()
               + "existiert bereits!", "Entität bereits vorhanden");
     }
 
-    storeComplaint(complaint);
+    storeComplaint(builder.createComplaint());
     return complaintEntities;
   }
 
@@ -339,9 +388,10 @@ public class ComplaintManager {
    */
   public List<NamedEntity> removeEntity(long complaintId, long entityId) {
     Complaint complaint = getComplaint(complaintId);
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
 
-
-    List<NamedEntity> complaintEntities = complaint.getEntities();
+    List<NamedEntity> complaintEntities = builder.getEntities();
     List<NamedEntity> entitiesToRemove = complaintEntities
         .stream()
         .filter(namedEntity -> namedEntity.getId() == entityId)
@@ -350,9 +400,63 @@ public class ComplaintManager {
       throw new QuerimoniaException(HttpStatus.NOT_FOUND, "Die gegebene Entität existiert nicht "
           + "in der Beschwerde.", "Ungültige Entity");
     }
-    entitiesToRemove.forEach(complaintEntities::remove);
-    storeComplaint(complaint);
+    for (NamedEntity namedEntity : entitiesToRemove) {
+      complaintEntities.remove(namedEntity);
+      builder.appendLogItem(LogCategory.GENERAL, "Entität " + namedEntity + " gelöscht");
+    }
+
+    storeComplaint(builder.createComplaint());
     return complaintEntities;
+  }
+
+  /**
+   * Returns all entity combinations of a complaint. Entity combinations are combinations of
+   * entities from the same context.
+   *
+   * @param complaintId the id of the complaint.
+   *
+   * @return the list of the combinations.
+   */
+  public List<Combination> getCombinations(long complaintId) {
+    Complaint complaint = getComplaint(complaintId);
+    var result = new HashSet<Combination>();
+
+    // group by labels
+    List<NamedEntity> lineEntities = complaint.getEntities().stream()
+        .filter(namedEntity -> namedEntity.getLabel().equals("Linie"))
+        .collect(Collectors.toList());
+    List<NamedEntity> placeEntities = complaint.getEntities().stream()
+        .filter(namedEntity -> namedEntity.getLabel().equals("Ort"))
+        .collect(Collectors.toList());
+    List<NamedEntity> stopEntities = complaint.getEntities().stream()
+        .filter(namedEntity -> namedEntity.getLabel().equals("Haltestelle"))
+        .collect(Collectors.toList());
+
+    for (NamedEntity line : lineEntities) {
+      for (NamedEntity place : placeEntities) {
+        for (NamedEntity stop : stopEntities) {
+          // combination of three
+          if (lineStopCombinationRepository.existsByLineAndPlaceAndStop(line.getValue(),
+              place.getValue(), stop.getValue())) {
+            result.add(new Combination(List.of(line, place, stop)));
+            // combination of line and place
+          } else if (lineStopCombinationRepository.existsByLineAndPlace(line.getValue(),
+              place.getValue())) {
+            result.add(new Combination(List.of(line, place)));
+            // combination of line and stop
+          } else if (lineStopCombinationRepository.existsByLineAndStop(line.getValue(),
+              stop.getValue())) {
+            result.add(new Combination(List.of(line, stop)));
+
+            // combination of line and stop
+          } else if (lineStopCombinationRepository.existsByPlaceAndStop(place.getValue(),
+              stop.getValue())) {
+            result.add(new Combination(List.of(place, stop)));
+          }
+        }
+      }
+    }
+    return new ArrayList<>(result);
   }
 
   /**
@@ -369,12 +473,13 @@ public class ComplaintManager {
    */
   public ResponseSuggestion refreshResponse(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
-    var suggestion = complaintFactory.createResponse(builder);
-    builder.setResponseSuggestion(suggestion);
+    complaintFactory.createResponse(builder);
 
     storeComplaint(builder.createComplaint());
-    return suggestion;
+    return builder.getResponseSuggestion();
   }
 
   private synchronized void storeComplaint(Complaint complaint) {
@@ -383,13 +488,9 @@ public class ComplaintManager {
       complaintRepository.save(complaint);
     } catch (Exception e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
-          + "Beschwerde", e, "Beschwerde");
+          + "Beschwerde: " + e.getMessage(), e, "Beschwerde");
     }
     logger.info("Saved complaint with id {}", complaint.getId());
-  }
-
-  private void checkForbiddenStates(Complaint complaint) {
-    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
   }
 
   /**
@@ -405,22 +506,20 @@ public class ComplaintManager {
     var forbiddenStatesList = Arrays.asList(forbiddenStates);
     if (forbiddenStatesList.contains(CLOSED)
         && complaint.getState().equals(CLOSED)) {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
           + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
     }
     if (forbiddenStatesList.contains(ANALYSING)
         && complaint.getState().equals(ANALYSING)) {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
           + "werden, während sie analysiert wird!", "Beschwerde wird analysiert");
     }
     if (forbiddenStatesList.contains(ERROR)
         && complaint.getState().equals(ERROR)) {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht bearbeitet "
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
           + "werden, da die Analyse nicht abgeschlossen werden konnte. Starten Sie die Analyse "
           + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.",
           "Beschwerde wurde nicht analysiert.");
     }
   }
-
-
 }

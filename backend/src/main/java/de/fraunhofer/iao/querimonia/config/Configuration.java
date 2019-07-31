@@ -17,17 +17,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.lang.NonNull;
 import tec.uom.lib.common.function.Identifiable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,7 +45,7 @@ public class Configuration implements Identifiable<Long> {
   @Transient
   @JsonIgnore
   public static final Configuration FALLBACK_CONFIGURATION = new ConfigurationBuilder()
-      .setName("Default")
+      .setName("Leere Konfiguration")
       .setExtractors(new ArrayList<>())
       .setClassifiers(new ArrayList<>(List.of(
           new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie"))))
@@ -72,12 +63,12 @@ public class Configuration implements Identifiable<Long> {
   @NonNull
   private String name = "";
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(name = "config_id")
   @NonNull
   private List<ExtractorDefinition> extractors = new ArrayList<>();
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "config_id")
   @NonNull
   private List<ClassifierDefinition> classifiers = new ArrayList<>();
@@ -96,13 +87,27 @@ public class Configuration implements Identifiable<Long> {
   @JsonCreator
   @SuppressWarnings("unused")
   Configuration(
-      @JsonProperty("id") long id,
-      @JsonProperty("name") @NonNull String name,
-      @JsonProperty("extractors") @NonNull List<ExtractorDefinition> extractors,
-      @JsonProperty("classifiers") @NonNull List<ClassifierDefinition> classifiers,
-      @JsonProperty("sentimentAnalyzer") @NonNull SentimentAnalyzerDefinition sentimentAnalyzer,
-      @JsonProperty("emotionAnalyzer") @NonNull EmotionAnalyzerDefinition emotionAnalyzer) {
-    this.configId = id;
+
+      @JsonProperty("name")
+      @NonNull
+          String name,
+
+      @JsonProperty(value = "extractors", required = true)
+      @NonNull
+          List<ExtractorDefinition> extractors,
+
+      @JsonProperty(value = "classifiers", required = true)
+      @NonNull
+          List<ClassifierDefinition> classifiers,
+
+      @JsonProperty(value = "sentimentAnalyzer", required = true)
+      @NonNull
+          SentimentAnalyzerDefinition sentimentAnalyzer,
+
+      @JsonProperty(value = "emotionAnalyzer", required = true)
+      @NonNull
+          EmotionAnalyzerDefinition emotionAnalyzer) {
+
     this.name = name;
     this.extractors = extractors;
     this.classifiers = classifiers;

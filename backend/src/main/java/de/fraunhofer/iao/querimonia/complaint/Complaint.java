@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
@@ -170,6 +171,14 @@ public class Complaint implements Identifiable<Long> {
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
 
   /**
+   * Contains the log of the complaint.
+   */
+  @NonNull
+  @JsonIgnore
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<LogEntry> log = new ArrayList<>();
+
+  /**
    * Constructor for builder.
    */
   Complaint(
@@ -184,7 +193,8 @@ public class Complaint implements Identifiable<Long> {
       @NonNull Map<String, Integer> wordList,
       @NonNull LocalDate receiveDate,
       @NonNull LocalTime receiveTime,
-      @NonNull Configuration configuration) {
+      @NonNull Configuration configuration,
+      @NonNull List<LogEntry> log) {
 
     ComplaintUtility.checkStringLength(text, TEXT_MAX_LENGTH);
     ComplaintUtility.checkStringLength(preview, PREVIEW_MAX_LENGTH);
@@ -201,6 +211,7 @@ public class Complaint implements Identifiable<Long> {
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
     this.configuration = configuration;
+    this.log = log;
   }
 
   /**
@@ -282,7 +293,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @NonNull
   public List<NamedEntity> getEntities() {
-    return entities;
+    return new ArrayList<>(entities);
   }
 
   /**
@@ -295,7 +306,7 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   @JsonIgnore
   public Map<String, Integer> getWordCounts() {
-    return wordList;
+    return new HashMap<>(wordList);
   }
 
   /**
@@ -369,7 +380,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @NonNull
   public List<ComplaintProperty> getProperties() {
-    return properties;
+    return new ArrayList<>(properties);
   }
 
   /**
@@ -380,6 +391,17 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   public Sentiment getSentiment() {
     return sentiment;
+  }
+
+  /**
+   * Returns the log of the complaint. The complaint log contains all information about the
+   * analysis and edits of the complaint. It also logs errors.
+   *
+   * @return a list of {@link LogEntry log entries}.
+   */
+  @NonNull
+  public List<LogEntry> getLog() {
+    return new ArrayList<>(log);
   }
 
   /**

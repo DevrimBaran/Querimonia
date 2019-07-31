@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp;
 
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.util.Objects;
@@ -10,10 +11,13 @@ public class NamedEntityBuilder {
   private int start;
   private int end;
   private boolean setByUser = false;
+  private boolean preferred = false;
   @Nullable
   private String extractor;
   @Nullable
   private String value;
+  @NonNull
+  private String color = "#222222";
 
   public NamedEntityBuilder setLabel(String label) {
     this.label = label;
@@ -45,8 +49,19 @@ public class NamedEntityBuilder {
     return this;
   }
 
+  public NamedEntityBuilder setPreferred(boolean preferred) {
+    this.preferred = preferred;
+    return this;
+  }
+
+  public NamedEntityBuilder setColor(@Nullable String color) {
+    this.color = color;
+    return this;
+  }
+
   public NamedEntity createNamedEntity() {
-    return new NamedEntity(Objects.requireNonNull(label), start, end, setByUser,
-        Objects.requireNonNull(extractor), Objects.requireNonNull(value));
+    return new NamedEntity(Objects.requireNonNull(label), start, end, setByUser, preferred,
+        Objects.requireNonNull(extractor), Objects.requireNonNull(value),
+        Objects.requireNonNull(color));
   }
 }

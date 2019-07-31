@@ -27,8 +27,9 @@ public class Sentiment implements Comparable<Sentiment> {
   /**
    * Fallback sentiment when no sentiment is available.
    */
-  public static final Sentiment DEFAULT_SENTIMENT
-      = new Sentiment(ComplaintProperty.DEFAULT_PROPERTY, 0.0);
+  public static Sentiment getDefaultSentiment() {
+    return new Sentiment(ComplaintProperty.getDefaultProperty("Emotion"), 0.0);
+  }
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -37,7 +38,7 @@ public class Sentiment implements Comparable<Sentiment> {
 
   @OneToOne(cascade = ALL)
   @NonNull
-  private ComplaintProperty emotion = ComplaintProperty.DEFAULT_PROPERTY;
+  private ComplaintProperty emotion = ComplaintProperty.getDefaultProperty("Emotion");
   private double tendency;
 
   @JsonCreator
