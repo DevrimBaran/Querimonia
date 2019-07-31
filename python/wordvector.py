@@ -3,7 +3,6 @@ import numpy as np
 import logging
 from collections import defaultdict
 import os
-import pdb
 
 # setup
 if os.getenv("DEPLOY", "not found") != "not found":
