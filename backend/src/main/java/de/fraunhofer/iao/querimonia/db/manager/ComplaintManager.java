@@ -8,6 +8,7 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.db.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.LineStopCombinationRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
@@ -19,6 +20,7 @@ import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
+import de.fraunhofer.iao.querimonia.rest.restobjects.Combination;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
@@ -33,6 +35,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -52,6 +55,7 @@ public class ComplaintManager {
   private final ComplaintRepository complaintRepository;
   private final ComplaintFactory complaintFactory;
   private final ConfigurationManager configurationManager;
+  private final LineStopCombinationRepository lineStopCombinationRepository;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint manager.
@@ -61,11 +65,13 @@ public class ComplaintManager {
                           ComplaintRepository complaintRepository,
                           @Qualifier("responseComponentRepository")
                               ResponseComponentRepository templateRepository,
-                          ConfigurationManager configurationManager) {
+                          ConfigurationManager configurationManager,
+                          LineStopCombinationRepository lineStopCombinationRepository) {
 
     this.fileStorageService = fileStorageService;
     this.complaintRepository = complaintRepository;
     this.configurationManager = configurationManager;
+    this.lineStopCombinationRepository = lineStopCombinationRepository;
 
     complaintFactory =
         new ComplaintFactory(new DefaultResponseGenerator(templateRepository),
@@ -404,6 +410,56 @@ public class ComplaintManager {
   }
 
   /**
+   * Returns all entity combinations of a complaint. Entity combinations are combinations of
+   * entities from the same context.
+   *
+   * @param complaintId the id of the complaint.
+   *
+   * @return the list of the combinations.
+   */
+  public List<Combination> getCombinations(long complaintId) {
+    Complaint complaint = getComplaint(complaintId);
+    var result = new HashSet<Combination>();
+
+    // group by labels
+    List<NamedEntity> lineEntities = complaint.getEntities().stream()
+        .filter(namedEntity -> namedEntity.getLabel().equals("Linie"))
+        .collect(Collectors.toList());
+    List<NamedEntity> placeEntities = complaint.getEntities().stream()
+        .filter(namedEntity -> namedEntity.getLabel().equals("Ort"))
+        .collect(Collectors.toList());
+    List<NamedEntity> stopEntities = complaint.getEntities().stream()
+        .filter(namedEntity -> namedEntity.getLabel().equals("Haltestelle"))
+        .collect(Collectors.toList());
+
+    for (NamedEntity line : lineEntities) {
+      for (NamedEntity place : placeEntities) {
+        for (NamedEntity stop : stopEntities) {
+          // combination of three
+          if (lineStopCombinationRepository.existsByLineAndPlaceAndStop(line.getValue(),
+              place.getValue(), stop.getValue())) {
+            result.add(new Combination(List.of(line, place, stop)));
+            // combination of line and place
+          } else if (lineStopCombinationRepository.existsByLineAndPlace(line.getValue(),
+              place.getValue())) {
+            result.add(new Combination(List.of(line, place)));
+            // combination of line and stop
+          } else if (lineStopCombinationRepository.existsByLineAndStop(line.getValue(),
+              stop.getValue())) {
+            result.add(new Combination(List.of(line, stop)));
+
+            // combination of line and stop
+          } else if (lineStopCombinationRepository.existsByPlaceAndStop(place.getValue(),
+              stop.getValue())) {
+            result.add(new Combination(List.of(place, stop)));
+          }
+        }
+      }
+    }
+    return new ArrayList<>(result);
+  }
+
+  /**
    * Removes all complaints.
    *
    * @see ComplaintController#deleteAllComplaints() deleteAllComplaints
@@ -466,6 +522,4 @@ public class ComplaintManager {
           "Beschwerde wurde nicht analysiert.");
     }
   }
-
-
 }
