@@ -13,6 +13,7 @@ api = Api(
     version="0.1",
     title="Python API",
     description="API für Wortvektoren und Sentimentanaylse",
+    doc='/inf/swagger-ui-python/'
 )
 
 
