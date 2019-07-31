@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Link } from 'react-router-dom';
 
-import { saveActive, fetchData } from '../redux/actions';
+import { saveActive, fetchData, remove } from '../redux/actions';
 
 import Block from './Block';
 import Row from './Row';
@@ -53,8 +53,8 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
     }
     remove = (id) => {
       return (
-        <Link to=''>
-          <i className='fas fa-trash' />
+        <Link>
+          <i className='far fa-trash-alt' onClick={() => this.props.dispatch(remove(endpoint, id))} />
         </Link>
       );
     }

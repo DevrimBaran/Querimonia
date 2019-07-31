@@ -15,6 +15,7 @@ import Collapsible from './../../components/Collapsible';
 import Tabbed from './../../components/Tabbed';
 import TextBuilder from './../../components/TextBuilder';
 import Tooltip from './../../components/Tooltip';
+import Input from '../../components/Input';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
@@ -23,7 +24,7 @@ import EditableEntityText from './EditableEntityText';
 function Header () {
   return (
     <thead>
-      <tr>
+      <tr style={{ filter: 'brightness(100%)' }}>
         <th>Anliegen</th>
         <th>Vorschau</th>
         <th>Emotion</th>
@@ -56,7 +57,7 @@ function List (data) {
   );
 }
 
-function Single (active, loadingEntitiesFinished, editCategorieBool, editSentimentBool, editCategorie, editSentiment, refreshEntities) {
+function Single (active, loadingEntitiesFinished, editCategorieBool, editTendencyBool, editEmotionBool, editCategorie, editTendency, editEmotion, refreshEntities) {
   let sent = active && active.sentiment ? active.sentiment.tendency : null;
   return loadingEntitiesFinished ? (
     <React.Fragment>
@@ -92,7 +93,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editSentime
             <br />
             <b> Kategorie: </b>
             {
-              active.properties.map((properties) =>
+              active.properties.map((properties, index) =>
                 !editCategorieBool ? (
                   <span>
                     <span id='subjects'>{properties.value}</span>
@@ -100,7 +101,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editSentime
                       {Object.keys(properties.probabilities).map(subject => <div key={subject}>{`${subject}: ${properties.probabilities[subject]}`} <br /></div>)}
                     </Tooltip>
                     {/* eslint-disable-next-line */}
-                  <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, index, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                   </span>
                 ) : (
                   <span>
@@ -108,33 +109,54 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editSentime
                       {Object.keys(properties.probabilities).map(subject => subject === properties.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
                     </select>
                     {/* eslint-disable-next-line */}
-                  <i className={'far fa-check-circle fa-lg'} onClick={editCategorie.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-check-circle fa-lg'} onClick={editCategorie.bind(this, active, index, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
                     {/* eslint-disable-next-line */}
-                  <i className={'far fa-times-circle fa-lg'} onClick={editCategorie.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-times-circle fa-lg'} onClick={editCategorie.bind(this, active, index, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
                   </span>
                 ))
             }
             <br />
             <b> Sentiment: </b>
             {
-              !editSentimentBool ? (
+              !editTendencyBool ? (
                 <span>
-                  <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})</span>
+                  <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'}</span>
                   <Tooltip htmlFor='sentiments'>
-                    {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
+                    {sent.toFixed(2)}
                   </Tooltip>
-                  {/* eslint-disable-next-line */}
-                  <i className={'far fa-edit'} onClick={editSentiment.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-edit'} onClick={editTendency.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
               ) : (
                 <span>
-                  <select id='chooseSentiment'>
+                  <Input id='chooseTendency' type='number' min='-1' max='1' step='0.01' defaultValue={sent.toFixed(2)} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-check-circle fa-lg'} onClick={editTendency.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-times-circle fa-lg'} onClick={editTendency.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              )
+            }
+            <br />
+            <b> Emotion: </b>
+            {
+              !editEmotionBool ? (
+                <span>
+                  <span id='emotions'>{getMaxKey(active.sentiment.emotion.probabilities)}</span>
+                  <Tooltip htmlFor='emotions'>
+                    {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => <div key={sentiment}>{`${sentiment}: ${active.sentiment.emotion.probabilities[sentiment]}`} <br /></div>)}
+                  </Tooltip>
+                  {/* eslint-disable-next-line */}
+                  <i className={'far fa-edit'} onClick={editEmotion.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                </span>
+              ) : (
+                <span>
+                  <select id='chooseEmotion'>
                     {Object.keys(active.sentiment.emotion.probabilities).map(sentiment => sentiment === active.sentiment.emotion.value ? <option selected='selected'>{`${sentiment}`}</option> : <option >{`${sentiment}`}</option>)};
                   </select>
                   {/* eslint-disable-next-line */}
-                  <i className={'far fa-check-circle fa-lg'} onClick={editSentiment.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-check-circle fa-lg'} onClick={editEmotion.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
                   {/* eslint-disable-next-line */}
-                  <i className={'far fa-times-circle fa-lg'} onClick={editSentiment.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-times-circle fa-lg'} onClick={editEmotion.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
               )
             }

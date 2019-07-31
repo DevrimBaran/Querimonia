@@ -22,10 +22,9 @@ class TextBuilder extends Component {
 
     this.state = {
       text: '',
-      components: { ids: [] },
-      actions: { ids: [] }
+      components: [],
+      actions: []
     };
-    this.data = {};
   }
 
   add = (id) => {
@@ -59,24 +58,42 @@ class TextBuilder extends Component {
       }
     );
   }
+
   finish = (mailto) => {
     document.location.href = mailto;
     // document.location.href = document.location.origin + '/complaints';
   }
+
+  insertEntities = (text, componentId) => {
+    const component = this.state.components.find((component) => {
+      return component.component.id === componentId;
+    });
+    const preferredEntity = component.entities.find(entity => entity.preferred);
+    const componentEntities = component.activeEntityLabel || (preferredEntity ? preferredEntity.label : false) || (component.entities[0] ? component.entities[0].label : false) || null;
+    const variableRegex = /\${.*}/g;
+    const variables = text.match(variableRegex) || [];
+    variables.forEach(variable => {
+      text = text.replace(variable, componentEntities);
+    });
+    return text;
+  };
+
+  setActiveEntity = (componentId, activeEntityLabel) => {
+    this.setState({
+      components: this.state.components.map((component) => {
+        if (component.component.id === componentId) component.activeEntityLabel = activeEntityLabel;
+        return component;
+      })
+    });
+  };
+
   setData = (data) => {
-    const components = data.components.reduce((obj, component) => {
-      component.currentAlternative = 0;
-      obj[component.id] = component;
-      obj.ids.push(component.id);
-      return obj;
-    }, { ids: [] });
-    const actions = data.actions.reduce((obj, component) => {
-      obj[component.id] = component;
-      obj.ids.push(component.id);
-      return obj;
-    }, { ids: [] });
-    this.setState({ components, actions });
-    console.log('blub', { components, actions });
+    const components = data.components;
+    const actions = data.actions;
+    this.setState({
+      components: components,
+      actions: actions });
+    console.log({ components, actions });
   };
 
   fetch = () => {
@@ -113,10 +130,10 @@ class TextBuilder extends Component {
         <Collapsible className='Content' label='Aktionen' collapse={false} id='actions' />
         <Content>
           {
-            this.state.actions.ids.map((id) => {
-              const action = this.state.actions[id];
+            this.state.actions.map((action, i) => {
+              const id = action.id;
               return (
-                <Input key={id} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
+                <Input key={i} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
               );
             })
           }
@@ -124,14 +141,16 @@ class TextBuilder extends Component {
         <Collapsible className='Content' label='Antworten' collapse={false} id='responses' />
         <Content>
           {
-            this.state.components.ids.map((id) => {
-              const component = this.state.components[id];
-              console.log(this.state);
-              const answer = component.alternatives[component.currentAlternative];
+            this.state.components.map((component) => {
+              const id = component.component.id;
               return (
                 <div className='response' key={id}>
                   <span className='content'>
-                    <ChangeableEntityText taggedText={{ text: answer.completedText, entities: answer.entities }} />
+                    <ChangeableEntityText taggedText={{ text: this.insertEntities(component.component.texts[0], id), entities: component.entities }}
+                      possibleEntities={component.entities}
+                      setActiveEntity={this.setActiveEntity}
+                      activeEntity={component.activeEntityLabel || null}
+                      complaintId={id} />
                     <div className='part'>{component.component.componentName}</div>
                   </span>
                   <i className='fa fa-check add' onClick={() => { this.add(id); }} />

@@ -39,19 +39,16 @@ export function saveActive (endpoint) {
 }
 export function remove (endpoint, id) {
   return function (dispatch, getState) {
-    const { active } = getState()[endpoint].data;
-    dispatch({
-      type: 'SAVE_START',
-      endpoint: endpoint
-    });
+    const { data } = getState()[endpoint];
     dispatch((dispatch) => {
-      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + (active.id === 0 ? '' : active.id), active)
-        .then(data => {
+      Api.delete('/api/' + endpoint + '/' + id, {})
+        .then(response => {
           if (data.status && data.status === 500) {
             // alert(data.message);
           }
           dispatch({
-            type: 'SAVE_END',
+            type: 'FETCH_END',
+            data: data,
             endpoint: endpoint
           });
         });

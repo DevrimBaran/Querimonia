@@ -10,6 +10,7 @@ import api from './../utility/Api';
 
 import Complaint from './partials/Complaint';
 
+import Table from './../components/Table';
 import Block from './../components/Block';
 import Content from './../components/Content';
 import Row from './../components/Row';
@@ -27,7 +28,12 @@ class ImportBlock extends Component {
   parseResponse = (response) => {
     let complaints = (
       <Content>
-        {Array.isArray(response) ? this.state.issues.map(Complaint) : Complaint(response, 0) }
+        <Table>
+          {Complaint.Header()}
+          <tbody>
+            {Array.isArray(response) ? this.state.issues.map(Complaint.List) : Complaint.List(response, 0) }
+          </tbody>
+        </Table>
       </Content>
     );
     this.setState({ loading: false, type: null, response: complaints });

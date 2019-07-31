@@ -21,8 +21,8 @@ import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 function Header () {
   return (
     <thead>
-      <tr>
-        <th />
+      <tr style={{ filter: 'brightness(100%)' }}>
+        <th> </th>
         <th>ID</th>
         <th>Aktiv</th>
         <th>Name</th>
