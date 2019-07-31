@@ -46,7 +46,7 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
       allPipes.forEach((name, entityList) -> {
         for (FoundEntity entity : entityList) {
           entities.add(
-              new NamedEntityBuilder().setLabel(name)
+              new NamedEntityBuilder().setLabel(knownExtractors.getOrDefault(name,name))
                   .setStart(entity.getStartposition())
                   .setEnd(entity.getEndposition())
                   .setExtractor(domainName)
