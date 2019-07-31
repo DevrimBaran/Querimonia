@@ -24,12 +24,12 @@ import Table from './../components/Table';
 
 class Templates extends Component {
   componentDidMount = () => {
-    this.props.dispatch(fetchData('templates'));
+    this.props.dispatch(fetchData('components'));
   }
   renderList = () => {
     return (<Block>
       <Row vertical>
-        <Filter endpoint='templates' />
+        <Filter endpoint='components' />
         <div className='row flex-row height' >
           <Link to='/templates/0'><Input type='button' value='Neues Template' /></Link>
         </div>
@@ -46,7 +46,7 @@ class Templates extends Component {
             )
           }
         </Content>
-        <Pagination endpoint='templates' />
+        <Pagination endpoint='components' />
       </Row>
     </Block>);
   };
@@ -58,7 +58,7 @@ class Templates extends Component {
         if (!this.props.data.fetching) {
           this.props.dispatch({
             type: 'SET_ACTIVE',
-            endpoint: 'templates',
+            endpoint: 'components',
             id: id
           });
         }
@@ -78,6 +78,6 @@ class Templates extends Component {
   }
 }
 
-const mapStateToProps = (state, props) => ({ data: state['templates'].data });
+const mapStateToProps = (state, props) => ({ data: state['components'].data });
 
 export default connect(mapStateToProps)(Templates);

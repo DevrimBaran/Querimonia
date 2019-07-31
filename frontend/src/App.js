@@ -12,6 +12,11 @@ import Home from './views/Home';
 import Import from './views/Import';
 import WordVectors from './views/WordVectors';
 import TagCloud from './views/TagCloud';
+<<<<<<< HEAD
+=======
+import Templates from './views/Templates';
+import Config from './views/Config';
+>>>>>>> c0b4b681c5bb0dc598bfd774a29c8569416d9290
 import Impressum from './views/Impressum';
 import Complaints from './views/partials/Complaint';
 import Templates from './views/partials/Template';
@@ -46,10 +51,7 @@ function App () {
             <NavLink activeClassName='active' to='/templates'>Textbausteine</NavLink>
           </li>
           <li>
-            <NavLink activeClassName='active' to='/actions'>Aktionen</NavLink>
-          </li>
-          <li>
-            <NavLink activeClassName='active' to='/config'>Konfiguration</NavLink>
+            <NavLink activeClassName='active' to='/config'>Konfigurationen</NavLink>
           </li>
           <li>
             <NavLink activeClassName='active' to='/wordvectors'>Wortvektoren</NavLink>
@@ -82,7 +84,6 @@ function App () {
       <Route exact path='/' component={Home} />
       <Route path='/complaints/:id?' component={Complaints} />
       <Route path='/templates/:id?' component={Templates} />
-      <Route path='/actions/:id?' component={Actions} />
       <Route path='/config/:id?' component={Config} />
       <Route path='/import' component={Import} />
       <Route path='/export' component={Export} />
