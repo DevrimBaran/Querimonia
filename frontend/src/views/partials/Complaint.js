@@ -48,9 +48,7 @@ function List (data) {
           {sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})
         </span></Link></td>
       <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
-        <span className='small' style={{ fontWeight: 'normal' }}>
-          {data.properties[0].value + ' (' + (data.properties[0].probabilities[data.properties[0].value] * 100) + '%)'}
-        </span></Link></td>
+        <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</span></Link></td>
       <td><Link to={'/complaints/' + data.id}><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></Link></td>
     </tr>
   );
@@ -92,26 +90,27 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editSentime
             <br />
             <b> Kategorie: </b>
             {
-              !editCategorieBool ? (
-                <span>
-                  <span id='subjects'>{active.properties[0].value}</span>
-                  <Tooltip htmlFor='subjects'>
-                    {Object.keys(active.properties[0].probabilities).map(subject => <div key={subject}>{`${subject}: ${active.properties[0].probabilities[subject]}`} <br /></div>)}
-                  </Tooltip>
-                  {/* eslint-disable-next-line */}
+              active.properties.map((properties) =>
+                !editCategorieBool ? (
+                  <span>
+                    <span id='subjects'>{properties.value}</span>
+                    <Tooltip htmlFor='subjects'>
+                      {Object.keys(properties.probabilities).map(subject => <div key={subject}>{`${subject}: ${properties.probabilities[subject]}`} <br /></div>)}
+                    </Tooltip>
+                    {/* eslint-disable-next-line */}
                   <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
-                </span>
-              ) : (
-                <span>
-                  <select id='chooseCategorie'>
-                    {Object.keys(active.properties[0].probabilities).map(subject => subject === active.properties[0].value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
-                  </select>
-                  {/* eslint-disable-next-line */}
+                  </span>
+                ) : (
+                  <span>
+                    <select id='chooseCategorie'>
+                      {Object.keys(properties.probabilities).map(subject => subject === properties.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
+                    </select>
+                    {/* eslint-disable-next-line */}
                   <i className={'far fa-check-circle fa-lg'} onClick={editCategorie.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
-                  {/* eslint-disable-next-line */}
+                    {/* eslint-disable-next-line */}
                   <i className={'far fa-times-circle fa-lg'} onClick={editCategorie.bind(this, active, false)} style={{ color: 'red', cursor: 'pointer', paddingLeft: '8px' }} />
-                </span>
-              )
+                  </span>
+                ))
             }
             <br />
             <b> Sentiment: </b>
