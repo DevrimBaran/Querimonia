@@ -6,6 +6,10 @@ import org.springframework.lang.Nullable;
 
 import java.util.List;
 
+/**
+ * A rule that checks if the sentiment value of a complaint is in a certain range or if the
+ * complaint contains a specific emotion.
+ */
 public class SentimentRule implements Rule {
 
   private final double min;
