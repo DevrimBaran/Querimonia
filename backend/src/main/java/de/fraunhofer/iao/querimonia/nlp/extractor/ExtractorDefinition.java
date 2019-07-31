@@ -2,24 +2,14 @@ package de.fraunhofer.iao.querimonia.nlp.extractor;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,15 +38,21 @@ public class ExtractorDefinition {
   private List<ColorDefinition> colors = new ArrayList<>();
 
   @SuppressWarnings("unused")
-  public ExtractorDefinition() {
+  private ExtractorDefinition() {
     // for hibernate
   }
 
   @JsonCreator
   @SuppressWarnings("unused")
-  public ExtractorDefinition(@NonNull String name,
-                             @NonNull ExtractorType type,
-                             @NonNull List<ColorDefinition> colors) {
+  public ExtractorDefinition(@NonNull
+                             @JsonProperty("name")
+                                 String name,
+                             @NonNull
+                             @JsonProperty("type")
+                                 ExtractorType type,
+                             @NonNull
+                             @JsonProperty("colors")
+                                 List<ColorDefinition> colors) {
     this.name = name;
     this.type = type;
     this.colors = colors;
@@ -119,21 +115,4 @@ public class ExtractorDefinition {
         .toString();
   }
 
-  @Embeddable
-  private static class ColorDefinition {
-
-    String label;
-    String color;
-
-    @SuppressWarnings("unused")
-    public ColorDefinition() {
-    }
-
-    @JsonCreator
-    @SuppressWarnings("unused")
-    public ColorDefinition(String label, String color) {
-      this.label = label;
-      this.color = color;
-    }
-  }
 }

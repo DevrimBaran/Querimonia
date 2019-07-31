@@ -8,12 +8,15 @@ import org.springframework.lang.Nullable;
 import java.util.Optional;
 
 /**
- * Rest object for updating complaints.
+ * Rest object that represents a request for updating complaints. It consists of optional
+ * attributes that the complaint should have.
  */
 public class ComplaintUpdateRequest {
 
   @Nullable
   private final String newEmotion;
+  @Nullable
+  private final Double newTendency;
   @Nullable
   private final String newSubject;
   @Nullable
@@ -21,15 +24,21 @@ public class ComplaintUpdateRequest {
 
   @JsonCreator
   public ComplaintUpdateRequest(@Nullable @JsonProperty("sentiment") String newEmotion,
+                                @Nullable @JsonProperty("tendency") Double newTendency,
                                 @Nullable @JsonProperty("subject") String newSubject,
                                 @Nullable @JsonProperty("state") ComplaintState newState) {
     this.newEmotion = newEmotion;
+    this.newTendency = newTendency;
     this.newSubject = newSubject;
     this.newState = newState;
   }
 
   public Optional<String> getNewEmotion() {
     return Optional.ofNullable(newEmotion);
+  }
+
+  public Optional<Double> getNewTendency() {
+    return Optional.ofNullable(newTendency);
   }
 
   public Optional<String> getNewSubject() {

@@ -1,29 +1,36 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.log.LogCategory;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
-import de.fraunhofer.iao.querimonia.nlp.classifier.Classifier;
+import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierFactory;
-import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzer;
+import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.emotion.EmotionAnalyzerFactory;
+import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorFactory;
-import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzer;
+import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerFactory;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * This factory is used to create complaint objects.
+ * This factory is used to create complaint objects. It manages the analysis and response
+ * generation process.
+ * <p>Plaint complaints can be created with {@link #createBaseComplaint(String, Configuration)
+ * createBaseComplaint}. These can be analyzed with
+ * {@link #analyzeComplaint(ComplaintBuilder, boolean) analyzeComplaint}.</p>
  */
 public class ComplaintFactory {
 
@@ -45,78 +52,96 @@ public class ComplaintFactory {
 
 
   /**
-   * This factory method creates a complaint out of the plain text, which contains information about
-   * the date, sentiment and subject.
+   * This factory method creates a complaint out of the plain text, which contains the basic
+   * information: receive date and time, preview, configuration.
    *
    * @param complaintText the text of the complaint.
    *
-   * @return the generated complaint object.
+   * @return the generated complaint builder with the basic information but without any analysis.
    */
-  public Complaint createComplaint(String complaintText, Configuration configuration) {
-    ComplaintBuilder complaint = new ComplaintBuilder(complaintText)
+  public ComplaintBuilder createBaseComplaint(String complaintText, Configuration configuration) {
+    return new ComplaintBuilder(complaintText)
         .setConfiguration(configuration)
         .setPreview(makePreview(complaintText))
         .setReceiveDate(LocalDate.now())
-        .setReceiveTime(LocalTime.now());
-    return analyzeComplaint(complaint, false);
+        .setReceiveTime(LocalTime.now())
+        .appendLogItem(LogCategory.GENERAL, "Beschwerde erstellt.");
   }
 
   /**
-   * Runs the analyze process on a given complaint.
+   * Runs the analysis process on a given complaint.
    *
-   * @param complaint           the complaint, which gets modified.
+   * @param complaintBuilder    the complaint builder, which gets modified with the results of
+   *                            the analysis.
    * @param keepUserInformation if true, no information gets overwritten where setByUser is true.
    *
-   * @return the modified complaint.
+   * @return the analyzed complaint.
    */
-  public Complaint analyzeComplaint(ComplaintBuilder complaint,
-                                    boolean keepUserInformation) {
-    Configuration configuration = complaint.getConfiguration();
+  public ComplaintBuilder analyzeComplaint(ComplaintBuilder complaintBuilder,
+                                           boolean keepUserInformation) {
+
+    Configuration configuration = complaintBuilder.getConfiguration();
     // get the analysis tools from the configuration
-    List<Classifier> classifiers =
-        ClassifierFactory.getFromDefinition(configuration.getClassifiers());
-    SentimentAnalyzer sentimentAnalyzer =
-        SentimentAnalyzerFactory.getFromDefinition(configuration.getSentimentAnalyzer());
-    EmotionAnalyzer emotionAnalyzer
-        = EmotionAnalyzerFactory.getFromDefinition(configuration.getEmotionAnalyzer());
+    var sentimentAnalyzerDefinition = configuration.getSentimentAnalyzer();
+    var emotionAnalyzerDefinition = configuration.getEmotionAnalyzer();
+
     // the text of the complaint
-    String complaintText = complaint.getText();
+    String complaintText = complaintBuilder.getText();
 
     // analysis
-    var complaintPropertiesFuture =
-        CompletableFuture.supplyAsync(() -> classifiers.stream().parallel()
-            .map(classifier -> classifier.classifyText(complaintText))
-            .collect(Collectors.toList()));
-
-    var entitiesFuture = CompletableFuture.supplyAsync(() ->
-        extractEntities(complaint, configuration, keepUserInformation));
-
-    var wordsFuture =
-        CompletableFuture.supplyAsync(() -> stopWordFilter.filterStopWords(complaintText));
-
-    var emotionPropertyFuture =
-        CompletableFuture.supplyAsync(() -> emotionAnalyzer.analyzeEmotion(complaintText));
-
-    var sentimentFuture =
-        CompletableFuture.supplyAsync(() -> sentimentAnalyzer.analyzeSentiment(complaintText));
-
-    Stream.of(complaintPropertiesFuture, emotionPropertyFuture, entitiesFuture,
-        wordsFuture, sentimentFuture).parallel().forEach(CompletableFuture::join);
-
-    var complaintProperties = complaintPropertiesFuture.join();
-    var emotionProperty = emotionPropertyFuture.join();
-    var entities = entitiesFuture.join();
-    var tendency = sentimentFuture.join();
+    var complaintProperties = configuration.getClassifiers().stream().parallel()
+        .map(classifierDefinition -> classifyComplaint(complaintBuilder, complaintText,
+            classifierDefinition))
+        .collect(Collectors.toList());
+    var emotionProperty = extractEmotion(complaintBuilder, emotionAnalyzerDefinition);
+    extractEntities(complaintBuilder, configuration, keepUserInformation);
+    var tendency = extractTendency(complaintBuilder, sentimentAnalyzerDefinition);
     var sentiment = new Sentiment(emotionProperty, tendency);
+    var wordList = stopWordFilter.filterStopWords(complaintText);
 
-    ResponseSuggestion responseSuggestion = createResponse(complaint);
-    return complaint
-        .setEntities(entities)
+    createResponse(complaintBuilder);
+    return complaintBuilder
         .setSentiment(sentiment)
-        .setResponseSuggestion(responseSuggestion)
         .setProperties(complaintProperties)
-        .setWordList(wordsFuture.join())
-        .createComplaint();
+        .setWordList(wordList);
+  }
+
+  @NonNull
+  private ComplaintProperty extractEmotion(ComplaintBuilder complaintBuilder,
+                                           EmotionAnalyzerDefinition emotionAnalyzerDefinition) {
+    String complaintText = complaintBuilder.getText();
+    var emotionProperty =
+        EmotionAnalyzerFactory.getFromDefinition(emotionAnalyzerDefinition)
+            .analyzeEmotion(complaintText);
+    complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
+        "Emotionsanalysator '" + emotionAnalyzerDefinition.getName() + "': "
+            + "Emotion auf '" + emotionProperty.getValue() + "' gesetzt");
+    return emotionProperty;
+  }
+
+  private double extractTendency(ComplaintBuilder complaintBuilder,
+                                 SentimentAnalyzerDefinition sentimentAnalyzerDefinition) {
+    String complaintText = complaintBuilder.getText();
+    var tendency =
+        SentimentAnalyzerFactory.getFromDefinition(sentimentAnalyzerDefinition)
+            .analyzeSentiment(complaintText);
+    complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
+        "Sentiment-Analysator '" + sentimentAnalyzerDefinition.getName()
+            + "': Tendenz auf '" + tendency + "' gesetzt");
+    return tendency;
+  }
+
+  @NonNull
+  private ComplaintProperty classifyComplaint(ComplaintBuilder complaintBuilder,
+                                              String complaintText,
+                                              ClassifierDefinition classifierDefinition) {
+    var classifier = ClassifierFactory.getFromDefinition(classifierDefinition);
+    var result = classifier.classifyText(complaintText);
+    // log results
+    complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
+        "Klassifikator '" + classifierDefinition.getName() + "': Eigenschaft '"
+            + classifierDefinition.getCategoryName() + "' auf '" + result.getValue() + "' gesetzt");
+    return result;
   }
 
   /**
@@ -124,43 +149,55 @@ public class ComplaintFactory {
    *
    * @param complaintBuilder contains the necessary information about the complaint to generate the
    *                         answer.
-   *
-   * @return a response suggestion for the complaint.
    */
-  public ResponseSuggestion createResponse(ComplaintBuilder complaintBuilder) {
-    return responseGenerator.generateResponse(complaintBuilder);
+  public void createResponse(ComplaintBuilder complaintBuilder) {
+    var response = responseGenerator.generateResponse(complaintBuilder);
+    complaintBuilder.setResponseSuggestion(response)
+        .appendLogItem(LogCategory.ANALYSIS,
+            "Antwort mit " + response.getResponseComponents().size() + " Komponenten und "
+                + response.getActions().size() + " Aktionen generiert.");
   }
 
   /**
    * Analyzes the complaint for named entities.
    */
-  private List<NamedEntity> extractEntities(ComplaintBuilder complaintBuilder,
-                                            Configuration configuration,
-                                            boolean keepUserInformation) {
+  private void extractEntities(ComplaintBuilder complaintBuilder,
+                               Configuration configuration,
+                               boolean keepUserInformation) {
     String complaintText = complaintBuilder.getText();
     // use entity extractors
     Stream<NamedEntity> entityStream = configuration
         .getExtractors()
         .stream()
         .parallel()
-        .map(ExtractorFactory::getFromDefinition)
-        .map(entityExtractor -> entityExtractor.extractEntities(complaintText))
+        .map(definition -> extractEntitiesAndLog(complaintBuilder, complaintText, definition))
         .flatMap(List::stream)
         .distinct();
 
     // keep old entities if necessary
-    List<NamedEntity> oldEntities = complaintBuilder.getEntities();
-    Stream<NamedEntity> oldEntityStream =
-        oldEntities
-            .stream()
-            .filter(NamedEntity::isSetByUser);
     if (keepUserInformation) {
+      List<NamedEntity> oldEntities = complaintBuilder.getEntities();
+      Stream<NamedEntity> oldEntityStream =
+          oldEntities
+              .stream()
+              .filter(NamedEntity::isSetByUser);
       entityStream = Stream.concat(entityStream, oldEntityStream).distinct();
     }
     // sort entities
     entityStream = entityStream.sorted();
 
-    return entityStream.collect(Collectors.toList());
+    complaintBuilder.setEntities(new ArrayList<>(entityStream.collect(Collectors.toList())));
+  }
+
+  @NonNull
+  private List<NamedEntity> extractEntitiesAndLog(ComplaintBuilder complaintBuilder,
+                                                  String complaintText,
+                                                  ExtractorDefinition definition) {
+    var extractor = ExtractorFactory.getFromDefinition(definition);
+    var result = extractor.extractEntities(complaintText);
+    complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
+        "Extraktor " + definition.getName() + ": " + result.size() + " Entitäten gefunden.");
+    return result;
   }
 
   /**
@@ -178,7 +215,7 @@ public class ComplaintFactory {
         .collect(Collectors.joining("\n"));
 
     // check for too long string
-    return preview.substring(0, Math.min(500, preview.length()));
+    return preview.substring(0, Math.min(Complaint.PREVIEW_MAX_LENGTH, preview.length()));
   }
 
 }

@@ -2,7 +2,6 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -25,6 +24,13 @@ import static javax.persistence.CascadeType.ALL;
 @Entity
 public class Sentiment implements Comparable<Sentiment> {
 
+  /**
+   * Fallback sentiment when no sentiment is available.
+   */
+  public static Sentiment getDefaultSentiment() {
+    return new Sentiment(ComplaintProperty.getDefaultProperty("Emotion"), 0.0);
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonIgnore
@@ -32,7 +38,7 @@ public class Sentiment implements Comparable<Sentiment> {
 
   @OneToOne(cascade = ALL)
   @NonNull
-  private ComplaintProperty emotion = new ComplaintProperty();
+  private ComplaintProperty emotion = ComplaintProperty.getDefaultProperty("Emotion");
   private double tendency;
 
   @JsonCreator
@@ -56,6 +62,10 @@ public class Sentiment implements Comparable<Sentiment> {
 
   public Sentiment withEmotion(ComplaintProperty emotionProperty) {
     return new Sentiment(emotionProperty, this.tendency);
+  }
+
+  public Sentiment withTendency(double tendency) {
+    return new Sentiment(this.emotion, tendency);
   }
 
   @Override

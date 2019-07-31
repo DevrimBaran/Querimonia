@@ -1,6 +1,9 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.TestEntities;
 import de.fraunhofer.iao.querimonia.response.component.TestComponents;
@@ -10,6 +13,7 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +44,7 @@ public class TestComplaints {
       .setState(ComplaintState.NEW)
       .setProperties(TestProperties.PROPERTIES_A)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setEntities(List.of(TestEntities.ENTITY_A, TestEntities.ENTITY_B))
       .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.1))
       .createComplaint();
 
@@ -83,11 +88,12 @@ public class TestComplaints {
       .setPreview(PREVIEW_F)
       .setReceiveDate(DATE_F)
       .setReceiveTime(TIME_F)
-      .setConfiguration(TestConfigurations.CONFIGURATION_C)
-      .setProperties(TestProperties.PROPERTIES_C)
+      .setConfiguration(TestConfigurations.CONFIGURATION_D)
+      .setProperties(TestProperties.PROPERTIES_F)
       .setState(ComplaintState.NEW)
-      .setResponseSuggestion(TestResponses.SUGGESTION_B)
-      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
+      .setResponseSuggestion(TestResponses.SUGGESTION_C)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Wut"), 0.0))
+      .setEntities(ENTITIES_F)
       .createComplaint();
 
   public static final Complaint COMPLAINT_G = new ComplaintBuilder(TEXT_G)
@@ -97,11 +103,24 @@ public class TestComplaints {
       .setReceiveTime(TIME_G)
       .setConfiguration(TestConfigurations.CONFIGURATION_A)
       .setState(ComplaintState.IN_PROGRESS)
-      .setProperties(TestProperties.PROPERTIES_C)
+      .setProperties(TestProperties.PROPERTIES_G)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
-      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Wut"), 0.0))
       .createComplaint();
 
+  public static final Complaint COMPLAINT_H = new ComplaintBuilder(TEXT_H)
+      .setId(8)
+      .setPreview(PREVIEW_H)
+      .setReceiveDate(DATE_H)
+      .setReceiveTime(TIME_H)
+      .setConfiguration(TestConfigurations.CONFIGURATION_A)
+      .setState(ComplaintState.IN_PROGRESS)
+      .setProperties(TestProperties.PROPERTIES_H)
+      .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Trauer"), 0.0))
+      .createComplaint();
+
+  @SuppressWarnings("WeakerAccess")
   public static class TestProperties {
 
     public static final Map<String, Double> baseMap = Collections.singletonMap("Unbekannt", 1.0);
@@ -121,8 +140,24 @@ public class TestComplaints {
         = List.of(
         new ComplaintProperty("Kategorie", "Sonstiges")
     );
+
+    public static final List<ComplaintProperty> PROPERTIES_F
+        = List.of(
+        new ComplaintProperty("Kategorie", "Beschwerde")
+    );
+
+    public static final List<ComplaintProperty> PROPERTIES_G
+        = List.of(
+        new ComplaintProperty("Kategorie", "Test")
+    );
+
+    public static final List<ComplaintProperty> PROPERTIES_H
+        = List.of(
+        new ComplaintProperty("Kategorie", "Beschwerde")
+    );
   }
 
+  @SuppressWarnings("WeakerAccess")
   public static class TestResponses {
 
     public static final ResponseSuggestion SUGGESTION_A = new ResponseSuggestion(
@@ -140,8 +175,21 @@ public class TestComplaints {
         ),
         List.of()
     );
+
+    public static final ResponseSuggestion SUGGESTION_C = new ResponseSuggestion(
+        List.of(new CompletedResponseComponent(
+                TestComponents.COMPONENT_C,
+                ENTITIES_F
+            ), new CompletedResponseComponent(
+                TestComponents.COMPONENT_D,
+                Collections.emptyList()
+            )
+        ),
+        List.of()
+    );
   }
 
+  @SuppressWarnings("WeakerAccess")
   public static class TestDates {
     public static final LocalDate DATE_A = LocalDate.of(2010, 1, 1);
 
@@ -163,13 +211,17 @@ public class TestComplaints {
 
     public static final LocalTime TIME_E = LocalTime.of(12, 0);
 
-    public static final LocalDate DATE_F = LocalDate.of(2019, 6, 6);
+    public static final LocalDate DATE_F = LocalDate.of(2019, 6, 20);
 
     public static final LocalTime TIME_F = LocalTime.of(12, 0);
 
-    public static final LocalDate DATE_G = LocalDate.now();
+    public static final LocalDate DATE_G = LocalDate.of(2019, 7, 29);
 
     public static final LocalTime TIME_G = LocalTime.now();
+
+    public static final LocalDate DATE_H = LocalDate.of(2019, 8, 1);
+
+    public static final LocalTime TIME_H = LocalTime.now();
   }
 
   public static class TestTexts {
@@ -208,13 +260,7 @@ public class TestComplaints {
         + "vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre "
         + "Dienstleistungen bestmöglich fahrplangemäß anzubieten.";
 
-    public static final String PREVIEW_A = "In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "
-        + "\"ein\" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei "
-        + "ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die "
-        + "Frage, weshalb ständig und gehäuft Buslinien der WSW ausfallen und Fahrten entgegen "
-        + "dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer "
-        + "benutze ich eher selten die Busse der WSW. Wenn ich sie benutze, ergeben sich "
-        + "auffällig häufig Ausfälle und deutliche V";
+    public static final String PREVIEW_A = TEXT_A.substring(0, 250);
 
     public static final String TEXT_B = ""
         + "Sehr geehrte Damen und Herren, am heutigen Tag wollte ich die Linie 647 um 8.20 Uhr von "
@@ -238,13 +284,7 @@ public class TestComplaints {
         + "entstandenen Unannehmlichkeiten erwarte ich von Ihnen zumindest eine  Entschädigung in "
         + "Form eines  4-Fahrtentickets.Freundliche Grüße Meike Gepperth";
 
-    public static final String PREVIEW_B = "Sehr geehrte Damen und Herren, am heutigen Tag wollte"
-        + " ich die Linie 647 um 8.20 Uhr von Hattingen in Richtung Wuppertal nutzen. Als ich um "
-        + "8.15 Uhr am Busbahnhof ankam, informierten mich weitere Fahrgäste, dass der Bus um 7"
-        + ".40 Uhr bereits ausgefallen war. Um 8.25 Uhr erkundigte ich mich im Kundencenter der "
-        + "Bogestra, warum die 647 um 8.20 Uhr auch nicht kam. Dort telefonierte die Dame mit "
-        + "Ihrer Gesellschaft und erhielt die Auskunft, dass es krankheitsbedingt Ausfälle gäbe, "
-        + "aber der Bus um 8.40 Uh";
+    public static final String PREVIEW_B = TEXT_B.substring(0, 250);
 
     public static final String TEXT_C = "leider ist es in den letzten Tagen vermehrt dazu "
         + "gekommen das die Bus Linie 649 Velbert – Wuppertal ausgefallen ist. Dieses ist kein "
@@ -270,13 +310,7 @@ public class TestComplaints {
         + "dieses nun endlich in den Griff bekommen und mir die 5 Euro Taxi Kosten erstattet "
         + "werden.";
 
-    public static final String PREVIEW_C = "leider ist es in den letzten Tagen vermehrt dazu "
-        + "gekommen das die Bus Linie 649 Velbert – Wuppertal ausgefallen ist. Dieses ist kein "
-        + "zustand. Es kann nicht sein das die Kunden nicht Informiert werden und die Busse "
-        + "gestrichen werden ohne nennenswerten Grund.Nicht mal Taxis werden morgens bereit "
-        + "gestellt. Es war Mittwochs so das 2 Busse am Späten Nachmittag in Richtung Velbert "
-        + "ausgefallen waren, wo Ihre Leitstelle zudem noch sagte, das alle Busse PLANMÄSIG "
-        + "unterwegs sind, was da nicht der Fall war";
+    public static final String PREVIEW_C = TEXT_C.substring(0, 250);
 
     public static final String TEXT_D = "am 26.02.2013 kam ich um ca. 20.30 Uhr nach "
         + "erfolgreicher Anreise mit dem Bus aus Bochum an der Haltestelle Hattingen Mitte an, um"
@@ -293,13 +327,7 @@ public class TestComplaints {
         + "begleichen da es wie oben schon beschrieben keinen Zustand darstellte auf den nächsten"
         + " Bus zu hoffen.Bitte nehmen sie mit mir bezüglich meiner Kontodaten Kontakt auf";
 
-    public static final String PREVIEW_D = "am 26.02.2013 kam ich um ca. 20.30 Uhr nach "
-        + "erfolgreicher Anreise mit dem Bus aus Bochum an der Haltestelle Hattingen Mitte an, um"
-        + " dort mit einem Anschlussbus Linie 647 in Fahrtrichtung Velbert Neviges Rosenhügel "
-        + "Bahnhof weiter zu fahren. Die Planmäßige Abfahrt dieser Linie sollte um 20.39 Uhr sein"
-        + ". Doch leider passierte wieder einmal aus unerklärbaren dingen nichts. Die Linie ist "
-        + "wohl einfach ohne Information ausgefallen. Auf der Anzeigentafel stand weiterhin die "
-        + "Planmäßige Abfahrt für 20.39Uhr";
+    public static final String PREVIEW_D = TEXT_D.substring(0, 250);
 
     public static final String TEXT_E = "heute Morgen rief mich Frau Kluge an, ADRESSE.  Sie muss"
         + " jeden Morgen vom Clefkothen zum Kaisergarten, hat ein Ticket und benutzt die Buslinie"
@@ -311,22 +339,58 @@ public class TestComplaints {
         + " dass ich ihre Kritik an die Kollegen vom Verkehr weiterleite und man sich bei ihr "
         + "melden wird.  Sie hat die Telefonnr. 0711 2468100";
 
-    public static final String PREVIEW_E = TEXT_E.substring(0, 500);
+    public static final String PREVIEW_E = TEXT_E.substring(0, 250);
 
-    public static final String TEXT_F = "Kunde legt Widerspruch zum Schreiben 35270-Ta ein.Kevin "
-        + "Adler hatte eine Erstattung von Taxikosten im Rahmen der Mobilitätsgarantie abgelehnt";
+    public static final String TEXT_F = "Hallo, ich bin Peter. Die Haltestelle Hauptbahnhof der" +
+        " Linie U6 ist schlecht. Gebt mir 20€!";
 
     public static final String PREVIEW_F = TEXT_F;
 
-    public static final String TEXT_G = "ich möchte auf diesem Weg ein Lob für einen Ihrer Fahrer"
-        + " aussprechen. Nachdem am Bahnhof die erste Durchsage des Busfahrers noch lautete dass "
-        + "wir wahrscheinlich nicht weiterfahren können, erklärte er nach ein paar Minuten dass "
-        + "er  zumindest noch bis zur Uni fährt. Da der Bus voller Studierender war gab es "
-        + "daraufhin sogar spontanen Beifall. (Insbesondere da einige Mitfahrende wohl kurz "
-        + "darauf zu Klausuren oder Prüfungen erscheinen mussten und sonst auf Taxis hätten "
-        + "ausweichen müssen, da der Weg zu Fuß doch deutlich länger ist.)Die Entscheidung des "
-        + "Fahrers war also ein Lichtblick für viele Ihrer Kunden.";
+    public static final String TEXT_G = "Dies ist eine Testbeschwerde. test test test test test 123";
 
-    public static final String PREVIEW_G = TEXT_G.substring(0, 500);
+    public static final String PREVIEW_G = TEXT_G;
+
+    public static final String TEXT_H = "Die Linie U7 hat überfüllte Haltestellen. hallo hallo 42";
+
+    public static final String PREVIEW_H = TEXT_H;
+
+    private static final NamedEntity testEntityName = new NamedEntityBuilder()
+        .setLabel("Name")
+        .setStart(15)
+        .setEnd(19)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Peter")
+        .createNamedEntity();
+
+    private static final NamedEntity testEntityStop = new NamedEntityBuilder()
+        .setLabel("Haltestelle")
+        .setStart(38)
+        .setEnd(49)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Hauptbahnhof")
+        .createNamedEntity();
+
+    private static final NamedEntity testEntityLine = new NamedEntityBuilder()
+        .setLabel("Linie")
+        .setStart(61)
+        .setEnd(62)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("U6")
+        .createNamedEntity();
+
+    private static final NamedEntity testEntityMoney = new NamedEntityBuilder()
+        .setLabel("Geldbetrag")
+        .setStart(87)
+        .setEnd(88)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("20€")
+        .createNamedEntity();
+
+    public static final List<NamedEntity> ENTITIES_F = List.of(testEntityName, testEntityStop,
+        testEntityLine, testEntityMoney);
   }
 }

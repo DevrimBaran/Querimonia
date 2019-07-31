@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia;
 
-import de.fraunhofer.iao.querimonia.property.AnalyzerConfigProperties;
-import de.fraunhofer.iao.querimonia.property.FileStorageProperties;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,7 +13,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @CrossOrigin(methods = {POST, PUT, PATCH, GET, DELETE})
 @SpringBootApplication
-@EnableConfigurationProperties({FileStorageProperties.class, AnalyzerConfigProperties.class})
+@EnableConfigurationProperties({FileStorageProperties.class})
 public class Launcher {
 
   public static void main(String[] args) {

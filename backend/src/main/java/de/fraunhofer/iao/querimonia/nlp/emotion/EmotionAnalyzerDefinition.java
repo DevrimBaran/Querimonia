@@ -1,10 +1,12 @@
 package de.fraunhofer.iao.querimonia.nlp.emotion;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.Embeddable;
 
@@ -18,7 +20,15 @@ public class EmotionAnalyzerDefinition {
   private EmotionAnalyzerType type = EmotionAnalyzerType.NONE;
 
   @JsonCreator
-  public EmotionAnalyzerDefinition(EmotionAnalyzerType type, String name) {
+  public EmotionAnalyzerDefinition(
+      @NonNull
+      @JsonProperty("type")
+          EmotionAnalyzerType type,
+
+      @NonNull
+      @JsonProperty("name")
+          String name
+  ) {
     this.name = name;
     this.type = type;
   }
@@ -43,6 +53,14 @@ public class EmotionAnalyzerDefinition {
         .append(name, that.name)
         .append(type, that.type)
         .isEquals();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public EmotionAnalyzerType getType() {
+    return type;
   }
 
   @Override

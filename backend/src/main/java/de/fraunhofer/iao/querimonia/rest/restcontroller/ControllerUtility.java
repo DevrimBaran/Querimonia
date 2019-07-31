@@ -62,11 +62,11 @@ public class ControllerUtility {
     try {
       return new ResponseEntity<>(tryClause.get(), onSuccess);
     } catch (QuerimoniaException e) {
-      logger.error("Exception occurred", e);
+      logger.debug("Exception occurred", e);
       return new ResponseEntity<>(e, e.getStatus());
 
     } catch (Exception e) {
-      logger.error("Exception occurred", e);
+      logger.error("Unexpected Exception occurred", e);
       return new ResponseEntity<>(new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
           e.getMessage(), e, "Unerwarteter Fehler"), HttpStatus.INTERNAL_SERVER_ERROR);
     }

@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.nlp.classifier;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -8,13 +9,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Definition of a classifier for a configuration.
@@ -44,9 +39,17 @@ public class ClassifierDefinition {
     // for hibernate
   }
 
-  public ClassifierDefinition(@NonNull ClassifierType classifierType,
-                              @NonNull String name,
-                              @NonNull String categoryName) {
+  @JsonCreator
+  public ClassifierDefinition(
+      @NonNull
+      @JsonProperty("type")
+          ClassifierType classifierType,
+      @NonNull
+      @JsonProperty("name")
+          String name,
+      @NonNull
+      @JsonProperty("categoryName")
+          String categoryName) {
     this.classifierType = classifierType;
     this.name = name;
     this.categoryName = categoryName;

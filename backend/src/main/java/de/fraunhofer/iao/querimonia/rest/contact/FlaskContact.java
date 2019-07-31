@@ -15,11 +15,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+// TODO add javadoc comments
+
 public class FlaskContact {
 
   private static final String URL = "https://querimonia.iao.fraunhofer.de/python/";
 
-  // TODO add javadoc comment
+
   public static Map<String, Double> receiveJson(JSONObject body, String path) {
     HttpHeaders header = new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_JSON);
@@ -41,6 +43,7 @@ public class FlaskContact {
       //noinspection unchecked
       map = mapper.readValue(response, Map.class);
     } catch (IOException e) {
+      // TODO throw querimonia exception!
       e.printStackTrace();
       map = new HashMap<>();
     }

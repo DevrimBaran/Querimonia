@@ -1,12 +1,11 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.db.repositories.ResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.response.action.Action;
-import de.fraunhofer.iao.querimonia.response.rules.RuledInterface;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -33,25 +32,13 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     List<ResponseComponent> responseComponents = new ArrayList<>();
     templateRepository.findAll().forEach(responseComponents::add);
 
-    List<Action> actions = new ArrayList<>();
-    responseComponents.stream()
-        .map(ResponseComponent::getActions)
-        .forEach(actions::addAll);
-
     // filter out not matching templates
-    List<RuledInterface> responseComponentsFiltered =
+    List<ResponseComponent> responseComponentsFiltered =
         filterComponents(complaintBuilder, responseComponents);
 
-    // filter out not matching actions
-    actions = actions.stream()
-        .filter(action -> action.getRootRule().isPotentiallyRespected(complaintBuilder))
-        .sorted()
-        .collect(Collectors.toList());
+    List<NamedEntity> allEntities = new ArrayList<>(complaintBuilder.getEntities());
 
-    responseComponentsFiltered.addAll(actions);
-
-    List<NamedEntity> allEntities = new ArrayList<>();
-
+    // add upload date entities
     String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
         .withLocale(Locale.GERMAN)
         .format(complaintBuilder.getReceiveDate());
@@ -87,9 +74,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     return getResponseSuggestion(complaintBuilder, responseComponentsFiltered, allEntities);
   }
 
-  private List<RuledInterface> filterComponents(ComplaintBuilder complaintData,
-                                                List<ResponseComponent> responseComponents) {
-    List<RuledInterface> responseComponentsFiltered = new ArrayList<>();
+  private List<ResponseComponent> filterComponents(ComplaintBuilder complaintData,
+                                                   List<ResponseComponent> responseComponents) {
+    List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
     responseComponents.stream()
         .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
         .sorted(Comparator.comparingInt(ResponseComponent::getPriority))
@@ -100,32 +87,26 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   }
 
   private ResponseSuggestion getResponseSuggestion(ComplaintBuilder complaintData,
-                                                   List<RuledInterface> filteredComponents,
+                                                   List<ResponseComponent> filteredComponents,
                                                    List<NamedEntity> allEntities) {
     List<CompletedResponseComponent> generatedResponse = new ArrayList<>();
-    List<Action> validActions = new ArrayList<>();
 
     outer:
     while (true) {
       for (int i = 0; i < filteredComponents.size(); i++) {
-        RuledInterface currentRuledObject = filteredComponents.get(i);
+        ResponseComponent currentRuledObject = filteredComponents.get(i);
         // find first respected rule, use the component and remove it from the list
         if (currentRuledObject.getRootRule().isRespected(complaintData, generatedResponse)) {
           filteredComponents.remove(i);
-          if (currentRuledObject instanceof ResponseComponent) {
-            ResponseComponent currentComponent = (ResponseComponent) currentRuledObject;
 
-            // filter the entities so only the required ones get added
-            var matchingEntities = allEntities.stream()
-                .filter(namedEntity ->
-                    currentComponent.getRequiredEntities().contains(namedEntity.getLabel()))
-                .collect(Collectors.toList());
+          // filter the entities so only the required ones get added
+          var matchingEntities = allEntities.stream()
+              .filter(namedEntity ->
+                  currentRuledObject.getRequiredEntities().contains(namedEntity.getLabel()))
+              .collect(Collectors.toList());
 
-            generatedResponse
-                .add(new CompletedResponseComponent(currentComponent, matchingEntities));
-          } else if (currentRuledObject instanceof Action) {
-            validActions.add((Action) currentRuledObject);
-          }
+          generatedResponse
+              .add(new CompletedResponseComponent(currentRuledObject, matchingEntities));
           continue outer;
         }
       }
@@ -133,6 +114,10 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       break;
     }
 
+    List<Action> validActions = filteredComponents.stream()
+        .map(ResponseComponent::getActions)
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
     return new ResponseSuggestion(generatedResponse, validActions);
   }
 

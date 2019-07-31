@@ -29,11 +29,10 @@ public class PropertyRule implements Rule {
   public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     // check if the name of the complaint matches
     return
-        complaint.getProperties() != null
-            && complaint.getProperties()
-            .stream()
-            .filter(complaintProperty -> complaintProperty.getName().equals(name))
-            .map(ComplaintProperty::getValue)
-            .allMatch(value -> value.matches(propertyRegex));
+        complaint.getProperties()
+        .stream()
+        .filter(complaintProperty -> complaintProperty.getName().equals(name))
+        .map(ComplaintProperty::getValue)
+        .allMatch(value -> value.matches(propertyRegex));
   }
 }
