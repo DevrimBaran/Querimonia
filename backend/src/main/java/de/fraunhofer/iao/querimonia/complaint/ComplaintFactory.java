@@ -115,7 +115,7 @@ public class ComplaintFactory {
         EmotionAnalyzerFactory.getFromDefinition(emotionAnalyzerDefinition)
             .analyzeEmotion(complaintText);
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Emotionsanalysator '{0}': Emotion auf '{1}' gesetzt",
+        MessageFormat.format("Emotionsanalysator '{}': Emotion auf '{}' gesetzt",
             emotionAnalyzerDefinition.getName(), emotionProperty.getValue()));
     return emotionProperty;
   }
@@ -127,7 +127,7 @@ public class ComplaintFactory {
         SentimentAnalyzerFactory.getFromDefinition(sentimentAnalyzerDefinition)
             .analyzeSentiment(complaintText);
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Sentiment-Analysator '{0}': Tendenz auf '{1}' gesetzt",
+        MessageFormat.format("Sentiment-Analysator '{}': Tendenz auf '{}' gesetzt",
             sentimentAnalyzerDefinition.getName(), tendency));
     return tendency;
   }
@@ -140,9 +140,8 @@ public class ComplaintFactory {
     var result = classifier.classifyText(complaintText);
     // log results
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Klassifikator '{0}': Eigenschaft '{1}' auf '{2}' gesetzt",
-            classifierDefinition.getName(),
-            classifierDefinition.getCategoryName(), result.getValue()));
+        "Klassifikator '" + classifierDefinition.getName() + "': Eigenschaft '"
+            + classifierDefinition.getCategoryName() + "' auf '" + result.getValue() + "' gesetzt");
     return result;
   }
 
@@ -198,8 +197,7 @@ public class ComplaintFactory {
     var extractor = ExtractorFactory.getFromDefinition(definition);
     var result = extractor.extractEntities(complaintText);
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Extraktor {1}: {2} Entitäten gefunden.", definition.getName(),
-            result.size()));
+        "Extraktor " + definition.getName() + ": " + result.size() + " Entitäten gefunden.");
     return result;
   }
 
