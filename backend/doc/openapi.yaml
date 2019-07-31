@@ -1145,7 +1145,8 @@ components:
     ConfigIdQueryParameter:
       name: configId
       in: query
-      description: Falls dieser Wert gegeben wird, wird die Beschwerde mit der gegebenen Konfiguration analysiert. Ansonsten wird die aktuell ausgewählt Konfiguration ausgewählt.
+      description: Falls dieser Wert gegeben wird, wird die Beschwerde mit der gegebenen Konfiguration analysiert. Ansonsten wird die aktuell ausgewählte Konfiguration zur Analyse verwendet
+      .
       required: false
       schema:
         type: integer

@@ -2,24 +2,14 @@ package de.fraunhofer.iao.querimonia.nlp.extractor;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -132,9 +122,44 @@ public class ExtractorDefinition {
 
     @JsonCreator
     @SuppressWarnings("unused")
-    public ColorDefinition(String label, String color) {
+    public ColorDefinition(@JsonProperty("label") String label,
+                           @JsonProperty("color") String color) {
       this.label = label;
       this.color = color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) {
+        return true;
+      }
+
+      if (o == null || getClass() != o.getClass()) {
+        return false;
+      }
+
+      ColorDefinition that = (ColorDefinition) o;
+
+      return new EqualsBuilder()
+          .append(label, that.label)
+          .append(color, that.color)
+          .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+      return new HashCodeBuilder(17, 37)
+          .append(label)
+          .append(color)
+          .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+      return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
+          .append("label", label)
+          .append("color", color)
+          .toString();
     }
   }
 }

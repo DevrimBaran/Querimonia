@@ -488,7 +488,7 @@ public class ComplaintManager {
       complaintRepository.save(complaint);
     } catch (Exception e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
-          + "Beschwerde", e, "Beschwerde");
+          + "Beschwerde: " + e.getMessage(), e, "Beschwerde");
     }
     logger.info("Saved complaint with id {}", complaint.getId());
   }

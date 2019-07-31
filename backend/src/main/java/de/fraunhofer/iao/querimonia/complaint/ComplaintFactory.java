@@ -140,9 +140,9 @@ public class ComplaintFactory {
     var result = classifier.classifyText(complaintText);
     // log results
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Klassifikator '{0}': Eigenschaft '{2}' auf '{1}' gesetzt",
-            classifierDefinition.getName(), result.getValue(),
-            classifierDefinition.getCategoryName()));
+        MessageFormat.format("Klassifikator '{0}': Eigenschaft '{1}' auf '{2}' gesetzt",
+            classifierDefinition.getName(),
+            classifierDefinition.getCategoryName(), result.getValue()));
     return result;
   }
 
