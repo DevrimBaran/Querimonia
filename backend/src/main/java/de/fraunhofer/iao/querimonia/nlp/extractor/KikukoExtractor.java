@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,6 +16,18 @@ import java.util.regex.Pattern;
 public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
   private final String domainName;
+  private static HashMap<String, String> knownExtractors;
+  static {
+    knownExtractors = new HashMap<>();
+    knownExtractors.put("Linien Extraktor", "Linie");
+    knownExtractors.put("Vorgangsnummer", "Vorgangsnummer");
+    knownExtractors.put("[Extern] Datum Extraktor", "Datum");
+    knownExtractors.put("[Extern] Geldbetrag", "Geldbetrag");
+    knownExtractors.put("[Extern] Personen Extraktor", "Person");
+    knownExtractors.put("[Extern] Telefonnummer", "Telefon");
+    knownExtractors.put("[Fuzzy] Haltestellen", "Halltestelle");
+    knownExtractors.put("[Fuzzy] Ortsnamen", "Ort");
+  }
 
   public KikukoExtractor(String domainType, String domainName) {
     super(domainType, domainName);
@@ -31,7 +44,7 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
     allPipes.forEach((name, entityList) -> {
       for (FoundEntity entity : entityList) {
         entities.add(
-            new NamedEntityBuilder().setLabel(name)
+            new NamedEntityBuilder().setLabel(knownExtractors.getOrDefault(name,name))
                 .setStart(entity.getStartposition())
                 .setEnd(entity.getEndposition())
                 .setExtractor(domainName)
@@ -68,4 +81,15 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
     return numberPosition;
   }
 
+  public static void main(String[] args) {
+    String text = "Köln Karoingerstraße Hallo, Wupperaall Hofnn  meine Fahrt ist leider nicht " +
+        "erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!";
+
+    List<NamedEntity> entities =
+        new KikukoExtractor("domain", "QuerimoniaExtract").extractEntities(text);
+
+    entities.forEach(System.out::println);
+
+
+  }
 }
