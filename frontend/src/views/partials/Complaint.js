@@ -128,7 +128,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                 </span>
               ) : (
                 <span>
-                  <Input id='chooseTendency' type='number' step='0.01' defaultValue={sent.toFixed(2)} />
+                  <Input id='chooseTendency' type='number' min='-1' max='1' step='0.01' defaultValue={sent.toFixed(2)} />
                   {/* eslint-disable-next-line */}
                   <i className={'far fa-check-circle fa-lg'} onClick={editTendency.bind(this, active, true)} style={{ color: 'green', cursor: 'pointer', paddingLeft: '8px' }} />
                   {/* eslint-disable-next-line */}
