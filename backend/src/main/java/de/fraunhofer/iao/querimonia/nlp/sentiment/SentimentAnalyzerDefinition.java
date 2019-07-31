@@ -1,9 +1,12 @@
 package de.fraunhofer.iao.querimonia.nlp.sentiment;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.lang.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -23,7 +26,15 @@ public class SentimentAnalyzerDefinition {
   @Column(name = "sentiment_analyzer_name")
   private String name;
 
-  public SentimentAnalyzerDefinition(SentimentAnalyzerType type, String name) {
+  @JsonCreator
+  public SentimentAnalyzerDefinition(
+      @NonNull
+      @JsonProperty("type")
+          SentimentAnalyzerType type,
+      @NonNull
+      @JsonProperty("name")
+          String name
+  ) {
     this.type = type;
     this.name = name;
   }

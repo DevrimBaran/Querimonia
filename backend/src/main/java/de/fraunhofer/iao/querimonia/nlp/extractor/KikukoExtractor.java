@@ -9,6 +9,7 @@ import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,19 +29,23 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
     List<NamedEntity> entities = new LinkedList<>();
 
-    allPipes.forEach((name, entityList) -> {
-      for (FoundEntity entity : entityList) {
-        entities.add(
-            new NamedEntityBuilder().setLabel(name)
-                .setStart(entity.getStartposition())
-                .setEnd(entity.getEndposition())
-                .setExtractor(domainName)
-                .setValue(entity.getTyp().containsValue(1.0d)
-                    ? entity.getText()
-                    : entity.getTyp().keySet().iterator().next())
-                .createNamedEntity());
-      }
-    });
+    try {
+      allPipes.forEach((name, entityList) -> {
+        for (FoundEntity entity : entityList) {
+          entities.add(
+              new NamedEntityBuilder().setLabel(name)
+                  .setStart(entity.getStartposition())
+                  .setEnd(entity.getEndposition())
+                  .setExtractor(domainName)
+                  .setValue(entity.getTyp().containsValue(1.0d)
+                      ? entity.getText()
+                      : entity.getTyp().keySet().stream().findFirst().orElse(entity.getText()))
+                  .createNamedEntity());
+        }
+      });
+    } catch (NoSuchElementException e) {
+      e.printStackTrace();
+    }
 
     return entities;
   }

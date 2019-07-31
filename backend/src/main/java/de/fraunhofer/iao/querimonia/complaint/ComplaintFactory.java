@@ -17,7 +17,6 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.springframework.lang.NonNull;
 
-import java.text.MessageFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -115,8 +114,8 @@ public class ComplaintFactory {
         EmotionAnalyzerFactory.getFromDefinition(emotionAnalyzerDefinition)
             .analyzeEmotion(complaintText);
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Emotionsanalysator '{}': Emotion auf '{}' gesetzt",
-            emotionAnalyzerDefinition.getName(), emotionProperty.getValue()));
+        "Emotionsanalysator '" + emotionAnalyzerDefinition.getName() + "': "
+            + "Emotion auf '" + emotionProperty.getValue() + "' gesetzt");
     return emotionProperty;
   }
 
@@ -127,8 +126,8 @@ public class ComplaintFactory {
         SentimentAnalyzerFactory.getFromDefinition(sentimentAnalyzerDefinition)
             .analyzeSentiment(complaintText);
     complaintBuilder.appendLogItem(LogCategory.ANALYSIS,
-        MessageFormat.format("Sentiment-Analysator '{}': Tendenz auf '{}' gesetzt",
-            sentimentAnalyzerDefinition.getName(), tendency));
+        "Sentiment-Analysator '" + sentimentAnalyzerDefinition.getName()
+            + "': Tendenz auf '" + tendency + "' gesetzt");
     return tendency;
   }
 
