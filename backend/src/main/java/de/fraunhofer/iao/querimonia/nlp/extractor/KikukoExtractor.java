@@ -43,8 +43,8 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
                   .createNamedEntity());
         }
       });
-    } catch (NoSuchElementException e) {
-      e.printStackTrace();
+    } catch (NoSuchElementException ignored) {
+
     }
 
     return entities;
