@@ -173,8 +173,10 @@ class TagCloud extends Component {
               : (<Content className='center' id='OccurrenceList'>
                 <Table>
                   <thead>
-                    <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>
-                    <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Anzahl</th>
+                    <tr style={{ filter: 'brightness(100%)' }}>
+                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>
+                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Anzahl</th>
+                    </tr>
                   </thead>
                   <tbody>
                     {this.createWordArray(this.state.words).map((element) => {

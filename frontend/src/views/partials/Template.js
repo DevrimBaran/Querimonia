@@ -25,13 +25,15 @@ import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 function Header () {
   return (
     <thead>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Priorität</th>
-      <th>Entitäten</th>
-      <th>Varianten</th>
-      <th>Aktionen</th>
-      <th />
+      <tr style={{ filter: 'brightness(100%)' }}>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Priorität</th>
+        <th>Entitäten</th>
+        <th>Varianten</th>
+        <th>Aktionen</th>
+        <th />
+      </tr>
     </thead>
   );
 }
