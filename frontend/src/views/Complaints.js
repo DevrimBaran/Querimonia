@@ -25,7 +25,8 @@ class Complaints extends Component {
     this.state = {
       active: null,
       editCategorie: false,
-      editSentiment: false,
+      editTendency: false,
+      editEmotion: false,
       loadingEntitiesFinished: false
     };
   }
@@ -55,12 +56,12 @@ class Complaints extends Component {
    *  switchs between edit and normal state of the Categorie label /
    *  changes the Categorie of the complaint if "editCategorie" is true.
    **/
-  editCategorie = (active, editCategorie) => {
+  editCategorie = (active, index, editCategorie) => {
     if (editCategorie) {
       let data = {};
       data['subject'] = document.getElementById('chooseCategorie').value;
       Api.patch('/api/complaints/' + active.id, data);
-      active.properties[0].value = data['subject'];
+      active.properties[index].value = data['subject'];
     }
     this.setState({ editCategorie: !this.state.editCategorie });
   }
@@ -69,14 +70,28 @@ class Complaints extends Component {
    *  switchs between edit and normal state of the Sentiment label /
    *  changes the Sentiment of the complaint if "editCSentiment" is true.
    **/
-  editSentiment = (active, editSentiment) => {
-    if (editSentiment) {
+  editTendency = (active, editTendency) => {
+    if (editTendency) {
       let data = {};
-      data['sentiment'] = document.getElementById('chooseSentiment').value;
+      data['tendency'] = Number(document.getElementById('chooseTendency').value);
+      Api.patch('/api/complaints/' + active.id, data);
+      active.sentiment.tendency = data['tendency'];
+    }
+    this.setState({ editTendency: !this.state.editTendency });
+  }
+
+  /**
+   *  switchs between edit and normal state of the Sentiment label /
+   *  changes the Sentiment of the complaint if "editCSentiment" is true.
+   **/
+  editEmotion = (active, editEmotion) => {
+    if (editEmotion) {
+      let data = {};
+      data['sentiment'] = document.getElementById('chooseEmotion').value;
       Api.patch('/api/complaints/' + active.id, data);
       active.sentiment.value = data['sentiment'];
     }
-    this.setState({ editSentiment: !this.state.editSentiment });
+    this.setState({ editEmotion: !this.state.editEmotion });
   }
 
   /**
@@ -89,7 +104,7 @@ class Complaints extends Component {
 
   renderSingle = (active) => {
     if (this.state.active === null || this.state.active.id !== active.id) this.activateComplaint(active);
-    return (Complaint.Single(this.state.active, this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editSentiment, this.editCategorie, this.editSentiment, this.refreshEntities));
+    return (Complaint.Single(this.state.active, this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editTendency, this.state.editEmotion, this.editCategorie, this.editTendency, this.editEmotion, this.refreshEntities));
   }
 
   update = () => {
