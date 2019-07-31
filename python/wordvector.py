@@ -3,9 +3,11 @@ import numpy as np
 import logging
 from collections import defaultdict
 import os
+import pdb
 
 # setup
-if os.getenv("DEPLOY", "not found") == "not found":
+if os.getenv("DEPLOY", "not found") != "not found":
+    print("server mode")
     # Pfad zu den Modellen
     basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
     # Lade Modelle
@@ -23,6 +25,7 @@ if os.getenv("DEPLOY", "not found") == "not found":
     # base path for predict words
     predict_basepath = "/home/beschwerdemanagement/wortvektoren/fastText/predictionLists/"
 else:
+    print("dev mode")
     # Lade Modelle
     print("Lade dir ein Beispielkorpus herunter und lege es zwei Ordner weiter oben ab")
     print("Für Korpus: https://querimonia.iao.fraunhofer.de/infra/data/beschwerden3kPolished.bin")
