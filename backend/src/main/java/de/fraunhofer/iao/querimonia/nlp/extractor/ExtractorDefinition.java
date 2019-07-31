@@ -38,15 +38,21 @@ public class ExtractorDefinition {
   private List<ColorDefinition> colors = new ArrayList<>();
 
   @SuppressWarnings("unused")
-  public ExtractorDefinition() {
+  private ExtractorDefinition() {
     // for hibernate
   }
 
   @JsonCreator
   @SuppressWarnings("unused")
-  public ExtractorDefinition(@NonNull String name,
-                             @NonNull ExtractorType type,
-                             @NonNull List<ColorDefinition> colors) {
+  public ExtractorDefinition(@NonNull
+                             @JsonProperty("name")
+                                 String name,
+                             @NonNull
+                             @JsonProperty("type")
+                                 ExtractorType type,
+                             @NonNull
+                             @JsonProperty("colors")
+                                 List<ColorDefinition> colors) {
     this.name = name;
     this.type = type;
     this.colors = colors;
@@ -109,57 +115,4 @@ public class ExtractorDefinition {
         .toString();
   }
 
-  @SuppressWarnings("unused")
-  @Embeddable
-  private static class ColorDefinition {
-
-    String label;
-    String color;
-
-    @SuppressWarnings("unused")
-    public ColorDefinition() {
-    }
-
-    @JsonCreator
-    @SuppressWarnings("unused")
-    public ColorDefinition(@JsonProperty("label") String label,
-                           @JsonProperty("color") String color) {
-      this.label = label;
-      this.color = color;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) {
-        return true;
-      }
-
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-
-      ColorDefinition that = (ColorDefinition) o;
-
-      return new EqualsBuilder()
-          .append(label, that.label)
-          .append(color, that.color)
-          .isEquals();
-    }
-
-    @Override
-    public int hashCode() {
-      return new HashCodeBuilder(17, 37)
-          .append(label)
-          .append(color)
-          .toHashCode();
-    }
-
-    @Override
-    public String toString() {
-      return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-          .append("label", label)
-          .append("color", color)
-          .toString();
-    }
-  }
 }

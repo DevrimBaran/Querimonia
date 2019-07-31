@@ -1365,6 +1365,11 @@ components:
           $ref: '#/components/schemas/SentimentAnalyzer'
         emotionAnalyzer:
           $ref: '#/components/schemas/EmotionAnalyzer'
+        active:
+          type: boolean
+          description: Gibt an, ob die Konfiguration aktiv ist.
+          example: false
+          readOnly: true
 
     KiKuKoExtractors:
       description: Alle verfügbaren Extraktoren sind aufgelistet.
