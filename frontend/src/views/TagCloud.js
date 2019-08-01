@@ -171,7 +171,7 @@ class TagCloud extends Component {
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
-                <Table>
+                <Table className='table'>
                   <thead>
                     <tr style={{ filter: 'brightness(100%)' }}>
                       <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>

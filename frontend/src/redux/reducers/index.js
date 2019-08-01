@@ -95,6 +95,7 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       return {
         ...state,
         active: {
+          ...state.active,
           ...action.data
         }
       };
@@ -142,6 +143,21 @@ function currentConfig (state = {}, action) {
     }
   }
 }
+function allExtractors (state = {}, action) {
+  switch (action.type) {
+    case 'INIT_EXTRACTORS': {
+      return {
+        NONE: [],
+        KIKUKO_TOOL: action.data.tool,
+        KIKUKO_PIPELINE: action.data.pipeline,
+        KIKUKO_DOMAIN: action.data.domain
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
 
 function fetchable (state = { data: {}, filter: [], pagination: {} }, action, endpoint) {
   return {
@@ -157,7 +173,8 @@ const rootReducer = function (state, action) {
     actions: fetchable(state.actions, action, 'actions'),
     config: fetchable(state.config, action, 'config'),
     components: fetchable(state.components, action, 'components'),
-    currentConfig: currentConfig(state.currentConfig, action)
+    currentConfig: currentConfig(state.currentConfig, action),
+    allExtractors: allExtractors(state.allExtractors, action)
   };
 };
 
