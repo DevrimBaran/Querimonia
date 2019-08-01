@@ -11,6 +11,7 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.db.manager.filter.ResponseComponentFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -106,14 +107,26 @@ public class ResponseComponentManager {
       Optional<Integer> count,
       Optional<Integer> page,
       Optional<String[]> sortBy,
+      Optional<String[]> actionCode,
       Optional<String[]> keywords) {
     ArrayList<ResponseComponent> result = new ArrayList<>();
-    componentRepository.findAll().forEach(result::add);
+
+    Iterable<ResponseComponent> responseComponents = componentRepository.findAll();
+    for (ResponseComponent responseComponent : responseComponents) {
+      ResponseComponent newResponseComponent = new ResponseComponent(
+          responseComponent.getComponentName(),responseComponent.getPriority(),
+          responseComponent.getComponentTexts(),responseComponent.getRulesXml(),
+          responseComponent.getActions());
+      newResponseComponent.setID(responseComponent.getId());
+      result.add(newResponseComponent);
+    }
 
     Stream<ResponseComponent> filteredResult =
         result.stream()
             .filter(responseComponent -> ResponseComponentFilter.filterByKeywords(
                 responseComponent, keywords))
+            .filter(responseComponent -> ResponseComponentFilter.filterByActionCode(
+                responseComponent, actionCode))
             .sorted(ResponseComponentFilter.createComponentComparator(sortBy));
 
     if (count.isPresent()) {
@@ -136,8 +149,14 @@ public class ResponseComponentManager {
    * @return the response component with the given ID
    */
   public synchronized ResponseComponent getComponentByID(long id) {
-    return componentRepository.findById(id)
+    ResponseComponent responseComponent = componentRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(id));
+    ResponseComponent newResponseComponent = new ResponseComponent(
+        responseComponent.getComponentName(),responseComponent.getPriority(),
+        responseComponent.getComponentTexts(),responseComponent.getRulesXml(),
+        responseComponent.getActions());
+    newResponseComponent.setID(responseComponent.getId());
+    return newResponseComponent;
   }
 
   /**
