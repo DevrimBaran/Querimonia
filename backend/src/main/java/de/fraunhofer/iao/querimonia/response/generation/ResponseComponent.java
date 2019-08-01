@@ -120,13 +120,17 @@ public class ResponseComponent implements Identifiable<Long> {
 
   @SuppressWarnings("unused")
   @JsonCreator
-  public ResponseComponent(@JsonProperty("name") String componentName,
-                           @JsonProperty("priority") int priority,
-                           @JsonProperty(value = "texts", defaultValue = "[]")
-                               List<String> componentTexts,
-                           @JsonProperty("rulesXml") String rulesXml,
-                           @JsonProperty(value = "actions", defaultValue = "[]")
-                               List<Action> actions) {
+  ResponseComponent(
+      @JsonProperty("name") String componentName,
+      @JsonProperty("priority") int priority,
+      @JsonProperty(value = "texts", defaultValue = "[]")
+          List<String> componentTexts,
+      @JsonProperty("rulesXml") String rulesXml,
+      @JsonProperty(value = "actions", defaultValue = "[]")
+          List<Action> actions,
+      @JsonProperty("id")
+          long id
+  ) {
     this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
 
