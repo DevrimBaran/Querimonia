@@ -18,12 +18,16 @@ export function activate (endpoint, id) {
 }
 export function saveActive (endpoint) {
   return function (dispatch, getState) {
-    const { active } = getState()[endpoint].data;
+    let data = getState()[endpoint].data;
+    console.log('saveActive', data);
+    let active = data.active;
     dispatch({
       type: 'SAVE_START',
       endpoint: endpoint
     });
     dispatch((dispatch) => {
+      delete active.requiredEntities;
+      console.log(active);
       Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + (active.id === 0 ? '' : active.id), active)
         .then(data => {
           if (data.status && data.status === 500) {

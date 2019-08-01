@@ -25,7 +25,6 @@ function Header () {
         <th>ID</th>
         <th>Name</th>
         <th>Priorität</th>
-        <th>Entitäten</th>
         <th>Varianten</th>
         <th>Aktionen</th>
       </tr>
@@ -44,14 +43,13 @@ function List (data, dispatch, helpers) {
       <td><h3>{data.id}</h3></td>
       <td>{data.name}</td>
       <td>{data.priority}</td>
-      <td>{data.requiredEntities ? data.requiredEntities.join(', ') : ''}</td>
       <td>{data.texts.length}</td>
       <td>{data.actions.map((action) => action.name).join(', ')}</td>
     </tr>
   );
 }
 
-function Single (active, dispatch) {
+function Single (active, dispatch, helpers) {
   const save = (data) => {
     dispatch({
       type: 'MODIFY_ACTIVE',
@@ -78,14 +76,7 @@ function Single (active, dispatch) {
             <DeepObject save={save} filter={(key) => (key !== 'id' && key !== 'name' && key !== 'priority' && key !== 'rulesXml')} data={active} template={template} />
           </Content>
           <div className='center margin'>
-            <button
-              type='button'
-              className='important'
-              disabled={active.saving}
-              onClick={(e) => {
-                dispatch(saveActive('config'));
-              }}
-            >Speichern</button>
+            {helpers.save()}
           </div>
         </Row>
       </Block>

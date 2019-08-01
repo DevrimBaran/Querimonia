@@ -65,6 +65,7 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
           className='important'
           disabled={this.props.active.saving}
           onClick={(e) => {
+            console.log('save', this.props.active);
             this.props.dispatch(saveActive(endpoint));
           }}
         >Speichern</button>
@@ -102,7 +103,7 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
       if (this.props.match.params.id) {
         if (!this.props.active || id !== this.props.active.id) {
           if (!this.props.fetching) {
-            console.log(this.props.active.id, id, this.props.fetching);
+            console.log('set_active', this.props.active.id, id, this.props.fetching);
             this.props.dispatch({
               type: 'SET_ACTIVE',
               endpoint: endpoint,
