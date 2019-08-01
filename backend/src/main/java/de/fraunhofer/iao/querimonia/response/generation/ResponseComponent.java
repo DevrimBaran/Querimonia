@@ -224,6 +224,10 @@ public class ResponseComponent implements Identifiable<Long> {
     return actions;
   }
 
+  public void setID(long id) {
+    this.componentId = id;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

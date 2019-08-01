@@ -62,7 +62,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty());
+            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
@@ -78,7 +78,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(2), Optional.of(0), Optional.empty(), Optional.empty());
+            Optional.of(2), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(2, responseComponents.size());
@@ -93,7 +93,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(2), Optional.of(1), Optional.empty(), Optional.empty());
+            Optional.of(2), Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
@@ -108,7 +108,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] sortBy = {"name_desc"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty());
+            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
@@ -125,7 +125,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] keywords = {"Guten", "Herr"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.empty(), Optional.of(keywords));
+            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(keywords));
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
@@ -140,7 +140,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] keywords = {"B"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.empty(), Optional.of(keywords));
+            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(keywords));
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
@@ -154,7 +154,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] sortBy = {"magic"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty());
+            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
   }
@@ -166,7 +166,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] sortBy = {"magic_asc"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty());
+            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
   }
@@ -178,7 +178,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(4), Optional.of(0), Optional.empty(), Optional.empty());
+            Optional.of(4), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
@@ -194,7 +194,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(0), Optional.of(0), Optional.empty(), Optional.empty());
+            Optional.of(0), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(0, responseComponents.size());
@@ -207,7 +207,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(1), Optional.empty(), Optional.empty());
+            Optional.of(3), Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(0, responseComponents.size());
@@ -217,7 +217,7 @@ public class ResponseComponentControllerTest {
   public void testGetComponentCountNoKeywords() {
     responseComponentController.addComponent(COMPONENT_A);
     responseComponentController.addComponent(COMPONENT_B);
-    ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.empty());
+    ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     int componentCount = (Integer) responseEntity.getBody();
     assertEquals(2, componentCount);
@@ -228,7 +228,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_A);
     responseComponentController.addComponent(COMPONENT_B);
     String[] keywords = {"Guten", "Morgen"};
-    ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.of(keywords));
+    ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.of(keywords), Optional.empty());
     assertNotNull(responseEntity.getBody());
     int componentCount = (Integer) responseEntity.getBody();
     assertEquals(1, componentCount);
