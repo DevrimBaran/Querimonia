@@ -1,12 +1,14 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
+import de.fraunhofer.iao.querimonia.db.manager.ResponseComponentManager;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockCompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.MockSuggestionRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
-import de.fraunhofer.iao.querimonia.db.manager.ResponseComponentManager;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +35,9 @@ public class ResponseComponentControllerTest {
   public void setup() {
     componentRepository = new MockComponentRepository();
     ComplaintRepository complaintRepository = new MockComplaintRepository();
-    ResponseComponentManager responseComponentManager = new ResponseComponentManager(componentRepository, complaintRepository);
+    ResponseComponentManager responseComponentManager =
+        new ResponseComponentManager(componentRepository, complaintRepository,
+            new MockSuggestionRepository(), new MockCompletedComponentRepository());
     responseComponentController = new ResponseComponentController(responseComponentManager);
   }
 

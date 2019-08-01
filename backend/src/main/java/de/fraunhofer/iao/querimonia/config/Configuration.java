@@ -59,7 +59,7 @@ public class Configuration implements Identifiable<Long> {
   @JsonProperty("id")
   private long configId;
 
-  @Column(name = "config_name", nullable = false)
+  @Column(name = "config_name")
   @NonNull
   private String name = "";
 

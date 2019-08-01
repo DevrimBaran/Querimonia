@@ -88,7 +88,7 @@ public class Complaint implements Identifiable<Long> {
   /**
    * The complaint message, is limited to {@value TEXT_MAX_LENGTH} characters.
    */
-  @Column(length = TEXT_MAX_LENGTH, nullable = false)
+  @Column(length = TEXT_MAX_LENGTH)
   @NonNull
   private String text = "";
 
@@ -96,7 +96,7 @@ public class Complaint implements Identifiable<Long> {
    * A preview of the complaint message, should be the first two lines. Length is limited to
    * {@value PREVIEW_MAX_LENGTH} characters
    */
-  @Column(length = PREVIEW_MAX_LENGTH, nullable = false)
+  @Column(length = PREVIEW_MAX_LENGTH)
   @NonNull
   private String preview = "";
 
@@ -104,7 +104,6 @@ public class Complaint implements Identifiable<Long> {
    * The state of the complaint. A complaint is either new, in progress or closed.
    */
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
   @NonNull
   private ComplaintState state = ComplaintState.NEW;
 
@@ -155,10 +154,8 @@ public class Complaint implements Identifiable<Long> {
   /**
    * The date when the complaint was received.
    */
-  @Column(nullable = false)
   @NonNull
   private LocalDate receiveDate = LocalDate.now();
-  @Column(nullable = false)
   @NonNull
   private LocalTime receiveTime = LocalTime.now();
 

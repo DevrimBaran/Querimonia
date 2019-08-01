@@ -2,13 +2,17 @@ package de.fraunhofer.iao.querimonia.db.manager;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
+import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
+import de.fraunhofer.iao.querimonia.db.manager.filter.ResponseComponentFilter;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
+import de.fraunhofer.iao.querimonia.db.repository.CompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
+import de.fraunhofer.iao.querimonia.db.repository.ResponseSuggestionRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
-import de.fraunhofer.iao.querimonia.db.manager.filter.ResponseComponentFilter;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.DefaultResourceLoader;
@@ -35,6 +39,8 @@ public class ResponseComponentManager {
 
   private final ResponseComponentRepository componentRepository;
   private final ComplaintRepository complaintRepository;
+  private final ResponseSuggestionRepository responseSuggestionRepository;
+  private final CompletedComponentRepository completedComponentRepository;
 
   private static final String JSON_ERROR_TEXT =
       "Die Default-Antwortbausteine konnten nicht geladen werden.";
@@ -42,9 +48,13 @@ public class ResponseComponentManager {
   @Autowired
   public ResponseComponentManager(
       @Qualifier("responseComponentRepository") ResponseComponentRepository componentRepository,
-      ComplaintRepository complaintRepository) {
+      ComplaintRepository complaintRepository,
+      ResponseSuggestionRepository responseSuggestionRepository,
+      CompletedComponentRepository completedComponentRepository) {
     this.componentRepository = componentRepository;
     this.complaintRepository = complaintRepository;
+    this.responseSuggestionRepository = responseSuggestionRepository;
+    this.completedComponentRepository = completedComponentRepository;
   }
 
 
@@ -75,7 +85,7 @@ public class ResponseComponentManager {
 
       if (!defaultComponentsResource.exists()) {
         throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-        JSON_ERROR_TEXT, "Fehlende Datei");
+            JSON_ERROR_TEXT, "Fehlende Datei");
       }
 
       InputStream defaultComponentsStream = defaultComponentsResource.getInputStream();
@@ -98,8 +108,8 @@ public class ResponseComponentManager {
    * @param count    number of components per page.
    * @param page     number of the page.
    * @param sortBy   Sorts by name ascending or descending, priority ascending and descending.
-   *
    * @param keywords if given, complaints get filtered by these keywords.
+   *
    * @return Returns a list of sorted components.
    */
   public synchronized List<ResponseComponent> getAllComponents(
@@ -131,7 +141,7 @@ public class ResponseComponentManager {
   /**
    * Find the component with the given ID.
    *
-   * @param id                  the ID to look for
+   * @param id the ID to look for
    *
    * @return the response component with the given ID
    */
@@ -149,13 +159,34 @@ public class ResponseComponentManager {
     if (componentRepository.existsById(componentId)) {
       // remove references in complaints
       for (Complaint complaint : complaintRepository.findAll()) {
-        List<CompletedResponseComponent> responseComponents =
-            complaint.getResponseSuggestion().getResponseComponents();
-        responseComponents.stream()
-            .filter(component -> component.getComponent().getId() == componentId)
-            .forEachOrdered(responseComponents::remove);
-        complaintRepository.save(complaint);
+        var builder = new ComplaintBuilder(complaint);
+        var suggestion = builder.getResponseSuggestion();
+        // remove references
+        var completedComponents = suggestion.getResponseComponents();
+
+        // delete response if component is part of it
+        boolean componentIsUsed = completedComponents
+            .stream()
+            .map(CompletedResponseComponent::getId)
+            .anyMatch(id -> id == componentId);
+        if (componentIsUsed) {
+          // set to empty response
+          builder.setResponseSuggestion(new ResponseSuggestion());
+          complaintRepository.save(builder.createComplaint());
+          responseSuggestionRepository.delete(suggestion);
+          completedComponentRepository.deleteAll(completedComponents);
+        }
       }
+      // now check component table
+      for (CompletedResponseComponent completedResponseComponent
+          : completedComponentRepository.findAll()) {
+
+        // delete response if component is part of it
+        if (completedResponseComponent.getComponent().getId() == componentId) {
+          completedComponentRepository.delete(completedResponseComponent);
+        }
+      }
+
       componentRepository.deleteById(componentId);
     } else {
       throw new NotFoundException(componentId);
@@ -168,13 +199,23 @@ public class ResponseComponentManager {
   public synchronized void deleteAllComponents() {
     // remove references in complaints
     for (Complaint complaint : complaintRepository.findAll()) {
-      complaint
-          .getResponseSuggestion()
-          .getResponseComponents()
-          .clear();
+      // delete references
+      complaint = new ComplaintBuilder(complaint)
+          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), new ArrayList<>()))
+          .createComplaint();
       complaintRepository.save(complaint);
     }
+    responseSuggestionRepository.deleteAll();
+    completedComponentRepository.deleteAll();
     componentRepository.deleteAll();
+
+    for (Complaint complaint : complaintRepository.findAll()) {
+      // add empty responses
+      complaint = new ComplaintBuilder(complaint)
+          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), new ArrayList<>()))
+          .createComplaint();
+      complaintRepository.save(complaint);
+    }
   }
 
   public synchronized ResponseComponent updateComponent(long componentId,

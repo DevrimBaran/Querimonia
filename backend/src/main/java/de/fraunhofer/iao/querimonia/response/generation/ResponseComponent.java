@@ -129,7 +129,9 @@ public class ResponseComponent implements Identifiable<Long> {
       @JsonProperty(value = "actions", defaultValue = "[]")
           List<Action> actions,
       @JsonProperty("id")
-          long id
+          long id,
+      @JsonProperty("requiredEntities")
+          String[] requiredEntities
   ) {
     this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
