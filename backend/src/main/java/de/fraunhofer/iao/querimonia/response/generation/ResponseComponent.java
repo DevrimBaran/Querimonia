@@ -60,7 +60,7 @@ public class ResponseComponent implements Identifiable<Long> {
   /**
    * The component texts for the component.
    */
-  @ElementCollection(fetch = FetchType.LAZY)
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "component_text_table",
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000, nullable = false)
@@ -222,10 +222,6 @@ public class ResponseComponent implements Identifiable<Long> {
   @NonNull
   public List<Action> getActions() {
     return actions;
-  }
-
-  public void setID(long id) {
-    this.componentId = id;
   }
 
   @Override

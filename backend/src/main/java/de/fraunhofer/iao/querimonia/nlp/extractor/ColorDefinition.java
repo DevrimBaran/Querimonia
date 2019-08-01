@@ -30,6 +30,14 @@ class ColorDefinition {
     this.color = color;
   }
 
+  public String getLabel() {
+    return label;
+  }
+
+  public String getColor() {
+    return color;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {

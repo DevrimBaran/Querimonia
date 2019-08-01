@@ -158,10 +158,7 @@ public class ResponseComponentManager {
   public synchronized ResponseComponent getComponentByID(long id) {
     ResponseComponent responseComponent = componentRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(id));
-    ResponseComponent newResponseComponent =
-        new ResponseComponentBuilder(responseComponent).createResponseComponent();
-    newResponseComponent.setID(responseComponent.getId());
-    return newResponseComponent;
+    return new ResponseComponentBuilder(responseComponent).createResponseComponent();
   }
 
   /**
