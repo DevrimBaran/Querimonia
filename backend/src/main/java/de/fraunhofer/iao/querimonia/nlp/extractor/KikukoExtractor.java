@@ -25,7 +25,7 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
     knownExtractors.put("[Extern] Geldbetrag", "Geldbetrag");
     knownExtractors.put("[Extern] Personen Extraktor", "Person");
     knownExtractors.put("[Extern] Telefonnummer", "Telefon");
-    knownExtractors.put("[Fuzzy] Haltestellen", "Halltestelle");
+    knownExtractors.put("[Fuzzy] Haltestellen", "Haltestelle");
     knownExtractors.put("[Fuzzy] Ortsnamen", "Ort");
   }
 

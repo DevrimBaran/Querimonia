@@ -39,12 +39,14 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private int start;
   private int end;
   private boolean setByUser = false;
-  private boolean prefered = false;
+  @JsonProperty("preferred")
+  private boolean preferred = false;
   @NonNull
   @Column(nullable = false)
   private String extractor = "";
   @Nullable
   @Column
+  @JsonProperty("color")
   private String color = "#22222";
 
   /**
@@ -81,7 +83,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     this.value = value;
     this.setByUser = setByUser;
     this.extractor = extractor;
-    this.prefered = preferred;
+    this.preferred = preferred;
     this.color = color;
   }
 
