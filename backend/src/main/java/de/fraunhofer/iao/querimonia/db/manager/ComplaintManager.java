@@ -38,7 +38,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -154,14 +156,22 @@ public class ComplaintManager {
 
     // run analysis async
     Executors.newCachedThreadPool().submit(() -> {
-      try {
-        var builder = complaintFactory.analyzeComplaint(complaintBuilder, false);
-        builder.setState(ComplaintState.NEW);
-        storeComplaint(builder.createComplaint());
-      } catch (Exception e) {
-        onException(complaintBuilder, e);
+      var future = CompletableFuture.runAsync(() -> {
+        try {
+          var builder = complaintFactory.analyzeComplaint(complaintBuilder, false);
+          builder.setState(ComplaintState.NEW);
+          storeComplaint(builder.createComplaint());
+        } catch (Exception e) {
+          onException(complaintBuilder, e);
+        }
+      }).orTimeout(10, TimeUnit.MINUTES);
+      if (future.isCompletedExceptionally()) {
+        // time out
+        onException(complaintBuilder, new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+            "Zeitüberschreitung bei Analyse", "Timeout"));
       }
     });
+
     return complaint;
   }
 
@@ -276,13 +286,20 @@ public class ComplaintManager {
 
     Complaint finalComplaint = complaint;
     Executors.newCachedThreadPool().submit(() -> {
-      try {
-        var newBuilder
-            = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false));
-        newBuilder.setState(finalComplaint.getState());
-        storeComplaint(newBuilder.createComplaint());
-      } catch (Exception e) {
-        onException(builder, e);
+      var future = CompletableFuture.runAsync(() -> {
+        try {
+          var newBuilder
+              = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false));
+          newBuilder.setState(finalComplaint.getState());
+          storeComplaint(newBuilder.createComplaint());
+        } catch (Exception e) {
+          onException(builder, e);
+        }
+      }).orTimeout(10, TimeUnit.MINUTES);
+      if (future.isCompletedExceptionally()) {
+        // time out
+        onException(builder, new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+            "Zeitüberschreitung bei Analyse", "Timeout"));
       }
     });
     complaint = builder.createComplaint();
