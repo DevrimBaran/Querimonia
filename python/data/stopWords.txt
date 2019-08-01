@@ -31,7 +31,7 @@ das
 dass
 dasselbe
 dazu
-daß
+daÃŸ
 dein
 deine
 deinem
@@ -88,7 +88,7 @@ eurem
 euren
 eurer
 eures
-für
+fÃ¼r
 gegen
 gewesen
 hab
@@ -127,8 +127,8 @@ jener
 jenes
 jetzt
 kann
-können
-könnte
+kÃ¶nnen
+kÃ¶nnte
 machen
 man
 manche
@@ -213,12 +213,12 @@ wirst
 wo
 wollen
 wollte
-während
-würde
-würden
+wÃ¤hrend
+wÃ¼rde
+wÃ¼rden
 zu
 zum
 zur
 zwar
 zwischen
-über
+Ã¼ber

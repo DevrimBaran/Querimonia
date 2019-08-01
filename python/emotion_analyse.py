@@ -54,6 +54,7 @@ def prozent(dict):
     for key, value in dict.items():
         dict[key] = round((100 / sum) * value, 2)
     print(dict)
+    return dict
 
 
 def emotion_analysis(query):
