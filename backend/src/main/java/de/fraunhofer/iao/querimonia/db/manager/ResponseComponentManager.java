@@ -12,10 +12,10 @@ import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -123,11 +123,8 @@ public class ResponseComponentManager {
 
     Iterable<ResponseComponent> responseComponents = componentRepository.findAll();
     for (ResponseComponent responseComponent : responseComponents) {
-      ResponseComponent newResponseComponent = new ResponseComponent(
-          responseComponent.getComponentName(),responseComponent.getPriority(),
-          responseComponent.getComponentTexts(),responseComponent.getRulesXml(),
-          responseComponent.getActions());
-      newResponseComponent.setID(responseComponent.getId());
+      ResponseComponent newResponseComponent = new ResponseComponentBuilder(responseComponent)
+          .createResponseComponent();
       result.add(newResponseComponent);
     }
 
@@ -161,10 +158,8 @@ public class ResponseComponentManager {
   public synchronized ResponseComponent getComponentByID(long id) {
     ResponseComponent responseComponent = componentRepository.findById(id)
         .orElseThrow(() -> new NotFoundException(id));
-    ResponseComponent newResponseComponent = new ResponseComponent(
-        responseComponent.getComponentName(),responseComponent.getPriority(),
-        responseComponent.getComponentTexts(),responseComponent.getRulesXml(),
-        responseComponent.getActions());
+    ResponseComponent newResponseComponent =
+        new ResponseComponentBuilder(responseComponent).createResponseComponent();
     newResponseComponent.setID(responseComponent.getId());
     return newResponseComponent;
   }
