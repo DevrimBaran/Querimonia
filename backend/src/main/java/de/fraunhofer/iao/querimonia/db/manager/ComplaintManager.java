@@ -386,8 +386,9 @@ public class ComplaintManager {
               + "existiert bereits!", "Entität bereits vorhanden");
     }
 
-    storeComplaint(builder.createComplaint());
-    return complaintEntities;
+    complaint = builder.createComplaint();
+    storeComplaint(complaint);
+    return complaint.getEntities();
   }
 
   /**
