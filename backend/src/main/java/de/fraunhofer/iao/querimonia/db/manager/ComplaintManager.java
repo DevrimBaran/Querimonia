@@ -244,8 +244,6 @@ public class ComplaintManager {
    */
   public synchronized void deleteComplaint(long complaintId) {
     if (complaintRepository.existsById(complaintId)) {
-      Complaint complaint = getComplaint(complaintId);
-      checkForbiddenStates(complaint, ANALYSING);
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
     } else {
