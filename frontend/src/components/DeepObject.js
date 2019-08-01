@@ -22,7 +22,7 @@ class DeepObject extends Component {
         } else if (template[key].type === 'array') {
           obj[key] = [];
         } else if (template[key].type === 'object') {
-          obj[key] = this.templateToDefault(template[key].children);
+          obj[key] = this.templateToDefault(template[key]);
         } else if (template[key].type === 'number') {
           obj[key] = 0;
         } else {
@@ -134,10 +134,10 @@ class DeepObject extends Component {
         );
       } else {
         return (
-          <React.Fragment>
+          <div className='object'>
             {(<strong>{this.props.template.label.replace(/\$i/g, (Number(this.props.name) + 1))}</strong>)}
             {this.renderData(this.props.data)}
-          </React.Fragment>
+          </div>
         );
       }
     } else {

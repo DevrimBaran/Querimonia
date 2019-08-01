@@ -7,7 +7,6 @@
 
 import React from 'react';
 
-import { saveActive } from '../../redux/actions';
 import template from '../../redux/templates/components';
 
 import Block from '../../components/Block';

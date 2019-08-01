@@ -52,7 +52,7 @@ function List (data, dispatch, helpers) {
       </td>
       <td>{data.name}</td>
       <td>{data.extractors.length}</td>
-      <td>{data.classifiers[0].name}</td>
+      <td>{data.classifiers.map((c) => c.name).join(', ')}</td>
       <td>{data.sentimentAnalyzer.name}</td>
     </tr>
   );
