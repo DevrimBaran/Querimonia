@@ -40,21 +40,15 @@ class TextBuilder extends Component {
   onChange = () => {
     this.setState({ text: this.refs.responseText.value });
   }
-  cycle = (id) => {
-    this.setState(
-      (state) => {
-        return {
-          components: {
-            ...state.components,
-            [id]: {
-              ...state.components[id],
-              currentAlternative: (state.components[id].currentAlternative + 1) % state.components[id].alternatives.length
-            }
-          }
-        };
-      }
+  cycle = (componentId) => {
+    this.setState({
+      components: this.state.components.map((component) => {
+        if (component.component.id === componentId) component.activeTextIndex = ((component.activeTextIndex + 1) % component.component.texts.length);
+        return component;
+      })
+    }
     );
-  }
+  };
 
   finish = (mailto) => {
     document.location.href = mailto;
@@ -65,12 +59,13 @@ class TextBuilder extends Component {
     const component = this.state.components.find((component) => {
       return component.component.id === componentId;
     });
-    const preferredEntity = component.entities.find(entity => entity.preferred);
-    const componentEntities = component.activeEntityLabel || (preferredEntity ? preferredEntity.label : false) || (component.entities[0] ? component.entities[0].label : false) || null;
     const variableRegex = /\${.*}/g;
     const variables = text.match(variableRegex) || [];
     variables.forEach(variable => {
-      text = text.replace(variable, componentEntities);
+      const preferredEntity = component.entities.find(entity => entity.preferred && `\${${entity.label}}` === variable);
+      const firstSuitableEntity = component.entities.find(entity => `\${${entity.label}}` === variable);
+      const componentEntity = component.activeEntityLabel || (preferredEntity ? preferredEntity.value : false) || (firstSuitableEntity ? firstSuitableEntity.value : false) || null;
+      text = text.replace(variable, componentEntity);
     });
     return text;
   };
@@ -87,6 +82,9 @@ class TextBuilder extends Component {
   setData = (data) => {
     const components = data.components;
     const actions = data.actions;
+    components.forEach((component) => {
+      component.activeTextIndex = 0;
+    });
     this.setState({
       components: components,
       actions: actions });
@@ -143,12 +141,12 @@ class TextBuilder extends Component {
               return (
                 <div className='response' key={id}>
                   <span className='content'>
-                    <ChangeableEntityText taggedText={{ text: this.insertEntities(component.component.texts[0], id), entities: component.entities }}
+                    <ChangeableEntityText taggedText={{ text: this.insertEntities(component.component.texts[component.activeTextIndex], id), entities: component.entities }}
                       possibleEntities={component.entities}
                       setActiveEntity={this.setActiveEntity}
                       activeEntity={component.activeEntityLabel || null}
                       complaintId={id} />
-                    <div className='part'>{component.component.componentName}</div>
+                    <div className='part'>{component.component.name}</div>
                   </span>
                   <i className='fa fa-check add' onClick={() => { this.add(id); }} />
                   <i className='fa fa-sync remove' onClick={() => this.cycle(id)} />
