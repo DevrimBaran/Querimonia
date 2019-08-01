@@ -27,17 +27,14 @@ class TextBuilder extends Component {
     };
   }
 
-  add = (id) => {
-    this.setState(
-      (state) => {
-        return {
-          text: state.text + state.components[id].alternatives[state.components[id].currentAlternative].completedText + '\r\n',
-          components: {
-            ...state.components,
-            ids: state.components.ids.filter(componentid => id !== componentid)
-          }
-        };
-      }
+  add = (componentId) => {
+    const component = this.state.components.find((component) => {
+      return component.component.id === componentId;
+    });
+    this.setState({
+      text: this.state.text + this.insertEntities(component.component.texts[0], componentId) + '\r\n',
+      components: this.state.components.filter(component => component.component.id !== componentId)
+    }
     );
   };
   onChange = () => {
