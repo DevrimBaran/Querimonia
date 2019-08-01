@@ -14,7 +14,7 @@ import Import from './views/Import';
 import WordVectors from './views/WordVectors';
 import TagCloud from './views/TagCloud';
 import Impressum from './views/Impressum';
-import Complaints from './views/Complaints';
+import Complaints from './views/partials/Complaints';
 import Components from './views/partials/Component';
 import Config from './views/partials/Config';
 
@@ -94,7 +94,7 @@ class App extends Component {
         </nav>
 
         <View exact path='/' component={Home} />
-        <Route path='/complaints/:id?' component={Complaints} />
+        <View endpoint='complaints' path='/complaints/:id?' component={Complaints} />
         <View endpoint='components' path='/components/:id?' component={Components} />
         <View endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
         <View path='/import' component={Import} />
