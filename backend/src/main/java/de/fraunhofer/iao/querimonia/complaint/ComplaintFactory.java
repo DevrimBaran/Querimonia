@@ -64,8 +64,8 @@ public class ComplaintFactory {
     return new ComplaintBuilder(complaintText)
         .setConfiguration(configuration)
         .setPreview(makePreview(complaintText))
-        .setReceiveDate(LocalDate.now(ZoneId.of("CEST")))
-        .setReceiveTime(LocalTime.now(ZoneId.of("CEST")))
+        .setReceiveDate(LocalDate.now(ZoneId.of("Europe/Berlin")))
+        .setReceiveTime(LocalTime.now(ZoneId.of("Europe/Berlin")))
         .appendLogItem(LogCategory.GENERAL, "Beschwerde erstellt.");
   }
 
