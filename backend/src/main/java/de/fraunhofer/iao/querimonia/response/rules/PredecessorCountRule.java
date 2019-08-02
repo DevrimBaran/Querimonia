@@ -2,6 +2,8 @@ package de.fraunhofer.iao.querimonia.response.rules;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
@@ -27,5 +29,23 @@ public class PredecessorCountRule implements Rule {
   @Override
   public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     return true;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    PredecessorCountRule that = (PredecessorCountRule) o;
+
+    return new EqualsBuilder()
+        .append(min, that.min)
+        .append(max, that.max)
+        .isEquals();
   }
 }
