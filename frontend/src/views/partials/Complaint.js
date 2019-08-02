@@ -173,7 +173,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: '' + active.text.substring(entity['start'], entity['end']),
-                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'] }]
+                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'], color: entity['color'] }]
                     }} />
                   </li>;
                 })
