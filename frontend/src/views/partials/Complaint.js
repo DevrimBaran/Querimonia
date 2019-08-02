@@ -73,7 +73,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
           <Content>
             <Tabbed style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <EditableEntityText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} />
+                <EditableEntityText taggedText={{ text: active.text, entities: active.entities }} complaintId={active.id} active={active} refreshEntities={refreshEntities} />
               </div>
               <div label='Original'>
                 {active.text}

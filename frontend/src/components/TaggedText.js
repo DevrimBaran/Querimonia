@@ -43,8 +43,8 @@ class TaggedText extends Component {
         html.push(<span id={id} key={key++} data-key={html.length} className='tag' style={this.createBackground(tag)}>{taggedText.text.substring(tag.start, tag.end)}</span>);
         // Tooltip for that entity
         html.push(this.createTooltip(tag, id));
-        if (this.props.onClickHtml) {
-          html.push(this.props.onClickHtml(tag, id));
+        if (this.props.appendHtml) {
+          html.push(this.props.appendHtml(tag, id));
         }
         cpos = tag.end;
       }

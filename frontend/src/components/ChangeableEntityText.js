@@ -48,7 +48,7 @@ class ChangeableEntityText extends Component {
   };
 
   render () {
-    return <TaggedText taggedText={this.props.taggedText} onClickHtml={this.renderModal} />;
+    return <TaggedText taggedText={this.props.taggedText} appendHtml={this.renderModal} />;
   }
 }
 

@@ -29,7 +29,7 @@ class EditableEntityText extends Component {
     query['start'] = originalLabel.start;
     query['end'] = originalLabel.end;
     query['extractor'] = originalLabel.extractor;
-    Api.delete('/api/complaints/' + this.state.id + '/entities', query)
+    Api.delete('/api/complaints/' + this.state.complaintId + '/entities', query)
       .then((data) => {
         if (Array.isArray(data)) {
         // deep copy of data
@@ -219,7 +219,7 @@ class EditableEntityText extends Component {
 
   render () {
     return <div>
-      <TaggedText taggedText={this.props.taggedText} onClickHtml={this.renderModal} setOriginalLabels={this.setOriginalLabels} />
+      <TaggedText taggedText={this.props.taggedText} appendHtml={this.renderModal} setOriginalLabels={this.setOriginalLabels} />
       { this.renderAddButton() }
     </div>;
   }
