@@ -34,12 +34,13 @@ class Filter extends Component {
     const pathname = document.location.pathname;
     const mappedInputs = this.props.filter ? this.props.filter.map(this.renderInput) : [];
     return (
-      <Collapsible label='Filter' className='Filter'>
+      <React.Fragment>
+        <Collapsible label='Filter' className='Filter' />
         <form action={pathname} onSubmit={this.submit}>
           {mappedInputs}
           {mappedInputs.length > 0 && (<Input type='submit' value='Anwenden' />)}
         </form>
-      </Collapsible>
+      </React.Fragment>
     );
   }
 }

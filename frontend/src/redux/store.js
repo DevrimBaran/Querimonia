@@ -1,8 +1,9 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
 import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import rootReducer from './reducers/index';
+// import templates from './templates/index';
 
 const middleware = applyMiddleware(thunk, logger);
 
@@ -88,41 +89,7 @@ const initialState = {
       max: 0
     }
   },
-  templates: {
-    data: {
-      byId: {},
-      ids: [],
-      active: false,
-      fetching: false
-    },
-    filter: [
-      {
-        label: 'Stichwort',
-        name: 'keywords',
-        multiple: true,
-        type: 'text'
-      },
-      {
-        label: 'Sortieren nach',
-        name: 'sort_by',
-        type: 'select',
-        values: [
-          { label: 'ID (absteigend)', value: 'id_desc' },
-          { label: 'ID (aufsteigend)', value: 'id_asc' },
-          { label: 'Priorität (absteigend)', value: 'priority_desc' },
-          { label: 'Priorität (aufsteigend)', value: 'priority_asc' },
-          { label: 'Name (absteigend)', value: 'name_desc' },
-          { label: 'Name (aufsteigend)', value: 'name_asc' }
-        ]
-      }
-    ],
-    pagination: {
-      count: 10,
-      page: 0,
-      max: 0
-    }
-  },
-  actions: {
+  components: {
     data: {
       byId: {},
       ids: [],
@@ -153,6 +120,8 @@ const initialState = {
         values: [
           { label: 'ID (absteigend)', value: 'id_desc' },
           { label: 'ID (aufsteigend)', value: 'id_asc' },
+          { label: 'Priorität (absteigend)', value: 'priority_desc' },
+          { label: 'Priorität (aufsteigend)', value: 'priority_asc' },
           { label: 'Name (absteigend)', value: 'name_desc' },
           { label: 'Name (aufsteigend)', value: 'name_asc' }
         ]
@@ -195,6 +164,8 @@ const initialState = {
   }
 };
 
-const store = createStore(rootReducer, initialState, middleware);
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+const store = createStore(rootReducer, initialState, composeEnhancers(middleware));
 
 export default store;

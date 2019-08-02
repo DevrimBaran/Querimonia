@@ -12,6 +12,7 @@ import Row from './../components/Row';
 import Content from './../components/Content';
 import Api from './../utility/Api';
 import WordCloud from 'react-d3-cloud';
+import Table from './../components/Table';
 
 class TagCloud extends Component {
   constructor (props) {
@@ -127,7 +128,7 @@ class TagCloud extends Component {
       <React.Fragment>
         <Block>
           <Row vertical>
-            <h1 className='center'>Wortliste</h1>
+            <h1 className='center'>Worthäufigkeiten</h1>
             <br />
             <div>
               <Row vertical={false} style={{ justifyContent: 'space-around' }}>
@@ -146,6 +147,10 @@ class TagCloud extends Component {
                 <div>
                   <label htmlFor='count'>Wortanzahl:</label><br />
                   <input type='number' id='count' ref='count' defaultValue='70' min='0' />
+                </div>
+                <div>
+                  <label htmlFor='cloudActive'>Listenansicht</label><br />
+                  <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
                 </div>
               </Row>
             </div>
@@ -166,28 +171,33 @@ class TagCloud extends Component {
                 />
               </Content>)
               : (<Content className='center' id='OccurrenceList'>
-                <ul>
-                  <li><h4>Wort : Anzahl</h4></li>
-                  {this.createWordArray(this.state.words).map((element) => {
-                    return (<li>{element['text'] + ' : ' + (element['size'])}</li>);
-                  })}
-                </ul>
+                <Table className='table'>
+                  <thead>
+                    <tr style={{ filter: 'brightness(100%)' }}>
+                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>
+                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Anzahl</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.createWordArray(this.state.words).map((element) => {
+                      return (
+                        <tr><td style={{ borderStyle: 'solid' }}>{element['text']}</td>
+                          <td style={{ borderStyle: 'solid', background: 'rgb(240, 240, 240)' }}>{element['size']}</td>
+                        </tr>);
+                    })}
+                  </tbody>
+                </Table>
+
               </Content>)}
-            <div>
-              <div>
-                <label htmlFor='cloudActive'>Listenansicht</label><br />
-                <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
-              </div>
-              <Row vertical={false} style={{ justifyContent: 'center' }}>
-                <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
-                  onClick={this.exportCsv} />
-                <div style={{ width: '2em' }} />
-                <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
-                  onClick={this.exportSvg} />
-              </Row>
-            </div>
-            <br />
           </Row>
+          {this.state.cloudActive
+            ? (<Content className='center' id='TagCloud'>
+              <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
+                onClick={this.exportSvg} /></Content>)
+            : (<Content className='center' id='TagCloud'>
+              <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
+                onClick={this.exportCsv} /> </Content>)}
+
         </Block>
       </React.Fragment>
     );

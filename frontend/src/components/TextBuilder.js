@@ -11,9 +11,9 @@ import Api from '../utility/Api';
 
 import Debug from './../components/Debug';
 import Collapsible from './../components/Collapsible';
-import TaggedText from './../components/TaggedText';
 import Content from './../components/Content';
 import Input from './../components/Input';
+import ChangeableEntityText from './ChangeableEntityText';
 
 class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
@@ -22,60 +22,72 @@ class TextBuilder extends Component {
 
     this.state = {
       text: '',
-      components: { ids: [] },
-      actions: { ids: [] }
+      components: [],
+      actions: []
     };
-    this.data = {};
   }
 
-  add = (id) => {
-    this.setState(
-      (state) => {
-        return {
-          text: state.text + state.components[id].alternatives[state.components[id].currentAlternative].completedText + '\r\n',
-          components: {
-            ...state.components,
-            ids: state.components.ids.filter(componentid => id !== componentid)
-          }
-        };
-      }
+  add = (componentId) => {
+    const component = this.state.components.find((component) => {
+      return component.component.id === componentId;
+    });
+    this.setState({
+      text: this.state.text + this.insertEntities(component.component.texts[0], componentId) + '\r\n',
+      components: this.state.components.filter(component => component.component.id !== componentId)
+    }
     );
   };
   onChange = () => {
     this.setState({ text: this.refs.responseText.value });
   }
-  cycle = (id) => {
-    this.setState(
-      (state) => {
-        return {
-          components: {
-            ...state.components,
-            [id]: {
-              ...state.components[id],
-              currentAlternative: (state.components[id].currentAlternative + 1) % state.components[id].alternatives.length
-            }
-          }
-        };
-      }
+  cycle = (componentId) => {
+    this.setState({
+      components: this.state.components.map((component) => {
+        if (component.component.id === componentId) component.activeTextIndex = ((component.activeTextIndex + 1) % component.component.texts.length);
+        return component;
+      })
+    }
     );
-  }
+  };
+
   finish = (mailto) => {
     document.location.href = mailto;
     // document.location.href = document.location.origin + '/complaints';
   }
+
+  insertEntities = (text, componentId) => {
+    const component = this.state.components.find((component) => {
+      return component.component.id === componentId;
+    });
+    const variableRegex = /\${.*}/g;
+    const variables = text.match(variableRegex) || [];
+    variables.forEach(variable => {
+      const preferredEntity = component.entities.find(entity => entity.preferred && `\${${entity.label}}` === variable);
+      const firstSuitableEntity = component.entities.find(entity => `\${${entity.label}}` === variable);
+      const componentEntity = component.activeEntityLabel || (preferredEntity ? preferredEntity.value : false) || (firstSuitableEntity ? firstSuitableEntity.value : false) || null;
+      text = text.replace(variable, componentEntity);
+    });
+    return text;
+  };
+
+  setActiveEntity = (componentId, activeEntityLabel) => {
+    this.setState({
+      components: this.state.components.map((component) => {
+        if (component.component.id === componentId) component.activeEntityLabel = activeEntityLabel;
+        return component;
+      })
+    });
+  };
+
   setData = (data) => {
-    const components = data.components.reduce((obj, component) => {
-      component.currentAlternative = 0;
-      obj[component.id] = component;
-      obj.ids.push(component.id);
-      return obj;
-    }, { ids: [] });
-    const actions = data.actions.reduce((obj, component) => {
-      obj[component.id] = component;
-      obj.ids.push(component.id);
-      return obj;
-    }, { ids: [] });
-    this.setState({ components, actions });
+    const components = data.components;
+    const actions = data.actions;
+    components.forEach((component) => {
+      component.activeTextIndex = 0;
+    });
+    this.setState({
+      components: components,
+      actions: actions });
     console.log({ components, actions });
   };
 
@@ -103,33 +115,38 @@ class TextBuilder extends Component {
     const mailto = 'mailto:' + encodeURIComponent(mail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message) + link;
     return (
       <React.Fragment>
-        <Content style={{ flexBasis: '10%' }}>
+        <Content>
           <textarea className='margin' id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
             onChange={this.onChange} />
         </Content>
         <div>
           <Input type='button' value='Abschließen' onClick={() => this.finish(mailto)} />
         </div>
-        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions'>
+        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions' />
+        <Content>
           {
-            this.state.actions.ids.map((id) => {
-              const action = this.state.actions[id];
+            this.state.actions.map((action, i) => {
+              const id = action.id;
               return (
-                <Input key={id} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
+                <Input key={i} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
               );
             })
           }
-        </Collapsible>
-        <Collapsible className='Content' label='Antworten' collapse={false} id='responses'>
+        </Content>
+        <Collapsible className='Content' label='Antworten' collapse={false} id='responses' />
+        <Content>
           {
-            this.state.components.ids.map((id) => {
-              const component = this.state.components[id];
-              const answer = component.alternatives[component.currentAlternative];
+            this.state.components.map((component) => {
+              const id = component.component.id;
               return (
                 <div className='response' key={id}>
                   <span className='content'>
-                    <TaggedText taggedText={{ text: answer.completedText, entities: answer.entities }} />
-                    <div className='part'>{component.component.componentName}</div>
+                    <ChangeableEntityText taggedText={{ text: this.insertEntities(component.component.texts[component.activeTextIndex], id), entities: component.entities }}
+                      possibleEntities={component.entities}
+                      setActiveEntity={this.setActiveEntity}
+                      activeEntity={component.activeEntityLabel || null}
+                      complaintId={id} />
+                    <div className='part'>{component.component.name}</div>
                   </span>
                   <i className='fa fa-check add' onClick={() => { this.add(id); }} />
                   <i className='fa fa-sync remove' onClick={() => this.cycle(id)} />
@@ -137,7 +154,7 @@ class TextBuilder extends Component {
               );
             })
           }
-        </Collapsible>
+        </Content>
       </React.Fragment>
     );
   }

@@ -10,18 +10,24 @@ import { connect } from 'react-redux';
 import { fetchData, fetchCurrentConfig } from '../redux/actions';
 
 import Complaint from './partials/Complaint';
+import Api from '../utility/Api';
 
 import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
 import Filter from './../components/Filter';
 import Pagination from './../components/Pagination';
+import Table from './../components/Table';
 
 class Complaints extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      active: null
+      active: null,
+      editCategorie: false,
+      editTendency: false,
+      editEmotion: false,
+      loadingEntitiesFinished: false
     };
   }
   componentDidMount = () => {
@@ -29,8 +35,76 @@ class Complaints extends Component {
     this.props.dispatch(fetchCurrentConfig());
   }
 
+  activateComplaint = (active) => {
+    Api.get('/api/complaints/' + active.id + '/entities', '')
+      .catch(() => {
+        return { status: 404 };
+      })
+      // eslint-disable-next-line no-return-assign
+      .then((data) => {
+        this.setState({
+          active: {
+            ...active,
+            entities: data
+          },
+          loadingEntitiesFinished: true
+        });
+      });
+  };
+
+  /**
+   *  switchs between edit and normal state of the Categorie label /
+   *  changes the Categorie of the complaint if "editCategorie" is true.
+   **/
+  editCategorie = (active, index, editCategorie) => {
+    if (editCategorie) {
+      let data = {};
+      data['subject'] = document.getElementById('chooseCategorie').value;
+      Api.patch('/api/complaints/' + active.id, data);
+      active.properties[index].value = data['subject'];
+    }
+    this.setState({ editCategorie: !this.state.editCategorie });
+  }
+
+  /**
+   *  switchs between edit and normal state of the Sentiment label /
+   *  changes the Sentiment of the complaint if "editCSentiment" is true.
+   **/
+  editTendency = (active, editTendency) => {
+    if (editTendency) {
+      let data = {};
+      data['tendency'] = Number(document.getElementById('chooseTendency').value);
+      Api.patch('/api/complaints/' + active.id, data);
+      active.sentiment.tendency = data['tendency'];
+    }
+    this.setState({ editTendency: !this.state.editTendency });
+  }
+
+  /**
+   *  switchs between edit and normal state of the Sentiment label /
+   *  changes the Sentiment of the complaint if "editCSentiment" is true.
+   **/
+  editEmotion = (active, editEmotion) => {
+    if (editEmotion) {
+      let data = {};
+      data['sentiment'] = document.getElementById('chooseEmotion').value;
+      Api.patch('/api/complaints/' + active.id, data);
+      active.sentiment.value = data['sentiment'];
+    }
+    this.setState({ editEmotion: !this.state.editEmotion });
+  }
+
+  /**
+   *  updates the entity-list
+   **/
+  refreshEntities = (active, data) => {
+    active.entities = data;
+    this.setState({ active: active });
+  }
+
   renderSingle = (active) => {
-    return (Complaint.Single(active));
+    if (this.state.active === null || this.state.active.id !== active.id) this.activateComplaint(active);
+    return (Complaint.Single(this.state.active, this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editTendency, this.state.editEmotion, this.editCategorie, this.editTendency, this.editEmotion, this.refreshEntities));
   }
 
   update = () => {
@@ -39,15 +113,21 @@ class Complaints extends Component {
       this.componentDidMount();
     }, 10);
   }
-
   renderList = () => {
     return (<Block>
       <Row vertical>
         <Filter endpoint='complaints' />
-        <Content>
-          {this.props.fetching
+        <Content className='padding'>
+          { this.props.data.fetching
             ? (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
-            : (this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id])))
+            : (
+              <Table>
+                {Complaint.Header()}
+                <tbody>
+                  {this.props.data && this.props.data.ids.map(id => Complaint.List(this.props.data.byId[id]))}
+                </tbody>
+              </Table>
+            )
           }
         </Content>
         <Pagination endpoint='complaints' />
@@ -57,7 +137,9 @@ class Complaints extends Component {
 
   render () {
     let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
-    return (
+    if (active) {
+      active.entities = [];
+    } return (
       <React.Fragment>
         { active ? (
           this.renderSingle(active)

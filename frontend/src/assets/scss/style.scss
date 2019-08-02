@@ -9,7 +9,13 @@
 @import 'TextBuilder';
 @import 'components/select';
 @import 'components/templates';
-
+@import 'components/collapsible';
+@import 'components/filter';
+@import 'components/pagination';
+@import 'components/tabbed';
+@import 'components/autocomplete';
+@import 'components/modal';
+@import 'components/tooltip';
 #root {
     display: flex;
     overflow: hidden;
@@ -25,6 +31,9 @@
     li > * {
         padding: 5px 20px;
     }
+    li > a.active {
+        color: $primary;
+    }
 }
 .logo {
     margin: auto;
@@ -39,15 +48,26 @@
         border-right: none;
     }
 }
-.Content {
+.content {
     overflow: auto;
     flex-grow: 1;
+    flex-shrink: 1;
 }
 
 .row {
     height: 100%;
     width: 100%;
     overflow: auto;
+}
+
+.input-symbol-euro {
+    position: relative;
+}
+.input-symbol-euro:after {
+    position: absolute;
+    top: 0;
+    content:"€";
+    right: 18px;
 }
 
 .complaintSummary {
@@ -90,156 +110,106 @@
     height: 100%;
 }
 
-.pagination {
-    display: block;
-    margin: auto;
-    span.count {
-        cursor: pointer;
-        &.current {
-            color: $secondary;
-        }
-    }
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 10px;
-        display: inline-flex;
-        li {
-            border: 1px solid $secondary;
-            padding: 5px 10px;
-            cursor: pointer;
-            &.current {
-                color: $white;
-                background-color: $secondary;
-                cursor: initial;
-            }
-            &.disabled {
-                color: $grey;
-                cursor: initial;
-            }
-        }
-    }
-}
-
-.tabbed {
-    position: relative;
-    display: grid;
-    grid-row-gap: -1px;
-    grid-template-columns: auto;
-    grid-template-rows: 2em 1fr;
-    grid-auto-columns: auto;
-    grid-auto-flow: column;
-    background-color: inherit;
-    & > .tab {
-        grid-row: 1 / 2;
-        margin: 0em;
-        cursor: pointer;
-        white-space: nowrap;
-        text-align: center;
-    }
-    & > .tab.active, & > .tab:hover {
-        background-color: var(--primaryBackgroundColor);
-    }
-    & > .tab.active + [label] {
-        display: block;
-    }
-    & > [label] {
-        grid-column-start: 1;
-        grid-column-end: var(--tabCount);
-        grid-row: 2 / 3;
-        background-color: var(--primaryBackgroundColor);
-        padding: 1.3em var(--contentMargin) 0em var(--contentMargin);
-        overflow: auto;
-        display: none;
-    }
-}
-
-
-.Filter {
-    min-height: fit-content;
-
-    .Block {
-        position: relative;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-content: center;
-        margin: 10px 15px;
-
-    }
-    Select.relation {
-        background-color: $primary;
-        color: white;
-    }
-    input, select, option {
-        color: black;
-    }
-    .remove {
-        &::after {
-            display: block;
-            content: 'X';
-        }
-    }
-    .relation > .remove {
-        position: absolute;
-        top: -5px;
-        right: -5px;
-    }
-    .clause {
-        flex-wrap: nowrap;
-    }
-    .sort,.relation {
-        flex-direction: column;
-    }
-}
-
-.collapsible {
+.dynamic-textarea {
     position: relative;
     overflow: hidden;
-    .handle {
+    textarea {
+        resize: none;
         position: relative;
-        display: block;
-        line-height: 15px;
+        box-sizing: border-box;
         width: 100%;
-        height: 40px;
-        cursor: pointer;
-        color: $black;
-        font-size: 15px;
-        //padding: 10px 0;
-        z-index: 1;
-        &::before {
-            position: relative;
-            display: block;
-            content: '';
-            top: 7px;
-            border-top: 1px solid $grey;
-        }
-        i {
-            position: relative;
-            padding: 0 5px 0 10px;
-            margin-left: 10px;
-            background-color: $white;
-        }
-        span {
-            position: relative;
-            padding-right: 10px;
-            background-color: $white;
-        }
+        padding: 10px 5px;
     }
-    .content {
-        overflow: auto;
-        height: calc(100% - 40px);
-        //padding-top: 10px;
+    textarea.dummy {
+        position: absolute;
+        visibility: hidden;
+        overflow-y: scroll;
+        height: 0px;
+        top: 0;
+        left: 0;
+    }
+    textarea.dummy[rows] {
+        height: auto;
+        overflow: hidden;
     }
 }
-.collapsible[data-collapse=true] {
-    min-height: 30px !important;
-    max-height: 30px !important;
-    .content {
-        display: none;
+.responsive-table {
+    width: calc(100%);
+    height: 100%;
+    overflow: auto;
+    table {
+        margin: 0px auto;
+        border-spacing: 0px;
+    }
+    tr:hover {
+        filter: brightness(90%);
+    }
+    th {
+        background: #179c7d;
+        color: white;
+        position: sticky;
+        top: 0px;
+        text-align: center;
+        max-width: 600px;
+        border-bottom-style: solid;
+        border-width: 5px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    td {
+        background: rgb(247, 247, 247);
+        max-width: 600px;
+        text-align: center;
+        border-bottom-style: solid;
+        border-width: 1px;
+        padding-left:10px;
+        padding-right:10px;
     }
 }
-
+a > i {
+    padding: 3px;
+}
+.deep-array {
+    display: flex;
+    align-items: center;
+    background-color: $lightgrey;
+    & + .deep-array {
+        margin-top: 5px;
+    }
+    &:hover {
+        background-color: $grey;
+    }
+    & > div, & > input {
+        width: 100%;
+    }
+    & > label, & > i {
+        padding: 0 5px;
+    }
+}
+.deep-object {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    & + .deep-object {
+        margin-top: 5px;
+    }
+    & > div, & > input {
+        width: 100%;
+    }
+    & > strong {
+        padding: 0 5px;
+        text-align: center;
+    }
+    & > i {
+        padding: 0 5px;
+        text-align: center;
+        background-color: rgba($primary, 0.8);
+    }
+}
+.object > .object {
+    display: flex;
+    flex-direction: column;
+}
 .padding {
     padding: 0 30px;
 }

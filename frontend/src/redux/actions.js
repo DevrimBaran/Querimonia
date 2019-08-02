@@ -18,19 +18,41 @@ export function activate (endpoint, id) {
 }
 export function saveActive (endpoint) {
   return function (dispatch, getState) {
-    const { active } = getState()[endpoint].data;
+    let data = getState()[endpoint].data;
+    console.log('saveActive', data);
+    let active = data.active;
     dispatch({
       type: 'SAVE_START',
       endpoint: endpoint
     });
     dispatch((dispatch) => {
-      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + active.id, active)
+      delete active.requiredEntities;
+      console.log(active);
+      Api[active.id === 0 ? 'post' : 'put']('/api/' + endpoint + '/' + (active.id === 0 ? '' : active.id), active)
         .then(data => {
           if (data.status && data.status === 500) {
-            alert(data.message);
+            // alert(data.message);
           }
           dispatch({
             type: 'SAVE_END',
+            endpoint: endpoint
+          });
+        });
+    });
+  };
+}
+export function remove (endpoint, id) {
+  return function (dispatch, getState) {
+    const { data } = getState()[endpoint];
+    dispatch((dispatch) => {
+      Api.delete('/api/' + endpoint + '/' + id, {})
+        .then(response => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'FETCH_END',
+            data: data,
             endpoint: endpoint
           });
         });

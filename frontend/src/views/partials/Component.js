@@ -7,28 +7,25 @@
 
 import React from 'react';
 
-import { setCurrentConfig } from '../../redux/actions';
-import template from '../../redux/templates/config';
+import template from '../../redux/templates/components';
 
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
 import DeepObject from '../../components/DeepObject';
-
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
 function Header () {
   return (
     <thead>
-      <tr style={{ filter: 'brightness(100%)' }}>
-        <th> </th>
+      <tr>
+        <th />
         <th>ID</th>
-        <th>Aktiv</th>
         <th>Name</th>
-        <th>Extraktoren</th>
-        <th>Klassififkatoren</th>
-        <th>Stimmungsanalysator</th>
+        <th>Priorität</th>
+        <th>Varianten</th>
+        <th>Aktionen</th>
       </tr>
     </thead>
   );
@@ -43,26 +40,19 @@ function List (data, dispatch, helpers) {
         {helpers.remove(data.id)}
       </td>
       <td><h3>{data.id}</h3></td>
-      <td>
-        {
-          data.active
-            ? (<input defaultChecked type='radio' name='active' />)
-            : (<input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' />)
-        }
-      </td>
       <td>{data.name}</td>
-      <td>{data.extractors.length}</td>
-      <td>{data.classifiers.map((c) => c.name).join(', ')}</td>
-      <td>{data.sentimentAnalyzer.name}</td>
+      <td>{data.priority}</td>
+      <td>{data.texts.length}</td>
+      <td>{data.actions.map((action) => action.name).join(', ')}</td>
     </tr>
   );
 }
 
 function Single (active, dispatch, helpers) {
-  const modifyActive = (data) => {
+  const save = (data) => {
     dispatch({
       type: 'MODIFY_ACTIVE',
-      endpoint: 'config',
+      endpoint: 'components',
       data: data
     });
   };
@@ -70,9 +60,19 @@ function Single (active, dispatch, helpers) {
     <React.Fragment>
       <Block>
         <Row vertical>
-          <h6 className='center'>Konfiguration</h6>
+          <h6 className='center'>Regeln</h6>
+          <div>
+            <DeepObject save={save} filter={(key) => (key === 'id' || key === 'name' || key === 'priority')} data={active} template={template} />
+          </div>
+          <Content>
+            <DeepObject save={save} filter={(key) => (key === 'rulesXml')} data={active} template={template} />
+          </Content>
+        </Row>
+      </Block>
+      <Block>
+        <Row vertical>
           <Content className='margin'>
-            <DeepObject data={active} template={template(helpers.props.allExtractors)} save={modifyActive} />
+            <DeepObject save={save} filter={(key) => (key !== 'id' && key !== 'name' && key !== 'priority' && key !== 'rulesXml')} data={active} template={template} />
           </Content>
           <div className='center margin'>
             {helpers.save()}

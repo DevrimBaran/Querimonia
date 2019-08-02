@@ -25,14 +25,16 @@ class Pagination extends Component {
   }
   render () {
     let pagelinks = [];
-    let lastPage = Math.ceil(this.props.max / this.props.count) - 1;
-    if (lastPage > this.props.page) {
+    let lastPage = Math.max(Math.ceil(this.props.max / this.props.count) - 1, 0);
+    if (lastPage < this.props.page) {
+      console.log('redirect page 0', lastPage, this.props.page);
       this.props.dispatch({
         type: 'PAGINATION_CHANGE',
         endpoint: this.props.endpoint,
         name: 'page',
         value: 0
       });
+      this.props.dispatch(fetchData(this.props.endpoint));
     }
     pagelinks.push(
       <li key={'previous'} className={this.props.page > 0 ? 'previous' : 'previous disabled'} type='button' name='page' onClick={this.props.page > 0 ? () => this.onClick('page', this.props.page - 1) : null}>
@@ -80,6 +82,7 @@ class Pagination extends Component {
           /
           {this.props.max})
           pro Seite:&nbsp;
+          <span className={this.props.count === 2 ? 'current count' : 'count'} onClick={() => this.onClick('count', 2)}>2</span>,&nbsp;
           <span className={this.props.count === 10 ? 'current count' : 'count'} onClick={() => this.onClick('count', 10)}>10</span>,&nbsp;
           <span className={this.props.count === 25 ? 'current count' : 'count'} onClick={() => this.onClick('count', 25)}>25</span>,&nbsp;
           <span className={this.props.count === 50 ? 'current count' : 'count'} onClick={() => this.onClick('count', 50)}>50</span>
