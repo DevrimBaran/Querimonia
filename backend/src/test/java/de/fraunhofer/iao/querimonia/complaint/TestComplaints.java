@@ -120,6 +120,10 @@ public class TestComplaints {
       .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Trauer"), 0.0))
       .createComplaint();
 
+  public static final Complaint COMPLAINT_I = new ComplaintBuilder(COMPLAINT_H)
+      .setEntities(ENTITIES_I)
+      .createComplaint();
+
   @SuppressWarnings("WeakerAccess")
   public static class TestProperties {
 
@@ -381,6 +385,15 @@ public class TestComplaints {
         .setValue("U6")
         .createNamedEntity();
 
+    private static final NamedEntity testEntityPlace = new NamedEntityBuilder()
+        .setLabel("Ort")
+        .setStart(70)
+        .setEnd(79)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Stuttgart")
+        .createNamedEntity();
+
     private static final NamedEntity testEntityMoney = new NamedEntityBuilder()
         .setLabel("Geldbetrag")
         .setStart(87)
@@ -392,5 +405,8 @@ public class TestComplaints {
 
     public static final List<NamedEntity> ENTITIES_F = List.of(testEntityName, testEntityStop,
         testEntityLine, testEntityMoney);
+
+    public static final List<NamedEntity> ENTITIES_I = List.of(testEntityLine, testEntityPlace,
+        testEntityStop);
   }
 }
