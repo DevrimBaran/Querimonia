@@ -1,6 +1,5 @@
 import string
 import sys
-from nltk.tokenize import word_tokenize
 from nltk.data import load
 from nltk.tokenize.treebank import TreebankWordTokenizer
 from pathlib import Path
