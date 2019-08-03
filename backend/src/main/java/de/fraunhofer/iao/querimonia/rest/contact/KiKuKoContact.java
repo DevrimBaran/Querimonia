@@ -6,7 +6,6 @@ import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
@@ -34,6 +33,7 @@ public class KiKuKoContact {
    * executes a Request to KiKuKo.
    *
    * @param input text that will be analysed
+   *
    * @return a Response Object
    */
   protected KikukoResponse executeKikukoRequest(final String input) {
@@ -65,7 +65,6 @@ public class KiKuKoContact {
       returnValue = template.postForObject(URL,
           request, String.class);
     } catch (RestClientException e) {
-      e.printStackTrace();
       throw kikukoException;
     }
     // map string to json
@@ -86,12 +85,15 @@ public class KiKuKoContact {
     return responses[0];
   }
 
+  // TODO delete
   public static void main(String[] args) {
     KiKuKoContact contact = new KiKuKoContact("domain", "QuerimoniaExtract");
-    KikukoResponse response = contact.executeKikukoRequest("Hallo, meine Fahrt ist leider nicht erfolgt! Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!");
-    response.getPipelines().forEach((a,b) -> {
+    KikukoResponse response = contact.executeKikukoRequest(
+        "Hallo, meine Fahrt ist leider nicht erfolgt! "
+            + "Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!");
+    response.getPipelines().forEach((a, b) -> {
       System.out.println(a);
-      b.forEach(text -> System.out.println("\t"+ text));
+      b.forEach(text -> System.out.println("\t" + text));
     });
   }
 }

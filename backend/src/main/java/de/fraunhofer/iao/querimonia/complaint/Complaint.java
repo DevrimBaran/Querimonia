@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
+import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
@@ -89,7 +90,7 @@ public class Complaint implements Identifiable<Long> {
   /**
    * The complaint message, is limited to {@value TEXT_MAX_LENGTH} characters.
    */
-  @Column(length = TEXT_MAX_LENGTH, nullable = false)
+  @Column(length = TEXT_MAX_LENGTH)
   @NonNull
   private String text = "";
 
@@ -97,7 +98,7 @@ public class Complaint implements Identifiable<Long> {
    * A preview of the complaint message, should be the first two lines. Length is limited to
    * {@value PREVIEW_MAX_LENGTH} characters
    */
-  @Column(length = PREVIEW_MAX_LENGTH, nullable = false)
+  @Column(length = PREVIEW_MAX_LENGTH)
   @NonNull
   private String preview = "";
 
@@ -105,7 +106,6 @@ public class Complaint implements Identifiable<Long> {
    * The state of the complaint. A complaint is either new, in progress or closed.
    */
   @Enumerated(EnumType.STRING)
-  @Column(nullable = false)
   @NonNull
   private ComplaintState state = ComplaintState.NEW;
 
@@ -156,10 +156,8 @@ public class Complaint implements Identifiable<Long> {
   /**
    * The date when the complaint was received.
    */
-  @Column(nullable = false)
   @NonNull
   private LocalDate receiveDate = LocalDate.now();
-  @Column(nullable = false)
   @NonNull
   private LocalTime receiveTime = LocalTime.now();
 
@@ -170,6 +168,14 @@ public class Complaint implements Identifiable<Long> {
   @JoinColumn(name = "config_id")
   @NonNull
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
+
+  /**
+   * Contains the log of the complaint.
+   */
+  @NonNull
+  @JsonIgnore
+  @OneToMany(cascade = CascadeType.ALL)
+  private List<LogEntry> log = new ArrayList<>();
 
   /**
    * Constructor for builder.
@@ -186,7 +192,8 @@ public class Complaint implements Identifiable<Long> {
       @NonNull Map<String, Integer> wordList,
       @NonNull LocalDate receiveDate,
       @NonNull LocalTime receiveTime,
-      @NonNull Configuration configuration) {
+      @NonNull Configuration configuration,
+      @NonNull List<LogEntry> log) {
 
     ComplaintUtility.checkStringLength(text, TEXT_MAX_LENGTH);
     ComplaintUtility.checkStringLength(preview, PREVIEW_MAX_LENGTH);
@@ -203,6 +210,7 @@ public class Complaint implements Identifiable<Long> {
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
     this.configuration = configuration;
+    this.log = log;
   }
 
   /**
@@ -284,7 +292,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @NonNull
   public List<NamedEntity> getEntities() {
-    return entities;
+    return new ArrayList<>(entities);
   }
 
   /**
@@ -297,7 +305,7 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   @JsonIgnore
   public Map<String, Integer> getWordCounts() {
-    return wordList;
+    return new HashMap<>(wordList);
   }
 
   /**
@@ -371,7 +379,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @NonNull
   public List<ComplaintProperty> getProperties() {
-    return properties;
+    return new ArrayList<>(properties);
   }
 
   /**
@@ -382,6 +390,17 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   public Sentiment getSentiment() {
     return sentiment;
+  }
+
+  /**
+   * Returns the log of the complaint. The complaint log contains all information about the
+   * analysis and edits of the complaint. It also logs errors.
+   *
+   * @return a list of {@link LogEntry log entries}.
+   */
+  @NonNull
+  public List<LogEntry> getLog() {
+    return new ArrayList<>(log);
   }
 
   /**

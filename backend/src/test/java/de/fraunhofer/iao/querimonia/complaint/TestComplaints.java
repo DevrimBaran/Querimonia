@@ -13,6 +13,7 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -88,10 +89,10 @@ public class TestComplaints {
       .setReceiveDate(DATE_F)
       .setReceiveTime(TIME_F)
       .setConfiguration(TestConfigurations.CONFIGURATION_D)
-      .setProperties(TestProperties.PROPERTIES_C)
+      .setProperties(TestProperties.PROPERTIES_F)
       .setState(ComplaintState.NEW)
       .setResponseSuggestion(TestResponses.SUGGESTION_C)
-      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Wut"), 0.0))
       .setEntities(ENTITIES_F)
       .createComplaint();
 
@@ -102,9 +103,25 @@ public class TestComplaints {
       .setReceiveTime(TIME_G)
       .setConfiguration(TestConfigurations.CONFIGURATION_A)
       .setState(ComplaintState.IN_PROGRESS)
-      .setProperties(TestProperties.PROPERTIES_C)
+      .setProperties(TestProperties.PROPERTIES_G)
       .setResponseSuggestion(TestResponses.SUGGESTION_B)
-      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Unbekannt"), 0.0))
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Wut"), 0.0))
+      .createComplaint();
+
+  public static final Complaint COMPLAINT_H = new ComplaintBuilder(TEXT_H)
+      .setId(8)
+      .setPreview(PREVIEW_H)
+      .setReceiveDate(DATE_H)
+      .setReceiveTime(TIME_H)
+      .setConfiguration(TestConfigurations.CONFIGURATION_A)
+      .setState(ComplaintState.IN_PROGRESS)
+      .setProperties(TestProperties.PROPERTIES_H)
+      .setResponseSuggestion(TestResponses.SUGGESTION_B)
+      .setSentiment(new Sentiment(new ComplaintProperty("Emotion", "Trauer"), 0.0))
+      .createComplaint();
+
+  public static final Complaint COMPLAINT_I = new ComplaintBuilder(COMPLAINT_H)
+      .setEntities(ENTITIES_I)
       .createComplaint();
 
   @SuppressWarnings("WeakerAccess")
@@ -126,6 +143,21 @@ public class TestComplaints {
     public static final List<ComplaintProperty> PROPERTIES_C
         = List.of(
         new ComplaintProperty("Kategorie", "Sonstiges")
+    );
+
+    public static final List<ComplaintProperty> PROPERTIES_F
+        = List.of(
+        new ComplaintProperty("Kategorie", "Beschwerde")
+    );
+
+    public static final List<ComplaintProperty> PROPERTIES_G
+        = List.of(
+        new ComplaintProperty("Kategorie", "Test")
+    );
+
+    public static final List<ComplaintProperty> PROPERTIES_H
+        = List.of(
+        new ComplaintProperty("Kategorie", "Beschwerde")
     );
   }
 
@@ -187,9 +219,13 @@ public class TestComplaints {
 
     public static final LocalTime TIME_F = LocalTime.of(12, 0);
 
-    public static final LocalDate DATE_G = LocalDate.now();
+    public static final LocalDate DATE_G = LocalDate.of(2019, 7, 29);
 
     public static final LocalTime TIME_G = LocalTime.now();
+
+    public static final LocalDate DATE_H = LocalDate.of(2019, 8, 1);
+
+    public static final LocalTime TIME_H = LocalTime.now();
   }
 
   public static class TestTexts {
@@ -314,16 +350,13 @@ public class TestComplaints {
 
     public static final String PREVIEW_F = TEXT_F;
 
-    public static final String TEXT_G = "ich möchte auf diesem Weg ein Lob für einen Ihrer Fahrer"
-        + " aussprechen. Nachdem am Bahnhof die erste Durchsage des Busfahrers noch lautete dass "
-        + "wir wahrscheinlich nicht weiterfahren können, erklärte er nach ein paar Minuten dass "
-        + "er  zumindest noch bis zur Uni fährt. Da der Bus voller Studierender war gab es "
-        + "daraufhin sogar spontanen Beifall. (Insbesondere da einige Mitfahrende wohl kurz "
-        + "darauf zu Klausuren oder Prüfungen erscheinen mussten und sonst auf Taxis hätten "
-        + "ausweichen müssen, da der Weg zu Fuß doch deutlich länger ist.)Die Entscheidung des "
-        + "Fahrers war also ein Lichtblick für viele Ihrer Kunden.";
+    public static final String TEXT_G = "Dies ist eine Testbeschwerde. test test test test test 123";
 
-    public static final String PREVIEW_G = TEXT_G.substring(0, 250);
+    public static final String PREVIEW_G = TEXT_G;
+
+    public static final String TEXT_H = "Die Linie U7 hat überfüllte Haltestellen. hallo hallo 42";
+
+    public static final String PREVIEW_H = TEXT_H;
 
     private static final NamedEntity testEntityName = new NamedEntityBuilder()
         .setLabel("Name")
@@ -352,6 +385,15 @@ public class TestComplaints {
         .setValue("U6")
         .createNamedEntity();
 
+    private static final NamedEntity testEntityPlace = new NamedEntityBuilder()
+        .setLabel("Ort")
+        .setStart(70)
+        .setEnd(79)
+        .setSetByUser(false)
+        .setExtractor("None")
+        .setValue("Stuttgart")
+        .createNamedEntity();
+
     private static final NamedEntity testEntityMoney = new NamedEntityBuilder()
         .setLabel("Geldbetrag")
         .setStart(87)
@@ -363,5 +405,8 @@ public class TestComplaints {
 
     public static final List<NamedEntity> ENTITIES_F = List.of(testEntityName, testEntityStop,
         testEntityLine, testEntityMoney);
+
+    public static final List<NamedEntity> ENTITIES_I = List.of(testEntityLine, testEntityPlace,
+        testEntityStop);
   }
 }

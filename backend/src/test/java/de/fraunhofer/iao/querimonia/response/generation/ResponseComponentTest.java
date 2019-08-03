@@ -1,24 +1,22 @@
 
-package de.fraunhofer.iao.querimonia.response.component;
+package de.fraunhofer.iao.querimonia.response.generation;
 
-import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseSlice;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 
 /**
  * Unit test class for ResponseComponent
  */
 
-public class ResponseSliceTest {
+public class ResponseComponentTest {
 
-  private class TestResponseSlice {
+  private static class TestResponseSlice {
 
     private final boolean isPlaceholder;
     private final String content;
@@ -192,4 +190,74 @@ public class ResponseSliceTest {
 
     assertEquals(new ArrayList<>(), responseComponent.getRequiredEntities());
   }
+
+  @Test
+  public void testHashCode() {
+    String componentText1 = "test test 123";
+    ResponseComponent responseComponent1 =
+        new ResponseComponentBuilder()
+            .setComponentName("Komponente")
+            .setPriority(0)
+            .setComponentTexts(Collections.singletonList(componentText1))
+            .setActions(Collections.emptyList())
+            .setRulesXml("<Rules><EntityAvailable label=\"Name\"/></Rules>")
+            .createResponseComponent();
+
+    String componentText2 = "test test 123";
+    ResponseComponent responseComponent2 =
+        new ResponseComponentBuilder()
+            .setComponentName("Komponente")
+            .setPriority(0)
+            .setComponentTexts(Collections.singletonList(componentText2))
+            .setActions(Collections.emptyList())
+            .setRulesXml("<Rules><EntityAvailable label=\"Name\"/></Rules>")
+            .createResponseComponent();
+
+    String componentText3 = "40 grad ist zu warm";
+    ResponseComponent responseComponent3 =
+        new ResponseComponentBuilder()
+            .setComponentName("KlimawandelIstReal")
+            .setPriority(99)
+            .setComponentTexts(Collections.singletonList(componentText3))
+            .setActions(Collections.emptyList())
+            .setRulesXml("<Rules><EntityAvailable label=\"Wasser\"/></Rules>")
+            .createResponseComponent();
+
+    int hashCode1 = responseComponent1.hashCode();
+    int hashCode2 = responseComponent2.hashCode();
+    int hashCode3 = responseComponent3.hashCode();
+    assertEquals(hashCode1, hashCode2);
+    assertNotEquals(hashCode2,hashCode3);
+  }
+
+  /*@Test
+  public void testToString() {
+    String componentText = "test test 123";
+    ResponseComponent responseComponent =
+        new ResponseComponentBuilder()
+            .setComponentName("Komponente")
+            .setPriority(0)
+            .setComponentTexts(Collections.singletonList(componentText))
+            .setActions(Collections.emptyList())
+            .setRulesXml("<Rules><EntityAvailable label=\"Name\"/></Rules>")
+            .createResponseComponent();
+    String subString0 = "de.fraunhofer.iao.querimonia.response.generation.ResponseComponent";
+    String subString1 = "[\n" +
+        "  componentId=0\n" +
+        "  componentName=Komponente\n" +
+        "  priority=0\n" +
+        "  componentTexts=[test test 123]\n" +
+        "  actions=[]\n" +
+        "  rulesXml=<Rules><EntityAvailable label=\"Name\"/></Rules>\n" +
+        "  rootRule=de.fraunhofer.iao.querimonia.response.rules.EntityRule";
+    String subString2 = "\n" +
+        "  componentSlices=[[de.fraunhofer.iao.querimonia.response.generation.ResponseSlice";
+    String subString3 = "]]\n" +
+        "]";
+    String componentString = responseComponent.toString();
+    assertTrue(componentString.contains(subString0));
+    assertTrue(componentString.contains(subString1));
+    assertTrue(componentString.contains(subString2));
+    assertTrue(componentString.contains(subString3));
+  }*/
 }

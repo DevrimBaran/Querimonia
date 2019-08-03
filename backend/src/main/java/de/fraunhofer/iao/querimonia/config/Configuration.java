@@ -17,17 +17,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.lang.NonNull;
 import tec.uom.lib.common.function.Identifiable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,7 +45,7 @@ public class Configuration implements Identifiable<Long> {
   @Transient
   @JsonIgnore
   public static final Configuration FALLBACK_CONFIGURATION = new ConfigurationBuilder()
-      .setName("Default")
+      .setName("Leere Konfiguration")
       .setExtractors(new ArrayList<>())
       .setClassifiers(new ArrayList<>(List.of(
           new ClassifierDefinition(ClassifierType.NONE, "Default", "Kategorie"))))
@@ -68,16 +59,16 @@ public class Configuration implements Identifiable<Long> {
   @JsonProperty("id")
   private long configId;
 
-  @Column(name = "config_name", nullable = false)
+  @Column(name = "config_name")
   @NonNull
   private String name = "";
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   @JoinColumn(name = "config_id")
   @NonNull
   private List<ExtractorDefinition> extractors = new ArrayList<>();
 
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
   @JoinColumn(name = "config_id")
   @NonNull
   private List<ClassifierDefinition> classifiers = new ArrayList<>();
@@ -96,19 +87,41 @@ public class Configuration implements Identifiable<Long> {
   @JsonCreator
   @SuppressWarnings("unused")
   Configuration(
-      @JsonProperty("id") long id,
-      @JsonProperty("name") @NonNull String name,
-      @JsonProperty("extractors") @NonNull List<ExtractorDefinition> extractors,
-      @JsonProperty("classifiers") @NonNull List<ClassifierDefinition> classifiers,
-      @JsonProperty("sentimentAnalyzer") @NonNull SentimentAnalyzerDefinition sentimentAnalyzer,
-      @JsonProperty("emotionAnalyzer") @NonNull EmotionAnalyzerDefinition emotionAnalyzer) {
-    this.configId = id;
+
+      @JsonProperty("name")
+      @NonNull
+          String name,
+
+      @JsonProperty(value = "extractors", required = true)
+      @NonNull
+          List<ExtractorDefinition> extractors,
+
+      @JsonProperty(value = "classifiers", required = true)
+      @NonNull
+          List<ClassifierDefinition> classifiers,
+
+      @JsonProperty(value = "sentimentAnalyzer", required = true)
+      @NonNull
+          SentimentAnalyzerDefinition sentimentAnalyzer,
+
+      @JsonProperty(value = "emotionAnalyzer", required = true)
+      @NonNull
+          EmotionAnalyzerDefinition emotionAnalyzer,
+
+      @JsonProperty("active")
+          boolean active,
+
+      @JsonProperty("id")
+          long id
+  ) {
+
     this.name = name;
     this.extractors = extractors;
     this.classifiers = classifiers;
     this.sentimentAnalyzer = sentimentAnalyzer;
     this.emotionAnalyzer = emotionAnalyzer;
     this.active = false;
+    this.configId = 0;
   }
 
   /**
@@ -188,7 +201,7 @@ public class Configuration implements Identifiable<Long> {
    * when this configuration is selected.
    *
    * @return the list of {@link ClassifierDefinition classifiers} that are used in this
-   * configuration.
+   *     configuration.
    */
   @NonNull
   public List<ClassifierDefinition> getClassifiers() {
@@ -200,7 +213,7 @@ public class Configuration implements Identifiable<Long> {
    * configuration.
    *
    * @return the {@link SentimentAnalyzerDefinition sentiment analyzer} that is defined in this
-   * configuration.
+   *     configuration.
    */
   @NonNull
   public SentimentAnalyzerDefinition getSentimentAnalyzer() {
@@ -212,7 +225,7 @@ public class Configuration implements Identifiable<Long> {
    * configuration.
    *
    * @return the {@link EmotionAnalyzerDefinition emotion analyzer} that is defined in this
-   * configuration.
+   *     configuration.
    */
   @NonNull
   public EmotionAnalyzerDefinition getEmotionAnalyzer() {

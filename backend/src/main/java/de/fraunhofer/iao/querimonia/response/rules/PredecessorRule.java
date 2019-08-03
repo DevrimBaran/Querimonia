@@ -3,6 +3,8 @@ package de.fraunhofer.iao.querimonia.response.rules;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
@@ -58,5 +60,23 @@ public class PredecessorRule implements Rule {
   public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     // no assumption can be made
     return true;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    PredecessorRule that = (PredecessorRule) o;
+
+    return new EqualsBuilder()
+        .append(position, that.position)
+        .append(predecessorRegex, that.predecessorRegex)
+        .isEquals();
   }
 }

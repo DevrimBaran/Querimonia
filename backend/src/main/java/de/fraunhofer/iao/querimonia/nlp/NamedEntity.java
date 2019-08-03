@@ -2,11 +2,14 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import de.fraunhofer.iao.querimonia.config.Configuration;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -36,61 +39,130 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private int start;
   private int end;
   private boolean setByUser = false;
+  @JsonProperty("preferred")
+  private boolean preferred = false;
   @NonNull
   @Column(nullable = false)
   private String extractor = "";
+  @Nullable
+  @Column
+  @JsonProperty("color")
+  private String color = "#22222";
 
   /**
-   * constructor for creating a new named entity object, only used for the builder.
+   * constructor for creating a new named entity object, used for the builder and as JSON
+   * constructor.
    */
   @JsonCreator
-  NamedEntity(@NonNull @JsonProperty String label,
-              @JsonProperty("start") int start,
-              @JsonProperty("end") int end,
-              @JsonProperty boolean setByUser,
-              @NonNull @JsonProperty String extractor,
-              @NonNull @JsonProperty String value) {
+  NamedEntity(
+      @NonNull
+      @JsonProperty(value = "label", required = true)
+          String label,
+      @JsonProperty(value = "start", required = true)
+          int start,
+      @JsonProperty(value = "end", required = true)
+          int end,
+      @JsonProperty(value = "setByUser", required = true)
+          boolean setByUser,
+      @JsonProperty(value = "preferred", defaultValue = "false")
+          boolean preferred,
+      @NonNull
+      @JsonProperty(value = "extractor", required = true)
+          String extractor,
+      @NonNull
+      @JsonProperty(value = "value")
+          String value,
+      @JsonProperty(value = "color")
+      @NonNull
+          String color
+  ) {
+
     this.label = label;
     this.start = start;
     this.end = end;
     this.value = value;
     this.setByUser = setByUser;
     this.extractor = extractor;
+    this.preferred = preferred;
+    this.color = color;
   }
 
-  public NamedEntity() {
+  @SuppressWarnings("unused")
+  private NamedEntity() {
     // constructor for hibernate
   }
 
+  /**
+   * Returns the label of the named entity. The label defines the category of the named entity,
+   * like "Name".
+   *
+   * @return the label of the named entity.
+   */
   @NonNull
   public String getLabel() {
     return label;
   }
 
+  /**
+   * Returns the start index of the named entity. This is the index in the original text where
+   * the named entity starts.
+   *
+   * @return the start index of the named entity.
+   */
   @JsonProperty("start")
   public int getStartIndex() {
     return start;
   }
 
+  /**
+   * Returns the end index of the named entity. This is the index in the original text where
+   * the named entity ends.
+   *
+   * @return the end index of the named entity.
+   */
   @JsonProperty("end")
   public int getEndIndex() {
     return end;
   }
 
+  /**
+   * Returns true if the entity was set by the user and false if the entity was found using an
+   * entity extractor.
+   *
+   * @return true if the entity was set by the user, else false.
+   */
   @JsonProperty("setByUser")
   public boolean isSetByUser() {
     return setByUser;
   }
 
+  /**
+   * Returns the name of the extractor that was used to find this entity. The extractor name is
+   * one of the {@link Configuration#getExtractors() extractors} of the configuration of a
+   * complaint.
+   *
+   * @return the name of the extractor that was used to find this entity.
+   */
   @NonNull
   public String getExtractor() {
     return extractor;
   }
 
+  /**
+   * Returns the unique id of a named entity.
+   *
+   * @return the unique id of a named entity.
+   */
   public long getId() {
     return id;
   }
 
+  /**
+   * Returns the value of the named entity. The value is the actual text of the entity that
+   * starts with the start index and ends with the end index in the original complaint text.
+   *
+   * @return the value of the named entity.
+   */
   @NonNull
   public String getValue() {
     return value;
@@ -130,7 +202,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
 
   @Override
   public String toString() {
-    return new ToStringBuilder(this)
+    return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
         .append("id", id)
         .append("label", label)
         .append("start", start)

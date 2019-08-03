@@ -3,6 +3,8 @@ package de.fraunhofer.iao.querimonia.response.rules;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
@@ -34,5 +36,23 @@ public class PropertyRule implements Rule {
         .filter(complaintProperty -> complaintProperty.getName().equals(name))
         .map(ComplaintProperty::getValue)
         .allMatch(value -> value.matches(propertyRegex));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    PropertyRule that = (PropertyRule) o;
+
+    return new EqualsBuilder()
+        .append(name, that.name)
+        .append(propertyRegex, that.propertyRegex)
+        .isEquals();
   }
 }

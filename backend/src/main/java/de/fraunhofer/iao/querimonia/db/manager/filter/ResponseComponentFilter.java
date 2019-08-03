@@ -1,8 +1,10 @@
 package de.fraunhofer.iao.querimonia.db.manager.filter;
 
+import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -30,6 +32,25 @@ public class ResponseComponentFilter {
             responseComponent.getComponentTexts().toString(), keyword)
             || StringUtils.containsIgnoreCase(responseComponent.getComponentName(), keyword));
 
+  }
+
+  /**
+   * Checks if a response component contains certain sction.
+   *
+   * @param responseComponent the component that gets checked.
+   * @param optionalActionCode the Action-Code, if not present this will return true.
+   *
+   * @return true, if a Action with the Action-Code are either in the component or not present.
+   */
+  public static boolean filterByActionCode(ResponseComponent responseComponent, Optional<String[]>
+      optionalActionCode) {
+    ArrayList<String> actionCodes = new ArrayList<>();
+    for (Action action: responseComponent.getActions()) {
+      actionCodes.add(action.getActionCode().toString());
+    }
+    // get stream of optional
+    Stream<String> optActionCodes = optionalActionCode.stream().flatMap(Stream::of);
+    return optActionCodes.allMatch(actionCodes::contains);
   }
 
   /**

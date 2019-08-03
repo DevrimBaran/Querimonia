@@ -8,16 +8,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
+import javax.persistence.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +19,6 @@ import java.util.Map;
  */
 @Entity
 public class ComplaintProperty implements Comparable<ComplaintProperty> {
-
-  /**
-   * The default property that contains no information.
-   */
-  public static final ComplaintProperty DEFAULT_PROPERTY =
-      new ComplaintProperty("Emotion", "Unbekannt", new HashMap<>(
-          Collections.singletonMap("Unbekannt", 1.0)), false);
 
   @JsonIgnore
   @Id
@@ -111,6 +95,14 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     this.value = value;
     this.name = name;
     this.isSetByUser = true;
+  }
+
+  /**
+   * The default property that contains no information.
+   */
+  public static ComplaintProperty getDefaultProperty(String name) {
+    return new ComplaintProperty(name, "Unbekannt", new HashMap<>(
+        Collections.singletonMap("Unbekannt", 1.0)), false);
   }
 
   public long getId() {

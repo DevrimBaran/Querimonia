@@ -72,23 +72,27 @@ public class ResponseComponentController {
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("page") Optional<Integer> page,
       @RequestParam("sort_by") Optional<String[]> sortBy,
+      @RequestParam("action_code") Optional<String[]> actionCode,
       @RequestParam("keywords") Optional<String[]> keyWords
   ) {
     return ControllerUtility.tryAndCatch(() -> responseComponentManager
-        .getAllComponents(count, page, sortBy, keyWords));
+        .getAllComponents(count, page, sortBy, actionCode, keyWords));
   }
+
 
   /**
    * Returns the number of saved components.
    * @param keyWords if given, only counts components containing these keywords
+   * @param actionCode if given, only counts components containing an action with theese Action-code
    * @return number of saved components
    */
   @GetMapping("api/components/count")
   public ResponseEntity<?> getComponentCount(
-      @RequestParam("keywords") Optional<String[]> keyWords) {
+      @RequestParam("keywords") Optional<String[]> keyWords,
+      @RequestParam("action_code") Optional<String[]> actionCode) {
     return ControllerUtility.tryAndCatch(() ->
         responseComponentManager.getAllComponents(Optional.empty(),
-            Optional.empty(), Optional.empty(), keyWords).size());
+            Optional.empty(), Optional.empty(), actionCode, keyWords).size());
   }
 
 
