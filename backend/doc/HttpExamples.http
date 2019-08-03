@@ -232,3 +232,7 @@ GET https://beschwerdemanagement-dev.iao.fraunhofer.de/dev/api/stats/tagcloud
 GET http://localhost:8080/api/templates
 
 ###
+
+GET https://querimonia.iao.fraunhofer.de/dev/api/complaints/276
+
+###

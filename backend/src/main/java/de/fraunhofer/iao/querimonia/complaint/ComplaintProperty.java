@@ -46,7 +46,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
   @NonNull
   private Map<String, Double> probabilities = new HashMap<>();
 
-  private boolean isSetByUser = false;
+  private boolean setByUser = false;
 
   @SuppressWarnings("unused")
   private ComplaintProperty() {
@@ -59,14 +59,14 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
    * @param name          the name of the property.
    * @param value         the value of the property.
    * @param probabilities the probability map for the property.
-   * @param isSetByUser   the flag if the property is set by the user.
+   * @param setByUser   the flag if the property is set by the user.
    */
   public ComplaintProperty(@NonNull String name, @NonNull String value,
-                           @NonNull Map<String, Double> probabilities, boolean isSetByUser) {
+                           @NonNull Map<String, Double> probabilities, boolean setByUser) {
     this.value = value;
     this.name = name;
     this.probabilities = probabilities;
-    this.isSetByUser = isSetByUser;
+    this.setByUser = setByUser;
   }
 
   /**
@@ -79,7 +79,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     this.probabilities = probabilities;
     this.value = ComplaintUtility.getEntryWithHighestProbability(probabilities)
         .orElse("");
-    this.isSetByUser = false;
+    this.setByUser = false;
     this.name = name;
   }
 
@@ -94,7 +94,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     this.probabilities = new HashMap<>(Collections.singletonMap(value, 1.0));
     this.value = value;
     this.name = name;
-    this.isSetByUser = true;
+    this.setByUser = true;
   }
 
   /**
@@ -120,7 +120,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
   }
 
   public boolean isSetByUser() {
-    return isSetByUser;
+    return setByUser;
   }
 
   @NonNull
@@ -141,7 +141,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     ComplaintProperty that = (ComplaintProperty) o;
 
     return new EqualsBuilder()
-        .append(isSetByUser, that.isSetByUser)
+        .append(setByUser, that.setByUser)
         .append(value, that.value)
         .append(name, that.name)
         .append(probabilities, that.probabilities)
@@ -154,7 +154,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
         .append(value)
         .append(name)
         .append(probabilities)
-        .append(isSetByUser)
+        .append(setByUser)
         .toHashCode();
   }
 
@@ -165,7 +165,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
         .append("value", value)
         .append("name", name)
         .append("probabilities", probabilities)
-        .append("isSetByUser", isSetByUser)
+        .append("setByUser", setByUser)
         .toString();
   }
 

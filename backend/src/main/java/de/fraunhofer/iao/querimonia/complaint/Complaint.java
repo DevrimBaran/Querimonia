@@ -1,8 +1,11 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -12,11 +15,19 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
 import org.springframework.lang.NonNull;
+import org.springframework.web.client.RestTemplate;
 import tec.uom.lib.common.function.Identifiable;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 
+
 import javax.persistence.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -157,6 +168,7 @@ public class Complaint implements Identifiable<Long> {
    * The date when the complaint was received.
    */
   @NonNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate receiveDate = LocalDate.now();
   @NonNull
   private LocalTime receiveTime = LocalTime.now();
@@ -469,8 +481,21 @@ public class Complaint implements Identifiable<Long> {
     JAXBContext context = JAXBContextFactory.createContext(new Class[]{Complaint.class}, null);
     System.out.println(context.getClass().getName());
     Marshaller m = context.createMarshaller();
-    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     m.setProperty(Marshaller.JAXB_FRAGMENT, true);
+
+
+    RestTemplate template = new RestTemplate();
+
+    String complaintStr = template.getForObject("https://querimonia.iao.fraunhofer" +
+        ".de/dev/api/complaints/276", String.class);
+    System.out.println(complaintStr);
+//    complaintStr = complaintStr.replaceFirst("2019-07-31", "31.07.2019");
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.registerModule(new JavaTimeModule());
+    Complaint complaint = mapper.readValue(complaintStr, Complaint.class);
+
+    m.marshal(complaint, System.out);
 
 
   }

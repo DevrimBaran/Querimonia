@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -42,7 +43,8 @@ public class Sentiment implements Comparable<Sentiment> {
   private double tendency;
 
   @JsonCreator
-  public Sentiment(@NonNull ComplaintProperty emotion, double tendency) {
+  public Sentiment(@NonNull @JsonProperty("emotion") ComplaintProperty emotion,
+                   @JsonProperty("tendency") double tendency) {
     this.emotion = emotion;
     this.tendency = tendency;
   }
