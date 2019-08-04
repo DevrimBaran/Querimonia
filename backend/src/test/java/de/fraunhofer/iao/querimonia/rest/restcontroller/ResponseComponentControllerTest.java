@@ -219,8 +219,8 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
-    int componentCount = (Integer) responseEntity.getBody();
-    assertEquals(2, componentCount);
+    var componentCount = (String) responseEntity.getBody();
+    assertEquals("2", componentCount);
   }
 
   @Test
@@ -230,8 +230,8 @@ public class ResponseComponentControllerTest {
     String[] keywords = {"Guten", "Morgen"};
     ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.of(keywords), Optional.empty());
     assertNotNull(responseEntity.getBody());
-    int componentCount = (Integer) responseEntity.getBody();
-    assertEquals(1, componentCount);
+    var componentCount = (String) responseEntity.getBody();
+    assertEquals("1", componentCount);
   }
 
   @Test
