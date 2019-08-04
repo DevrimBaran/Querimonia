@@ -5,7 +5,7 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.7.1
+  version: 0.7.2
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
@@ -407,22 +407,56 @@ paths:
   /api/complaints/{complaintId}/entities/{entityId}:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
+      - name: entityId
+        in: path
+        description: Die eindeutige ID der Entität..
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          example: 1
+
+    put:
+      tags:
+        - entities
+      summary: Überschreibt eine Entität mit der gegebenen Entität.
+      description: >
+        Schreibt die gegebene Entität an Stelle der gegebenen ID in die Datenbank. Falls die Entität
+        in einem Antwortbaustein verwendet wird, wird in diesem auch die aktualisierte Entität
+        verwendet.
+
+      requestBody:
+        description: Diese Entität wird anstelle der Entität mit der gegebenen ID in der Datenbank gespeichert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NamedEntity'
+
+      operationId: updateEntity
+      responses:
+        200:
+          description: Die Entität wurde aktualisiert. Gibt die aktualisierte Entitätsliste der Beschwerde zurück.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedEntity'
+              # todo add example:
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
         - entities
       summary: Löscht eine Named Entity.
-      description: Eine neue Named Entity wird aus der Liste der Entitäten entfernt.
-      parameters:
-        - name: entityId
-          in: path
-          description: Die eindeutige Id der Entität, die gelöscht werden soll.
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-            example: 1
+      description: >
+        Eine neue Named Entity wird aus der Liste der Entitäten der gebebenen Beschwerde entfernt.
+        Die Entität wird aber ggf. nicht aus der Datenbank gelöscht, kann also in Antworten noch
+        verwendet werden. Nach dieser Operation ist ein <i>refresh</i> der Antwort sinnvoll.
 
       operationId: deleteEntity
       responses:
@@ -1350,7 +1384,7 @@ components:
         - label
         - start
         - end
-        - setByUser
+        - value
         - preferred
         - color
       properties:
@@ -1363,7 +1397,7 @@ components:
         label:
           type: string
           description: Die Kategorie der Entität.
-          example: Datum
+          example: 'Datum'
         start:
           type: integer
           format: int64
@@ -1376,13 +1410,13 @@ components:
           example: 29
         value:
           type: string
-          description: Der Text der Entität, ggf. korrigiert. Read-Only.
-          readOnly: true
+          description: Der Text der Entität, ggf. korrigiert.
           example: '23. Januar 2001'
         setByUser:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
+          readOnly: true
         preferred:
           type: boolean
           description: Gibt an, ob der Nutzer die Entität als bevorzugt markiert hat.
