@@ -12,7 +12,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -51,8 +50,8 @@ public class FlaskContact {
       //noinspection unchecked
       map = mapper.readValue(response, Map.class);
     } catch (IOException e) {
-      // TODO throw querimonia exception!
-      map = new HashMap<>();
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Flask Fehler bei der "
+          + "Analyse", e, "Flask Fehler");
     }
 
     return map;
