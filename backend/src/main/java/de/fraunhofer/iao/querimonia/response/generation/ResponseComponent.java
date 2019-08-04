@@ -93,7 +93,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @Transient
   @JsonIgnore
   @NonNull
-  private Rule rootRule;
+  private final Rule rootRule;
 
   /**
    * The slices of each component text.
@@ -101,7 +101,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @Transient
   @JsonIgnore
   @NonNull
-  private List<List<ResponseSlice>> componentSlices;
+  private final List<List<ResponseSlice>> componentSlices;
 
   // constructor for builder
   ResponseComponent(long id,

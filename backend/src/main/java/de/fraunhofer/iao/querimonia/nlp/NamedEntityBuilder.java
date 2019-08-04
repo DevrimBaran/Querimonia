@@ -21,10 +21,18 @@ public class NamedEntityBuilder {
   @NonNull
   private String color = "#222222";
 
+  /**
+   * Creates a new named entity builder with no attributes set.
+   */
   public NamedEntityBuilder() {
 
   }
 
+  /**
+   * Creates a new named entity builder with all the attributes from the given named entity.
+   *
+   * @param entity the entity which attributes are copied.
+   */
   public NamedEntityBuilder(NamedEntity entity) {
     this.color = entity.getColor();
     this.end = entity.getEndIndex();
@@ -82,6 +90,11 @@ public class NamedEntityBuilder {
     return this;
   }
 
+  /**
+   * Creates a new named entity object out of the attributes of the builder.
+   *
+   * @return a new named entity object.
+   */
   public NamedEntity createNamedEntity() {
     return new NamedEntity(id, Objects.requireNonNull(label), Objects.requireNonNull(value), start,
         end, setByUser, preferred, Objects.requireNonNull(extractor),

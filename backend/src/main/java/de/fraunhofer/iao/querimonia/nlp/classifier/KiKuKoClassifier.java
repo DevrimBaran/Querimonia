@@ -2,12 +2,8 @@ package de.fraunhofer.iao.querimonia.nlp.classifier;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
-import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 
@@ -18,7 +14,7 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
 
   private final String categoryName;
 
-  public KiKuKoClassifier(String categoryName) {
+  private KiKuKoClassifier(String categoryName) {
     super("tool", "Beschwerde3Klassifikator2");
     this.categoryName = categoryName;
   }

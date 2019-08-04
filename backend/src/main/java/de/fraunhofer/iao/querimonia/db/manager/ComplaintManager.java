@@ -179,6 +179,7 @@ public class ComplaintManager {
   /**
    * It called when the analysis throws an exception. It stores the complaint with the error state.
    */
+  @SuppressWarnings("SameReturnValue")
   @NonNull
   private Void onException(ComplaintBuilder complaintBuilder, Throwable e) {
     complaintBuilder

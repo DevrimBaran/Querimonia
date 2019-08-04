@@ -15,13 +15,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-// TODO add javadoc comments
-
+/**
+ * Class for the communication with the python server.
+ */
 public class FlaskContact {
 
   private static final String URL = "https://querimonia.iao.fraunhofer.de/python/";
 
-
+  /**
+   * Receive an answer from the flask server.
+   *
+   * @param body the body for the request.
+   * @param path the path of the request.
+   *
+   * @return the map of the response.
+   */
   public static Map<String, Double> receiveJson(JSONObject body, String path) {
     HttpHeaders header = new HttpHeaders();
     header.setContentType(MediaType.APPLICATION_JSON);
@@ -44,7 +52,6 @@ public class FlaskContact {
       map = mapper.readValue(response, Map.class);
     } catch (IOException e) {
       // TODO throw querimonia exception!
-      e.printStackTrace();
       map = new HashMap<>();
     }
 

@@ -46,6 +46,9 @@ public class ResponseComponentManager {
   private static final String JSON_ERROR_TEXT =
       "Die Default-Antwortbausteine konnten nicht geladen werden.";
 
+  /**
+   * Creates a new response component manager. Constructor is called by spring.
+   */
   @Autowired
   public ResponseComponentManager(
       @Qualifier("responseComponentRepository") ResponseComponentRepository componentRepository,

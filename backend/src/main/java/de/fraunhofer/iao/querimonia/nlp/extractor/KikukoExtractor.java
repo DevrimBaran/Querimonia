@@ -15,7 +15,7 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
   private final String domainName;
   private final ExtractorDefinition extractorDefinition;
-  private static HashMap<String, String> knownExtractors;
+  private static final HashMap<String, String> knownExtractors;
 
   static {
     knownExtractors = new HashMap<>();
@@ -23,7 +23,7 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
     knownExtractors.put("Vorgangsnummer", "Vorgangsnummer");
     knownExtractors.put("[Extern] Datum Extraktor", "Datum");
     knownExtractors.put("[Extern] Geldbetrag", "Geldbetrag");
-    knownExtractors.put("[Extern] Personen Extraktor", "Person");
+    knownExtractors.put("[Extern] Personen Extraktor", "Name");
     knownExtractors.put("[Extern] Telefonnummer", "Telefon");
     knownExtractors.put("[Fuzzy] Haltestellen", "Haltestelle");
     knownExtractors.put("[Fuzzy] Ortsnamen", "Ort");

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * The default response generator.
+ * TODO: better doc
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
@@ -31,7 +32,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   @Override
   public ResponseSuggestion generateResponse(ComplaintBuilder complaintBuilder) {
     List<ResponseComponent> responseComponents = new ArrayList<>();
-    templateRepository.findAll().forEach(responseComponent -> responseComponents.add(responseComponent.copy()));
+    templateRepository.findAll()
+        .forEach(responseComponent -> responseComponents.add(responseComponent.copy()));
 
     // filter out not matching templates
     List<ResponseComponent> responseComponentsFiltered =

@@ -23,10 +23,18 @@ public class ComplaintUpdateRequest {
   private final ComplaintState newState;
 
   @JsonCreator
-  public ComplaintUpdateRequest(@Nullable @JsonProperty("sentiment") String newEmotion,
-                                @Nullable @JsonProperty("tendency") Double newTendency,
-                                @Nullable @JsonProperty("subject") String newSubject,
-                                @Nullable @JsonProperty("state") ComplaintState newState) {
+  ComplaintUpdateRequest(@Nullable
+                                @JsonProperty("sentiment")
+                                    String newEmotion,
+                                @Nullable
+                                @JsonProperty("tendency")
+                                    Double newTendency,
+                                @Nullable
+                                @JsonProperty("subject")
+                                    String newSubject,
+                                @Nullable
+                                @JsonProperty("state")
+                                    ComplaintState newState) {
     this.newEmotion = newEmotion;
     this.newTendency = newTendency;
     this.newSubject = newSubject;
