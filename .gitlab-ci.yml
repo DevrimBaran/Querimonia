@@ -14,7 +14,7 @@ variables:
 #frontend
 build-frontend-dev: &base-frontend
   stage: build
-  image: node:8.16.0-jessie
+  image: stuprommk/stupro:stupro-react
   script:
     - cd frontend/
     - npm ci --no-progress
