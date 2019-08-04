@@ -625,6 +625,7 @@ paths:
               default: name_asc
               example: name_asc
         - $ref: '#/components/parameters/KeywordsParameter'
+        - $ref: '#/components/parameters/ActionCode'
 
       operationId: getResponseComponents
       responses:
@@ -777,6 +778,7 @@ paths:
       description: Hier kann die Anzahl der Anwortbausteine in der Datenbank abgerufen werden. Dabei können auch Filter angewendet werden.
       parameters:
         - $ref: '#/components/parameters/KeywordsParameter'
+        - $ref: '#/components/parameters/ActionCode'
       operationId: countResponseComponents
       responses:
         200:
@@ -1232,6 +1234,17 @@ components:
         example:
           - "Busfahrer"
           - "unfreundlich"
+
+    ActionCode:
+      name: action_code
+      in: query
+      required: false
+      description: Eine Bezeichung, die den Typ der Aktion angibt.
+      schema:
+        type: string
+        enum:
+          - SEND_MAIL
+          - ATTACH_VOUCHER
 
     ConfigIdQueryParameter:
       name: configId
