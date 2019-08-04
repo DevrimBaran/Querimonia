@@ -22,8 +22,11 @@ public class ComplaintUpdateRequest {
   @Nullable
   private final ComplaintState newState;
 
+  /**
+   * Creates a new complaint update request.
+   */
   @JsonCreator
-  ComplaintUpdateRequest(@Nullable
+  public ComplaintUpdateRequest(@Nullable
                                 @JsonProperty("sentiment")
                                     String newEmotion,
                                 @Nullable
