@@ -179,14 +179,10 @@ public class ComplaintController {
    *
    * @return a response entity with the following contents:
    *     <ul>
-   *     <li>status code 204 on success</li>
-   *     <li>status code 404 and the querimonia exception body when no complaint with the given id
-   *     exists</li>
-   *     <li>
-   *     500
-   *     querimonia exception body
-   *     unexpected server error
-   *     </li>
+   *      <li>status code 204 on success</li>
+   *      <li>status code 404 and the querimonia exception body when no complaint with the given id
+   *      exists</li>
+   *      <li>status code 500 with the querimonia exception body on an unexpected server error</li>
    *     </ul>
    */
   @DeleteMapping("/api/complaints/{complaintId}")

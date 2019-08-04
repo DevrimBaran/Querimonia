@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.lang.NonNull;
 import tec.uom.lib.common.function.Identifiable;
 
@@ -71,7 +73,8 @@ public class ResponseComponent implements Identifiable<Long> {
   /**
    * The list of actions.
    */
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Fetch(value = FetchMode.SUBSELECT)
   @JoinColumn(name = "component_id")
   @Column(name = "action_id")
   @NonNull
@@ -222,6 +225,11 @@ public class ResponseComponent implements Identifiable<Long> {
   @NonNull
   public List<Action> getActions() {
     return actions;
+  }
+
+  @JsonIgnore
+  public ResponseComponent copy() {
+    return new ResponseComponentBuilder(this).createResponseComponent();
   }
 
   @Override

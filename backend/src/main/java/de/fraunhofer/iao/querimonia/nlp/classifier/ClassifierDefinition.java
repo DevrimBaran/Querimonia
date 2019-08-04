@@ -32,6 +32,7 @@ public class ClassifierDefinition {
   private String name = "";
 
   @NonNull
+  @JsonProperty("propertyName")
   private String categoryName = "Kategorie";
 
   @SuppressWarnings("unused")
@@ -48,7 +49,7 @@ public class ClassifierDefinition {
       @JsonProperty("name")
           String name,
       @NonNull
-      @JsonProperty("categoryName")
+      @JsonProperty("propertyName")
           String categoryName) {
     this.classifierType = classifierType;
     this.name = name;

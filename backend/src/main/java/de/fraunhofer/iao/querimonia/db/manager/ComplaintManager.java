@@ -179,12 +179,13 @@ public class ComplaintManager {
    * It called when the analysis throws an exception. It stores the complaint with the error state.
    */
   @NonNull
-  private ComplaintBuilder onException(ComplaintBuilder complaintBuilder, Throwable e) {
+  private Void onException(ComplaintBuilder complaintBuilder, Throwable e) {
     complaintBuilder
         .setState(ERROR)
         .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
+    e.printStackTrace();
     storeComplaint(complaintBuilder.createComplaint());
-    return complaintBuilder;
+    return null;
   }
 
 
@@ -403,7 +404,8 @@ public class ComplaintManager {
 
     complaint = builder.createComplaint();
     storeComplaint(complaint);
-    return complaint.getEntities();
+    // reload for entity id
+    return getComplaint(complaintId).getEntities();
   }
 
   /**
@@ -529,21 +531,23 @@ public class ComplaintManager {
    */
   private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
     var forbiddenStatesList = Arrays.asList(forbiddenStates);
+    var exception = new IllegalStateException();
+
     if (forbiddenStatesList.contains(CLOSED)
         && complaint.getState().equals(CLOSED)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
-          + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
+          + "werden, da sie bereits geschlossen ist.", exception, "Beschwerde geschlossen");
     }
     if (forbiddenStatesList.contains(ANALYSING)
         && complaint.getState().equals(ANALYSING)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
-          + "werden, während sie analysiert wird!", "Beschwerde wird analysiert");
+          + "werden, während sie analysiert wird!", exception, "Beschwerde wird analysiert");
     }
     if (forbiddenStatesList.contains(ERROR)
         && complaint.getState().equals(ERROR)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
           + "werden, da die Analyse nicht abgeschlossen werden konnte. Starten Sie die Analyse "
-          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.",
+          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.", exception,
           "Beschwerde wurde nicht analysiert.");
     }
   }

@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 
 @SuppressWarnings("unused")
 @Embeddable
-class ColorDefinition {
+public class ColorDefinition {
 
   @JsonProperty
   private String label;

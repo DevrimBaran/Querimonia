@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -24,6 +25,9 @@ import javax.persistence.Id;
  * An instance can be created using a {@link NamedEntityBuilder}</p>
  */
 @Entity
+@JsonPropertyOrder(value = {
+    "id", "label", "start", "end", "value", "setByUser", "preferred", "extractor", "color"
+})
 public class NamedEntity implements Comparable<NamedEntity> {
 
   @Id
@@ -40,6 +44,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private int end;
   private boolean setByUser = false;
   @JsonProperty("preferred")
+  @Column(name = "prefered") // TODO fix later
   private boolean preferred = false;
   @NonNull
   @Column(nullable = false)
