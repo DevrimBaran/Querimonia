@@ -18,21 +18,15 @@ class ChangeableEntityText extends Component {
 
   renderModal = (tag, id) => {
     const correctEntities = this.props.possibleEntities.flat().filter((entity) => {
-      return entity.label === tag.label;
+      console.error('entity', entity.label);
+      console.error('tag', tag.label[0].label);
+      console.error('------');
+      return entity.label === tag.label[0].label;
     }).map((entity) => {
       return {
-        label: entity.label,
-        value: entity.label
+        label: entity.value,
+        value: entity.value
       };
-    });
-    // For Testing
-    correctEntities.push({
-      label: 'Test',
-      value: 'Test'
-    });
-    correctEntities.push({
-      label: 'Test2',
-      value: 'Test2'
     });
     return <Modal htmlFor={id} key={id}>
       Wählen sie eine der folgenden Entitäten:
@@ -48,7 +42,7 @@ class ChangeableEntityText extends Component {
   };
 
   render () {
-    return <TaggedText taggedText={this.props.taggedText} onClickHtml={this.renderModal} />;
+    return <TaggedText taggedText={this.props.taggedText} appendHtml={this.renderModal} />;
   }
 }
 

@@ -73,7 +73,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
           <Content>
             <Tabbed style={{ height: '100%' }}>
               <div label='Überarbeitet'>
-                <EditableEntityText taggedText={{ text: active.text, entities: active.entities }} id={active.id} active={active} refreshEntities={refreshEntities} />
+                <EditableEntityText taggedText={{ text: active.text, entities: active.entities }} complaintId={active.id} active={active} refreshEntities={refreshEntities} />
               </div>
               <div label='Original'>
                 {active.text}
@@ -173,7 +173,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: '' + active.text.substring(entity['start'], entity['end']),
-                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'] }]
+                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'], color: entity['color'] }]
                     }} />
                   </li>;
                 })

@@ -8,17 +8,22 @@ stages:
   - admin
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
+  #DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
 
 #frontend
 build-frontend-dev: &base-frontend
   stage: build
-  image: node:8.16.0-jessie
+  tags:
+    - shell
   script:
     - cd frontend/
-    - npm ci --no-progress
-    - npm run build-dev
+    - chown -R gitlab-runner build/
+    - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
+    - buildpath=$(pwd)
+    - mkdir build
+    - docker run -i -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-dev
+    - chown -R gitlab-runner build/
   artifacts:
     paths:
       - frontend/build/
@@ -30,10 +35,12 @@ build-frontend-mock:
   <<: *base-frontend
   script:
     - cd frontend/
-    - npm ci --no-progress
-    - npm run build-mock
+    - chown -R gitlab-runner mock/
+    - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
+    - buildpath=$(pwd)
     - mkdir mock
-    - cp -r build/* mock/
+    - docker run -i -v $buildpath/mock:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-mock
+    - chown -R gitlab-runner mock/
   artifacts:
     paths:
       - frontend/mock/
@@ -42,15 +49,20 @@ build-frontend-master:
   <<: *base-frontend
   script:
     - cd frontend/
-    - npm ci --no-progress
-    - npm run build-prod
+    - chown -R gitlab-runner build/
+    - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
+    - buildpath=$(pwd)
+    - mkdir build
+    - docker run -i -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-prod
+    - chown -R gitlab-runner build/
   allow_failure: false
   only:
     - master
 
 test-frontend:
   stage: test
-  image: node:8.16.0-jessie
+  tags:
+    - shell
   script:
     - echo 'no tests'
   artifacts:

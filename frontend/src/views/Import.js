@@ -14,6 +14,7 @@ import Table from './../components/Table';
 import Block from './../components/Block';
 import Content from './../components/Content';
 import Row from './../components/Row';
+import Sentiment from './../components/Sentiment';
 
 class ImportBlock extends Component {
   constructor (props) {
@@ -25,13 +26,26 @@ class ImportBlock extends Component {
     };
   }
 
+  renderResponse = (data) => {
+    return (<tr key={data.id}>
+      <td><h3>{data.id}</h3></td>
+      <td>{data.state}</td>
+      <td>{data.preview}</td>
+      <td>{data.sentiment.emotion.value}</td>
+      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
+      <td>{data.receiveDate} {data.receiveTime}</td>
+      <td></td>
+    </tr>);
+  }
+
   parseResponse = (response) => {
     let complaints = (
       <Content>
         <Table>
           {Complaint.Header()}
           <tbody>
-            {Array.isArray(response) ? this.state.issues.map(Complaint.List) : Complaint.List(response, 0) }
+            {Array.isArray(response) ? this.state.issues.map(this.renderResponse) : this.renderResponse(response) }
           </tbody>
         </Table>
       </Content>

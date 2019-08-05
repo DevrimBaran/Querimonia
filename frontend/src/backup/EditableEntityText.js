@@ -24,12 +24,7 @@ class EditableEntityText extends Component {
 
   deleteEntity = (id) => {
     const originalLabel = this.state.originalLabels.get(id);
-    let query = {};
-    query['label'] = originalLabel.label;
-    query['start'] = originalLabel.start;
-    query['end'] = originalLabel.end;
-    query['extractor'] = originalLabel.extractor;
-    Api.delete('/api/complaints/' + this.state.id + '/entities', query)
+    Api.delete('/api/complaints/' + this.state.complaintId + '/entities/' + originalLabel.id, {})
       .then((data) => {
         if (Array.isArray(data)) {
         // deep copy of data
@@ -48,8 +43,13 @@ class EditableEntityText extends Component {
     let query = this.state.newEntityQuery;
     if (!this.state.editEntity) {
       let extractorQuery = document.getElementById('chooseExtractor').value.split(' (').map(extractor => extractor.replace(')', ''));
+      let config = this.props.active.configuration.extractors;
+      let extractor = config.find((extractor) => extractor.name === extractorQuery[1]);
+      let color = extractor.colors.find((color) => color.label === extractorQuery[0]);
       query['label'] = extractorQuery[0];
       query['extractor'] = extractorQuery[1];
+      query['value'] = this.state.newEntityString;
+      query['color'] = color.color;
     }
     if (!(query['label'] && query['extractor'])) {
       return;
@@ -151,19 +151,19 @@ class EditableEntityText extends Component {
         });
         this.addEntity();
       } else {
-        Api.get('/api/config/current', {})
-          .then((data) => {
-            let extractorList = [];
-            for (let i = 0; i < data.extractors.length; i++) {
-              extractorList = extractorList.concat(Object.keys(data.extractors[i].colors).map(extractor => extractor + ' (' + data.extractors[i].name + ')'));
-            }
-            this.setState({
-              editFormActive: true,
-              newEntityQuery: query,
-              newEntityString: newLabelString,
-              extractorList: extractorList
-            });
-          });
+        let config = this.props.active.configuration;
+        let extractorList = [];
+        for (let i = 0; i < config.extractors.length; i++) {
+          for (let j = 0; j < config.extractors[i].colors.length; j++) {
+            extractorList.push(config.extractors[i].colors[j].label + ' (' + config.extractors[i].name + ')');
+          }
+        }
+        this.setState({
+          editFormActive: true,
+          newEntityQuery: query,
+          newEntityString: newLabelString,
+          extractorList: extractorList
+        });
       }
     }
   };
@@ -219,7 +219,7 @@ class EditableEntityText extends Component {
 
   render () {
     return <div>
-      <TaggedText taggedText={this.props.taggedText} onClickHtml={this.renderModal} setOriginalLabels={this.setOriginalLabels} />
+      <TaggedText taggedText={this.props.taggedText} appendHtml={this.renderModal} setOriginalLabels={this.setOriginalLabels} />
       { this.renderAddButton() }
     </div>;
   }
