@@ -21,7 +21,7 @@ build-frontend-dev: &base-frontend
     - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
     - buildpath=$(pwd)
     - mkdir build
-    - docker run -it -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-dev
+    - docker run -ia -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-dev
   artifacts:
     paths:
       - frontend/build/
@@ -36,7 +36,7 @@ build-frontend-mock:
     - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
     - buildpath=$(pwd)
     - mkdir mock
-    - docker run -it -v $buildpath/mock:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-mock
+    - docker run -ia -v $buildpath/mock:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-mock
   artifacts:
     paths:
       - frontend/mock/
@@ -48,7 +48,7 @@ build-frontend-master:
     - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
     - buildpath=$(pwd)
     - mkdir build
-    - docker run -it -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-prod
+    - docker run -ia -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-prod
   allow_failure: false
   only:
     - master
