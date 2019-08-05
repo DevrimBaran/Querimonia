@@ -1,8 +1,11 @@
 openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
-  description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.7.0
+  description: >
+    Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
+    beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
+    neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
+  version: 0.7.2
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
@@ -30,7 +33,10 @@ paths:
       tags:
         - complaints
       summary: Gibt Beschwerden zurück, die auf dem Server gespeichert sind.
-      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und die Seite der Beschwerden bestimmt werden.
+      description: >
+        Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die
+        Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und die
+        Seite der Beschwerden bestimmt werden.
       parameters:
         - $ref: '#/components/parameters/CountParameter'
         - $ref: '#/components/parameters/PageParameter'
@@ -45,7 +51,7 @@ paths:
       operationId: getComplaints
       responses:
         200:
-          description: Erfolgreiche Anfrage.
+          description: Erfolgreiche Anfrage. Die Beschwerden werden entsprechend den Paramtern zurückgegeben.
           content:
             application/json:
               schema:
@@ -62,8 +68,17 @@ paths:
     post:
       tags:
         - complaints
-      summary: Läd eine neue Beschwerde in die Datenbank.
-      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 10000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Die Beschwerde wird beim Upload analysiert und eine Antwort wird generiert. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
+      summary: Läd eine neue Beschwerde in die Datenbank und startet die Analyse.
+      description: >
+        Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx,
+        doc und pdf Dateien mit einer maximalen Zeichenanzahl von 10000 Zeichen.
+        Alternativ können über application/json direkt Texte eingefügt werden.
+
+        <p>Die Beschwerde wird nach dem Upload im Hintergrund analysiert. Die verwendeten Analyse-
+         Tools werden durch die verwendete Konfiguration festgelegt, über den Query-Parameter
+         <b>configId</b> kann eine bestimmte Konfiguration angegeben werden, mit der die neue
+         Beschwerde analysiert werden soll. Nach dem Analyseprozess wird mit den vorhandenen Ergebnissen
+         eine <b>Antwort</b> generiert.</p>
       parameters:
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
       requestBody:
@@ -98,6 +113,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
+        404:
+          description: Die Konfiguration mit der gegebenen ID existiert nicht.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
         500:
           description: Fehlerhafte Konfiguration der Extraktoren, Klassifikatoren oder den Antwortbausteinen oder externe Extraktoren konnten nicht aufgerufen werden.
           content:
@@ -112,8 +133,8 @@ paths:
     get:
       tags:
         - complaints
-      summary: Gibt eine Beschwerde mit der gegebenen Id zurück.
-      description: Gibt eine Beschwerde mit der gegebenen Id zurück.
+      summary: Gibt eine Beschwerde mit der gegebenen ID zurück.
+      description: Gibt eine Beschwerde mit der gegebenen ID zurück.
       operationId: getComplaint
       responses:
         200:
@@ -131,7 +152,7 @@ paths:
       tags:
         - complaints
       summary: Aktualisiert eine Beschwerde.
-      description: Mit dieser Anfrage können Emotion, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
+      description: Mit dieser Anfrage können Emotion, Tendenz, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
       requestBody:
         description: Ein Objekt mit Attributen, die aktualisiert werden sollen. Es müssen nur die Attribute angegeben werden, bei denen eine Änderung an der Beschwerde vorgenommen werden soll.
         content:
@@ -151,11 +172,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/Complaint'
         400:
-          description: Die Beschwerde wurde bereits geschlossen.
+          description: Die Beschwerde kann im aktuellen Zustand nicht modifiziert werden.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
+              example:
+                timestamp: '2019-07-04T15:24:23.3942221'
+                statusCode: 400
+                message: 'Beschwerde kann nicht modifiziert werden, da sie bereits geschlossen ist.'
+                title: 'Beschwerde geschlossen'
+                exception: 'IllegalStateException'
         404:
           $ref: '#/components/responses/NotFoundError'
         500:
@@ -380,22 +407,56 @@ paths:
   /api/complaints/{complaintId}/entities/{entityId}:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
+      - name: entityId
+        in: path
+        description: Die eindeutige ID der Entität..
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          example: 1
+
+    put:
+      tags:
+        - entities
+      summary: Überschreibt eine Entität mit der gegebenen Entität.
+      description: >
+        Schreibt die gegebene Entität an Stelle der gegebenen ID in die Datenbank. Falls die Entität
+        in einem Antwortbaustein verwendet wird, wird in diesem auch die aktualisierte Entität
+        verwendet.
+
+      requestBody:
+        description: Diese Entität wird anstelle der Entität mit der gegebenen ID in der Datenbank gespeichert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NamedEntity'
+
+      operationId: updateEntity
+      responses:
+        200:
+          description: Die Entität wurde aktualisiert. Gibt die aktualisierte Entitätsliste der Beschwerde zurück.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedEntity'
+              # todo add example:
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
         - entities
       summary: Löscht eine Named Entity.
-      description: Eine neue Named Entity wird aus der Liste der Entitäten entfernt.
-      parameters:
-        - name: entityId
-          in: path
-          description: Die eindeutige Id der Entität, die gelöscht werden soll.
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-            example: 1
+      description: >
+        Eine neue Named Entity wird aus der Liste der Entitäten der gebebenen Beschwerde entfernt.
+        Die Entität wird aber ggf. nicht aus der Datenbank gelöscht, kann also in Antworten noch
+        verwendet werden. Nach dieser Operation ist ein <i>refresh</i> der Antwort sinnvoll.
 
       operationId: deleteEntity
       responses:
@@ -564,6 +625,7 @@ paths:
               default: name_asc
               example: name_asc
         - $ref: '#/components/parameters/KeywordsParameter'
+        - $ref: '#/components/parameters/ActionCode'
 
       operationId: getResponseComponents
       responses:
@@ -716,6 +778,7 @@ paths:
       description: Hier kann die Anzahl der Anwortbausteine in der Datenbank abgerufen werden. Dabei können auch Filter angewendet werden.
       parameters:
         - $ref: '#/components/parameters/KeywordsParameter'
+        - $ref: '#/components/parameters/ActionCode'
       operationId: countResponseComponents
       responses:
         200:
@@ -790,6 +853,36 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AnalyzerConfiguration'
+            example:
+              name: Kein Sentiment
+              extractors:
+                - name: QuerimoniaExtract
+                  type: KIKUKO_DOMAIN
+                  colors:
+                    - label: Name
+                      color: "#ffd666"
+                    - label: Ort
+                      color: "#90ff8a"
+                    - label: Linie
+                      color: "#aff4fa"
+                    - label: Haltestelle
+                      color: "#cc89f5"
+                    - label: Datum
+                      color: "#cdc0cf"
+                    - label: Eingangsdatum
+                      color: "#e9bdf0"
+                    - label: Geldbetrag
+                      color: "#f5ff8a"
+              classifiers:
+                - type: KIKUKO_CLASSIFIER
+                  name: Beschwerde3Klassifikator2
+                  propertyName: Kategorie
+              sentimentAnalyzer:
+                type: NONE
+                name: NONE
+              emotionAnalyzer:
+                type: NONE
+                name: NONE
       operationId: addConfiguration
       responses:
         201:
@@ -1142,6 +1235,17 @@ components:
           - "Busfahrer"
           - "unfreundlich"
 
+    ActionCode:
+      name: action_code
+      in: query
+      required: false
+      description: Eine Bezeichung, die den Typ der Aktion angibt.
+      schema:
+        type: string
+        enum:
+          - SEND_MAIL
+          - ATTACH_VOUCHER
+
     ConfigIdQueryParameter:
       name: configId
       in: query
@@ -1181,6 +1285,7 @@ components:
           description: Der volle Beschwerdetext.
           example: "Guten Tag,\nMein Bus kam heute viel zu spät!\nSie müssen mir den Schaden ersetzen!!"
           readOnly: true
+          deprecated: true
         preview:
           type: string
           description: Die ersten zwei Zeilen der Beschwerde.
@@ -1207,6 +1312,12 @@ components:
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
           items:
             $ref: '#/components/schemas/ComplaintProperty'
+        entities:
+          type: array
+          description: Die Entitäten der Beschwerde.
+          items:
+            $ref: '#/components/schemas/NamedEntity'
+          deprecated: true
         sentiment:
           type: object
           description: Enthält die Ergbnisse der Sentiment-Analyse.
@@ -1234,8 +1345,8 @@ components:
           description: Name der Eigenschaft
         value:
           type: string
-          example: Fahrt nicht erfolgt
-          description: Die Bezeichnung der Kategorie oder des Sentiments.
+          example: 'Fahrt nicht erfolgt'
+          description: Die Wert der Eigenschaft.
         setByUser:
           type: boolean
           example: false
@@ -1252,7 +1363,15 @@ components:
 
     ComplaintState:
       type: string
-      description: Definiert den Status einer Beschwerde. Eine Beschwerde kann neu, in Bearbeitung und abgeschlossen sein.
+      description: >
+        Eine Beschwerde kann einer der folgenden Zustände besitzen:
+        <ul>
+        <li><code>ERROR</code>: Beschwerde ist im Fehlerzustand. Sie kann neu analysiert oder gelöscht werden, aber nicht bearbeitet. </li>
+        <li><code>ANALYSING</code>: Beschwerde wird momentan analysiert. Die Beschwerde kann nicht bearbeitet werden. Sie kann gelöscht werden, was allerdings nur dann getan werden sollte, wenn aufgrund eines Fehlers die Beschwerde dauerhaft in diesem Zustand ist (z.B. durch unerwartetes Beenden des Servers)</li>
+        <li><code>NEW</code>: Die Beschwerde wurde erfolgreich analysiert, die Bearbeitung wurde noch nicht begonnen. Die Beschwerde kann beliebig verändert und gelöscht werden.</li>
+        <li><code>IN_PROGRESS</code>: Eine Beschwerde muss manuell auf diesen Zustand gesetzt werden. Die Bearbeitung mit der Beschwerde wurde begonnen und sie kann beliebig verändert und gelöscht werden.</li>
+        <li><code>CLOSED</code>: Die Beschwerde wurde geschlossen und kann nicht mehr bearbeitet, nur noch gelöscht werden.</li>
+        </ul>
       enum: [ERROR, ANALYSING, NEW, IN_PROGRESS, CLOSED]
       example: "NEW"
 
@@ -1278,7 +1397,7 @@ components:
         - label
         - start
         - end
-        - setByUser
+        - value
         - preferred
         - color
       properties:
@@ -1291,7 +1410,7 @@ components:
         label:
           type: string
           description: Die Kategorie der Entität.
-          example: Datum
+          example: 'Datum'
         start:
           type: integer
           format: int64
@@ -1304,13 +1423,13 @@ components:
           example: 29
         value:
           type: string
-          description: Der Text der Entität, ggf. korrigiert. Read-Only.
-          readOnly: true
+          description: Der Text der Entität, ggf. korrigiert.
           example: '23. Januar 2001'
         setByUser:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
+          readOnly: true
         preferred:
           type: boolean
           description: Gibt an, ob der Nutzer die Entität als bevorzugt markiert hat.
@@ -1516,16 +1635,6 @@ components:
         - message
         - category
       properties:
-        date:
-          description: Das Datum des Log-Eintrags
-          type: string
-          format: date
-          example: "2019-07-01"
-        time:
-          description: Die Uhrzeit des Log-Eintrags
-          type: string
-          format: date-time
-          example: "12:03:19"
         category:
           description: Die Kategorie des Log-Eintrags
           type: string
@@ -1538,6 +1647,16 @@ components:
           description: Der Text des Log-Eintrags
           type: string
           example: "Sentiment-Analyse abgeschlossen"
+        date:
+          description: Das Datum des Log-Eintrags
+          type: string
+          format: date
+          example: "2019-07-01"
+        time:
+          description: Die Uhrzeit des Log-Eintrags
+          type: string
+          format: date-time
+          example: "12:03:19"
 
     ResponseComponent:
       description: Ein generischer Antwortbaustein. Dieser besteht aus möglicherweise mehereren Alternativtexten, die Platzhalter enthalten können, sowie einer Regelbeschreibung, die angibt, wann der Baustein verwendet werden kann.
@@ -1758,6 +1877,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/QuerimoniaException'
+          example:
+            timestamp: '2019-07-04T15:24:23.3942221'
+            statusCode: 404
+            message: 'Ein Element mit der gegebenen ID existiert nicht!'
+            title: 'Fehlendes Element'
+            exception: 'NotFoundException'
 
     IllegalParametersError:
       description: Die übergebenen Parameter sind ungültig, zum Beispiel vom falschen Datentyp.

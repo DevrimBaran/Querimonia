@@ -11,7 +11,7 @@ import javax.persistence.Embeddable;
 
 @SuppressWarnings("unused")
 @Embeddable
-class ColorDefinition {
+public class ColorDefinition {
 
   @JsonProperty
   private String label;
@@ -28,6 +28,14 @@ class ColorDefinition {
                          @JsonProperty("color") String color) {
     this.label = label;
     this.color = color;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public String getColor() {
+    return color;
   }
 
   @Override

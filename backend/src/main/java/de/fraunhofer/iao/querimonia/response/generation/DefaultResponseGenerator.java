@@ -4,6 +4,7 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.nlp.extractor.ColorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 /**
  * The default response generator.
+ * TODO: better doc
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
@@ -30,7 +32,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   @Override
   public ResponseSuggestion generateResponse(ComplaintBuilder complaintBuilder) {
     List<ResponseComponent> responseComponents = new ArrayList<>();
-    templateRepository.findAll().forEach(responseComponents::add);
+    templateRepository.findAll()
+        .forEach(responseComponent -> responseComponents.add(responseComponent.copy()));
 
     // filter out not matching templates
     List<ResponseComponent> responseComponentsFiltered =
@@ -61,6 +64,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         .setSetByUser(false)
         .setExtractor(extractor)
         .setValue(formattedDate)
+        .setColor(getColorOfEntity(complaintBuilder, "Eingangsdatum"))
         .createNamedEntity());
     allEntities.add(new NamedEntityBuilder()
         .setLabel("Eingangszeit")
@@ -69,6 +73,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         .setSetByUser(false)
         .setExtractor(extractor)
         .setValue(formattedTime)
+        .setColor(getColorOfEntity(complaintBuilder, "Eingangszeit"))
         .createNamedEntity());
 
     return getResponseSuggestion(complaintBuilder, responseComponentsFiltered, allEntities);
@@ -121,5 +126,18 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     return new ResponseSuggestion(generatedResponse, validActions);
   }
 
-
+  private String getColorOfEntity(ComplaintBuilder complaintBuilder, String label) {
+    return complaintBuilder
+        .getConfiguration()
+        .getExtractors()
+        .stream()
+        .map(ExtractorDefinition::getColors)
+        // make stream of colors
+        .flatMap(List::stream)
+        .filter(colorDefinition -> colorDefinition.getLabel().equals(label))
+        .findAny()
+        .map(ColorDefinition::getColor)
+        // fallback color
+        .orElse("#cc22cc");
+  }
 }

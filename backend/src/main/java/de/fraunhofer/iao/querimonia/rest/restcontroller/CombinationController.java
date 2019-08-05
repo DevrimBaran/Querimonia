@@ -15,8 +15,8 @@ import java.util.List;
 @RestController
 public class CombinationController {
 
-  private ComplaintManager complaintManager;
-  private LineStopCombinationManager lineStopCombinationManager;
+  private final ComplaintManager complaintManager;
+  private final LineStopCombinationManager lineStopCombinationManager;
 
   public CombinationController(
       ComplaintManager complaintManager,

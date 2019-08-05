@@ -179,14 +179,10 @@ public class ComplaintController {
    *
    * @return a response entity with the following contents:
    *     <ul>
-   *     <li>status code 204 on success</li>
-   *     <li>status code 404 and the querimonia exception body when no complaint with the given id
-   *     exists</li>
-   *     <li>
-   *     500
-   *     querimonia exception body
-   *     unexpected server error
-   *     </li>
+   *      <li>status code 204 on success</li>
+   *      <li>status code 404 and the querimonia exception body when no complaint with the given id
+   *      exists</li>
+   *      <li>status code 500 with the querimonia exception body on an unexpected server error</li>
    *     </ul>
    */
   @DeleteMapping("/api/complaints/{complaintId}")
@@ -336,6 +332,30 @@ public class ComplaintController {
       @RequestBody NamedEntity namedEntity) {
     return ControllerUtility.tryAndCatch(() ->
         complaintManager.addEntity(complaintId, namedEntity), HttpStatus.CREATED);
+  }
+
+  /**
+   * Replaces an existing named entity of a complaint with a new entity.
+   *
+   * @param complaintId the id of the complaint.
+   * @param entityId    the id of the entity.
+   * @param namedEntity the new entity.
+   *
+   * @return a response entity with:
+   * <ul>
+   *   <li>status code 200: The entity was updated. The body is the new list of entities of the
+   *   complaint.</li>
+   *   <li>status code 400: The complaint can not be edited.</li>
+   *   <li>status code 404: Either the complaint or the entity with the id does not exist.</li>
+   *   <li>status code 500: Some unexpected error occurred.</li>
+   * </ul>
+   */
+  @PutMapping("api/complaints/{complaintId}/entities/{entityId}")
+  public ResponseEntity<?> updateEntity(@PathVariable long complaintId,
+                                        @PathVariable long entityId,
+                                        @RequestBody NamedEntity namedEntity) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.updateEntity(complaintId,
+        entityId, namedEntity));
   }
 
   /**

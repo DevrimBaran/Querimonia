@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.nlp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -9,7 +10,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +24,9 @@ import javax.persistence.Id;
  * An instance can be created using a {@link NamedEntityBuilder}</p>
  */
 @Entity
+@JsonPropertyOrder(value = {
+    "id", "label", "start", "end", "value", "setByUser", "preferred", "extractor", "color"
+})
 public class NamedEntity implements Comparable<NamedEntity> {
 
   @Id
@@ -33,25 +36,34 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @NonNull
   @Column(nullable = false)
   private String label = "";
+
   @NonNull
   @Column(nullable = false)
   private String value = "";
+
   private int start;
   private int end;
+
   private boolean setByUser = false;
-  private boolean prefered = false;
+
+  @JsonProperty("preferred")
+  @Column(name = "prefered") // TODO fix later
+  private boolean preferred = false;
+
   @NonNull
   @Column(nullable = false)
   private String extractor = "";
-  @Nullable
+
+  @NotNull
   @Column
+  @JsonProperty("color")
   private String color = "#22222";
 
   /**
-   * constructor for creating a new named entity object, used for the builder and as JSON
-   * constructor.
+   * JSON constructor.
    */
   @JsonCreator
+  @SuppressWarnings("unused")
   NamedEntity(
       @NonNull
       @JsonProperty(value = "label", required = true)
@@ -72,16 +84,31 @@ public class NamedEntity implements Comparable<NamedEntity> {
           String value,
       @JsonProperty(value = "color")
       @NonNull
-          String color
+          String color,
+      @JsonProperty("id")
+          long id
   ) {
-
     this.label = label;
     this.start = start;
     this.end = end;
     this.value = value;
     this.setByUser = setByUser;
     this.extractor = extractor;
-    this.prefered = preferred;
+    this.preferred = preferred;
+    this.color = color;
+  }
+
+  NamedEntity(long id, @NonNull String label, @NonNull String value, int start, int end,
+                     boolean setByUser, boolean preferred, @NonNull String extractor,
+                     @NotNull String color) {
+    this.id = id;
+    this.label = label;
+    this.value = value;
+    this.start = start;
+    this.end = end;
+    this.setByUser = setByUser;
+    this.preferred = preferred;
+    this.extractor = extractor;
     this.color = color;
   }
 
@@ -166,6 +193,28 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return value;
   }
 
+  /**
+   * Returns the preferred flag of the entity. This flag is manually set and defines, if the
+   * entity should be preferred in the response generation, when there are multiple entities of
+   * the same type are available.
+   *
+   * @return the preferred flag of the entity.
+   */
+  public boolean isPreferred() {
+    return preferred;
+  }
+
+  /**
+   * Returns the color of the named entity. This color should be used to highlight the entity in
+   * the text.
+   *
+   * @return the color of the named entity.
+   */
+  @NotNull
+  public String getColor() {
+    return color;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -207,6 +256,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
         .append("end", end)
         .append("value", value)
         .append("setByUser", setByUser)
+        .append("preferred", preferred)
         .append("extractor", extractor)
         .toString();
   }

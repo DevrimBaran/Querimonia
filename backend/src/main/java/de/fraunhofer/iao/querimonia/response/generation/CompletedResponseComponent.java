@@ -4,16 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import tec.uom.lib.common.function.Identifiable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -21,8 +14,8 @@ import java.util.List;
  * replaced by the actual content of the entities in the complaint.
  */
 @Entity
-@JsonPropertyOrder(value = {"responsePartId", "component"})
-public class CompletedResponseComponent {
+@JsonPropertyOrder(value = {"id", "component"})
+public class CompletedResponseComponent implements Identifiable<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -58,5 +51,10 @@ public class CompletedResponseComponent {
 
   public ResponseComponent getComponent() {
     return component;
+  }
+
+  @Override
+  public Long getId() {
+    return responsePartId;
   }
 }

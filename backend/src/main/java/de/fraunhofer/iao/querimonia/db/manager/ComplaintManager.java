@@ -15,6 +15,7 @@ import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.log.LogCategory;
 import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
@@ -38,7 +39,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -154,27 +157,37 @@ public class ComplaintManager {
 
     // run analysis async
     Executors.newCachedThreadPool().submit(() -> {
-      try {
-        var builder = complaintFactory.analyzeComplaint(complaintBuilder, false);
-        builder.setState(ComplaintState.NEW);
-        storeComplaint(builder.createComplaint());
-      } catch (Exception e) {
-        onException(complaintBuilder, e);
+      var future = CompletableFuture.runAsync(() -> {
+        try {
+          var builder = complaintFactory.analyzeComplaint(complaintBuilder, false);
+          builder.setState(ComplaintState.NEW);
+          storeComplaint(builder.createComplaint());
+        } catch (Exception e) {
+          onException(complaintBuilder, e);
+        }
+      }).orTimeout(10, TimeUnit.MINUTES);
+      if (future.isCompletedExceptionally()) {
+        // time out
+        onException(complaintBuilder, new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+            "Zeitüberschreitung bei Analyse", "Timeout"));
       }
     });
+
     return complaint;
   }
 
   /**
    * It called when the analysis throws an exception. It stores the complaint with the error state.
    */
+  @SuppressWarnings("SameReturnValue")
   @NonNull
-  private ComplaintBuilder onException(ComplaintBuilder complaintBuilder, Throwable e) {
+  private Void onException(ComplaintBuilder complaintBuilder, Throwable e) {
     complaintBuilder
         .setState(ERROR)
         .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
+    e.printStackTrace();
     storeComplaint(complaintBuilder.createComplaint());
-    return complaintBuilder;
+    return null;
   }
 
 
@@ -244,8 +257,6 @@ public class ComplaintManager {
    */
   public synchronized void deleteComplaint(long complaintId) {
     if (complaintRepository.existsById(complaintId)) {
-      Complaint complaint = getComplaint(complaintId);
-      checkForbiddenStates(complaint, ANALYSING);
       complaintRepository.deleteById(complaintId);
       logger.info("Deleted complaint with id {}", complaintId);
     } else {
@@ -278,13 +289,20 @@ public class ComplaintManager {
 
     Complaint finalComplaint = complaint;
     Executors.newCachedThreadPool().submit(() -> {
-      try {
-        var newBuilder
-            = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false));
-        newBuilder.setState(finalComplaint.getState());
-        storeComplaint(newBuilder.createComplaint());
-      } catch (Exception e) {
-        onException(builder, e);
+      var future = CompletableFuture.runAsync(() -> {
+        try {
+          var newBuilder
+              = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false));
+          newBuilder.setState(finalComplaint.getState());
+          storeComplaint(newBuilder.createComplaint());
+        } catch (Exception e) {
+          onException(builder, e);
+        }
+      }).orTimeout(10, TimeUnit.MINUTES);
+      if (future.isCompletedExceptionally()) {
+        // time out
+        onException(builder, new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+            "Zeitüberschreitung bei Analyse", "Timeout"));
       }
     });
     complaint = builder.createComplaint();
@@ -364,16 +382,7 @@ public class ComplaintManager {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
-
-    // check validity of entity
-    int start = entity.getStartIndex();
-    int end = entity.getEndIndex();
-    if (start < 0 || end <= start || end > complaint.getText().length()) {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
-          + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
-          + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
-          + "Entität");
-    }
+    checkValidityOfEntity(entity, complaint);
 
     List<NamedEntity> complaintEntities = builder.getEntities();
     if (!complaintEntities.contains(entity)) {
@@ -386,8 +395,55 @@ public class ComplaintManager {
               + "existiert bereits!", "Entität bereits vorhanden");
     }
 
-    storeComplaint(builder.createComplaint());
-    return complaintEntities;
+    complaint = builder.createComplaint();
+    storeComplaint(complaint);
+    // reload for entity id that is set by the database (otherwise the new entity has id 0)
+    return getComplaint(complaintId).getEntities();
+  }
+
+  /**
+   * Replaces an existing named entity of a complaint with a new entity.
+   *
+   * @param complaintId the id of the complaint.
+   * @param entityId    the id of the entity.
+   * @param entity      the new entity that replaces the entity with the given id.
+   *
+   * @return a updated list of entities of the given complaint.
+   */
+  public List<NamedEntity> updateEntity(long complaintId, long entityId, NamedEntity entity) {
+    Complaint complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+    checkValidityOfEntity(entity, complaint);
+
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    NamedEntityBuilder entityBuilder = new NamedEntityBuilder(entity);
+    entityBuilder.setId(entityId);
+    var entities = builder.getEntities();
+
+    // replace the entity with the given id with the new entity
+    entities.replaceAll(namedEntity -> {
+      if (namedEntity.getId() == entityId) {
+        return entityBuilder.createNamedEntity();
+      }
+      return namedEntity;
+    });
+    // store changes
+    complaint = builder.createComplaint();
+    storeComplaint(complaint);
+    // reload for entity id that is set by the database (otherwise the new entity has id 0)
+    return getComplaint(complaintId).getEntities();
+  }
+
+  private void checkValidityOfEntity(NamedEntity entity, Complaint complaint) {
+    // check validity of entity
+    int start = entity.getStartIndex();
+    int end = entity.getEndIndex();
+    if (start < 0 || end <= start || end > complaint.getText().length()) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
+          + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
+          + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
+          + "Entität");
+    }
   }
 
   /**
@@ -513,21 +569,23 @@ public class ComplaintManager {
    */
   private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
     var forbiddenStatesList = Arrays.asList(forbiddenStates);
+    var exception = new IllegalStateException();
+
     if (forbiddenStatesList.contains(CLOSED)
         && complaint.getState().equals(CLOSED)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
-          + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
+          + "werden, da sie bereits geschlossen ist.", exception, "Beschwerde geschlossen");
     }
     if (forbiddenStatesList.contains(ANALYSING)
         && complaint.getState().equals(ANALYSING)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
-          + "werden, während sie analysiert wird!", "Beschwerde wird analysiert");
+          + "werden, während sie analysiert wird!", exception, "Beschwerde wird analysiert");
     }
     if (forbiddenStatesList.contains(ERROR)
         && complaint.getState().equals(ERROR)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
           + "werden, da die Analyse nicht abgeschlossen werden konnte. Starten Sie die Analyse "
-          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.",
+          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.", exception,
           "Beschwerde wurde nicht analysiert.");
     }
   }

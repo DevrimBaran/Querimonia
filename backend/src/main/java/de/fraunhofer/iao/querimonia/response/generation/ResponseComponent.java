@@ -11,22 +11,12 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import tec.uom.lib.common.function.Identifiable;
 
-import javax.persistence.CascadeType;
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -72,7 +62,7 @@ public class ResponseComponent implements Identifiable<Long> {
   /**
    * The component texts for the component.
    */
-  @ElementCollection(fetch = FetchType.LAZY)
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "component_text_table",
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000, nullable = false)
@@ -83,7 +73,8 @@ public class ResponseComponent implements Identifiable<Long> {
   /**
    * The list of actions.
    */
-  @OneToMany(cascade = CascadeType.ALL)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Fetch(value = FetchMode.SUBSELECT)
   @JoinColumn(name = "component_id")
   @Column(name = "action_id")
   @NonNull
@@ -102,7 +93,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @Transient
   @JsonIgnore
   @NonNull
-  private Rule rootRule;
+  private final Rule rootRule;
 
   /**
    * The slices of each component text.
@@ -110,7 +101,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @Transient
   @JsonIgnore
   @NonNull
-  private List<List<ResponseSlice>> componentSlices;
+  private final List<List<ResponseSlice>> componentSlices;
 
   // constructor for builder
   ResponseComponent(long id,
@@ -132,13 +123,19 @@ public class ResponseComponent implements Identifiable<Long> {
 
   @SuppressWarnings("unused")
   @JsonCreator
-  public ResponseComponent(@JsonProperty("name") String componentName,
-                           @JsonProperty("priority") int priority,
-                           @JsonProperty(value = "texts", defaultValue = "[]")
-                               List<String> componentTexts,
-                           @JsonProperty("rulesXml") String rulesXml,
-                           @JsonProperty(value = "actions", defaultValue = "[]")
-                               List<Action> actions) {
+  ResponseComponent(
+      @JsonProperty("name") String componentName,
+      @JsonProperty("priority") int priority,
+      @JsonProperty(value = "texts", defaultValue = "[]")
+          List<String> componentTexts,
+      @JsonProperty("rulesXml") String rulesXml,
+      @JsonProperty(value = "actions", defaultValue = "[]")
+          List<Action> actions,
+      @JsonProperty("id")
+          long id,
+      @JsonProperty("requiredEntities")
+          String[] requiredEntities
+  ) {
     this(0, componentName, priority, componentTexts, actions, rulesXml);
   }
 
@@ -160,7 +157,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @NonNull
   @JsonProperty(value = "requiredEntities")
   public List<String> getRequiredEntities() {
-    return getResponseSlices()
+    return createSlices()
         .stream()
         // get all slices
         .flatMap(List::stream)
@@ -214,15 +211,6 @@ public class ResponseComponent implements Identifiable<Long> {
     return priority;
   }
 
-  /**
-   * Returns all response slices of the component.
-   */
-  @JsonIgnore
-  @Transient
-  @NonNull
-  private List<List<ResponseSlice>> getResponseSlices() {
-    return componentSlices;
-  }
 
   private Rule parseRulesXml(String rulesXml) {
     return RuleParser.parseRules(rulesXml);
@@ -237,6 +225,11 @@ public class ResponseComponent implements Identifiable<Long> {
   @NonNull
   public List<Action> getActions() {
     return actions;
+  }
+
+  @JsonIgnore
+  public ResponseComponent copy() {
+    return new ResponseComponentBuilder(this).createResponseComponent();
   }
 
   @Override

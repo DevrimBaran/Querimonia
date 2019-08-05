@@ -19,11 +19,11 @@ public class ExtractorFactory {
       case NONE:
         return (text) -> new ArrayList<>();
       case KIKUKO_TOOL:
-        return new KikukoExtractor("tool", definition.getName());
+        return new KikukoExtractor("tool", definition.getName(), definition);
       case KIKUKO_PIPELINE:
-        return new KikukoExtractor("pipeline", definition.getName());
+        return new KikukoExtractor("pipeline", definition.getName(), definition);
       case KIKUKO_DOMAIN:
-        return new KikukoExtractor("domain", definition.getName());
+        return new KikukoExtractor("domain", definition.getName(), definition);
       default:
         throw new IllegalArgumentException(
             "Unbekannter Typ: " + definition.getType().name());

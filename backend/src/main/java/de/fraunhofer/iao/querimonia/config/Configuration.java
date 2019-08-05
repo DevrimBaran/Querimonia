@@ -59,7 +59,7 @@ public class Configuration implements Identifiable<Long> {
   @JsonProperty("id")
   private long configId;
 
-  @Column(name = "config_name", nullable = false)
+  @Column(name = "config_name")
   @NonNull
   private String name = "";
 
@@ -106,7 +106,14 @@ public class Configuration implements Identifiable<Long> {
 
       @JsonProperty(value = "emotionAnalyzer", required = true)
       @NonNull
-          EmotionAnalyzerDefinition emotionAnalyzer) {
+          EmotionAnalyzerDefinition emotionAnalyzer,
+
+      @JsonProperty("active")
+          boolean active,
+
+      @JsonProperty("id")
+          long id
+  ) {
 
     this.name = name;
     this.extractors = extractors;
@@ -114,6 +121,7 @@ public class Configuration implements Identifiable<Long> {
     this.sentimentAnalyzer = sentimentAnalyzer;
     this.emotionAnalyzer = emotionAnalyzer;
     this.active = false;
+    this.configId = 0;
   }
 
   /**
@@ -193,7 +201,7 @@ public class Configuration implements Identifiable<Long> {
    * when this configuration is selected.
    *
    * @return the list of {@link ClassifierDefinition classifiers} that are used in this
-   * configuration.
+   *     configuration.
    */
   @NonNull
   public List<ClassifierDefinition> getClassifiers() {
@@ -205,7 +213,7 @@ public class Configuration implements Identifiable<Long> {
    * configuration.
    *
    * @return the {@link SentimentAnalyzerDefinition sentiment analyzer} that is defined in this
-   * configuration.
+   *     configuration.
    */
   @NonNull
   public SentimentAnalyzerDefinition getSentimentAnalyzer() {
@@ -217,7 +225,7 @@ public class Configuration implements Identifiable<Long> {
    * configuration.
    *
    * @return the {@link EmotionAnalyzerDefinition emotion analyzer} that is defined in this
-   * configuration.
+   *     configuration.
    */
   @NonNull
   public EmotionAnalyzerDefinition getEmotionAnalyzer() {

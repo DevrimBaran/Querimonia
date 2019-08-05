@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Combination {
 
-  private List<NamedEntity> entities;
+  private final List<NamedEntity> entities;
 
   public Combination(List<NamedEntity> entities) {
     this.entities = entities;

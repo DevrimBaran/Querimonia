@@ -19,6 +19,7 @@ import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,8 +64,8 @@ public class ComplaintFactory {
     return new ComplaintBuilder(complaintText)
         .setConfiguration(configuration)
         .setPreview(makePreview(complaintText))
-        .setReceiveDate(LocalDate.now())
-        .setReceiveTime(LocalTime.now())
+        .setReceiveDate(LocalDate.now(ZoneId.of("Europe/Berlin")))
+        .setReceiveTime(LocalTime.now(ZoneId.of("Europe/Berlin")))
         .appendLogItem(LogCategory.GENERAL, "Beschwerde erstellt.");
   }
 

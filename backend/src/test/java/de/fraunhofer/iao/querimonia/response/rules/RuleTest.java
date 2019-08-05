@@ -13,8 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.COMPLAINT_F;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Unit test class for the different types of XML rules used in response components
@@ -51,6 +50,9 @@ public class RuleTest {
     assertFalse(andRule2.isRespected(complaint, completedResponseComponents));
     assertFalse(andRule3.isPotentiallyRespected(complaint));
     assertFalse(andRule3.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(andRule1, andRule1);
+    assertNotEquals(andRule1, null);
   }
 
   @Test
@@ -72,6 +74,9 @@ public class RuleTest {
     assertTrue(orRule2.isRespected(complaint, completedResponseComponents));
     assertFalse(orRule3.isPotentiallyRespected(complaint));
     assertFalse(orRule3.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(orRule1, orRule1);
+    assertNotEquals(orRule1, null);
   }
 
   @Test
@@ -87,6 +92,9 @@ public class RuleTest {
     assertFalse(notRule1.isRespected(complaint, completedResponseComponents));
     assertTrue(notRule2.isPotentiallyRespected(complaint));
     assertTrue(notRule2.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(notRule1, notRule1);
+    assertNotEquals(notRule1, null);
   }
 
   @Test
@@ -102,6 +110,9 @@ public class RuleTest {
     assertTrue(entityRule2.isRespected(complaint, completedResponseComponents));
     assertTrue(entityRule3.isRespected(complaint, completedResponseComponents));
     assertFalse(entityRule4.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(entityRule1, entityRule1);
+    assertNotEquals(entityRule1, null);
   }
 
   @Test
@@ -118,6 +129,9 @@ public class RuleTest {
     assertTrue(predecessorCountRule1.isRespected(complaint, completedResponseComponents));
     assertTrue(predecessorCountRule2.isPotentiallyRespected(complaint));
     assertFalse(predecessorCountRule2.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(predecessorCountRule1, predecessorCountRule1);
+    assertNotEquals(predecessorCountRule1, null);
   }
 
   @Test
@@ -158,6 +172,9 @@ public class RuleTest {
     assertTrue(predecessorRule4.isPotentiallyRespected(complaint));
     assertFalse(predecessorRule4.isRespected(complaint, completedResponseComponents1));
     assertFalse(predecessorRule4.isRespected(complaint, completedResponseComponents2));
+
+    assertEquals(predecessorRule1, predecessorRule1);
+    assertNotEquals(predecessorRule1, null);
   }
 
   @Test
@@ -171,6 +188,9 @@ public class RuleTest {
     assertTrue(propertyRule1.isRespected(complaint, completedResponseComponents));
     assertFalse(propertyRule2.isPotentiallyRespected(complaint));
     assertFalse(propertyRule2.isRespected(complaint,completedResponseComponents));
+
+    assertEquals(propertyRule1, propertyRule1);
+    assertNotEquals(propertyRule1, null);
   }
 
   @Test
@@ -184,6 +204,9 @@ public class RuleTest {
     assertTrue(sentimentRule1.isRespected(complaint, completedResponseComponents));
     assertFalse(sentimentRule2.isPotentiallyRespected(complaint));
     assertFalse(sentimentRule2.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(sentimentRule1, sentimentRule1);
+    assertNotEquals(sentimentRule1, null);
   }
 
   @Test
@@ -199,6 +222,9 @@ public class RuleTest {
     assertTrue(uploadDateRule1.isRespected(complaint, completedResponseComponents));
     assertFalse(uploadDateRule2.isPotentiallyRespected(complaint));
     assertFalse(uploadDateRule2.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(uploadDateRule1, uploadDateRule1);
+    assertNotEquals(uploadDateRule1, null);
   }
 
   @Test
@@ -214,5 +240,8 @@ public class RuleTest {
     assertTrue(uploadTimeRule1.isRespected(complaint, completedResponseComponents));
     assertFalse(uploadTimeRule2.isPotentiallyRespected(complaint));
     assertFalse(uploadTimeRule2.isRespected(complaint, completedResponseComponents));
+
+    assertEquals(uploadTimeRule1, uploadTimeRule1);
+    assertNotEquals(uploadTimeRule1, null);
   }
 }

@@ -84,16 +84,4 @@ public class KiKuKoContact {
 
     return responses[0];
   }
-
-  // TODO delete
-  public static void main(String[] args) {
-    KiKuKoContact contact = new KiKuKoContact("domain", "QuerimoniaExtract");
-    KikukoResponse response = contact.executeKikukoRequest(
-        "Hallo, meine Fahrt ist leider nicht erfolgt! "
-            + "Das ist sehr schade! Liebe Grüße, Max Mustermann. Auf Wiedersehen!");
-    response.getPipelines().forEach((a, b) -> {
-      System.out.println(a);
-      b.forEach(text -> System.out.println("\t" + text));
-    });
-  }
 }

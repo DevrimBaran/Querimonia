@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.response.rules;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.springframework.lang.Nullable;
 
 import java.util.List;
@@ -49,5 +50,23 @@ public class EntityRule implements Rule {
         // map to entity values
         .map(NamedEntity::getValue)
         .anyMatch(value -> value.matches(expectedRegex));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    EntityRule that = (EntityRule) o;
+
+    return new EqualsBuilder()
+        .append(entityLabel, that.entityLabel)
+        .append(expectedRegex, that.expectedRegex)
+        .isEquals();
   }
 }
