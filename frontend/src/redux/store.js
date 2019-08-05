@@ -161,6 +161,21 @@ const initialState = {
   },
   currentConfig: {
     extractors: []
+  },
+  allExtractors: {},
+  complaintStuff: {
+    entities: {
+      byId: { },
+      ids: [],
+      calculated: []
+    },
+    components: [],
+    actions: [],
+    log: [],
+    combinations: [],
+    counter: 0,
+    id: 0,
+    done: false
   }
 };
 

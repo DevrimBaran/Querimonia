@@ -7,6 +7,8 @@
 
 import React, { Component } from 'react';
 
+import Content from './Content';
+
 class Tabbed extends Component {
   constructor (props) {
     super(props);
@@ -25,8 +27,8 @@ class Tabbed extends Component {
           {this.props.children && this.props.children.map((tab, i) => {
             return (
               [
-                <h5 key={i} className={i === this.state.index ? 'tab active' : 'tab'} onClick={() => this.handleClick(i)}>{tab.props.label}</h5>,
-                tab
+                <h5 key={'label' + i} className={i === this.state.index ? 'tab active' : 'tab'} onClick={() => this.handleClick(i)}>{tab.props.label}</h5>,
+                <Content key={'content' + i}>{tab}</Content>
               ]
             );
           })}

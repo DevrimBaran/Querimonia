@@ -3,7 +3,12 @@
     justify-content: center;
     margin: 0px auto;
 }
-
+.pointer {
+    cursor: pointer;
+}
+.nowrap {
+    white-space: nowrap;
+}
 .padding {
     padding: $standardpadding;
 }

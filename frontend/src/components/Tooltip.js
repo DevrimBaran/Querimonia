@@ -41,20 +41,20 @@ class Tooltip extends Component {
     }
   }
   componentDidMount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
+    const elements = document.querySelectorAll(this.state.htmlFor);
+    elements.forEach((element) => {
       element.classList.add('hasTooltip');
       element.addEventListener('mouseenter', this.onMouseEnter);
       element.addEventListener('mouseleave', this.onMouseLeave);
-    }
+    });
   }
   componentWillUnmount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
+    const elements = document.querySelectorAll(this.state.htmlFor);
+    elements.forEach((element) => {
       element.classList.remove('hasTooltip');
       element.removeEventListener('mouseenter', this.onMouseEnter);
       element.removeEventListener('mouseleave', this.onMouseLeave);
-    }
+    });
   }
   render () {
     const { htmlFor } = { ...this.props };

@@ -8,7 +8,7 @@ import React, { Component } from 'react';
 
 import api from './../utility/Api';
 
-import Complaint from './partials/Complaint';
+import Complaint from './partials/Complaints';
 
 import Table from './../components/Table';
 import Block from './../components/Block';

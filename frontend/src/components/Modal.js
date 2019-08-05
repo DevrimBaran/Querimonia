@@ -29,18 +29,18 @@ class Modal extends Component {
     }
   }
   componentDidMount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
+    const elements = document.querySelectorAll(this.state.htmlFor);
+    elements.forEach((element) => {
       element.classList.add('hasModal');
       element.addEventListener('click', this.onClick);
-    }
+    });
   }
   componentWillUnmount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
+    const elements = document.querySelectorAll(this.state.htmlFor);
+    elements.forEach((element) => {
       element.classList.remove('hasModal');
       element.removeEventListener('click', this.onClick);
-    }
+    });
   }
   render () {
     const { htmlFor } = { ...this.props };

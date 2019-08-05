@@ -19,11 +19,22 @@ import Table from './Table';
 import Filter from './Filter';
 import Pagination from './Pagination';
 
+class Fetching extends Component {
+  componentDidMount = () => {
+    console.log('FETCHING_DID_MOUNT');
+    this.props.dispatch(fetchData(this.props.endpoint));
+  }
+  render () {
+    return '';
+  }
+}
+
 const getEndpointView = (endpoint, partial, stateToProps) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
   // return connect((state, props) => ({ ...state[endpoint].data }))(class extends Component {
-    componentDidMount = () => {
-      this.props.dispatch(fetchData(endpoint));
+    constructor (props) {
+      super(props);
+      console.log('CONSTRUCTOR');
     }
     edit = (id) => {
       return (
@@ -53,7 +64,7 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
     }
     remove = (id) => {
       return (
-        <Link>
+        <Link to={'/' + endpoint}>
           <i className='far fa-trash-alt' onClick={() => this.props.dispatch(remove(endpoint, id))} />
         </Link>
       );
@@ -85,7 +96,17 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
                   <Table>
                     {partial.Header()}
                     <tbody>
-                      {this.props.ids.map(id => partial.List(this.props.byId[id], this.props.dispatch, { edit: this.edit, copy: this.copy, remove: this.remove }))}
+                      {this.props.ids.map(id => partial.List(this.props.byId[id], this.props.dispatch,
+                        {
+                          edit: this.edit,
+                          copy: this.copy,
+                          remove: this.remove,
+                          transitionTo: (to) =>
+                            (e) => {
+                              this.props.history.push(to);
+                            }
+                        }
+                      ))}
                     </tbody>
                   </Table>
                 )
@@ -98,7 +119,7 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
       );
     }
     render () {
-      console.log(this.props);
+      console.log('RENDER');
       const id = parseInt(this.props.match.params.id);
       if (this.props.match.params.id) {
         if (!this.props.active || id !== this.props.active.id) {
@@ -115,10 +136,16 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
       let single = this.props.match.params.id && this.props.active;
       return (
         <React.Fragment>
+          <Fetching endpoint={endpoint} dispatch={this.props.dispatch} />
           {single ? (
-            partial.Single(this.props.active, this.props.dispatch, { save: this.save, props: this.props })
+            <React.Fragment>
+              {partial.Single(this.props.active, this.props.dispatch, { save: this.save, props: this.props })}
+            </React.Fragment>
           ) : (
-            this.renderList()
+            <React.Fragment>
+              <Fetching endpoint={endpoint} dispatch={this.props.dispatch} />
+              {this.renderList()}
+            </React.Fragment>
           )}
         </React.Fragment>
       );

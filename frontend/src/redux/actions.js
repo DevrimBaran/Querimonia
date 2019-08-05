@@ -59,6 +59,40 @@ export function remove (endpoint, id) {
     });
   };
 }
+export function changeEntity (complaintId, id = 0, changes) {
+  return function (dispatch, getState) {
+    const data = getState().complaintStuff.entities.byId[id];
+    console.log('WTF', id);
+    dispatch((dispatch) => {
+      Api[id === 0 ? 'post' : 'put']('/api/complaints/' + complaintId + '/entities/' + (id === 0 ? '' : id), { ...data, ...changes })
+        .then(data => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'MODIFY_ENTITY',
+            data: data
+          });
+        });
+    });
+  };
+}
+export function deleteEntity (complaintId, id = 0) {
+  return function (dispatch, getState) {
+    dispatch((dispatch) => {
+      Api.delete('/api/complaints/' + complaintId + '/entities/' + id, {})
+        .then(data => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'MODIFY_ENTITY',
+            data: data
+          });
+        });
+    });
+  };
+}
 export function fetchData (endpoint) {
   return function (dispatch, getState) {
     const { filter, pagination } = getState()[endpoint];
@@ -106,6 +140,31 @@ export function fetchCurrentConfig () {
             data: data
           });
         });
+    });
+  };
+}
+export function fetchStuff (id) {
+  return function (dispatch) {
+    dispatch({
+      type: 'FETCH_SINGLE_COMPLAINT_START',
+      id: id
+    });
+    dispatch((dispatch) => {
+      Promise.all([
+        Api.get('/api/complaints/' + id + '/entities', {}),
+        Api.get('/api/responses/' + id, {}),
+        Api.get('/api/combinations/' + id, {}),
+        Api.get('/api/complaints/' + id + '/log', {})
+      ]).then(data => {
+        dispatch({
+          type: 'FETCH_SINGLE_COMPLAINT_END',
+          entities: data[0],
+          components: data[1].components,
+          actions: data[1].actions,
+          combinations: data[2],
+          log: data[3]
+        });
+      });
     });
   };
 }

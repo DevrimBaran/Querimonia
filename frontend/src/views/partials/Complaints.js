@@ -7,20 +7,30 @@
 
 import React from 'react';
 
-import template from '../../redux/templates/config';
+import { fetchStuff } from '../../redux/actions';
 
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
-import DeepObject from '../../components/DeepObject';
+import Collapsible from '../../components/Collapsible';
+import Sentiment from '../../components/Sentiment';
+import Tag from '../../components/Tag';
+import Email from '../../components/Email';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
+import TaggedText from '../../components/TaggedText';
+import Modal from '../../components/Modal';
+import Tabbed from '../../components/Tabbed';
+import TextBuilder from '../../components/TextBuilder';
+import Table from '../../components/Table';
+import Input from '../../components/Input';
 
 /**
  * extracts the key with the maximal value
  * @param {*} data Map (Key-Value)
  */
+// eslint-disable-next-line
 function getMaxKey (data) {
   let keys = Object.keys(data);
   if (keys.length === 0) {
@@ -37,32 +47,18 @@ function getMaxKey (data) {
   return (keys[maxIndex]);
 }
 
-function getSentiment (sentiment) {
-  const tendency = sentiment && sentiment.tendency ? sentiment.tendency : 0;
-  if (tendency < -0.6) {
-    return '🤬 (' + tendency.toFixed(2) + ')';
-  } else if (tendency < -0.2) {
-    return '😞 (' + tendency.toFixed(2) + ')';
-  } else if (tendency < 0.2) {
-    return '😐 (' + tendency.toFixed(2) + ')';
-  } else if (tendency < 0.6) {
-    return '😊 (' + tendency.toFixed(2) + ')';
-  } else {
-    return '😁 (' + tendency.toFixed(2) + ')';
-  }
-}
-
 function Header () {
   return (
     <thead>
       <tr style={{ filter: 'brightness(100%)' }}>
-        <th> </th>
         <th>Anliegen</th>
+        <th>Status</th>
         <th>Vorschau</th>
         <th>Emotion</th>
         <th>Sentiment</th>
         <th>Kategorie</th>
         <th>Datum</th>
+        <th> </th>
       </tr>
     </thead>
   );
@@ -70,45 +66,147 @@ function Header () {
 
 function List (data, dispatch, helpers) {
   return (
-    <tr key={data.id}>
-      <td>
-        {helpers.edit(data.id)}
-        {helpers.copy(data.id)}
-        {helpers.remove(data.id)}
-      </td>
+    <tr className='pointer' key={data.id} onClick={helpers && helpers.transitionTo('/complaints/' + data.id)}>
       <td><h3>{data.id}</h3></td>
+      <td>{data.state}</td>
       <td>{data.preview}</td>
-      <td>{getMaxKey(data.sentiment.emotion.probabilities)}</td>
-      <td>
-        <span role='img' className='emotion'>
-          {getSentiment(data.sentiment)}
-        </span>
-      </td>
+      <td>{data.sentiment.emotion.value}</td>
+      <td><Sentiment tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{data.receiveDate} {data.receiveTime}</td>
+      <td>
+        {helpers && helpers.remove(data.id)}
+      </td>
     </tr>
   );
 }
-
 function Single (active, dispatch, helpers) {
-  const modifyActive = (data) => {
-    dispatch({
-      type: 'MODIFY_ACTIVE',
-      endpoint: 'config',
-      data: data
-    });
+  if ((helpers.props.complaintStuff.done && helpers.props.complaintStuff.id !== active.id) ||
+    (!helpers.props.complaintStuff.done && helpers.props.complaintStuff.id === 0)) {
+    dispatch(fetchStuff(active.id));
   };
+  if (!helpers.props.complaintStuff.done) {
+    return (
+      <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>
+    );
+  }
+  const editActive = true;
+  const editFormActive = true;
   return (
     <React.Fragment>
       <Block>
         <Row vertical>
-          <h6 className='center'>Konfiguration</h6>
-          <Content className='margin'>
-            <DeepObject data={active} template={template(helpers.props.allExtractors)} save={modifyActive} />
+          <h6 className='center'>Anwort</h6>
+          <TextBuilder />
+          <Modal htmlFor={'[complaint="' + active.id + '"]'}>
+            <a href={'mailto:subject=Antwort%20auf%20Anliegen%20#' + active.id + '&body=' + encodeURIComponent('Lorem Ipsum')}>Mailto</a>
+            <Email subject={'Querimonia - Abschluss #' + active.id} to='' name={'Abschluss_' + active.id} label='Download .eml Datei'>
+              Test
+            </Email>
+          </Modal>
+        </Row>
+      </Block>
+      <Block>
+        <Row vertical>
+          <h6 className='center'>Meldetext</h6>
+          <Content>
+            <Tabbed vertical>
+              <div label='Überarbeitet'>
+                <TaggedText text={active.text} entities={helpers.props.complaintStuff.entities} />
+              </div>
+              <div label='Original'>
+                {active.text}
+              </div>
+              <div label='Log'>
+                {helpers.props.complaintStuff.log.map((entry, i) => (
+                  <div key={i} className='log'>
+                    <span className='category'>[{entry.category}]</span> <span className='datetime'>{entry.date} {entry.time}</span>
+                    <br />
+                    <div className='message'>
+                      {entry.message}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Tabbed>
           </Content>
-          <div className='center margin'>
-            {helpers.save()}
+          <div style={{ display: 'none' }}>
+            <div style={{ display: 'block', paddingTop: '10px', margin: 'auto', textAlign: 'center', borderTop: '1px solid lightGrey', width: '90%', marginTop: '10px' }}>
+              <i style={editActive ? { color: 'rgb(31, 130, 191)', cursor: 'pointer' } : { color: 'rgb(9, 101, 158)', cursor: 'pointer' }}
+                className='fas fa-plus-circle fa-2x'
+                onClick={this.startEdit} />
+              {editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}
+              {editFormActive ? <div style={{ marginTop: '5px' }}> <div>newEntityString</div>
+                <b> Entität: </b>
+                <Input type='select' id='chooseExtractor' />
+                <br />
+                <i style={{ color: 'green', cursor: 'pointer', padding: '5px' }} onClick={this.addEntity} className='far fa-check-circle fa-2x' />
+                <i style={{ color: 'red', cursor: 'pointer', padding: '5px' }} onClick={this.abortEdit} className='far fa-times-circle fa-2x' /> </div> : null}
+            </div>;
           </div>
+          <Collapsible label='Details' />
+          <div>
+            <Table>
+              <tbody>
+                <tr>
+                  <td>Eingangsdatum</td>
+                  <td>{active.receiveDate}</td>
+                </tr>
+                <tr>
+                  <td>Status</td>
+                  <td>{active.state}</td>
+                </tr>
+                <tr>
+                  <td>ID</td>
+                  <td>{active.id}</td>
+                </tr>
+                {
+                  // TODO tooltip with propabilities
+                  active.properties &&
+                  active.properties.map((property, i) => (
+                    <tr key={'properties_' + i}>
+                      <td>{property.name}</td>
+                      <td>{property.value}</td>
+                    </tr>
+                  ))
+                }
+                <tr>
+                  <td>Sentiment</td>
+                  <td><Sentiment tendency={active.sentiment ? active.sentiment.tendency : 0} /></td>
+                </tr>
+                <tr>
+                  <td>Emotion</td>
+                  <td>{active.sentiment ? active.sentiment.emotion.value : 0}</td>
+                </tr>
+              </tbody>
+            </Table>
+          </div>
+          <Collapsible label='Entitäten' />
+          <Content>
+            <Table>
+              <tbody>
+                {(() => {
+                  if (!(helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids)) {
+                    return <tr><td><i className='fa-spinner fa-spin fa fa-5x primary' /></td></tr>;
+                  }
+                  const entities = helpers.props.complaintStuff.entities.ids.reduce((entities, id) => {
+                    const entity = helpers.props.complaintStuff.entities.byId[id];
+                    entities[entity.label] || (entities[entity.label] = []);
+                    entities[entity.label].push(entity);
+                    return entities;
+                  }, {});
+                  const labels = Object.keys(entities).sort();
+                  return labels.map(label => entities[label])
+                    .map(entities => entities.sort((a, b) => a.start < b.start).map((entity, i) => (
+                      <tr key={'' + entity.label + i}>
+                        <td>{entity.label}</td>
+                        <td><Tag text={entity.value} ids={[entity.id]} /></td>
+                      </tr>
+                    )));
+                })()}
+              </tbody>
+            </Table>
+          </Content>
         </Row>
       </Block>
     </React.Fragment>

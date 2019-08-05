@@ -9,6 +9,9 @@
     grid-auto-columns: auto;
     grid-auto-flow: column;
     background-color: inherit;
+    .content > & {
+        height: 100%;
+    }
     & > .tab {
         grid-row: 1 / 2;
         margin: 0em;
@@ -17,16 +20,15 @@
         text-align: center;
     }
     & > .tab.active, & > .tab:hover {
-        background-color: var(--primaryBackgroundColor);
+        border-bottom: 2px solid $primary;
     }
-    & > .tab.active + [label] {
+    & > .tab.active + .content {
         display: block;
     }
-    & > [label] {
+    & > .content {
         grid-column-start: 1;
         grid-column-end: var(--tabCount);
         grid-row: 2 / 3;
-        background-color: var(--primaryBackgroundColor);
         padding: 1.3em var(--contentMargin) 0em var(--contentMargin);
         overflow: auto;
         display: none;

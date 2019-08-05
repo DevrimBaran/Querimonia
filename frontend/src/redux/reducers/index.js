@@ -1,3 +1,4 @@
+import calculateEntities from '../../utility/calculateEntities';
 const defaults = {
   components: {
     id: 0,
@@ -158,6 +159,56 @@ function allExtractors (state = {}, action) {
     }
   }
 }
+function complaintStuff (state = {}, action) {
+  switch (action.type) {
+    case 'FETCH_SINGLE_COMPLAINT_START': {
+      return {
+        entities: {
+          byId: {},
+          ids: [],
+          calculated: []
+        },
+        components: [],
+        actions: [],
+        combinations: [],
+        log: [],
+        id: action.id,
+        counter: 0,
+        done: false
+      };
+    }
+    case 'FETCH_SINGLE_COMPLAINT_END': {
+      return {
+        ...state,
+        entities: {
+          byId: action.entities.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
+          ids: action.entities.map(item => item.id),
+          calculated: calculateEntities(action.entities)
+        },
+        components: action.components,
+        actions: action.actions,
+        combinations: action.combinations,
+        log: action.log,
+        counter: 0,
+        done: true
+      };
+    }
+    case 'MODIFY_ENTITY': {
+      return {
+        ...state,
+        entities: {
+          byId: action.data.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
+          ids: action.data.map(item => item.id),
+          calculated: calculateEntities(action.data)
+        },
+        counter: state.counter + 1
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
 
 function fetchable (state = { data: {}, filter: [], pagination: {} }, action, endpoint) {
   return {
@@ -174,7 +225,8 @@ const rootReducer = function (state, action) {
     config: fetchable(state.config, action, 'config'),
     components: fetchable(state.components, action, 'components'),
     currentConfig: currentConfig(state.currentConfig, action),
-    allExtractors: allExtractors(state.allExtractors, action)
+    allExtractors: allExtractors(state.allExtractors, action),
+    complaintStuff: complaintStuff(state.complaintStuff, action)
   };
 };
 

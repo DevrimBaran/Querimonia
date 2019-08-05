@@ -17,7 +17,8 @@ class Debug extends Component {
       return args[0];
     }
     render () {
-      return (<Content style={{ flexBasis: '100%' }}><pre>
+      const { ...passThrough } = { ...this.props };
+      return (<Content {...passThrough} style={{ flexBasis: '100%' }}><pre>
         {this.props.data ? pd.json(JSON.stringify(this.props.data)) : ('NO DATA')}
       </pre></Content>);
     }

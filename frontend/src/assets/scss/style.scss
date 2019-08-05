@@ -4,6 +4,7 @@
 @import "font-awesome/solid";
 @import "font-awesome/regular";
 @import 'fonts';
+@import 'lists';
 @import 'inputs';
 @import 'helpers';
 @import 'TextBuilder';
@@ -42,7 +43,7 @@
 .Block {
     overflow: auto;
     width: 100%;
-    padding-top: 10px;
+    padding: 10px 20px;
     border-right: 1px solid $grey;
     &:last-of-type {
         border-right: none;
@@ -58,6 +59,15 @@
     height: 100%;
     width: 100%;
     overflow: auto;
+    &.flex-column {
+        overflow-x: hidden;
+    }
+    &.flex-row {
+        overflow-y: hidden;
+    }
+    & > * {
+        padding: 10px 0;
+    }
 }
 
 .input-symbol-euro {
@@ -112,7 +122,6 @@
 
 .dynamic-textarea {
     position: relative;
-    overflow: hidden;
     textarea {
         resize: none;
         position: relative;
@@ -133,16 +142,22 @@
         overflow: hidden;
     }
 }
+.dot {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 5px;
+}
 .responsive-table {
     width: calc(100%);
     height: 100%;
     overflow: auto;
     table {
-        margin: 0px auto;
+        // margin: 0px auto;
+        position: relative;
+        width: 100%;
         border-spacing: 0px;
-    }
-    tr:hover {
-        filter: brightness(90%);
     }
     th {
         background: #179c7d;
@@ -157,13 +172,24 @@
         padding-right:10px;
     }
     td {
-        background: rgb(247, 247, 247);
+        background: rgba($black, 0.1);
         max-width: 600px;
-        text-align: center;
+        text-align: left;
         border-bottom-style: solid;
         border-width: 1px;
         padding-left:10px;
         padding-right:10px;
+    }
+    tr > td:nth-of-type(odd) {
+        background: rgba($black, 0.2);
+    }
+    tr:hover {
+        & > td {
+            background: rgba($black, 0.3);
+        }
+        & > td:nth-of-type(odd) {
+            background: rgba($black, 0.4);
+        }
     }
 }
 a > i {
@@ -225,5 +251,18 @@ a > i {
         margin: auto;
         display: block;
         margin-bottom: 1em;
+    }
+}
+
+.log {
+    padding: 5px;
+    .category {
+        font-weight: bold;
+    }
+    .datetime {
+    }
+    .message {
+        padding: 0 20px;
+        word-break: break-all;
     }
 }

@@ -71,9 +71,10 @@ class Input extends Component {
           input = (<select value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps}>
             {this.props.required || <option key='null' value=''>-</option>}
             {
-              values && values.map((value) => {
+              values && values.map((data, i) => {
+                const { value, label, ...passThrough } = (typeof data === 'object') ? { ...data } : { value: data, label: data };
                 return (
-                  <option key={value.value} value={value.value}>{value.label}</option>
+                  <option key={i} value={value} {...passThrough}>{label}</option>
                 );
               })
             }

@@ -23,9 +23,7 @@ import OpenApi from './components/OpenApi';
 import Api from './utility/Api';
 
 function init () {
-  console.log('INIT');
   return (dispatch, getState) => {
-    console.log('dispatch');
     Api.get('/api/config/allExtractors', {})
       .then((data) => {
         dispatch({
@@ -45,9 +43,7 @@ function init () {
 
 class App extends Component {
   componentDidMount = () => {
-    console.log('DID MOUNT');
     this.props.dispatch(init());
-    console.log('DID MOUNT');
   }
   render () {
     let basepath;
@@ -94,7 +90,7 @@ class App extends Component {
         </nav>
 
         <View exact path='/' component={Home} />
-        <View endpoint='complaints' path='/complaints/:id?' component={Complaints} />
+        <View endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
         <View endpoint='components' path='/components/:id?' component={Components} />
         <View endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
         <View path='/import' component={Import} />
