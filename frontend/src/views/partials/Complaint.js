@@ -24,7 +24,7 @@ import EditableEntityText from './EditableEntityText';
 function Header () {
   return (
     <thead>
-      <tr style={{ filter: 'brightness(100%)' }}>
+      <tr>
         <th>Anliegen</th>
         <th>Vorschau</th>
         <th>Emotion</th>
@@ -40,9 +40,9 @@ function List (data) {
   let sent = data.sentiment.tendency;
   return (
     <tr key={data.id}>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
       <td style={{ textAlign: 'left' }}><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
+      <td><Link to={'/complaints/' + data.id}>
         <span className='sentiment'>
           {getMaxKey(data.sentiment.emotion.probabilities)}
         </span></Link></td>
@@ -50,7 +50,7 @@ function List (data) {
         <span role='img' className='emotion'>
           {sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})
         </span></Link></td>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
+      <td><Link to={'/complaints/' + data.id}>
         <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</span></Link></td>
       <td><Link to={'/complaints/' + data.id}><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></Link></td>
     </tr>

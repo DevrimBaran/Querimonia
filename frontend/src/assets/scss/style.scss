@@ -141,9 +141,6 @@
         margin: 0px auto;
         border-spacing: 0px;
     }
-    tr:hover {
-        filter: brightness(90%);
-    }
     th {
         background: #179c7d;
         color: white;
@@ -157,7 +154,7 @@
         padding-right:10px;
     }
     td {
-        background: rgb(247, 247, 247);
+        background: rgba($black, 0.1);
         max-width: 600px;
         text-align: center;
         border-bottom-style: solid;
@@ -165,6 +162,18 @@
         padding-left:10px;
         padding-right:10px;
     }
+    tr > td:nth-of-type(odd) {
+        background: rgba($black, 0.17);
+    }
+    tr:hover {
+        & > td {
+            background: rgba($black, 0.25);
+        }
+        & > td:nth-of-type(odd) {
+            background: rgba($black, 0.35);
+        }
+    }
+
 }
 a > i {
     padding: 3px;
@@ -182,9 +191,7 @@ a > i {
     & > div, & > input {
         width: 100%;
     }
-    & > label, & > i {
-        padding: 0 5px;
-    }
+   
 }
 .deep-object {
     display: flex;
@@ -208,7 +215,8 @@ a > i {
 }
 .object > .object {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
 }
 .padding {
     padding: 0 30px;

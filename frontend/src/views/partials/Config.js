@@ -50,7 +50,7 @@ function List (data, dispatch, helpers) {
             : (<input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' />)
         }
       </td>
-      <td>{data.name}</td>
+      <td style={{ textAlign: 'left' }}>{data.name}</td>
       <td>{data.extractors.length}</td>
       <td>{data.classifiers.map((c) => c.name).join(', ')}</td>
       <td>{data.sentimentAnalyzer.name}</td>

@@ -40,7 +40,7 @@ function List (data, dispatch, helpers) {
         {helpers.remove(data.id)}
       </td>
       <td><h3>{data.id}</h3></td>
-      <td>{data.name}</td>
+      <td style={{ textAlign: 'left' }}>{data.name}</td>
       <td>{data.priority}</td>
       <td>{data.texts.length}</td>
       <td>{data.actions.map((action) => action.name).join(', ')}</td>
@@ -71,8 +71,13 @@ function Single (active, dispatch, helpers) {
       </Block>
       <Block>
         <Row vertical>
+          <h6 className='center'>Antwortvariationen</h6>
           <Content className='margin'>
-            <DeepObject save={save} filter={(key) => (key !== 'id' && key !== 'name' && key !== 'priority' && key !== 'rulesXml')} data={active} template={template} />
+            <DeepObject save={save} filter={(key) => (key === 'texts')} data={active} template={template} />
+          </Content>
+          <h6 className='center'>Aktionen</h6>
+          <Content className='margin'>
+            <DeepObject save={save} filter={(key) => (key === 'actions')} data={active} template={template} />
           </Content>
           <div className='center margin'>
             {helpers.save()}

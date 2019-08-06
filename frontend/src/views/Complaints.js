@@ -36,19 +36,27 @@ class Complaints extends Component {
   }
 
   activateComplaint = (active) => {
-    Api.get('/api/complaints/' + active.id + '/entities', '')
+    Api.get('/api/complaints/' + active.id + '/text', '')
       .catch(() => {
         return { status: 404 };
       })
       // eslint-disable-next-line no-return-assign
       .then((data) => {
-        this.setState({
-          active: {
-            ...active,
-            entities: data
-          },
-          loadingEntitiesFinished: true
-        });
+        Api.get('/api/complaints/' + active.id + '/entities', '')
+          .catch(() => {
+            return { status: 404 };
+          })
+        // eslint-disable-next-line no-return-assign
+          .then((entities) => {
+            this.setState({
+              active: {
+                ...active,
+                entities: entities,
+                text: data.text
+              },
+              loadingEntitiesFinished: true
+            });
+          });
       });
   };
 
@@ -139,6 +147,7 @@ class Complaints extends Component {
     let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
     if (active) {
       active.entities = [];
+      active.text = '';
     } return (
       <React.Fragment>
         { active ? (
