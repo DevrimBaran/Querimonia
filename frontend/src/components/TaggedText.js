@@ -62,6 +62,7 @@ class TaggedText extends Component {
       }
       entity.label = [{
         label: entity.label,
+        value: entity.value,
         color: entity.color,
         id: id
       }];
