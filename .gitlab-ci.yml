@@ -18,12 +18,11 @@ build-frontend-dev: &base-frontend
     - shell
   script:
     - cd frontend/
-    - chown -R gitlab-runner build/
     - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
     - buildpath=$(pwd)
     - mkdir build
     - docker run -i -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-dev
-    - chown -R gitlab-runner build/
+    - sudo chown -R gitlab-runner:gitlab-runner .
   artifacts:
     paths:
       - frontend/build/
@@ -40,7 +39,7 @@ build-frontend-mock:
     - buildpath=$(pwd)
     - mkdir mock
     - docker run -i -v $buildpath/mock:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-mock
-    - chown -R gitlab-runner mock/
+    - sudo chown -R gitlab-runner:gitlab-runner .
   artifacts:
     paths:
       - frontend/mock/
@@ -54,7 +53,7 @@ build-frontend-master:
     - buildpath=$(pwd)
     - mkdir build
     - docker run -i -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-prod
-    - chown -R gitlab-runner build/
+    - sudo chown -R gitlab-runner:gitlab-runner .
   allow_failure: false
   only:
     - master
