@@ -46,7 +46,7 @@ build-frontend-dev-featurebranch:
       - frontend/build/
   allow_failure: true
   only:
-    - /^frontend.*$/
+    - /^frontend.+$/
 
 build-frontend-mock:
   <<: *base-frontend
@@ -75,7 +75,7 @@ build-frontend-mock-featurebranch:
       - frontend/mock/
   allow_failure: true
   only:
-    - /^frontend.*$/
+    - /^frontend.+$/
 
 build-frontend-master:
   <<: *base-frontend
