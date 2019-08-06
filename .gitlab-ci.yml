@@ -34,7 +34,6 @@ build-frontend-mock:
   <<: *base-frontend
   script:
     - cd frontend/
-    - chown -R gitlab-runner mock/
     - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
     - buildpath=$(pwd)
     - mkdir mock
@@ -48,7 +47,6 @@ build-frontend-master:
   <<: *base-frontend
   script:
     - cd frontend/
-    - chown -R gitlab-runner build/
     - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
     - buildpath=$(pwd)
     - mkdir build
