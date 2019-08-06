@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_restplus import Resource, Api
+from werkzeug.exceptions import BadRequest
 import numpy as np
 import sentiment_analyse
 import emotion_analyse
@@ -12,35 +13,60 @@ api = Api(
     app,
     version="0.1",
     title="Python API",
-    description="API für Wortvektoren und Sentimentanaylse",
+    description="API für Wortvektoren, Sentiment- und Emotionanalyse",
     doc='/inf/swagger-ui-python/'
 )
+
+
+class Error(Exception):
+    """Base class for other exceptions"""
+    pass
+
+
+class WrongKeyError(Error):
+    """Raised when Key is wrong, not in "text" form """
+    pass
+
+
+class MissingValueError(Error):
+    """Raised when Key is wrong, not in "text" form """
+    pass
 
 
 @api.route("/python/sentiment_analyse")
 class Sentiment(Resource):
     def post(self):
-        # get complaint text
-        content = request.get_json()
-        if "text" not in content:
-            # TODO create error class
-            return jsonify({"error": "wrong json"})
-        query = content["text"]
-        sentiment_value = sentiment_analyse.main(query)
-        return sentiment_value
+        try:
+            content = request.get_json()
+            if "text" not in content:
+                raise WrongKeyError
+            query = content["text"]
+            sentiment_value = sentiment_analyse.main(query)
+            return sentiment_value
+        except WrongKeyError:
+            return jsonify({"WrongKeyError": "Use text as key"})
+        except TypeError:
+            return jsonify({"TypeError": "Wrong Json Value Format"})
+        except Error:
+            return jsonify({"UnknownError": "Error isn't excepted"})
 
 
 @api.route("/python/emotion_analyse")
 class Emotion(Resource):
     def post(self):
-        # get complaint text
-        content = request.get_json()
-        if "text" not in content:
-            # TODO create error class
-            return jsonify({"error": "wrong json"})
-        query = content["text"]
-        emotion_value = emotion_analyse.main(query)
-        return emotion_value
+        try:
+            content = request.get_json()
+            if "text" not in content:
+                raise WrongKeyError
+            query = content["text"]
+            emotion_value = emotion_analyse.main(query)
+            return emotion_value
+        except WrongKeyError:
+            return jsonify({"WrongKeyError": "Use text as key"})
+        except TypeError:
+            return jsonify({"TypeError": "Wrong Json Value Format"})
+        except Error:
+            return jsonify({"UnknownError": "Error isn't excepted"})
 
 
 @api.route('/python/word_to_vec')
