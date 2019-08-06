@@ -26,6 +26,24 @@ build-frontend-dev: &base-frontend
   artifacts:
     paths:
       - frontend/build/
+  allow_failure: false
+  only:
+    - frontend
+
+build-frontend-dev-featurebranch:
+  stage: build
+  tags:
+    - shell
+  script:
+    - cd frontend/
+    - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
+    - buildpath=$(pwd)
+    - mkdir build
+    - docker run -i -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-dev
+    - sudo chown -R gitlab-runner:gitlab-runner .
+  artifacts:
+    paths:
+      - frontend/build/
   allow_failure: true
   only:
     - /^frontend.*$/
@@ -42,6 +60,22 @@ build-frontend-mock:
   artifacts:
     paths:
       - frontend/mock/
+
+build-frontend-mock-featurebranch:
+  <<: *base-frontend
+  script:
+    - cd frontend/
+    - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
+    - buildpath=$(pwd)
+    - mkdir mock
+    - docker run -i -v $buildpath/mock:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-mock
+    - sudo chown -R gitlab-runner:gitlab-runner .
+  artifacts:
+    paths:
+      - frontend/mock/
+  allow_failure: true
+  only:
+    - /^frontend.*$/
 
 build-frontend-master:
   <<: *base-frontend
@@ -76,7 +110,6 @@ deploy-frontend-mock:
   tags:
     - shell
   script:
-    - chmod -R +rw frontend/mock/
     - cp -r frontend/mock/* /home/beschwerdemanagement/export/frontend-mock/
   allow_failure: true
   only:
@@ -87,7 +120,6 @@ deploy-frontend-dev:
   tags:
     - shell
   script:
-    - chmod -R +rw frontend/build/
     - cp -r frontend/build/* /home/beschwerdemanagement/export/frontend-dev/
   allow_failure: true
   only:
