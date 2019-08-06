@@ -202,6 +202,17 @@ public class ComplaintManager {
   }
 
   /**
+   * Returns the text of a complaint.
+   *
+   * @param complaintId the id of the complaint
+   *
+   * @return the text of the complaint.
+   */
+  public TextInput getText(long complaintId) {
+    return new TextInput(getComplaint(complaintId).getText());
+  }
+
+  /**
    * Method for updating complaints.
    *
    * @see ComplaintController#updateComplaint(long, ComplaintUpdateRequest) updateComplaint

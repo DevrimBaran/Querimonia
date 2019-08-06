@@ -148,6 +148,23 @@ public class ComplaintController {
   }
 
   /**
+   * Returns the text of a complaint.
+   *
+   * @param complaintId the id of the complaint.
+   *
+   * @return a response entity with the following contents:
+   * <ul>
+   *   <li>status code 200 with the complaint text on success</li>
+   *   <li>status code 404 when the complaint with the given id does not exist</li>
+   *   <li>status code 500 on an unexpected server error.</li>
+   * </ul>
+   */
+  @GetMapping("/api/complaints/{complaintId}/text")
+  public ResponseEntity<?> getText(@PathVariable long complaintId) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.getText(complaintId));
+  }
+
+  /**
    * With this method sentiment, subject and state of a complaint can be updated.
    *
    * @param complaintId   the id of the complaint that should be updated.

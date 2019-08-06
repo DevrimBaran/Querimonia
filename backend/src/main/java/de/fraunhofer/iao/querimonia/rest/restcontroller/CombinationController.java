@@ -46,7 +46,7 @@ public class CombinationController {
    */
   @GetMapping("api/combinations")
   public ResponseEntity<?> getAllCombinations() {
-    return ControllerUtility.tryAndCatch(() -> lineStopCombinationManager.getAllCombinations());
+    return ControllerUtility.tryAndCatch(lineStopCombinationManager::getAllCombinations);
   }
 
   /**
