@@ -144,6 +144,7 @@ class Complaints extends Component {
     let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
     if (active) {
       active.entities = [];
+      active.text = '';
     } return (
       <React.Fragment>
         { active ? (

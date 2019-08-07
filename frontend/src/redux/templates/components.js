@@ -19,7 +19,6 @@ export default {
     },
     texts: {
       type: 'array',
-      label: 'Antwortvariationen',
       children: {
         type: 'textarea',
         label: '#$i',
@@ -31,7 +30,6 @@ export default {
     },
     actions: {
       type: 'array',
-      label: 'Aktionen',
       children: {
         type: 'object',
         label: '#$i',
