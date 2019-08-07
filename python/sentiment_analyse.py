@@ -94,26 +94,7 @@ def parse_arg():
 # for flask
 def main(query):
     value = round(positive_sentiment(query) + negative_sentiment(query), 2)
-    if value > 0.8:
-        return {'Glücklich': value}
-    elif value <= 0.8 and value > 0.6:
-        return {'Fröhlich': value}
-    elif value <= 0.6 and value > 0.4:
-        return {'Zufrieden': value}
-    elif value <= 0.4 and value > 0.1:
-        return {'Erfreut': value}
-
-    elif value <= 0.1 and value > -0.2:
-        return {'Neutral': 0}
-
-    elif value <= -0.2 and value > -0.4:
-        return {'Betrübt': value}
-    elif value <= -0.4 and value > -0.6:
-        return {'Unzufrieden': value}
-    elif value <= -0.6 and value > -0.8:
-        return {'Verärgert': value}
-    elif value <= -0.8:
-        return {'Sauer': value}
+    return {'sentiment': value}
 
 
 if __name__ == '__main__':
@@ -125,7 +106,7 @@ if __name__ == '__main__':
     # test_neg = 'Ich mag Zerstörung und Gewalt und hasse Glück'
     # neg_pos = 'Ich mag keine Pünktlichkeit und mag Höflichkeit nicht'
     # neg_neg = 'Ich mag keine Verspätungen und finde Ausfälle nicht schön'
-    # print(main(test))
+    # print(main(test_pos))
 
     # for cmd
     # print("Sentiment Value is: " + (str)(parse_arg()))
