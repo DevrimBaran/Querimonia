@@ -89,7 +89,13 @@ h1 {
     transform: translateX(-50%);
     text-align: center;
 }
-
+.preferEntityCheckbox {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-left: 25px;
+    vertical-align: middle;
+}
 .export-button {
     color: #2295f3;
     text-align: center;

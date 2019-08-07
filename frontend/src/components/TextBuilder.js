@@ -59,13 +59,16 @@ class TextBuilder extends Component {
     const component = this.state.components.find((component) => {
       return component.component.id === componentId;
     });
-    const variableRegex = /\${.*}/g;
+    const variableRegex = /\${[a-zA-U0-9]*}/g;
     const variables = text.match(variableRegex) || [];
     variables.forEach(variable => {
       const preferredEntity = component.entities.find(entity => entity.preferred && `\${${entity.label}}` === variable);
       const firstSuitableEntity = component.entities.find(entity => `\${${entity.label}}` === variable);
-      const componentEntity = component.activeEntityLabel || (preferredEntity ? preferredEntity.value : false) || (firstSuitableEntity ? firstSuitableEntity.value : false) || null;
-      text = text.replace(variable, componentEntity);
+      const componentEntityLabel = component.activeEntityLabel || (preferredEntity ? preferredEntity.value : false) || (firstSuitableEntity ? firstSuitableEntity.value : false) || null;
+      const entity = component.entities.find(entity => entity.value === componentEntityLabel);
+      text = text.replace(variable, componentEntityLabel);
+      entity.start = text.indexOf(componentEntityLabel);
+      entity.end = text.indexOf(componentEntityLabel) + componentEntityLabel.length;
     });
     return text;
   };
@@ -80,6 +83,7 @@ class TextBuilder extends Component {
   };
 
   setData = (data) => {
+    console.log(data);
     const components = data.components;
     const actions = data.actions;
     components.forEach((component) => {

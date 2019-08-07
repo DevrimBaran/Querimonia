@@ -20,11 +20,13 @@ import Input from '../../components/Input';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import EditableEntityText from './EditableEntityText';
+import Log from '../../components/Log';
+import Combinations from '../../components/Combinations';
 
 function Header () {
   return (
     <thead>
-      <tr style={{ filter: 'brightness(100%)' }}>
+      <tr>
         <th>Anliegen</th>
         <th>Vorschau</th>
         <th>Emotion</th>
@@ -40,9 +42,9 @@ function List (data) {
   let sent = data.sentiment.tendency;
   return (
     <tr key={data.id}>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
       <td style={{ textAlign: 'left' }}><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
+      <td><Link to={'/complaints/' + data.id}>
         <span className='sentiment'>
           {getMaxKey(data.sentiment.emotion.probabilities)}
         </span></Link></td>
@@ -50,7 +52,7 @@ function List (data) {
         <span role='img' className='emotion'>
           {sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})
         </span></Link></td>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
+      <td><Link to={'/complaints/' + data.id}>
         <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</span></Link></td>
       <td><Link to={'/complaints/' + data.id}><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></Link></td>
     </tr>
@@ -77,6 +79,9 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
               </div>
               <div label='Original'>
                 {active.text}
+              </div>
+              <div label='Logs'>
+                <Log complaintId={active.id} />
               </div>
             </Tabbed>
           </Content>
@@ -175,10 +180,15 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                       text: '' + active.text.substring(entity['start'], entity['end']),
                       entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'], color: entity['color'] }]
                     }} />
+                    <Input key={i} type={'checkbox'} class={'preferEntityCheckbox'} />
                   </li>;
                 })
               }
             </ul>) : ''}
+          </Content>
+          <Collapsible label='Kombinationen' />
+          <Content>
+            <Combinations complaintId={active.id} />
           </Content>
         </Row>
       </Block>)
