@@ -26,9 +26,7 @@ public class ResponseController {
    *
    * @return response suggestion of the complaint
    */
-  @GetMapping("api/responses/{complaintId}")
-  @RequestMapping(value = "api/complaints/{complaintId}/response",
-                  method = RequestMethod.GET)
+  @GetMapping({"api/responses/{complaintId}", "api/complaints/{complaintId}/response"})
   public ResponseEntity<?> getResponse(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() ->
         complaintManager.getComplaint(complaintId).getResponseSuggestion());
