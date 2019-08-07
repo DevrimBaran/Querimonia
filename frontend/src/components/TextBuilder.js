@@ -83,6 +83,7 @@ class TextBuilder extends Component {
   };
 
   setData = (data) => {
+    console.log(data);
     const components = data.components;
     const actions = data.actions;
     components.forEach((component) => {

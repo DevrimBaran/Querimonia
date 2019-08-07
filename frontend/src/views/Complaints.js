@@ -36,20 +36,25 @@ class Complaints extends Component {
   }
 
   activateComplaint = (active) => {
-    Api.get('/api/complaints/' + active.id + '/entities', '')
+    let requests = [];
+    requests.push(Api.get('/api/complaints/' + active.id + '/entities', '')
       .catch(() => {
         return { status: 404 };
-      })
-      // eslint-disable-next-line no-return-assign
-      .then((data) => {
-        this.setState({
-          active: {
-            ...active,
-            entities: data
-          },
-          loadingEntitiesFinished: true
-        });
+      }));
+    requests.push(Api.get('/api/complaints/' + active.id + '/text', '')
+      .catch(() => {
+        return { status: 404 };
+      }));
+    Promise.all(requests).then((values) => {
+      this.setState({
+        active: {
+          ...active,
+          entities: values.find(value => Array.isArray(value)),
+          text: values.find(value => !Array.isArray(value)).text
+        },
+        loadingEntitiesFinished: true
       });
+    });
   };
 
   /**

@@ -20,6 +20,8 @@ import Input from '../../components/Input';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import EditableEntityText from './EditableEntityText';
+import Log from '../../components/Log';
+import Combinations from '../../components/Combinations';
 
 function Header () {
   return (
@@ -77,6 +79,9 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
               </div>
               <div label='Original'>
                 {active.text}
+              </div>
+              <div label='Logs'>
+                <Log complaintId={active.id} />
               </div>
             </Tabbed>
           </Content>
@@ -175,10 +180,15 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                       text: '' + active.text.substring(entity['start'], entity['end']),
                       entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'], color: entity['color'] }]
                     }} />
+                    <Input key={i} type={'checkbox'} class={'preferEntityCheckbox'} />
                   </li>;
                 })
               }
             </ul>) : ''}
+          </Content>
+          <Collapsible label='Kombinationen' />
+          <Content>
+            <Combinations complaintId={active.id} />
           </Content>
         </Row>
       </Block>)
