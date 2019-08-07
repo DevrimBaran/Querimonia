@@ -23,8 +23,7 @@ class Log extends Component {
       return <div>
         <div>{`Kategorie: ${key.category}`}</div>
         <div>{`Nachricht: ${key.message}`}</div>
-        <div>{`Datum: ${key.date}`}</div>
-        <div>{`Zeit: ${key.date}`}</div>
+        <div>{`Datum: ${key.date} ${key.time}`}</div>
         -----------------
       </div>;
     });
