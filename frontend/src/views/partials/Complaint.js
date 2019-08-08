@@ -96,6 +96,9 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
             <b> ID: </b>
             {active.id}
             <br />
+            <b> Konfiguration: </b>
+            <Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>
+            <br />
             <b> Kategorie: </b>
             {
               active.properties.map((properties, index) =>
