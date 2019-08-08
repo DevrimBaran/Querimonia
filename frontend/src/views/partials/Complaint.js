@@ -191,7 +191,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
             <Combinations complaintId={active.id} />
           </Content>
         </Row>
-      </Block>)
+      </Block>
     </React.Fragment>
   ) : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>);
 }
