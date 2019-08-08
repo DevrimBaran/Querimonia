@@ -49,11 +49,11 @@ function List (data) {
           {getMaxKey(data.sentiment.emotion.probabilities)}
         </span></Link></td>
       <td><Link to={'/complaints/' + data.id}>
-        <span role='img' className='emotion'>
-          {sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})
+        <span style={{ fontSize: '140%' }} role='img' className='emotion'>
+          {getSmiley(sent, false)}
         </span></Link></td>
       <td><Link to={'/complaints/' + data.id}>
-        <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</span></Link></td>
+        <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => (properties.probabilities[properties.value] ? properties.value : '---')).join(', ')}</span></Link></td>
       <td><Link to={'/complaints/' + data.id}><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></Link></td>
     </tr>
   );
@@ -101,7 +101,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
               active.properties.map((properties, index) =>
                 !editCategorieBool ? (
                   <span>
-                    <span id='subjects'>{properties.value}</span>
+                    <span id='subjects'>{(properties.probabilities[properties.value] ? properties.value : '---')}</span>
                     <Tooltip htmlFor='subjects'>
                       {Object.keys(properties.probabilities).map(subject => <div key={subject}>{`${subject}: ${properties.probabilities[subject]}`} <br /></div>)}
                     </Tooltip>
@@ -125,9 +125,9 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
             {
               !editTendencyBool ? (
                 <span>
-                  <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'}</span>
+                  <span style={{ fontSize: '120%' }} id='sentiments' role='img'>{getSmiley(sent, false)}</span>
                   <Tooltip htmlFor='sentiments'>
-                    {sent.toFixed(2)}
+                    {getSmiley(sent, true) + ' (' + sent.toFixed(2) + ')'}
                   </Tooltip>
                   <i className={'far fa-edit'} onClick={editTendency.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
@@ -213,6 +213,21 @@ function getMaxKey (data) {
     }
   }
   return (keys[maxIndex]);
+}
+
+/**
+ * returns a representation of the tendency
+ * @param {*} value tendency-value
+ * @param {*} text boolean whether text or emoji should be displayed
+ */
+function getSmiley (value, text) {
+  let emotions = [];
+  if (text) {
+    emotions = ['Glücklich', 'Fröhlich', 'Zufrieden', 'Erfreut', 'Neutral', 'Betrübt', 'Unzufrieden', 'Verärgert', 'Sauer'];
+  } else {
+    emotions = ['😍', '😁', '😀', '🙂', '😐', '😞', '☹️', '😠', '🤬'];
+  }
+  return emotions[(value > 0.8 ? 0 : value > 0.6 ? 1 : value > 0.4 ? 2 : value > 0.1 ? 3 : value > -0.2 ? 4 : value > -0.4 ? 5 : value > -0.6 ? 6 : value > -0.8 ? 7 : 8)];
 }
 
 export default { Header, List, Single };
