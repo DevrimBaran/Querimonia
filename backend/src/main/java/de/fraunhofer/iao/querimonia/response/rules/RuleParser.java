@@ -70,7 +70,7 @@ public class RuleParser {
 
     switch (tag) {
       case "Property":
-        return new PropertyRule(element.getAttribute("name"), element.getAttribute("value"));
+        return new PropertyRule(element.getAttribute("name"), element.getAttribute("matches"));
       case "Sentiment":
         return getSentimentRule(element);
       case "UploadDate":

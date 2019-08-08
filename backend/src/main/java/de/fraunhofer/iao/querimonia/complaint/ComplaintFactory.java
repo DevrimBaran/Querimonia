@@ -99,8 +99,8 @@ public class ComplaintFactory {
     var tendency = extractTendency(complaintBuilder, sentimentAnalyzerDefinition);
     var sentiment = new Sentiment(emotionProperty, tendency);
     var wordList = stopWordFilter.filterStopWords(complaintText);
-
     createResponse(complaintBuilder);
+
     return complaintBuilder
         .setSentiment(sentiment)
         .setProperties(complaintProperties)
@@ -170,7 +170,6 @@ public class ComplaintFactory {
     Stream<NamedEntity> entityStream = configuration
         .getExtractors()
         .stream()
-        .parallel()
         .map(definition -> extractEntitiesAndLog(complaintBuilder, complaintText, definition))
         .flatMap(List::stream)
         .distinct();
