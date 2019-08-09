@@ -15,6 +15,7 @@ import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.log.LogCategory;
 import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
@@ -178,13 +179,15 @@ public class ComplaintManager {
   /**
    * It called when the analysis throws an exception. It stores the complaint with the error state.
    */
+  @SuppressWarnings("SameReturnValue")
   @NonNull
-  private ComplaintBuilder onException(ComplaintBuilder complaintBuilder, Throwable e) {
+  private Void onException(ComplaintBuilder complaintBuilder, Throwable e) {
     complaintBuilder
         .setState(ERROR)
         .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
+    e.printStackTrace();
     storeComplaint(complaintBuilder.createComplaint());
-    return complaintBuilder;
+    return null;
   }
 
 
@@ -196,6 +199,17 @@ public class ComplaintManager {
   public synchronized Complaint getComplaint(long complaintId) {
     return complaintRepository.findById(complaintId)
         .orElseThrow(() -> getNotFoundException(complaintId));
+  }
+
+  /**
+   * Returns the text of a complaint.
+   *
+   * @param complaintId the id of the complaint
+   *
+   * @return the text of the complaint.
+   */
+  public TextInput getText(long complaintId) {
+    return new TextInput(getComplaint(complaintId).getText());
   }
 
   /**
@@ -379,16 +393,7 @@ public class ComplaintManager {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
-
-    // check validity of entity
-    int start = entity.getStartIndex();
-    int end = entity.getEndIndex();
-    if (start < 0 || end <= start || end > complaint.getText().length()) {
-      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
-          + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
-          + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
-          + "Entität");
-    }
+    checkValidityOfEntity(entity, complaint);
 
     List<NamedEntity> complaintEntities = builder.getEntities();
     if (!complaintEntities.contains(entity)) {
@@ -403,7 +408,53 @@ public class ComplaintManager {
 
     complaint = builder.createComplaint();
     storeComplaint(complaint);
-    return complaint.getEntities();
+    // reload for entity id that is set by the database (otherwise the new entity has id 0)
+    return getComplaint(complaintId).getEntities();
+  }
+
+  /**
+   * Replaces an existing named entity of a complaint with a new entity.
+   *
+   * @param complaintId the id of the complaint.
+   * @param entityId    the id of the entity.
+   * @param entity      the new entity that replaces the entity with the given id.
+   *
+   * @return a updated list of entities of the given complaint.
+   */
+  public List<NamedEntity> updateEntity(long complaintId, long entityId, NamedEntity entity) {
+    Complaint complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+    checkValidityOfEntity(entity, complaint);
+
+    ComplaintBuilder builder = new ComplaintBuilder(complaint);
+    NamedEntityBuilder entityBuilder = new NamedEntityBuilder(entity);
+    entityBuilder.setId(entityId);
+    var entities = builder.getEntities();
+
+    // replace the entity with the given id with the new entity
+    entities.replaceAll(namedEntity -> {
+      if (namedEntity.getId() == entityId) {
+        return entityBuilder.createNamedEntity();
+      }
+      return namedEntity;
+    });
+    // store changes
+    complaint = builder.createComplaint();
+    storeComplaint(complaint);
+    // reload for entity id that is set by the database (otherwise the new entity has id 0)
+    return getComplaint(complaintId).getEntities();
+  }
+
+  private void checkValidityOfEntity(NamedEntity entity, Complaint complaint) {
+    // check validity of entity
+    int start = entity.getStartIndex();
+    int end = entity.getEndIndex();
+    if (start < 0 || end <= start || end > complaint.getText().length()) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
+          + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
+          + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
+          + "Entität");
+    }
   }
 
   /**
@@ -529,21 +580,23 @@ public class ComplaintManager {
    */
   private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
     var forbiddenStatesList = Arrays.asList(forbiddenStates);
+    var exception = new IllegalStateException();
+
     if (forbiddenStatesList.contains(CLOSED)
         && complaint.getState().equals(CLOSED)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
-          + "werden, da sie bereits geschlossen ist.", "Beschwerde geschlossen");
+          + "werden, da sie bereits geschlossen ist.", exception, "Beschwerde geschlossen");
     }
     if (forbiddenStatesList.contains(ANALYSING)
         && complaint.getState().equals(ANALYSING)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
-          + "werden, während sie analysiert wird!", "Beschwerde wird analysiert");
+          + "werden, während sie analysiert wird!", exception, "Beschwerde wird analysiert");
     }
     if (forbiddenStatesList.contains(ERROR)
         && complaint.getState().equals(ERROR)) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Beschwerde kann nicht modifiziert "
           + "werden, da die Analyse nicht abgeschlossen werden konnte. Starten Sie die Analyse "
-          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.",
+          + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.", exception,
           "Beschwerde wurde nicht analysiert.");
     }
   }

@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.response.rules;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.lang.Nullable;
 
 import java.util.List;

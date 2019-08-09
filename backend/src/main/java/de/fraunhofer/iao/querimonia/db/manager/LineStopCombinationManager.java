@@ -15,7 +15,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class LineStopCombinationManager {
 
-  private LineStopCombinationRepository lineStopCombinationRepository;
+  private final LineStopCombinationRepository lineStopCombinationRepository;
 
   @Autowired
   public LineStopCombinationManager(

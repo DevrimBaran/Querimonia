@@ -4,7 +4,6 @@ import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
  */
 public class PredecessorRule implements Rule {
 
-  private String position;
+  private final String position;
   private final String predecessorRegex;
 
   /**

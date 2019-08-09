@@ -22,11 +22,22 @@ public class ComplaintUpdateRequest {
   @Nullable
   private final ComplaintState newState;
 
+  /**
+   * Creates a new complaint update request.
+   */
   @JsonCreator
-  public ComplaintUpdateRequest(@Nullable @JsonProperty("sentiment") String newEmotion,
-                                @Nullable @JsonProperty("tendency") Double newTendency,
-                                @Nullable @JsonProperty("subject") String newSubject,
-                                @Nullable @JsonProperty("state") ComplaintState newState) {
+  public ComplaintUpdateRequest(@Nullable
+                                @JsonProperty("sentiment")
+                                    String newEmotion,
+                                @Nullable
+                                @JsonProperty("tendency")
+                                    Double newTendency,
+                                @Nullable
+                                @JsonProperty("subject")
+                                    String newSubject,
+                                @Nullable
+                                @JsonProperty("state")
+                                    ComplaintState newState) {
     this.newEmotion = newEmotion;
     this.newTendency = newTendency;
     this.newSubject = newSubject;

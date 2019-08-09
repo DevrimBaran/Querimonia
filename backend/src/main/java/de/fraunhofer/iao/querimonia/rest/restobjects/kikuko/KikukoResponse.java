@@ -10,18 +10,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-                        "pipelines",
-                        "content"
-                    })
+@JsonPropertyOrder(value = {
+    "pipelines",
+    "content"
+})
 public class KikukoResponse {
 
   private LinkedHashMap<String, List<FoundEntity>> pipelines;
   private String content;
 
   @JsonCreator
-  public KikukoResponse(@JsonProperty("pipelines") LinkedHashMap<String, List<FoundEntity>> pipelines,
-                        @JsonProperty("content") String content) {
+  public KikukoResponse(@JsonProperty("pipelines")
+                            LinkedHashMap<String, List<FoundEntity>> pipelines,
+                        @JsonProperty("content")
+                            String content) {
     this.pipelines = pipelines;
     this.content = content;
   }
@@ -45,6 +47,6 @@ public class KikukoResponse {
   @Override
   public String toString() {
     return MessageFormat.format("KikukoResponse'{'pipelines={0}, content=''{1}'''}'",
-                                pipelines, content);
+        pipelines, content);
   }
 }

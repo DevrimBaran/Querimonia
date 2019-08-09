@@ -1,8 +1,11 @@
 openapi: 3.0.1
 info:
   title: Stupro 2019 Querimonia API
-  description: Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.7.0
+  description: >
+    Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
+    beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
+    neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
+  version: 0.7.4
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
@@ -30,7 +33,10 @@ paths:
       tags:
         - complaints
       summary: Gibt Beschwerden zurück, die auf dem Server gespeichert sind.
-      description: Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und die Seite der Beschwerden bestimmt werden.
+      description: >
+        Gibt Beschwerden zurück, die in der Datenbank gespeichert wurden. Es können über die
+        Parameter Filter angewandt werden, die Sortierung angegeben werden und die Anzahl und die
+        Seite der Beschwerden bestimmt werden.
       parameters:
         - $ref: '#/components/parameters/CountParameter'
         - $ref: '#/components/parameters/PageParameter'
@@ -45,14 +51,189 @@ paths:
       operationId: getComplaints
       responses:
         200:
-          description: Erfolgreiche Anfrage.
+          description: Erfolgreiche Anfrage. Die Beschwerden werden entsprechend den Paramtern zurückgegeben.
           content:
             application/json:
               schema:
                 type: array
                 items:
                   $ref: '#/components/schemas/Complaint'
-                # TODO add examples
+                example:
+                  - id: 583
+                    preview: In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie
+                      CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann
+                      so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig
+                      und gehäuft Bus
+                    state: NEW
+                    configuration:
+                      id: 94
+                      name: Volle Konfiguration
+                      extractors:
+                        - name: QuerimoniaExtract
+                          type: KIKUKO_DOMAIN
+                          colors:
+                            - label: Name
+                              color: "#ffd666"
+                            - label: Ort
+                              color: "#90ff8a"
+                            - label: Linie
+                              color: "#aff4fa"
+                            - label: Haltestelle
+                              color: "#cc89f5"
+                            - label: Datum
+                              color: "#cdc0cf"
+                            - label: Eingangsdatum
+                              color: "#e9bdf0"
+                            - label: Geldbetrag
+                              color: "#f5ff8a"
+                      classifiers:
+                        - type: KIKUKO_CLASSIFIER
+                          name: Beschwerde3Klassifikator2
+                          propertyName: Kategorie
+                      sentimentAnalyzer:
+                        type: QUERIMONIA_SENTIMENT
+                        name: Default
+                      emotionAnalyzer:
+                        type: QUERIMONIA_EMOTION
+                        name: Default
+                      active: true
+                    receiveDate: '2019-08-05'
+                    receiveTime: '18:59:02'
+                    sentiment:
+                      emotion:
+                        value: Ueberraschung
+                        name: Emotion
+                        probabilities:
+                          Freude: 17.61
+                          Trauer: 29.65
+                          Ueberraschung: 52.74
+                        setByUser: false
+                      tendency: 0.1
+                    properties:
+                      - value: Fahrt nicht erfolgt
+                        name: Kategorie
+                        probabilities:
+                          Fahrt nicht erfolgt: 0.6
+                          Sonstiges: 0.4
+                          Fahrer unfreundlich: 0
+                        setByUser: false
+                  - id: 359
+                    preview: Vielen Dank für Ihre Rückmeldung, es hat mich sehr gefreut, dass Sie meine
+                      Kritik an den Fahrer weitergeleitet haben. Das Busfahren ist weiterhin keine Freude.
+                      Heute Morgen fiel der CE 62 aus um 08.13 Uhr in Richtung statt. Und heute nachmittag
+                      der C
+                    state: NEW
+                    configuration:
+                      id: 94
+                      name: Volle Konfiguration
+                      extractors:
+                        - name: QuerimoniaExtract
+                          type: KIKUKO_DOMAIN
+                          colors:
+                            - label: Name
+                              color: "#ffd666"
+                            - label: Ort
+                              color: "#90ff8a"
+                            - label: Linie
+                              color: "#aff4fa"
+                            - label: Haltestelle
+                              color: "#cc89f5"
+                            - label: Datum
+                              color: "#cdc0cf"
+                            - label: Eingangsdatum
+                              color: "#e9bdf0"
+                            - label: Geldbetrag
+                              color: "#f5ff8a"
+                      classifiers:
+                        - type: KIKUKO_CLASSIFIER
+                          name: Beschwerde3Klassifikator2
+                          propertyName: Kategorie
+                      sentimentAnalyzer:
+                        type: QUERIMONIA_SENTIMENT
+                        name: Default
+                      emotionAnalyzer:
+                        type: QUERIMONIA_EMOTION
+                        name: Default
+                      active: true
+                    receiveDate: '2019-08-04'
+                    receiveTime: '21:55:33'
+                    sentiment:
+                      emotion:
+                        value: Freude
+                        name: Emotion
+                        probabilities:
+                          Verachtung: 5.64
+                          Freude: 43.49
+                          Trauer: 18.31
+                          Ueberraschung: 32.56
+                        setByUser: false
+                      tendency: 0.5
+                    properties:
+                      - value: Fahrt nicht erfolgt
+                        name: Kategorie
+                        probabilities:
+                          Fahrt nicht erfolgt: 0
+                          Sonstiges: 0
+                          Fahrer unfreundlich: 0
+                        setByUser: false
+                  - id: 269
+                    preview: Sehr geehrte Damen und Herren, am heutigen Tag wollte ich die Linie 647
+                      um 8.20 Uhr von Hattingen in Richtung Wuppertal nutzen. Als ich um 8.15 Uhr am
+                      Busbahnhof ankam, informierten mich weitere Fahrgäste, dass der Bus um 7.40 Uhr
+                      bereits ausgefallen
+                    state: NEW
+                    configuration:
+                      id: 94
+                      name: Volle Konfiguration
+                      extractors:
+                        - name: QuerimoniaExtract
+                          type: KIKUKO_DOMAIN
+                          colors:
+                            - label: Name
+                              color: "#ffd666"
+                            - label: Ort
+                              color: "#90ff8a"
+                            - label: Linie
+                              color: "#aff4fa"
+                            - label: Haltestelle
+                              color: "#cc89f5"
+                            - label: Datum
+                              color: "#cdc0cf"
+                            - label: Eingangsdatum
+                              color: "#e9bdf0"
+                            - label: Geldbetrag
+                              color: "#f5ff8a"
+                      classifiers:
+                        - type: KIKUKO_CLASSIFIER
+                          name: Beschwerde3Klassifikator2
+                          propertyName: Kategorie
+                      sentimentAnalyzer:
+                        type: QUERIMONIA_SENTIMENT
+                        name: Default
+                      emotionAnalyzer:
+                        type: QUERIMONIA_EMOTION
+                        name: Default
+                      active: true
+                    receiveDate: '2019-08-04'
+                    receiveTime: '16:14:41'
+                    sentiment:
+                      emotion:
+                        value: Trauer
+                        name: Emotion
+                        probabilities:
+                          Verachtung: 23.53
+                          Trauer: 76.47
+                        setByUser: false
+                      tendency: -0.3
+                    properties:
+                      - value: Fahrt nicht erfolgt
+                        name: Kategorie
+                        probabilities:
+                          Fahrt nicht erfolgt: 0.6
+                          Sonstiges: 0.3
+                          Fahrer unfreundlich: 0
+                        setByUser: false
+
         400:
           $ref: '#/components/responses/IllegalParametersError'
         500:
@@ -62,8 +243,17 @@ paths:
     post:
       tags:
         - complaints
-      summary: Läd eine neue Beschwerde in die Datenbank.
-      description: Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx, doc und pdf Dateien mit einer maximalen Zeichenanzahl von 10000 Zeichen. Alternativ können über application/json direkt Texte eingefügt werden. Die Beschwerde wird beim Upload analysiert und eine Antwort wird generiert. Über den Query-Parameter configId kann eine bestimmte Konfiguration angegeben werden, mit der die neue Beschwerde analysiert werden soll.
+      summary: Läd eine neue Beschwerde in die Datenbank und startet die Analyse.
+      description: >
+        Über diese Schnittstelle können Dateien hochgeladen werden. Akzeptiert werden txt, docx,
+        doc und pdf Dateien mit einer maximalen Zeichenanzahl von 10000 Zeichen.
+        Alternativ können über application/json direkt Texte eingefügt werden.
+
+        <p>Die Beschwerde wird nach dem Upload im Hintergrund analysiert. Die verwendeten Analyse-
+         Tools werden durch die verwendete Konfiguration festgelegt, über den Query-Parameter
+         <b>configId</b> kann eine bestimmte Konfiguration angegeben werden, mit der die neue
+         Beschwerde analysiert werden soll. Nach dem Analyseprozess wird mit den vorhandenen Ergebnissen
+         eine <b>Antwort</b> generiert.</p>
       parameters:
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
       requestBody:
@@ -80,8 +270,8 @@ paths:
               properties:
                 text:
                   type: string
-                  example: "Das ist eine Beispielbeschwerde"
-                  # TODO better text example
+                  example: 'In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig und gehäuft Buslinien der WSW ausfallen und Fahrten entgegen dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer benutze ich eher selten die Busse der WSW. Wenn ich sie benutze, ergeben sich auffällig häufig Ausfälle und deutliche Verspätungen. Dies betrifft auffallend oft die als schnell konzipierten CE-Linien, nach meiner jüngeren Erfahrung CE61/CE62, weniger auch CE64/CE65 (Elberfeld-Cronenberg), und Nebenlinien wie etwa 643. Einzelne Ihrer Mitarbeiter berichten mir übereinstimmend, die Personaldecke sei zu dünn, um Ausfälle einzelner Mitarbeiter auszugleichen. Wegen spürbaren Personalmangels - nicht, wie Sie schreiben, vereinzelt wegen Krankheit - würden häufig Fahrten ausfallen. Viele Fahrer berichten anschaulich, dass in manchen Stoßzeiten vergeblich wartende Passagiere an Haltestellen stünden. Teilweise berichtet man mir von gezielten Maßnahmen, um Einsparungen herbeizuführen sowie nicht ausgeglichenen Überstunden. Ihre Fahrer sehen dies unmittelbar mit der Politik der WSW verknüpft, die CE-Linien ab März/April 2013 auszudünnen.Der Vorgang, auf den sich Ihr Schreiben bezieht, lief tatsächlich so ab: Am 1. 2. 2013 wartete ich an der Morianstraße in Wuppertal mit meinem x Monate alten Sohn nachmittags auf eine Busverbindung nach Ronsdorf, Haltestelle Kniprodestraße. Ich beabsichtigte, den Bus CE62 um 15:47 Uhr zu nehmen. Wir waren auf dem Weg zu einer Nachmittagsveranstaltung für Eltern mit Kleinstkindern, die ich verpasste:Die CE62 um 15:47 Uhr fuhr nicht, ebenso nicht die nachfolgenden Busse der Linie CE62:- 16:07 Uhr- 16:27 UhrEs fuhren ferner nicht die Busse der Linie 620 um- 15:55 Uhr- 16:15 Uhr- 16:35 Uhrdie Haltestelle an. Ihr Schreiben legt nahe, dass es sich nur um vereinzelte Fälle handele. Unmittelbar bei meinem nächsten Fahrtantritt mit der WSW eine Woche später kam es wiederum zu einem Ausfall. Am Freitag, 8. 2. 2013, fiel Linie CE61 um 15:38 Uhr an der Haltestelle Am Stadtbahnhof in Richtung Barmen aus. Mit ca. 25 Minuten Verspätung erreichte ich mit der Linie 640 (ab 15:48 Uhr) gegen 16:25 Uhr den Alten Markt in Barmen.Heute, am 21. 2. 2013, fielen die Busse der Linie CE64 von Wuppertal Hbf in Richtung Cronenberg um 06:40 Uhr und um 07:00 Uhr aus. Ein Fahrgast erreichte deshalb nicht pünktlich seine Arbeitsstelle in Solingen. Würde ich häufiger fahren, würde ich vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre Dienstleistungen bestmöglich fahrplangemäß anzubieten.'
+
       operationId: importComplaint
       responses:
         201:
@@ -90,10 +280,65 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
-              # TODO add example
+              example:
+                id: 939
+                preview: In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie
+                  CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann
+                  so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig
+                  und gehäuft Bus
+                state: ANALYSING
+                configuration:
+                  id: 94
+                  name: Volle Konfiguration
+                  extractors:
+                    - name: QuerimoniaExtract
+                      type: KIKUKO_DOMAIN
+                      colors:
+                        - label: Name
+                          color: "#ffd666"
+                        - label: Ort
+                          color: "#90ff8a"
+                        - label: Linie
+                          color: "#aff4fa"
+                        - label: Haltestelle
+                          color: "#cc89f5"
+                        - label: Datum
+                          color: "#cdc0cf"
+                        - label: Eingangsdatum
+                          color: "#e9bdf0"
+                        - label: Geldbetrag
+                          color: "#f5ff8a"
+                  classifiers:
+                    - type: KIKUKO_CLASSIFIER
+                      name: Beschwerde3Klassifikator2
+                      propertyName: Kategorie
+                  sentimentAnalyzer:
+                    type: QUERIMONIA_SENTIMENT
+                    name: Default
+                  emotionAnalyzer:
+                    type: QUERIMONIA_EMOTION
+                    name: Default
+                  active: true
+                receiveDate: '2019-08-06'
+                receiveTime: '12:59:45.267471'
+                sentiment:
+                  emotion:
+                    value: Unbekannt
+                    name: Emotion
+                    probabilities:
+                      Unbekannt: 1
+                    setByUser: false
+                  tendency: 0
+                properties: []
 
         400:
           description: Text konnte nicht aus Datei extrahiert werden oder Text ist zu lang.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        404:
+          description: Die Konfiguration mit der gegebenen ID existiert nicht.
           content:
             application/json:
               schema:
@@ -112,8 +357,8 @@ paths:
     get:
       tags:
         - complaints
-      summary: Gibt eine Beschwerde mit der gegebenen Id zurück.
-      description: Gibt eine Beschwerde mit der gegebenen Id zurück.
+      summary: Gibt eine Beschwerde mit der gegebenen ID zurück.
+      description: Gibt eine Beschwerde mit der gegebenen ID zurück.
       operationId: getComplaint
       responses:
         200:
@@ -131,7 +376,7 @@ paths:
       tags:
         - complaints
       summary: Aktualisiert eine Beschwerde.
-      description: Mit dieser Anfrage können Emotion, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
+      description: Mit dieser Anfrage können Emotion, Tendenz, Kategorie und Status einer Beschwerde aktualisiert werden. Werden Kategorie und Sentiment gändert, so wird das setByUser-Attribut auf true gesetzt.
       requestBody:
         description: Ein Objekt mit Attributen, die aktualisiert werden sollen. Es müssen nur die Attribute angegeben werden, bei denen eine Änderung an der Beschwerde vorgenommen werden soll.
         content:
@@ -140,7 +385,7 @@ paths:
               $ref: '#/components/schemas/ComplaintUpdateRequest'
             example:
               "state": "CLOSED"
-              "subject": "Fahrt nicht erfolgt"
+              "subject": "Fahrer unfreundlich"
 
       operationId: updateComplaint
       responses:
@@ -150,12 +395,76 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
+              example:
+                id: 269
+                preview: Sehr geehrte Damen und Herren, am heutigen Tag wollte ich die Linie 647
+                  um 8.20 Uhr von Hattingen in Richtung Wuppertal nutzen. Als ich um 8.15 Uhr am
+                  Busbahnhof ankam, informierten mich weitere Fahrgäste, dass der Bus um 7.40 Uhr
+                  bereits ausgefallen
+                state: CLOSED
+                configuration:
+                  id: 94
+                  name: Volle Konfiguration
+                  extractors:
+                    - name: QuerimoniaExtract
+                      type: KIKUKO_DOMAIN
+                      colors:
+                        - label: Name
+                          color: "#ffd666"
+                        - label: Ort
+                          color: "#90ff8a"
+                        - label: Linie
+                          color: "#aff4fa"
+                        - label: Haltestelle
+                          color: "#cc89f5"
+                        - label: Datum
+                          color: "#cdc0cf"
+                        - label: Eingangsdatum
+                          color: "#e9bdf0"
+                        - label: Geldbetrag
+                          color: "#f5ff8a"
+                  classifiers:
+                    - type: KIKUKO_CLASSIFIER
+                      name: Beschwerde3Klassifikator2
+                      propertyName: Kategorie
+                  sentimentAnalyzer:
+                    type: QUERIMONIA_SENTIMENT
+                    name: Default
+                  emotionAnalyzer:
+                    type: QUERIMONIA_EMOTION
+                    name: Default
+                  active: true
+                receiveDate: '2019-08-04'
+                receiveTime: '16:14:41'
+                sentiment:
+                  emotion:
+                    value: Trauer
+                    name: Emotion
+                    probabilities:
+                      Verachtung: 23.53
+                      Trauer: 76.47
+                    setByUser: false
+                  tendency: 0
+                properties:
+                  - value: Fahrer unfreundlich
+                    name: Kategorie
+                    probabilities:
+                      Fahrt nicht erfolgt: 0.6
+                      Sonstiges: 0.3
+                      Fahrer unfreundlich: 0
+                    setByUser: true
         400:
-          description: Die Beschwerde wurde bereits geschlossen.
+          description: Die Beschwerde kann im aktuellen Zustand nicht modifiziert werden.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/QuerimoniaException'
+              example:
+                timestamp: '2019-07-04T15:24:23.3942221'
+                statusCode: 400
+                message: 'Beschwerde kann nicht modifiziert werden, da sie bereits geschlossen ist.'
+                title: 'Beschwerde geschlossen'
+                exception: 'IllegalStateException'
         404:
           $ref: '#/components/responses/NotFoundError'
         500:
@@ -174,6 +483,28 @@ paths:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
+
+  /api/complaints/{complaintId}/text:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    get:
+      tags:
+        - complaints
+      summary: Gibt den Text einer Beschwerde zurück
+      description: Gibt den Text der Beschwerde mit der gegebenen ID zurück.
+
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  text:
+                    type: string
+                    example: 'In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig und gehäuft Buslinien der WSW ausfallen und Fahrten entgegen dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer benutze ich eher selten die Busse der WSW. Wenn ich sie benutze, ergeben sich auffällig häufig Ausfälle und deutliche Verspätungen. Dies betrifft auffallend oft die als schnell konzipierten CE-Linien, nach meiner jüngeren Erfahrung CE61/CE62, weniger auch CE64/CE65 (Elberfeld-Cronenberg), und Nebenlinien wie etwa 643. Einzelne Ihrer Mitarbeiter berichten mir übereinstimmend, die Personaldecke sei zu dünn, um Ausfälle einzelner Mitarbeiter auszugleichen. Wegen spürbaren Personalmangels - nicht, wie Sie schreiben, vereinzelt wegen Krankheit - würden häufig Fahrten ausfallen. Viele Fahrer berichten anschaulich, dass in manchen Stoßzeiten vergeblich wartende Passagiere an Haltestellen stünden. Teilweise berichtet man mir von gezielten Maßnahmen, um Einsparungen herbeizuführen sowie nicht ausgeglichenen Überstunden. Ihre Fahrer sehen dies unmittelbar mit der Politik der WSW verknüpft, die CE-Linien ab März/April 2013 auszudünnen.Der Vorgang, auf den sich Ihr Schreiben bezieht, lief tatsächlich so ab: Am 1. 2. 2013 wartete ich an der Morianstraße in Wuppertal mit meinem x Monate alten Sohn nachmittags auf eine Busverbindung nach Ronsdorf, Haltestelle Kniprodestraße. Ich beabsichtigte, den Bus CE62 um 15:47 Uhr zu nehmen. Wir waren auf dem Weg zu einer Nachmittagsveranstaltung für Eltern mit Kleinstkindern, die ich verpasste:Die CE62 um 15:47 Uhr fuhr nicht, ebenso nicht die nachfolgenden Busse der Linie CE62:- 16:07 Uhr- 16:27 UhrEs fuhren ferner nicht die Busse der Linie 620 um- 15:55 Uhr- 16:15 Uhr- 16:35 Uhrdie Haltestelle an. Ihr Schreiben legt nahe, dass es sich nur um vereinzelte Fälle handele. Unmittelbar bei meinem nächsten Fahrtantritt mit der WSW eine Woche später kam es wiederum zu einem Ausfall. Am Freitag, 8. 2. 2013, fiel Linie CE61 um 15:38 Uhr an der Haltestelle Am Stadtbahnhof in Richtung Barmen aus. Mit ca. 25 Minuten Verspätung erreichte ich mit der Linie 640 (ab 15:48 Uhr) gegen 16:25 Uhr den Alten Markt in Barmen.Heute, am 21. 2. 2013, fielen die Busse der Linie CE64 von Wuppertal Hbf in Richtung Cronenberg um 06:40 Uhr und um 07:00 Uhr aus. Ein Fahrgast erreichte deshalb nicht pünktlich seine Arbeitsstelle in Solingen. Würde ich häufiger fahren, würde ich vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre Dienstleistungen bestmöglich fahrplangemäß anzubieten'
 
   /api/complaints/{complaintId}/refresh:
     parameters:
@@ -238,6 +569,64 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Complaint'
+              example:
+                id: 269
+                preview: Sehr geehrte Damen und Herren, am heutigen Tag wollte ich die Linie 647
+                  um 8.20 Uhr von Hattingen in Richtung Wuppertal nutzen. Als ich um 8.15 Uhr am
+                  Busbahnhof ankam, informierten mich weitere Fahrgäste, dass der Bus um 7.40 Uhr
+                  bereits ausgefallen
+                state: CLOSED
+                configuration:
+                  id: 94
+                  name: Volle Konfiguration
+                  extractors:
+                    - name: QuerimoniaExtract
+                      type: KIKUKO_DOMAIN
+                      colors:
+                        - label: Name
+                          color: "#ffd666"
+                        - label: Ort
+                          color: "#90ff8a"
+                        - label: Linie
+                          color: "#aff4fa"
+                        - label: Haltestelle
+                          color: "#cc89f5"
+                        - label: Datum
+                          color: "#cdc0cf"
+                        - label: Eingangsdatum
+                          color: "#e9bdf0"
+                        - label: Geldbetrag
+                          color: "#f5ff8a"
+                  classifiers:
+                    - type: KIKUKO_CLASSIFIER
+                      name: Beschwerde3Klassifikator2
+                      propertyName: Kategorie
+                  sentimentAnalyzer:
+                    type: QUERIMONIA_SENTIMENT
+                    name: Default
+                  emotionAnalyzer:
+                    type: QUERIMONIA_EMOTION
+                    name: Default
+                  active: true
+                receiveDate: '2019-08-04'
+                receiveTime: '16:14:41'
+                sentiment:
+                  emotion:
+                    value: Trauer
+                    name: Emotion
+                    probabilities:
+                      Verachtung: 23.53
+                      Trauer: 76.47
+                    setByUser: false
+                  tendency: 0
+                properties:
+                  - value: Fahrer unfreundlich
+                    name: Kategorie
+                    probabilities:
+                      Fahrt nicht erfolgt: 0.6
+                      Sonstiges: 0.3
+                      Fahrer unfreundlich: 0
+                    setByUser: true
         400:
           description: Beschwerde wurde bereits geschlossen.
           content:
@@ -271,7 +660,7 @@ paths:
               schema:
                 type: integer
                 format: int64
-                example: 140
+                example: '3'
         400:
           description: Üngültige Angabe von Parametern.
           content:
@@ -301,6 +690,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/LogItem'
+                example:
+                  - category: GENERAL
+                    message: Beschwerde erstellt.
+                    date: '2019-08-05'
+                    time: '16:59:02'
+                  - category: ANALYSIS
+                    message: 'Klassifikator ''Beschwerde3Klassifikator2'': Eigenschaft ''Kategorie''
+                      auf ''Fahrt nicht erfolgt'' gesetzt'
+                    date: '2019-08-05'
+                    time: '16:59:04'
+                  - category: ANALYSIS
+                    message: 'Emotionsanalysator ''Default'': Emotion auf ''Ueberraschung'' gesetzt'
+                    date: '2019-08-05'
+                    time: '16:59:05'
+                  - category: ANALYSIS
+                    message: 'Extraktor QuerimoniaExtract: 50 Entitäten gefunden.'
+                    date: '2019-08-05'
+                    time: '16:59:42'
+                  - category: ANALYSIS
+                    message: 'Sentiment-Analysator ''Default'': Tendenz auf ''0.0'' gesetzt'
+                    date: '2019-08-05'
+                    time: '16:59:43'
+                  - category: ANALYSIS
+                    message: 'Antwort mit 8 Komponenten und 0 Aktionen generiert.'
+                    date: '2019-08-05'
+                    time: '16:59:43'
+                  - category: GENERAL
+                    message: 'Entität [id=588,label=Datum,start=30,end=34,value=2013,setByUser=false,preferred=false,extractor=QuerimoniaExtract]
+                      gelöscht'
+                    date: '2019-08-05'
+                    time: '17:00:36'
         404:
           $ref: '#/components/responses/NotFoundError'
         500:
@@ -336,9 +756,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/NamedEntity'
+                $ref: '#/components/schemas/EntityArray'
         404:
           $ref: '#/components/responses/NotFoundError'
         500:
@@ -363,9 +781,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/NamedEntity'
+                $ref: '#/components/schemas/EntityArray'
         400:
           description: Die gegebene Entität ist schon vorhanden (mit gleichem Extraktor an der exakt gleichen Position), der gebene Extraktor ist unbekannt, die Beschwerde ist bereits abgeschlossen oder die gegebenen Indices liegen außerhalb der Textgrenzen.
           content:
@@ -380,22 +796,93 @@ paths:
   /api/complaints/{complaintId}/entities/{entityId}:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
+      - name: entityId
+        in: path
+        description: Die eindeutige ID der Entität..
+        required: true
+        schema:
+          type: integer
+          format: int64
+          minimum: 1
+          example: 1
+
+    put:
+      tags:
+        - entities
+      summary: Überschreibt eine Entität mit der gegebenen Entität.
+      description: >
+        Schreibt die gegebene Entität an Stelle der gegebenen ID in die Datenbank. Falls die Entität
+        in einem Antwortbaustein verwendet wird, wird in diesem auch die aktualisierte Entität
+        verwendet.
+
+      requestBody:
+        description: Diese Entität wird anstelle der Entität mit der gegebenen ID in der Datenbank gespeichert.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NamedEntity'
+            example:
+              id: 593
+              label: Linie
+              start: 619
+              end: 621
+              value: 62
+              setByUser: true
+              preferred: false
+              extractor: QuerimoniaExtract
+              color: "#aff4fa"
+
+      operationId: updateEntity
+      responses:
+        200:
+          description: Die Entität wurde aktualisiert. Gibt die aktualisierte Entitätsliste der Beschwerde zurück.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NamedEntity'
+                example:
+                  - id: 593
+                    label: Linie
+                    start: 619
+                    end: 621
+                    value: 62
+                    setByUser: true
+                    preferred: false
+                    extractor: QuerimoniaExtract
+                    color: "#aff4fa"
+                  - id: 589
+                    label: Linie
+                    start: 74
+                    end: 78
+                    value: CE62
+                    setByUser: false
+                    preferred: false
+                    extractor: QuerimoniaExtract
+                    color: "#aff4fa"
+                  - id: 592
+                    label: Linie
+                    start: 612
+                    end: 616
+                    value: CE61
+                    setByUser: false
+                    preferred: false
+                    extractor: QuerimoniaExtract
+                    color: "#aff4fa"
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
 
     delete:
       tags:
         - entities
       summary: Löscht eine Named Entity.
-      description: Eine neue Named Entity wird aus der Liste der Entitäten entfernt.
-      parameters:
-        - name: entityId
-          in: path
-          description: Die eindeutige Id der Entität, die gelöscht werden soll.
-          required: true
-          schema:
-            type: integer
-            format: int64
-            minimum: 1
-            example: 1
+      description: >
+        Eine neue Named Entity wird aus der Liste der Entitäten der gebebenen Beschwerde entfernt.
+        Die Entität wird aber ggf. nicht aus der Datenbank gelöscht, kann also in Antworten noch
+        verwendet werden. Nach dieser Operation ist ein <i>refresh</i> der Antwort sinnvoll.
 
       operationId: deleteEntity
       responses:
@@ -408,11 +895,24 @@ paths:
                 items:
                   $ref: '#/components/schemas/NamedEntity'
                 example:
-                  - label: 'Geldbetrag'
-                    start: 5
-                    end: 10
-                    setByUser: true
-                    extractor: 'QuerimoniaExtract'
+                  - id: 589
+                    label: Linie
+                    start: 74
+                    end: 78
+                    value: CE62
+                    setByUser: false
+                    preferred: false
+                    extractor: QuerimoniaExtract
+                    color: "#aff4fa"
+                  - id: 592
+                    label: Linie
+                    start: 612
+                    end: 616
+                    value: CE61
+                    setByUser: false
+                    preferred: false
+                    extractor: QuerimoniaExtract
+                    color: "#aff4fa"
         404:
           description: Die gegebene Entität/Beschwerde ist nicht vorhanden.
           content:
@@ -499,6 +999,7 @@ paths:
       summary: Gibt die generierte Antwort zu einer Beschwerde zurück.
       description: Zur jeder Beschwerde wird eine Antwort generiert, die über diese Schnittstelle abgerufen werden kann. Eine Antwort enthält eine Liste an Antwortbausteinen sowie eine Liste an Aktionen.
       operationId: getResponse
+      deprecated: true
       responses:
         200:
           description: Die Antwort der Beschwerde wird zurückgegeben.
@@ -512,6 +1013,61 @@ paths:
           $ref: '#/components/responses/UnexpectedError'
 
   /api/responses/{complaintId}/refresh:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    patch:
+      tags:
+        - responses
+      summary: Generiert eine neue Antwort zu einer Beschwerde.
+      description: Die Antwort zu einer Beschwerde wird neugeneriert und zurückgegben.
+      operationId: refreshResponse
+      deprecated: true
+      responses:
+        200:
+          description: Die neu generierte Antwort der Beschwerde wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        400:
+          description: Die Beschwerde wurde bereits geschlossen.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          description: Fehlerhaft konfigurierte Textbausteine/Aktionen, unerwarteter Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerimoniaException'
+
+  /api/complaints/{complaintId}/response:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    get:
+      tags:
+        - responses
+      summary: Gibt die generierte Antwort zu einer Beschwerde zurück.
+      description: Zur jeder Beschwerde wird eine Antwort generiert, die über diese Schnittstelle abgerufen werden kann. Eine Antwort enthält eine Liste an Antwortbausteinen sowie eine Liste an Aktionen.
+      operationId: getResponse
+      responses:
+        200:
+          description: Die Antwort der Beschwerde wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/complaints/{complaintId}/response/refresh:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
 
@@ -564,6 +1120,7 @@ paths:
               default: name_asc
               example: name_asc
         - $ref: '#/components/parameters/KeywordsParameter'
+        - $ref: '#/components/parameters/ActionCode'
 
       operationId: getResponseComponents
       responses:
@@ -716,6 +1273,7 @@ paths:
       description: Hier kann die Anzahl der Anwortbausteine in der Datenbank abgerufen werden. Dabei können auch Filter angewendet werden.
       parameters:
         - $ref: '#/components/parameters/KeywordsParameter'
+        - $ref: '#/components/parameters/ActionCode'
       operationId: countResponseComponents
       responses:
         200:
@@ -790,6 +1348,36 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AnalyzerConfiguration'
+            example:
+              name: Kein Sentiment
+              extractors:
+                - name: QuerimoniaExtract
+                  type: KIKUKO_DOMAIN
+                  colors:
+                    - label: Name
+                      color: "#ffd666"
+                    - label: Ort
+                      color: "#90ff8a"
+                    - label: Linie
+                      color: "#aff4fa"
+                    - label: Haltestelle
+                      color: "#cc89f5"
+                    - label: Datum
+                      color: "#cdc0cf"
+                    - label: Eingangsdatum
+                      color: "#e9bdf0"
+                    - label: Geldbetrag
+                      color: "#f5ff8a"
+              classifiers:
+                - type: KIKUKO_CLASSIFIER
+                  name: Beschwerde3Klassifikator2
+                  propertyName: Kategorie
+              sentimentAnalyzer:
+                type: NONE
+                name: NONE
+              emotionAnalyzer:
+                type: NONE
+                name: NONE
       operationId: addConfiguration
       responses:
         201:
@@ -1032,7 +1620,6 @@ components:
         type: integer
         format: int64
         minimum: 1
-        example: 1
 
     CountParameter:
       name: count
@@ -1043,7 +1630,6 @@ components:
         type: integer
         format: int32
         minimum: 1
-        example: 10
 
     PageParameter:
       name: page
@@ -1055,7 +1641,6 @@ components:
         format: int32
         default: 0
         minimum: 0
-        example: 0
 
     ComplaintsSortParameter:
       name: sort_by
@@ -1101,7 +1686,7 @@ components:
       schema:
         type: string
         format: date
-        example: "2019-07-23"
+        example: "2020-07-23"
 
     EmotionParameter:
       name: emotion
@@ -1114,7 +1699,12 @@ components:
           type: string
         example:
           - "Wut"
-          - "Unzufriedenheit"
+          - "Trauer"
+          - "Ueberraschung"
+          - "Freude"
+          - "Ekel"
+          - "Furcht"
+          - "Verachtung"
 
     SubjectParameter:
       name: subject
@@ -1127,6 +1717,7 @@ components:
           type: string
         example:
           - "Fahrt nicht erfolgt"
+          - "Fahrer unfreundlich"
           - "Sonstiges"
 
     KeywordsParameter:
@@ -1138,9 +1729,17 @@ components:
         type: array
         items:
           type: string
-        example:
-          - "Busfahrer"
-          - "unfreundlich"
+
+    ActionCode:
+      name: action_code
+      in: query
+      required: false
+      description: Eine Bezeichung, die den Typ der Aktion angibt.
+      schema:
+        type: string
+        enum:
+          - SEND_MAIL
+          - ATTACH_VOUCHER
 
     ConfigIdQueryParameter:
       name: configId
@@ -1151,7 +1750,6 @@ components:
         type: integer
         format: int64
         minimum: 1
-        example: 1
 
   schemas:
     Complaint:
@@ -1181,6 +1779,7 @@ components:
           description: Der volle Beschwerdetext.
           example: "Guten Tag,\nMein Bus kam heute viel zu spät!\nSie müssen mir den Schaden ersetzen!!"
           readOnly: true
+          deprecated: true
         preview:
           type: string
           description: Die ersten zwei Zeilen der Beschwerde.
@@ -1207,6 +1806,12 @@ components:
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
           items:
             $ref: '#/components/schemas/ComplaintProperty'
+        entities:
+          type: array
+          description: Die Entitäten der Beschwerde.
+          items:
+            $ref: '#/components/schemas/NamedEntity'
+          deprecated: true
         sentiment:
           type: object
           description: Enthält die Ergbnisse der Sentiment-Analyse.
@@ -1217,6 +1822,64 @@ components:
               example: 0.4
             emotion:
               $ref: '#/components/schemas/ComplaintProperty'
+      example:
+        id: 269
+        preview: Sehr geehrte Damen und Herren, am heutigen Tag wollte ich die Linie 647
+          um 8.20 Uhr von Hattingen in Richtung Wuppertal nutzen. Als ich um 8.15 Uhr am
+          Busbahnhof ankam, informierten mich weitere Fahrgäste, dass der Bus um 7.40 Uhr
+          bereits ausgefallen
+        state: NEW
+        configuration:
+          id: 94
+          name: Volle Konfiguration
+          extractors:
+            - name: QuerimoniaExtract
+              type: KIKUKO_DOMAIN
+              colors:
+                - label: Name
+                  color: "#ffd666"
+                - label: Ort
+                  color: "#90ff8a"
+                - label: Linie
+                  color: "#aff4fa"
+                - label: Haltestelle
+                  color: "#cc89f5"
+                - label: Datum
+                  color: "#cdc0cf"
+                - label: Eingangsdatum
+                  color: "#e9bdf0"
+                - label: Geldbetrag
+                  color: "#f5ff8a"
+          classifiers:
+            - type: KIKUKO_CLASSIFIER
+              name: Beschwerde3Klassifikator2
+              propertyName: Kategorie
+          sentimentAnalyzer:
+            type: QUERIMONIA_SENTIMENT
+            name: Default
+          emotionAnalyzer:
+            type: QUERIMONIA_EMOTION
+            name: Default
+          active: true
+        receiveDate: '2019-08-04'
+        receiveTime: '16:14:41'
+        sentiment:
+          emotion:
+            value: Trauer
+            name: Emotion
+            probabilities:
+              Verachtung: 23.53
+              Trauer: 76.47
+            setByUser: false
+          tendency: 0.4
+        properties:
+          - value: Fahrt nicht erfolgt
+            name: Kategorie
+            probabilities:
+              Fahrt nicht erfolgt: 0.6
+              Sonstiges: 0.3
+              Fahrer unfreundlich: 0
+            setByUser: false
 
     ComplaintProperty:
       type: object
@@ -1234,8 +1897,8 @@ components:
           description: Name der Eigenschaft
         value:
           type: string
-          example: Fahrt nicht erfolgt
-          description: Die Bezeichnung der Kategorie oder des Sentiments.
+          example: 'Fahrt nicht erfolgt'
+          description: Die Wert der Eigenschaft.
         setByUser:
           type: boolean
           example: false
@@ -1252,7 +1915,15 @@ components:
 
     ComplaintState:
       type: string
-      description: Definiert den Status einer Beschwerde. Eine Beschwerde kann neu, in Bearbeitung und abgeschlossen sein.
+      description: >
+        Eine Beschwerde kann einer der folgenden Zustände besitzen:
+        <ul>
+        <li><code>ERROR</code>: Beschwerde ist im Fehlerzustand. Sie kann neu analysiert oder gelöscht werden, aber nicht bearbeitet. </li>
+        <li><code>ANALYSING</code>: Beschwerde wird momentan analysiert. Die Beschwerde kann nicht bearbeitet werden. Sie kann gelöscht werden, was allerdings nur dann getan werden sollte, wenn aufgrund eines Fehlers die Beschwerde dauerhaft in diesem Zustand ist (z.B. durch unerwartetes Beenden des Servers)</li>
+        <li><code>NEW</code>: Die Beschwerde wurde erfolgreich analysiert, die Bearbeitung wurde noch nicht begonnen. Die Beschwerde kann beliebig verändert und gelöscht werden.</li>
+        <li><code>IN_PROGRESS</code>: Eine Beschwerde muss manuell auf diesen Zustand gesetzt werden. Die Bearbeitung mit der Beschwerde wurde begonnen und sie kann beliebig verändert und gelöscht werden.</li>
+        <li><code>CLOSED</code>: Die Beschwerde wurde geschlossen und kann nicht mehr bearbeitet, nur noch gelöscht werden.</li>
+        </ul>
       enum: [ERROR, ANALYSING, NEW, IN_PROGRESS, CLOSED]
       example: "NEW"
 
@@ -1278,7 +1949,7 @@ components:
         - label
         - start
         - end
-        - setByUser
+        - value
         - preferred
         - color
       properties:
@@ -1291,7 +1962,7 @@ components:
         label:
           type: string
           description: Die Kategorie der Entität.
-          example: Datum
+          example: 'Datum'
         start:
           type: integer
           format: int64
@@ -1304,13 +1975,13 @@ components:
           example: 29
         value:
           type: string
-          description: Der Text der Entität, ggf. korrigiert. Read-Only.
-          readOnly: true
+          description: Der Text der Entität, ggf. korrigiert.
           example: '23. Januar 2001'
         setByUser:
           type: boolean
           description: Gibt an, ob eine Entität vom Nutzer gesetzt wurde (true) oder vom System marktiert wurde (false).
           example: false
+          readOnly: true
         preferred:
           type: boolean
           description: Gibt an, ob der Nutzer die Entität als bevorzugt markiert hat.
@@ -1324,15 +1995,15 @@ components:
           description: Die Farbe, mit der die Entität angezeigt werden soll.
           example: '#9829DD'
       example:
-        id: 2
-        label: 'Datum'
-        start: 14
-        end: 19
-        value: 'Heute'
-        setByUser: true
+        id: 593
+        label: Linie
+        start: 617
+        end: 621
+        value: CE62
+        setByUser: false
         preferred: true
-        extractor: 'QuerimoniaExtract'
-        color: '#232323'
+        extractor: QuerimoniaExtract
+        color: "#aff4fa"
 
     AnalyzerConfiguration:
       description: In der Konfiguration ist festgelegt, welche Extraktoren, welcher Klassifikator und Sentiment-Analysierer verwerdet wird.
@@ -1516,16 +2187,6 @@ components:
         - message
         - category
       properties:
-        date:
-          description: Das Datum des Log-Eintrags
-          type: string
-          format: date
-          example: "2019-07-01"
-        time:
-          description: Die Uhrzeit des Log-Eintrags
-          type: string
-          format: date-time
-          example: "12:03:19"
         category:
           description: Die Kategorie des Log-Eintrags
           type: string
@@ -1538,6 +2199,16 @@ components:
           description: Der Text des Log-Eintrags
           type: string
           example: "Sentiment-Analyse abgeschlossen"
+        date:
+          description: Das Datum des Log-Eintrags
+          type: string
+          format: date
+          example: "2019-07-01"
+        time:
+          description: Die Uhrzeit des Log-Eintrags
+          type: string
+          format: date-time
+          example: "12:03:19"
 
     ResponseComponent:
       description: Ein generischer Antwortbaustein. Dieser besteht aus möglicherweise mehereren Alternativtexten, die Platzhalter enthalten können, sowie einer Regelbeschreibung, die angibt, wann der Baustein verwendet werden kann.
@@ -1622,6 +2293,92 @@ components:
           items:
             $ref: '#/components/schemas/Action'
           description: Die Aktionen, die bei Abschluss der Beschwerde ausgeführt werden sollen.
+      example:
+        components:
+          - id: 645
+            component:
+              id: 97
+              name: BegrüßungMitName
+              priority: 100
+              rulesXml: '<Rules><And><PredecessorCount max="0"/><EntityAvailable label="Name"/></And></Rules>'
+              requiredEntities:
+                - Name
+              texts:
+                - 'Sehr geehrter Herr/Frau ${Name},\n'
+                - 'Liebe/Lieber Frau/Herr ${Name},\n'
+                - 'Guten Tag, Frau/Herr ${Name},\n'
+              actions: []
+            entities:
+              - id: 590
+                label: Name
+                start: 83
+                end: 92
+                value: Wuppertal
+                setByUser: false
+                preferred: false
+                extractor: QuerimoniaExtract
+                color: "#ffd666"
+              - id: 591
+                label: Name
+                start: 108
+                end: 117
+                value: Wuppertal
+                setByUser: false
+                preferred: false
+                extractor: QuerimoniaExtract
+                color: "#ffd666"
+              - id: 603
+                label: Name
+                start: 1440
+                end: 1449
+                value: Wuppertal
+                setByUser: false
+                preferred: false
+                extractor: QuerimoniaExtract
+                color: "#ffd666"
+              - id: 631
+                label: Name
+                start: 2401
+                end: 2410
+                value: Wuppertal
+                setByUser: false
+                preferred: false
+                extractor: QuerimoniaExtract
+                color: "#ffd666"
+              - id: 633
+                label: Name
+                start: 2411
+                end: 2414
+                value: Hbf
+                setByUser: false
+                preferred: false
+                extractor: QuerimoniaExtract
+                color: "#ffd666"
+          - id: 646
+            component:
+              id: 99
+              name: EingangsdatumMitDatum
+              priority: 100
+              rulesXml: <Rules><And><Predecessor matches="Begrüßung.*" position="last"/><EntityAvailable
+                label="Eingangsdatum"/></And></Rules>
+              requiredEntities:
+                - Eingangsdatum
+              texts:
+                - 'vielen Dank für Ihre Beschwerde, die am ${Eingangsdatum} bei uns im System eingegangen ist.'
+                - 'vielen Dank für Ihre Beschwerde, die wir am ${Eingangsdatum} erhalten haben.'
+                - 'vielen Dank für Ihre Beschwerde, die Sie am ${Eingangsdatum} bei uns eingereicht haben.'
+              actions: []
+            entities:
+              - id: 647
+                label: Eingangsdatum
+                start: 0
+                end: 0
+                value: 5. August 2019
+                setByUser: false
+                preferred: false
+                extractor: QuerimoniaExtract
+                color: "#e9bdf0"
+        actions: []
 
     Action:
       description: Eine Aktion kann automatisch beim Abschluss einer Beschwerde ausgelöst werden, wenn bestimmt Regeln dafür erfüllt sind. Zum Beispiel können E-Mails versendet werden, Gutscheine als Attachment angehängt werden, Beschwerden weitergeleitet werden etc.
@@ -1744,6 +2501,40 @@ components:
           items:
             $ref: '#/components/schemas/NamedEntity'
 
+    EntityArray:
+      description: Array aus Named Entities
+      type: array
+      items:
+        $ref: '#/components/schemas/NamedEntity'
+      example:
+        - id: 589
+          label: Linie
+          start: 74
+          end: 78
+          value: CE62
+          setByUser: false
+          preferred: false
+          extractor: QuerimoniaExtract
+          color: "#aff4fa"
+        - id: 592
+          label: Linie
+          start: 612
+          end: 616
+          value: CE61
+          setByUser: false
+          preferred: false
+          extractor: QuerimoniaExtract
+          color: "#aff4fa"
+        - id: 593
+          label: Linie
+          start: 617
+          end: 621
+          value: CE62
+          setByUser: false
+          preferred: true
+          extractor: QuerimoniaExtract
+          color: "#aff4fa"
+
   responses:
     UnexpectedError:
       description: Unerwarteter Serverfehler
@@ -1758,6 +2549,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/QuerimoniaException'
+          example:
+            timestamp: '2019-07-04T15:24:23.3942221'
+            statusCode: 404
+            message: 'Ein Element mit der gegebenen ID existiert nicht!'
+            title: 'Fehlendes Element'
+            exception: 'NotFoundException'
 
     IllegalParametersError:
       description: Die übergebenen Parameter sind ungültig, zum Beispiel vom falschen Datentyp.
@@ -1768,6 +2565,9 @@ components:
 
   examples:
   # TODO add more examples
+    complaintText:
+      value:
+        text: 'In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig und gehäuft Buslinien der WSW ausfallen und Fahrten entgegen dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer benutze ich eher selten die Busse der WSW. Wenn ich sie benutze, ergeben sich auffällig häufig Ausfälle und deutliche Verspätungen. Dies betrifft auffallend oft die als schnell konzipierten CE-Linien, nach meiner jüngeren Erfahrung CE61/CE62, weniger auch CE64/CE65 (Elberfeld-Cronenberg), und Nebenlinien wie etwa 643. Einzelne Ihrer Mitarbeiter berichten mir übereinstimmend, die Personaldecke sei zu dünn, um Ausfälle einzelner Mitarbeiter auszugleichen. Wegen spürbaren Personalmangels - nicht, wie Sie schreiben, vereinzelt wegen Krankheit - würden häufig Fahrten ausfallen. Viele Fahrer berichten anschaulich, dass in manchen Stoßzeiten vergeblich wartende Passagiere an Haltestellen stünden. Teilweise berichtet man mir von gezielten Maßnahmen, um Einsparungen herbeizuführen sowie nicht ausgeglichenen Überstunden. Ihre Fahrer sehen dies unmittelbar mit der Politik der WSW verknüpft, die CE-Linien ab März/April 2013 auszudünnen.Der Vorgang, auf den sich Ihr Schreiben bezieht, lief tatsächlich so ab: Am 1. 2. 2013 wartete ich an der Morianstraße in Wuppertal mit meinem x Monate alten Sohn nachmittags auf eine Busverbindung nach Ronsdorf, Haltestelle Kniprodestraße. Ich beabsichtigte, den Bus CE62 um 15:47 Uhr zu nehmen. Wir waren auf dem Weg zu einer Nachmittagsveranstaltung für Eltern mit Kleinstkindern, die ich verpasste:Die CE62 um 15:47 Uhr fuhr nicht, ebenso nicht die nachfolgenden Busse der Linie CE62:- 16:07 Uhr- 16:27 UhrEs fuhren ferner nicht die Busse der Linie 620 um- 15:55 Uhr- 16:15 Uhr- 16:35 Uhrdie Haltestelle an. Ihr Schreiben legt nahe, dass es sich nur um vereinzelte Fälle handele. Unmittelbar bei meinem nächsten Fahrtantritt mit der WSW eine Woche später kam es wiederum zu einem Ausfall. Am Freitag, 8. 2. 2013, fiel Linie CE61 um 15:38 Uhr an der Haltestelle Am Stadtbahnhof in Richtung Barmen aus. Mit ca. 25 Minuten Verspätung erreichte ich mit der Linie 640 (ab 15:48 Uhr) gegen 16:25 Uhr den Alten Markt in Barmen.Heute, am 21. 2. 2013, fielen die Busse der Linie CE64 von Wuppertal Hbf in Richtung Cronenberg um 06:40 Uhr und um 07:00 Uhr aus. Ein Fahrgast erreichte deshalb nicht pünktlich seine Arbeitsstelle in Solingen. Würde ich häufiger fahren, würde ich vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre Dienstleistungen bestmöglich fahrplangemäß anzubieten.'
 
   securitySchemes:
     basicAuth:
