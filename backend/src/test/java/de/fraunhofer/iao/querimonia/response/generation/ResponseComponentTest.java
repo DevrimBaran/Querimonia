@@ -1,6 +1,7 @@
 
 package de.fraunhofer.iao.querimonia.response.generation;
 
+import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -58,25 +59,25 @@ public class ResponseComponentTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = QuerimoniaException.class)
   public void testSetComponentTextMissingClosingBracket() {
     String componentText = "Guten Tag, Herr ${Name, wie geht es Ihnen?";
     ResponseSlice.createSlices(componentText);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = QuerimoniaException.class)
   public void testSetComponentTextMissingOpeningBracket() {
     String componentText = "Guten Tag, Herr $Name}, wie geht es Ihnen?";
     ResponseSlice.createSlices(componentText);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = QuerimoniaException.class)
   public void testSetComponentTextMissingDollarSign() {
     String componentText = "Guten Tag, Herr {Name}, wie geht es Ihnen?";
     ResponseSlice.createSlices(componentText);
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = QuerimoniaException.class)
   public void testSetComponentTextOnlyPlaceholdersIllegal() {
     String componentText = "${So}${viele}${Placeholder}";
     ResponseSlice.createSlices(componentText);
