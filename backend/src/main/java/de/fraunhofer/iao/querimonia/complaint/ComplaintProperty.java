@@ -5,10 +5,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +21,7 @@ import java.util.Map;
  * property and a map that maps possible values to their probability.
  */
 @Entity
+@XmlAccessorType(XmlAccessType.NONE)
 public class ComplaintProperty implements Comparable<ComplaintProperty> {
 
   @JsonIgnore
@@ -114,13 +118,14 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
     return value;
   }
 
-  @NonNull
-  public Map<String, Double> getProbabilities() {
-    return probabilities;
-  }
-
   public boolean isSetByUser() {
     return setByUser;
+  }
+
+  @NonNull
+  @XmlPath("classification")
+  public Map<String, Double> getProbabilities() {
+    return probabilities;
   }
 
   @NonNull

@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
@@ -16,6 +17,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlType;
 
 /**
  * This is a simple POJO that represents a named entity in a text. A named entity is a part of a
@@ -24,6 +28,7 @@ import javax.persistence.Id;
  * An instance can be created using a {@link NamedEntityBuilder}</p>
  */
 @Entity
+@XmlAccessorType(XmlAccessType.NONE)
 @JsonPropertyOrder(value = {
     "id", "label", "start", "end", "value", "setByUser", "preferred", "extractor", "color"
 })
@@ -35,19 +40,25 @@ public class NamedEntity implements Comparable<NamedEntity> {
 
   @NonNull
   @Column(nullable = false)
+  @XmlPath("@type")
   private String label = "";
+
+  @XmlPath("position/@startIndex")
+  private int start;
+  @XmlPath("position/@endIndex")
+  private int end;
 
   @NonNull
   @Column(nullable = false)
+  @XmlPath("originalValue/text()")
   private String value = "";
 
-  private int start;
-  private int end;
-
+  @XmlPath("results/result[0][@type='setByUser']/text()")
   private boolean setByUser = false;
 
   @JsonProperty("preferred")
   @Column(name = "prefered") // TODO fix later
+  @XmlPath("results/result[1][@type='preferred']/text()")
   private boolean preferred = false;
 
   @NonNull
@@ -57,6 +68,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @NotNull
   @Column
   @JsonProperty("color")
+  @XmlPath("results/result[2][@type='color']/text()")
   private String color = "#22222";
 
   /**
@@ -113,7 +125,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
   }
 
   @SuppressWarnings("unused")
-  private NamedEntity() {
+  public NamedEntity() {
     // constructor for hibernate
   }
 

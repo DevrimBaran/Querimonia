@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.RestTemplate;
 import tec.uom.lib.common.function.Identifiable;
@@ -26,10 +27,14 @@ import javax.persistence.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +67,7 @@ import java.util.Map;
  * </ul>
  */
 @XmlRootElement(name = "fraunhoferTextDocument")
+@XmlAccessorType(XmlAccessType.NONE)
 @Entity
 @JsonPropertyOrder(value = {
     "id",
@@ -239,6 +245,7 @@ public class Complaint implements Identifiable<Long> {
    * @return the property of the complaint which is labeled with category.
    */
   @JsonIgnore
+  @XmlPath("output/analysis[2][@type='classifier'/output")
   public ComplaintProperty getSubject() {
     return ComplaintUtility.getPropertyOfComplaint(this, "Kategorie");
   }
@@ -303,6 +310,7 @@ public class Complaint implements Identifiable<Long> {
    * @return the list of {@link NamedEntity named entities} that occur in the complaint text.
    */
   @NonNull
+  @XmlPath("output/analysis[1][@type='extractor']/output/annotation")
   public List<NamedEntity> getEntities() {
     return new ArrayList<>(entities);
   }
@@ -336,11 +344,11 @@ public class Complaint implements Identifiable<Long> {
    *
    * @return the {@link ComplaintState state} of the complaint.
    */
+  @XmlPath("input/metadata/metadata[@key='state']/text()")
   @NonNull
   public ComplaintState getState() {
     return state;
   }
-
   /**
    * Returns a new complaint with all the properties of this complaint but with the given state
    * as the complaint state attribute.
@@ -416,6 +424,15 @@ public class Complaint implements Identifiable<Long> {
   }
 
   /**
+   * Formatting the receiveDate and Time for xml creation
+   * @return String to display in the xml
+   */
+  @XmlPath("input/metadata/date[@type='creation']/text()")
+  private String getDate(){
+    return this.receiveDate.atTime(receiveTime).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)+('Z');
+  }
+
+  /**
    * Checks if two complaints are considered equal. A complaint is equal to another if their
    * text, state, subject, emotion, entities and their response is equal.
    *
@@ -488,7 +505,7 @@ public class Complaint implements Identifiable<Long> {
     RestTemplate template = new RestTemplate();
 
     String complaintStr = template.getForObject("https://querimonia.iao.fraunhofer" +
-        ".de/dev/api/complaints/276", String.class);
+        ".de/dev/api/complaints/434", String.class);
     System.out.println(complaintStr);
 //    complaintStr = complaintStr.replaceFirst("2019-07-31", "31.07.2019");
     ObjectMapper mapper = new ObjectMapper();
