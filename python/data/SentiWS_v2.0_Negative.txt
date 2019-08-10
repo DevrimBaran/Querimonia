@@ -1408,6 +1408,7 @@ stehlen|VVINF	-0.4944	stehle,stiehlst,stiehlt,stehlt,stehlest,stehlet,stahl,stah
 stilllegen|VVINF	-0.0048	stilllegte,stilllegst,stillleget,stilllegten,stilllegest,stillgelegt,stilllegt,stilllege,stilllegtet,stilllegtest
 stillstehen|VVINF	-0.0048	stillstehe,stillstehst,stillsteht,stillstehest,stillstehet,stillstand,stillstandest,stillstandst,stillstanden,stillstandet,stillstände,stillstünde,stillständest,stillstündest,stillständen,stillstünden,stillständet,stillstündet
 stinken|VVINF	-0.1634	stinke,stinkst,stinkt,stinkest,stinket,stank,stankst,stanken,stankt,stänke,stänkest,stänkst,stänken,stänket,stänkt
+stinksauer|ADJX	-0.453
 stocken|VVINF	-0.0048	stocktest,stocktet,stockest,stockte,stockst,stocket,stockten,stockt,stocke,gestockt
 stornieren|VVINF	-0.0048	storniertet,storniere,stornierten,storniert,storniertest,stornierst,stornierte,stornieret,stornierest
 stottern|VVINF	-0.0435	stottertest,gestottert,stotterten,stotterst,stotteren,stottertet,stotterte,stottere,stottert

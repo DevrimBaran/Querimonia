@@ -374,7 +374,7 @@ Respekt|NN	0.0040	Respekte,Respekts,Respektes
 Rettung|NN	0.0707	Rettungen
 Robustheit|NN	0.0040	
 Romantik|NN	0.0688	
-Ruhe|NN	0.5017	
+Ruhe|NN	0.0817	
 Ruhm|NN	0.0040	Ruhms,Ruhmes
 Rückendeckung|NN	0.0040	
 Rückgrat|NN	0.0040	Rückgrate,Rückgrats,Rückgrates,Rückgraten
@@ -539,9 +539,9 @@ Zuversicht|NN	0.0727
 abgesichert|ADJX	0.0040	abgesicherte,abgesichertem,abgesicherten,abgesicherter,abgesichertes,abgesichertere,abgesicherterem,abgesicherteren,abgesicherterer,abgesicherteres,abgesichertste,abgesichertstem,abgesichertsten,abgesichertster,abgesichertstes
 abmachen|VVINF	0.0040	abgemacht,abmachst,abmachet,abmachten,abmacht,abmache,abmachtest,abmachte,abmachest,abmachtet
 abschließen|VVINF	0.0040	abschließe,abschließt,abschließest,abschließet,abschloss,abschloß,abschlossest,abschlosst,abschloßt,abschlossen,abschlösse,abschlössest,abschlössen,abschlösset,abgeschlossen
-absolut|ADJX	0.2418	absoluterem,absolutem,absolutestem,absolutesten,absoluten,absolutere,absolutestes,absolutester,absoluteren,absolutes,absoluteres,absoluterer,absoluter,absolute,absoluteste
+absolut|ADJX	0.1418	absoluterem,absolutem,absolutestem,absolutesten,absoluten,absolutere,absolutestes,absolutester,absoluteren,absolutes,absoluteres,absoluterer,absoluter,absolute,absoluteste
 abstimmen|VVINF	0.0040	abstimmtest,abstimmtet,abstimmt,abstimmest,abstimmet,abstimmten,abgestimmt,abstimmte,abstimmst,abstimme
-abwechslungsreich|ADJX	0.5797	abwechslungsreichster,abwechslungsreichere,abwechslungsreicheren,abwechslungsreicherem,abwechslungsreichsten,abwechslungsreichstem,abwechslungsreichstes,abwechslungsreichste,abwechslungsreichen,abwechslungsreichem,abwechslungsreicherer,abwechslungsreicher,abwechslungsreicheres,abwechslungsreiches,abwechslungsreiche
+abwechslungsreich|ADJX	0.3797	abwechslungsreichster,abwechslungsreichere,abwechslungsreicheren,abwechslungsreicherem,abwechslungsreichsten,abwechslungsreichstem,abwechslungsreichstes,abwechslungsreichste,abwechslungsreichen,abwechslungsreichem,abwechslungsreicherer,abwechslungsreicher,abwechslungsreicheres,abwechslungsreiches,abwechslungsreiche
 addieren|VVINF	0.0040	addierst,addierten,addierest,addiere,addiertet,addierte,addiertest,addieret,addiert
 adrett|ADJX	0.1987	adrettestes,adrettere,adretteren,adrettester,adrettestem,adrettesten,adretterem,adrettem,adretten,adretteste,adrette,adretter,adrettes,adretteres,adretterer
 agil|ADJX	0.1959	agilstes,agilster,agileren,agilerem,agilsten,agilstem,agilere,agileres,agiles,agiler,agilen,agilem,agilerer,agilste,agile

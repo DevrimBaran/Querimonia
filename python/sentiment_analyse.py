@@ -45,9 +45,12 @@ def analyze(query, dict):
             cells = s.split('\t')
             lemma = cells[0].split('|')
             value = float(cells[1].strip())
-            infl = cells[2].split(',')
-            # delete the \n in the last word
-            infl[len(infl) - 1] = infl[len(infl) - 1].strip()
+            try:
+                infl = cells[2].split(',')
+                # delete the \n in the last word
+                infl[len(infl) - 1] = infl[len(infl) - 1].strip()
+            except IndexError:
+                infl = []
             for j in tokens:
                 if j in infl or j in lemma:
                     try:
