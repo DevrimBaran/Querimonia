@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.db.manager.CombinationManager;
 import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.db.manager.LineStopCombinationManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,13 +17,13 @@ import java.util.List;
 public class CombinationController {
 
   private final ComplaintManager complaintManager;
-  private final LineStopCombinationManager lineStopCombinationManager;
+  private final CombinationManager combinationManager;
 
   public CombinationController(
       ComplaintManager complaintManager,
-      LineStopCombinationManager lineStopCombinationManager) {
+      CombinationManager combinationManager) {
     this.complaintManager = complaintManager;
-    this.lineStopCombinationManager = lineStopCombinationManager;
+    this.combinationManager = combinationManager;
   }
 
   /**
@@ -47,7 +47,7 @@ public class CombinationController {
    */
   @GetMapping("api/combinations")
   public ResponseEntity<?> getAllCombinations() {
-    return ControllerUtility.tryAndCatch(lineStopCombinationManager::getAllCombinations);
+    return ControllerUtility.tryAndCatch(combinationManager::getAllCombinations);
   }
 
   /**
@@ -62,8 +62,19 @@ public class CombinationController {
   public ResponseEntity<?> addCombinations(
       @RequestBody List<LineStopCombination> lineStopCombinations) {
     return ControllerUtility.tryAndCatch(
-        () -> lineStopCombinationManager.addLineStopCombinations(lineStopCombinations),
+        () -> combinationManager.addLineStopCombinations(lineStopCombinations),
         HttpStatus.CREATED);
+  }
+
+  /**
+   * Deletes all combinations of the database.
+   *
+   * @return a response entity with status code 204 on success or else with status code 500 and
+   * the querimonia exception as response body.
+   */
+  @DeleteMapping("api/combinations/all")
+  public ResponseEntity<?> deleteAllCombinations() {
+    return ControllerUtility.tryAndCatch(combinationManager::deleteAllCombinations);
   }
 
   /**
@@ -74,6 +85,6 @@ public class CombinationController {
    */
   @PostMapping("api/combinations/default")
   public ResponseEntity<?> addDefaultCombinations() {
-    return ControllerUtility.tryAndCatch(lineStopCombinationManager::addDefaultCombinations);
+    return ControllerUtility.tryAndCatch(combinationManager::addDefaultCombinations);
   }
 }

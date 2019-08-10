@@ -14,13 +14,13 @@ import java.util.stream.StreamSupport;
  * This manager is used to manage combinations of lines, places and stops.
  */
 @Service
-public class LineStopCombinationManager {
+public class CombinationManager {
 
   private final LineStopCombinationRepository lineStopCombinationRepository;
   private final FileStorageService fileStorageService;
 
   @Autowired
-  public LineStopCombinationManager(
+  public CombinationManager(
       LineStopCombinationRepository lineStopCombinationRepository,
       FileStorageService fileStorageService) {
     this.lineStopCombinationRepository = lineStopCombinationRepository;
@@ -58,5 +58,12 @@ public class LineStopCombinationManager {
   public List<LineStopCombination> addDefaultCombinations() {
     return addLineStopCombinations(fileStorageService
         .getJsonObjectsFromFile(LineStopCombination[].class, "DefaultCombinations.json"));
+  }
+
+  /**
+   * Deletes all combinations.
+   */
+  public void deleteAllCombinations() {
+    lineStopCombinationRepository.deleteAll();
   }
 }
