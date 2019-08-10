@@ -84,7 +84,9 @@ class TextBuilder extends Component {
 
   setData = (data) => {
     console.log(data);
-    const components = data.components;
+    const components = data.components.filter((e) => {
+      return e.component.texts.length !== 0;
+    });
     const actions = data.actions;
     components.forEach((component) => {
       component.activeTextIndex = 0;
@@ -95,8 +97,8 @@ class TextBuilder extends Component {
     console.log({ components, actions });
   };
 
-  fetch = () => {
-    Api.get('/api/responses/' + this.props.complaintId, '')
+  fetch = (refresh) => {
+    (refresh ? Api.patch('/api/responses/' + this.props.complaintId + '/refresh', '') : Api.get('/api/responses/' + this.props.complaintId, ''))
       .catch(() => {
         return { status: 404 };
       })
@@ -105,9 +107,12 @@ class TextBuilder extends Component {
   };
 
   componentDidMount () {
-    this.fetch();
+    this.fetch(false);
   }
   render () {
+    if (this.props.refreshResponse) {
+      this.fetch(true);
+    }
     const mail = 'querimonia@g-laber.de';
     const subject = 'Querimonia Beschwerdeabschluss ' + this.props.complaintId;
     const message = `Die Beschwerde mit der ID: ${this.props.complaintId} wurde mit folgender Nachricht abgeschlossen:

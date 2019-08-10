@@ -16,6 +16,7 @@ import Tabbed from './../../components/Tabbed';
 import TextBuilder from './../../components/TextBuilder';
 import Tooltip from './../../components/Tooltip';
 import Input from '../../components/Input';
+import Api from '../../utility/Api';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
@@ -59,14 +60,23 @@ function List (data) {
   );
 }
 
-function Single (active, loadingEntitiesFinished, editCategorieBool, editTendencyBool, editEmotionBool, editCategorie, editTendency, editEmotion, refreshEntities) {
+function Single (active, booleans, methods) {
+  let loadingEntitiesFinished = booleans[0];
+  let editCategorieBool = booleans[1];
+  let editTendencyBool = booleans[2];
+  let editEmotionBool = booleans[3];
+  let refreshResponse = booleans[4];
+  let editCategorie = methods[0];
+  let editTendency = methods[1];
+  let editEmotion = methods[2];
+  let refreshEntities = methods[3];
   let sent = active && active.sentiment ? active.sentiment.tendency : null;
   return loadingEntitiesFinished ? (
     <React.Fragment>
       <Block>
         <Row vertical>
           <h6 className='center'>Antwort</h6>
-          <TextBuilder complaintId={active.id} />
+          <TextBuilder complaintId={active.id} refreshResponse={refreshResponse} />
         </Row>
       </Block>
       <Block>
@@ -132,7 +142,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   <Tooltip htmlFor='sentiments'>
                     {getSmiley(sent, true) + ' (' + sent.toFixed(2) + ')'}
                   </Tooltip>
-                  <i className={'far fa-edit'} onClick={editTendency.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-edit'} onClick={() => editTendency(active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
               ) : (
                 <span>
@@ -178,12 +188,13 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   return labelCompare === 0 ? entity1.start - entity2.start : labelCompare;
                 }).map((entity, i) => {
                   console.log(entity);
-                  return <li key={i}> {entity['label']} {': '}
+                  return <li key={i}>
+                    <i key={i} onClick={() => changePreference(active, refreshEntities, entity)} style={{ cursor: 'pointer', padding: '4px', color: (entity.preferred ? 'orange' : 'lightgray') }} className={'fas fa-crown'} />
+                    {entity['label']} {': '}
                     <TaggedText taggedText={{
                       text: entity.value,
-                      entities: [{ label: entity['label'], start: 0, end: entity.value.length, color: entity['color'] }]
+                      entities: [{ label: entity['label'], extractor: entity['extractor'], start: 0, end: entity.value.length, color: entity['color'] }]
                     }} />
-                    <Input key={i} type={'checkbox'} class={'preferEntityCheckbox'} />
                   </li>;
                 })
               }
@@ -231,6 +242,38 @@ function getSmiley (value, text) {
     emotions = ['😍', '😁', '😀', '🙂', '😐', '😞', '☹️', '😠', '🤬'];
   }
   return emotions[(value > 0.8 ? 0 : value > 0.6 ? 1 : value > 0.4 ? 2 : value > 0.1 ? 3 : value > -0.2 ? 4 : value > -0.4 ? 5 : value > -0.6 ? 6 : value > -0.8 ? 7 : 8)];
+}
+
+/**
+ * Changes the preference of an entity.
+ * Other entities with the same label are set to false
+ * @param {*} entity Entity where the preference is to be changed
+ */
+function changePreference (active, refreshEntities, entity) {
+  let entityOld = active.entities.flat().find((e) => {
+    return e.label === entity.label && e.preferred === true;
+  });
+  let query = entity;
+  query.preferred = !entity.preferred;
+  Api.put('/api/complaints/' + active.id + '/entities/' + entity.id, query).then((data) => {
+    if (entityOld) {
+      let query2 = entityOld;
+      query2.preferred = false;
+      Api.put('/api/complaints/' + active.id + '/entities/' + entityOld.id, query2).then((data) => {
+        if (Array.isArray(data)) {
+        // deep copy of data
+          let entities = JSON.parse(JSON.stringify(data));
+          // Updates the entity list and responses with the new values
+          refreshEntities(active, entities);
+        }
+      });
+    } else if (Array.isArray(data)) {
+      // deep copy of data
+      let entities = JSON.parse(JSON.stringify(data));
+      // Updates the entity list and responses with the new values
+      refreshEntities(active, entities);
+    }
+  });
 }
 
 export default { Header, List, Single };
