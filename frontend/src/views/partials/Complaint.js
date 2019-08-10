@@ -180,8 +180,8 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   console.log(entity);
                   return <li key={i}> {entity['label']} {': '}
                     <TaggedText taggedText={{
-                      text: '' + active.text.substring(entity['start'], entity['end']),
-                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'], color: entity['color'] }]
+                      text: entity.value,
+                      entities: [{ label: entity['label'], start: 0, end: entity.value.length, color: entity['color'] }]
                     }} />
                     <Input key={i} type={'checkbox'} class={'preferEntityCheckbox'} />
                   </li>;
