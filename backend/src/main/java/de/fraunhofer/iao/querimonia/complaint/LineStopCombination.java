@@ -1,4 +1,4 @@
-package de.fraunhofer.iao.querimonia.db.combination;
+package de.fraunhofer.iao.querimonia.complaint;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

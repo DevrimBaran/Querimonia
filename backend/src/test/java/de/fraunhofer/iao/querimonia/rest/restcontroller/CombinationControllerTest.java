@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.combination.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
 import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.db.manager.LineStopCombinationManager;
@@ -42,12 +42,15 @@ public class CombinationControllerTest {
     componentRepository = new MockComponentRepository();
     configurationRepository = new MockConfigurationRepository();
     combinationRepository = new MockCombinationRepository();
+    var fileStorageService = new FileStorageService(fileStorageProperties);
 
     ComplaintManager complaintManager = new ComplaintManager(
-        new FileStorageService(fileStorageProperties), complaintRepository, componentRepository,
-        new ConfigurationManager(configurationRepository, complaintRepository), combinationRepository);
+        fileStorageService, complaintRepository, componentRepository,
+        new ConfigurationManager(configurationRepository, complaintRepository, fileStorageService),
+        combinationRepository);
 
-    LineStopCombinationManager combinationManager = new LineStopCombinationManager(combinationRepository);
+    LineStopCombinationManager combinationManager =
+        new LineStopCombinationManager(combinationRepository, fileStorageService);
 
     combinationController = new CombinationController(complaintManager, combinationManager);
   }

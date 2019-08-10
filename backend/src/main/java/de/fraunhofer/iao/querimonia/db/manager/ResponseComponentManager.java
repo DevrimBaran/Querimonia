@@ -1,6 +1,5 @@
 package de.fraunhofer.iao.querimonia.db.manager;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.db.manager.filter.ResponseComponentFilter;
@@ -9,22 +8,16 @@ import de.fraunhofer.iao.querimonia.db.repository.CompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ResponseSuggestionRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -42,9 +35,7 @@ public class ResponseComponentManager {
   private final ComplaintRepository complaintRepository;
   private final ResponseSuggestionRepository responseSuggestionRepository;
   private final CompletedComponentRepository completedComponentRepository;
-
-  private static final String JSON_ERROR_TEXT =
-      "Die Default-Antwortbausteine konnten nicht geladen werden.";
+  private final FileStorageService fileStorageService;
 
   /**
    * Creates a new response component manager. Constructor is called by spring.
@@ -54,11 +45,13 @@ public class ResponseComponentManager {
       @Qualifier("responseComponentRepository") ResponseComponentRepository componentRepository,
       ComplaintRepository complaintRepository,
       ResponseSuggestionRepository responseSuggestionRepository,
-      CompletedComponentRepository completedComponentRepository) {
+      CompletedComponentRepository completedComponentRepository,
+      FileStorageService fileStorageService) {
     this.componentRepository = componentRepository;
     this.complaintRepository = complaintRepository;
     this.responseSuggestionRepository = responseSuggestionRepository;
     this.completedComponentRepository = completedComponentRepository;
+    this.fileStorageService = fileStorageService;
   }
 
 
@@ -81,29 +74,12 @@ public class ResponseComponentManager {
    * @return the list of default components
    */
   public synchronized List<ResponseComponent> addDefaultComponents() {
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
-      Resource defaultComponentsResource = defaultResourceLoader
-          .getResource("DefaultComponents.json");
+    List<ResponseComponent> defaultComponents;
+    defaultComponents = fileStorageService
+        .getJsonObjectsFromFile(ResponseComponent[].class, "DefaultComponents.json");
 
-      if (!defaultComponentsResource.exists()) {
-        throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-            JSON_ERROR_TEXT, "Fehlende Datei");
-      }
-
-      InputStream defaultComponentsStream = defaultComponentsResource.getInputStream();
-
-      List<ResponseComponent> defaultComponents = Arrays.asList(objectMapper.readValue(
-          defaultComponentsStream, ResponseComponent[].class));
-
-      defaultComponents.forEach(componentRepository::save);
-      return defaultComponents;
-
-    } catch (IOException e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          JSON_ERROR_TEXT, e, "Ungültige JSON Datei");
-    }
+    defaultComponents.forEach(componentRepository::save);
+    return defaultComponents;
   }
 
   /**
@@ -165,7 +141,7 @@ public class ResponseComponentManager {
   }
 
   /**
-   * Deletes a component from the database. Removes all references in complaints.
+   * Deletes a component from the database. Removes all responses that contain that component.
    *
    * @param componentId the id of the component, that should be deleted.
    */
@@ -208,7 +184,7 @@ public class ResponseComponentManager {
   }
 
   /**
-   * Deletes all components.
+   * Deletes all components. This will also delete any responses from complaints.
    */
   public synchronized void deleteAllComponents() {
     // remove references in complaints

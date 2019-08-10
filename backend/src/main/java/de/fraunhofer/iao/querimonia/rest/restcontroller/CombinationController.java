@@ -1,8 +1,9 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.combination.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
 import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.db.manager.LineStopCombinationManager;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,13 +55,25 @@ public class CombinationController {
    *
    * @param lineStopCombinations the list of the combinations.
    *
-   * @return a response entity with status code 204 on success or else with the querimonia
+   * @return a response entity with status code 201 on success or else with the querimonia
    *     exception as response body.
    */
   @PostMapping("api/combinations")
   public ResponseEntity<?> addCombinations(
       @RequestBody List<LineStopCombination> lineStopCombinations) {
     return ControllerUtility.tryAndCatch(
-        () -> lineStopCombinationManager.addLineStopCombinations(lineStopCombinations));
+        () -> lineStopCombinationManager.addLineStopCombinations(lineStopCombinations),
+        HttpStatus.CREATED);
+  }
+
+  /**
+   * Adds example combinations to the database.
+   *
+   * @return a response entity containing the added combinations with status code 200 on success
+   *     or the exception with status code 500 on an unexpected error.
+   */
+  @PostMapping("api/combinations/default")
+  public ResponseEntity<?> addDefaultCombinations() {
+    return ControllerUtility.tryAndCatch(lineStopCombinationManager::addDefaultCombinations);
   }
 }

@@ -153,11 +153,11 @@ public class ComplaintController {
    * @param complaintId the id of the complaint.
    *
    * @return a response entity with the following contents:
-   * <ul>
-   *   <li>status code 200 with the complaint text on success</li>
-   *   <li>status code 404 when the complaint with the given id does not exist</li>
-   *   <li>status code 500 on an unexpected server error.</li>
-   * </ul>
+   *     <ul>
+   *       <li>status code 200 with the complaint text on success</li>
+   *       <li>status code 404 when the complaint with the given id does not exist</li>
+   *       <li>status code 500 on an unexpected server error.</li>
+   *     </ul>
    */
   @GetMapping("/api/complaints/{complaintId}/text")
   public ResponseEntity<?> getText(@PathVariable long complaintId) {
@@ -359,13 +359,13 @@ public class ComplaintController {
    * @param namedEntity the new entity.
    *
    * @return a response entity with:
-   * <ul>
-   *   <li>status code 200: The entity was updated. The body is the new list of entities of the
-   *   complaint.</li>
-   *   <li>status code 400: The complaint can not be edited.</li>
-   *   <li>status code 404: Either the complaint or the entity with the id does not exist.</li>
-   *   <li>status code 500: Some unexpected error occurred.</li>
-   * </ul>
+   *     <ul>
+   *       <li>status code 200: The entity was updated. The body is the new list of entities of the
+   *       complaint.</li>
+   *       <li>status code 400: The complaint can not be edited.</li>
+   *       <li>status code 404: Either the complaint or the entity with the id does not exist.</li>
+   *       <li>status code 500: Some unexpected error occurred.</li>
+   *     </ul>
    */
   @PutMapping("api/complaints/{complaintId}/entities/{entityId}")
   public ResponseEntity<?> updateEntity(@PathVariable long complaintId,
@@ -395,6 +395,23 @@ public class ComplaintController {
       @PathVariable long entityId) {
     return ControllerUtility.tryAndCatch(() ->
         complaintManager.removeEntity(complaintId, entityId));
+  }
+
+  /**
+   * Adds example complaint texts to the database, that get analyzed.
+   *
+   * @param count    the amount of text that should be added. The default value is 150.
+   * @param configId the id of the config that should be used for the analysis.
+   *
+   * @return a response entity with:
+   *     <ul>
+   *       <li>status code 200 on success and the added complaints as body</li>
+   *       <li>status code 500 on an unexpected server error</li>
+   *     </ul>
+   */
+  public ResponseEntity<?> addDefaultComplaints(Optional<Integer> count, Optional<Long> configId) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.addExampleComplaints(count,
+        configId));
   }
 
   /**

@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -54,6 +53,7 @@ import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
 public class ComplaintManager {
 
   private static final Logger logger = LoggerFactory.getLogger(ComplaintManager.class);
+  private static final int DEFAULT_TEXTS_DEFAUL_COUNT = 150;
   private final FileStorageService fileStorageService;
   private final ComplaintRepository complaintRepository;
   private final ComplaintFactory complaintFactory;
@@ -140,11 +140,7 @@ public class ComplaintManager {
    * @see ComplaintController#uploadText(TextInput, Optional) uploadText
    */
   public Complaint uploadText(TextInput input, Optional<Long> configId) {
-    Configuration configuration = configId
-        // if given use the configuration with that id
-        .map(configurationManager::getConfiguration)
-        // use the currently active configuration else
-        .orElseGet(configurationManager::getCurrentConfiguration);
+    Configuration configuration = getConfigurationFromId(configId);
 
     var complaintBuilder = complaintFactory.createBaseComplaint(input.getText(), configuration);
     complaintBuilder.setState(ANALYSING);
@@ -152,42 +148,31 @@ public class ComplaintManager {
     var complaint = complaintBuilder.createComplaint();
     // store unfinished state
     storeComplaint(complaint);
-    // update id
+    // update id (otherwise the id would be 0 when returned)
     complaintBuilder.setId(complaint.getId());
 
-    // run analysis async
-    Executors.newCachedThreadPool().submit(() -> {
-      var future = CompletableFuture.runAsync(() -> {
-        try {
-          var builder = complaintFactory.analyzeComplaint(complaintBuilder, false);
-          builder.setState(ComplaintState.NEW);
-          storeComplaint(builder.createComplaint());
-        } catch (Exception e) {
-          onException(complaintBuilder, e);
-        }
-      }).orTimeout(10, TimeUnit.MINUTES);
-      if (future.isCompletedExceptionally()) {
-        // time out
-        onException(complaintBuilder, new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-            "Zeitüberschreitung bei Analyse", "Timeout"));
-      }
-    });
+    // run analysis
+    runAnalysisAsync(complaintBuilder, false, ComplaintState.NEW);
 
     return complaint;
+  }
+
+  private Configuration getConfigurationFromId(Optional<Long> configId) {
+    return configId
+        // if given use the configuration with that id
+        .map(configurationManager::getConfiguration)
+        // use the currently active configuration else
+        .orElseGet(configurationManager::getCurrentConfiguration);
   }
 
   /**
    * It called when the analysis throws an exception. It stores the complaint with the error state.
    */
-  @SuppressWarnings("SameReturnValue")
-  @NonNull
-  private Void onException(ComplaintBuilder complaintBuilder, Throwable e) {
+  private void onException(ComplaintBuilder complaintBuilder, Throwable e) {
     complaintBuilder
         .setState(ERROR)
         .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
-    e.printStackTrace();
     storeComplaint(complaintBuilder.createComplaint());
-    return null;
   }
 
 
@@ -224,7 +209,6 @@ public class ComplaintManager {
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
 
     Optional<String> newEmotion = updateRequest.getNewEmotion();
-
     if (newEmotion.isPresent()) {
       var sentiment = complaint.getSentiment().withEmotion(new ComplaintProperty("Emotion",
           newEmotion.get()));
@@ -234,7 +218,6 @@ public class ComplaintManager {
     }
 
     Optional<Double> newTendency = updateRequest.getNewTendency();
-
     if (newTendency.isPresent()) {
       var sentiment = complaint.getSentiment().withTendency(newTendency.get());
       builder
@@ -289,36 +272,44 @@ public class ComplaintManager {
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ANALYSING, CLOSED);
 
-    Configuration configuration = configId
-        // if given use the configuration with that id
-        .map(configurationManager::getConfiguration)
-        // use the currently active configuration else
-        .orElseGet(configurationManager::getCurrentConfiguration);
     builder
-        .setConfiguration(configuration)
+        .setConfiguration(getConfigurationFromId(configId))
         .setState(ANALYSING);
 
-    Complaint finalComplaint = complaint;
+    // run analysis
+    runAnalysisAsync(builder, keepUserInformation.orElse(false), complaint.getState());
+    complaint = builder.createComplaint();
+    storeComplaint(complaint);
+    return complaint;
+  }
+
+  /**
+   * Runs the analysis of a complaint asynchronously.
+   *
+   * @param builder             the modifiable complaint.
+   * @param keepUserInformation if this is true, values set by the user wont be overwritten.
+   * @param state               the state the complaint should have after analysis.
+   */
+  private void runAnalysisAsync(ComplaintBuilder builder,
+                                boolean keepUserInformation,
+                                ComplaintState state) {
     Executors.newCachedThreadPool().submit(() -> {
       var future = CompletableFuture.runAsync(() -> {
         try {
           var newBuilder
-              = complaintFactory.analyzeComplaint(builder, keepUserInformation.orElse(false));
-          newBuilder.setState(finalComplaint.getState());
+              = complaintFactory.analyzeComplaint(builder, keepUserInformation);
+          newBuilder.setState(state);
           storeComplaint(newBuilder.createComplaint());
         } catch (Exception e) {
           onException(builder, e);
         }
       }).orTimeout(10, TimeUnit.MINUTES);
+      // time out the analysis after 10 minutes
       if (future.isCompletedExceptionally()) {
-        // time out
         onException(builder, new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
             "Zeitüberschreitung bei Analyse", "Timeout"));
       }
     });
-    complaint = builder.createComplaint();
-    storeComplaint(complaint);
-    return complaint;
   }
 
   /**
@@ -327,6 +318,10 @@ public class ComplaintManager {
    * @param complaintId the id of the complaint that should be closed.
    *
    * @return the closed complaint.
+   *
+   * @throws QuerimoniaException if the complaint with the given id does not exist or the
+   *                             complaint cannot be closed in its state.
+   * @see ComplaintController#closeComplaint(long) closeComplaint
    */
   public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
@@ -536,6 +531,31 @@ public class ComplaintManager {
   }
 
   /**
+   * Uploads example complaint texts to the database and starts the analysis.
+   *
+   * @param count    how many example texts should be added. If this not given, {@value
+   *                 #DEFAULT_TEXTS_DEFAUL_COUNT} texts will be added.
+   * @param configId the id of the config that should be used for the analysis. If this is not
+   *                 given, the active config will be used.
+   *
+   * @return the list of added complaints.
+   *
+   * @throws QuerimoniaException on an unexpected server error or if no config with the given id
+   *                             exists in the database.
+   *
+   * @see ComplaintController#addDefaultComplaints(Optional, Optional) addDefaultComplaints
+   */
+  public List<Complaint> addExampleComplaints(Optional<Integer> count, Optional<Long> configId) {
+    var textList = fileStorageService.getJsonObjectsFromFile(TextInput[].class,
+        "DefaultTexts.json");
+    return textList.stream()
+        // only import count amount of texts
+        .limit(count.orElse(DEFAULT_TEXTS_DEFAUL_COUNT))
+        .map(textInput -> uploadText(textInput, configId))
+        .collect(Collectors.toList());
+  }
+
+  /**
    * Removes all complaints.
    *
    * @see ComplaintController#deleteAllComplaints() deleteAllComplaints
@@ -558,6 +578,11 @@ public class ComplaintManager {
     return builder.getResponseSuggestion();
   }
 
+  /**
+   * Stores the complaint in the database.
+   *
+   * @param complaint the complaint that gets saved.
+   */
   private synchronized void storeComplaint(Complaint complaint) {
     // store the configuration
     try {

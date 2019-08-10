@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.utility;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
-import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;
@@ -9,7 +9,10 @@ import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +26,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Service for saving files in filesystem and retrieving them. Inspired by
@@ -31,6 +36,8 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileStorageService {
 
+  public static final String JSON_ERROR_TEXT =
+      "Die Default-Antwortbausteine konnten nicht geladen werden.";
   private final Path fileStorageLocation;
 
   /**
@@ -62,6 +69,7 @@ public class FileStorageService {
    * Stores the file in the upload folder.
    *
    * @param file the file to store.
+   *
    * @return the file name.
    */
   public String storeFile(MultipartFile file) {
@@ -140,5 +148,41 @@ public class FileStorageService {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
           "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
     }
+  }
+
+  /**
+   * Loads an json array from a file.
+   *
+   * @param valueType the array type for the deserialization.
+   * @param filename  the relative path to the file.
+   * @param <T>       the type of the elements of the array.
+   *
+   * @return a list of type T containing the elements of the JSON array of the file.
+   *
+   * @throws QuerimoniaException on an IO-Error or a JSON-Parse-Error.
+   */
+  @NonNull
+  public <T> List<T> getJsonObjectsFromFile(Class<T[]> valueType, String filename) {
+    List<T> defaultComponents;
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      DefaultResourceLoader defaultResourceLoader = new DefaultResourceLoader();
+      Resource defaultComponentsResource = defaultResourceLoader
+          .getResource(filename);
+
+      if (!defaultComponentsResource.exists()) {
+        throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+            JSON_ERROR_TEXT, "Fehlende Datei");
+      }
+
+      InputStream defaultComponentsStream = defaultComponentsResource.getInputStream();
+      defaultComponents = Arrays.asList(objectMapper.readValue(
+          defaultComponentsStream, valueType));
+
+    } catch (IOException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+          JSON_ERROR_TEXT, e, "Ungültige JSON Datei");
+    }
+    return defaultComponents;
   }
 }

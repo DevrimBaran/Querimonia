@@ -9,6 +9,8 @@ import de.fraunhofer.iao.querimonia.db.repository.MockSuggestionRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +30,20 @@ import static org.junit.Assert.*;
  */
 public class ResponseComponentControllerTest {
 
-    private MockComponentRepository componentRepository;
-    private ResponseComponentController responseComponentController;
+  private MockComponentRepository componentRepository;
+  private ResponseComponentController responseComponentController;
 
   @Before
   public void setup() {
     componentRepository = new MockComponentRepository();
+    FileStorageProperties fileStorageProperties = new FileStorageProperties();
+    fileStorageProperties.setUploadDir("src/test/resources/uploads/");
+    var fileStorageService = new FileStorageService(fileStorageProperties);
     ComplaintRepository complaintRepository = new MockComplaintRepository();
     ResponseComponentManager responseComponentManager =
         new ResponseComponentManager(componentRepository, complaintRepository,
-            new MockSuggestionRepository(), new MockCompletedComponentRepository());
+            new MockSuggestionRepository(), new MockCompletedComponentRepository(),
+            fileStorageService);
     responseComponentController = new ResponseComponentController(responseComponentManager);
   }
 
@@ -62,7 +68,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
+        Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
@@ -78,7 +84,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(2), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
+        Optional.of(2), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(2, responseComponents.size());
@@ -93,7 +99,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(2), Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty());
+        Optional.of(2), Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
@@ -108,7 +114,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] sortBy = {"name_desc"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
+        Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
@@ -125,7 +131,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] keywords = {"Guten", "Herr"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(keywords));
+        Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(keywords));
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
@@ -140,7 +146,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] keywords = {"B"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(keywords));
+        Optional.of(3), Optional.of(0), Optional.empty(), Optional.empty(), Optional.of(keywords));
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(1, responseComponents.size());
@@ -154,7 +160,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] sortBy = {"magic"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
+        Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
   }
@@ -166,7 +172,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_E);
     String[] sortBy = {"magic_asc"};
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
+        Optional.of(3), Optional.of(0), Optional.of(sortBy), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     assertEquals(QuerimoniaException.class, responseEntity.getBody().getClass());
   }
@@ -178,7 +184,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(4), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
+        Optional.of(4), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(3, responseComponents.size());
@@ -194,7 +200,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(0), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
+        Optional.of(0), Optional.of(0), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(0, responseComponents.size());
@@ -207,7 +213,7 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_B);
     responseComponentController.addComponent(COMPONENT_E);
     ResponseEntity<?> responseEntity = responseComponentController.getAllComponents(
-            Optional.of(3), Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty());
+        Optional.of(3), Optional.of(1), Optional.empty(), Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     List<ResponseComponent> responseComponents = (List<ResponseComponent>) responseEntity.getBody();
     assertEquals(0, responseComponents.size());
@@ -217,7 +223,8 @@ public class ResponseComponentControllerTest {
   public void testGetComponentCountNoKeywords() {
     responseComponentController.addComponent(COMPONENT_A);
     responseComponentController.addComponent(COMPONENT_B);
-    ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.empty(), Optional.empty());
+    ResponseEntity<?> responseEntity =
+        responseComponentController.getComponentCount(Optional.empty(), Optional.empty());
     assertNotNull(responseEntity.getBody());
     var componentCount = (String) responseEntity.getBody();
     assertEquals("2", componentCount);
@@ -228,7 +235,8 @@ public class ResponseComponentControllerTest {
     responseComponentController.addComponent(COMPONENT_A);
     responseComponentController.addComponent(COMPONENT_B);
     String[] keywords = {"Guten", "Morgen"};
-    ResponseEntity<?> responseEntity = responseComponentController.getComponentCount(Optional.of(keywords), Optional.empty());
+    ResponseEntity<?> responseEntity =
+        responseComponentController.getComponentCount(Optional.of(keywords), Optional.empty());
     assertNotNull(responseEntity.getBody());
     var componentCount = (String) responseEntity.getBody();
     assertEquals("1", componentCount);

@@ -36,7 +36,7 @@ public class ResponseControllerTest {
     MockConfigurationRepository configurationRepository = new MockConfigurationRepository();
     ConfigurationManager
         configurationManager =
-        new ConfigurationManager(configurationRepository, complaintRepository);
+        new ConfigurationManager(configurationRepository, complaintRepository, fileStorageService);
     ComplaintManager complaintManager =
         new ComplaintManager(fileStorageService, complaintRepository, componentRepository,
             configurationManager, new MockCombinationRepository());

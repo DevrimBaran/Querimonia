@@ -2,12 +2,13 @@ package de.fraunhofer.iao.querimonia.db.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.rest.restobjects.AvailableExtractors;
+import de.fraunhofer.iao.querimonia.db.manager.filter.ComparatorBuilder;
 import de.fraunhofer.iao.querimonia.db.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.db.repository.ConfigurationRepository;
 import de.fraunhofer.iao.querimonia.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContactExtractors;
-import de.fraunhofer.iao.querimonia.db.manager.filter.ComparatorBuilder;
+import de.fraunhofer.iao.querimonia.rest.restobjects.AvailableExtractors;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class ConfigurationManager {
 
   private final ConfigurationRepository configurationRepository;
   private final ComplaintRepository complaintRepository;
+  private final FileStorageService fileStorageService;
 
   /**
    * Creates new configuration manager.
@@ -37,9 +39,12 @@ public class ConfigurationManager {
   @Autowired
   public ConfigurationManager(
       ConfigurationRepository configurationRepository,
-      ComplaintRepository complaintRepository) {
+      ComplaintRepository complaintRepository,
+      FileStorageService fileStorageService) {
+
     this.configurationRepository = configurationRepository;
     this.complaintRepository = complaintRepository;
+    this.fileStorageService = fileStorageService;
   }
 
   /**
@@ -185,6 +190,22 @@ public class ConfigurationManager {
   }
 
   /**
+   * Adds example configurations to the database. The first configuration will be set as active.
+   *
+   * @return the example configurations.
+   */
+  public synchronized List<Configuration> addDefaultConfigurations() {
+    var configurations = fileStorageService.getJsonObjectsFromFile(Configuration[].class,
+        "DefaultConfigurations.json");
+    configurations.stream()
+        .map(this::addConfiguration)
+        .findFirst()
+        .map(Configuration::getId)
+        .map(this::updateCurrentConfiguration);
+    return configurations;
+  }
+
+  /**
    * Deletes all configurations of the database.
    */
   public synchronized void deleteAllConfigurations() {
@@ -214,6 +235,7 @@ public class ConfigurationManager {
 
   /**
    * Stores the configuration in the database.
+   *
    * @param configuration the configuration that should be stored.
    */
   private synchronized void storeConfiguration(Configuration configuration) {

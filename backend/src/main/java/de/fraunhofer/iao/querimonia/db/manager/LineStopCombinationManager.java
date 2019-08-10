@@ -1,7 +1,8 @@
 package de.fraunhofer.iao.querimonia.db.manager;
 
-import de.fraunhofer.iao.querimonia.db.combination.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
 import de.fraunhofer.iao.querimonia.db.repository.LineStopCombinationRepository;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +17,14 @@ import java.util.stream.StreamSupport;
 public class LineStopCombinationManager {
 
   private final LineStopCombinationRepository lineStopCombinationRepository;
+  private final FileStorageService fileStorageService;
 
   @Autowired
   public LineStopCombinationManager(
-      LineStopCombinationRepository lineStopCombinationRepository) {
+      LineStopCombinationRepository lineStopCombinationRepository,
+      FileStorageService fileStorageService) {
     this.lineStopCombinationRepository = lineStopCombinationRepository;
+    this.fileStorageService = fileStorageService;
   }
 
   /**
@@ -36,9 +40,23 @@ public class LineStopCombinationManager {
 
   /**
    * Adds combinations to the database.
+   *
+   * @return the added combinations.
    */
-  public void addLineStopCombinations(
+  public List<LineStopCombination> addLineStopCombinations(
       List<LineStopCombination> lineStopCombinations) {
-    lineStopCombinationRepository.saveAll(lineStopCombinations);
+    return StreamSupport.stream(lineStopCombinationRepository
+        .saveAll(lineStopCombinations).spliterator(), false)
+        .collect(Collectors.toList());
+  }
+
+  /**
+   * Adds example combinations to the database.
+   *
+   * @return the example combinations.
+   */
+  public List<LineStopCombination> addDefaultCombinations() {
+    return addLineStopCombinations(fileStorageService
+        .getJsonObjectsFromFile(LineStopCombination[].class, "DefaultCombinations.json"));
   }
 }

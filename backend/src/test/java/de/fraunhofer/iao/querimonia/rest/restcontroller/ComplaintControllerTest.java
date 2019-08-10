@@ -59,14 +59,16 @@ public class ComplaintControllerTest {
 
     FileStorageProperties fileStorageProperties = new FileStorageProperties();
     fileStorageProperties.setUploadDir("src/test/resources/uploads/");
+    var fileStorageService = new FileStorageService(fileStorageProperties);
 
     complaintController = new ComplaintController(new ComplaintManager(
-        new FileStorageService(fileStorageProperties),
+        fileStorageService,
         complaintRepository,
         responseComponentRepository,
         new ConfigurationManager(
             configurationRepository,
-            complaintRepository
+            complaintRepository,
+            fileStorageService
         ),
         new MockCombinationRepository()
     ));

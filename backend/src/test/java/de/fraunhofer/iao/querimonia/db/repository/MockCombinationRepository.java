@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.db.repository;
 
-import de.fraunhofer.iao.querimonia.db.combination.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
 
 public class MockCombinationRepository extends MockRepository<LineStopCombination> implements LineStopCombinationRepository {
   @Override

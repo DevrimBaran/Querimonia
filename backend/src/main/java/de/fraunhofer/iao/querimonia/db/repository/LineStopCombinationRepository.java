@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.db.repository;
 
-import de.fraunhofer.iao.querimonia.db.combination.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
 import org.springframework.data.repository.CrudRepository;
 
 
