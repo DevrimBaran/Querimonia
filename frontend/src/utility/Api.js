@@ -1,18 +1,24 @@
+import { showErrorPopup } from './../components/ErrorPopup';
 
 const fetchJson = function (action, options) {
+  const processResponse = (response) => {
+    const responseJsonPromise = response.json();
+    if (!response.ok) showErrorPopup(responseJsonPromise);
+    return responseJsonPromise;
+  };
   if ((process.env.NODE_ENV === 'development')) {
     const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
     if (useMockInDev) {
       console.log('Application is using mock backend!');
       return fetch('https://querimonia.iao.fraunhofer.de/mock' + action, options)
-        .then(response => { return response.json(); });
+        .then((response) => processResponse(response));
     } else {
       return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
-        .then(response => { return response.json(); });
+        .then((response) => processResponse(response));
     }
   } else {
     return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
-      .then(response => { return response.json(); });
+      .then((response) => processResponse(response));
   }
 };
 const options = function (method, data, additional = {}) {
