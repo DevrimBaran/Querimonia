@@ -1,7 +1,7 @@
 
 package de.fraunhofer.iao.querimonia.response.generation;
 
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.junit.Test;
 
 import java.util.ArrayList;

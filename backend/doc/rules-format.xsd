@@ -35,6 +35,8 @@
                 <xs:complexType>
                     <xs:attribute name="label" type="xs:string" use="required"/>
                     <xs:attribute name="matches" type="xs:string"/>
+                    <xs:attribute name="countMin" type="xs:nonNegativeInteger" default="1"/>
+                    <xs:attribute name="countMax" type="xs:nonNegativeInteger"/>
                 </xs:complexType>
             </xs:element>
             <xs:element name="Predecessor">

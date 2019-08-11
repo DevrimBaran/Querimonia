@@ -1,11 +1,11 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.db.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ColorDefinition;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
+import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 
 import java.time.format.DateTimeFormatter;

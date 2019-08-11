@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
-import de.fraunhofer.iao.querimonia.exception.XmlException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.XmlException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import org.w3c.dom.Document;

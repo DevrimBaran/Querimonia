@@ -1,12 +1,12 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 
-import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
-import de.fraunhofer.iao.querimonia.db.repository.MockCombinationRepository;
-import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repository.MockConfigurationRepository;
+import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.repository.MockCombinationRepository;
+import de.fraunhofer.iao.querimonia.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.repository.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.repository.MockConfigurationRepository;
 import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.junit.Before;

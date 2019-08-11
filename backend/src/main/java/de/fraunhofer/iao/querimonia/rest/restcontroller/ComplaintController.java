@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
-import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;

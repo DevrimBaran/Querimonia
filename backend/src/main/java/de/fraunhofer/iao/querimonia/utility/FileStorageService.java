@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.utility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.poi.hwpf.HWPFDocument;

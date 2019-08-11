@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.log.LogEntry;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -90,6 +90,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @Column(length = TEXT_MAX_LENGTH)
   @NonNull
+  @JsonIgnore
   private String text = "";
 
   /**
@@ -121,13 +122,14 @@ public class Complaint implements Identifiable<Long> {
    */
   @OneToOne(cascade = CascadeType.ALL)
   @NonNull
-  private Sentiment sentiment = new Sentiment();
+  private Sentiment sentiment = Sentiment.getDefaultSentiment();
 
   /**
    * The list of all named entities in the complaint text.
    */
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "complaint_id")
+  @JsonIgnore
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();
 
@@ -248,6 +250,7 @@ public class Complaint implements Identifiable<Long> {
    * @return the complaint text.
    */
   @NonNull
+  @JsonIgnore
   public String getText() {
     return text;
   }
@@ -289,6 +292,7 @@ public class Complaint implements Identifiable<Long> {
    * @return the list of {@link NamedEntity named entities} that occur in the complaint text.
    */
   @NonNull
+  @JsonIgnore
   public List<NamedEntity> getEntities() {
     return new ArrayList<>(entities);
   }

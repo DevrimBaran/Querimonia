@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.junit.Test;
 
 import java.time.LocalDate;

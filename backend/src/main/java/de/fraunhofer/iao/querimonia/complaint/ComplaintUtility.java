@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.http.HttpStatus;
 
 import java.util.Comparator;

@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

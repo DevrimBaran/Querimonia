@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -17,12 +17,14 @@ import java.io.IOException;
 
 public class KiKuKoContactExtractors {
 
-  private static final String URL = "https://kikuko.iao.fraunhofer.de/request?url=getAllDomainType&data[type]=";
+  private static final String URL =
+      "https://kikuko.iao.fraunhofer.de/request?url=getAllDomainType&data[type]=";
 
   /**
    * executes a Request to KiKuKo.
    *
    * @param type type of the extractors
+   *
    * @return Array of all KiKuKo extractors of the given type
    */
   public String[] executeKikukoRequest(String type) {
@@ -33,8 +35,8 @@ public class KiKuKoContactExtractors {
 
     // add authentication token
     RestTemplate template = new RestTemplateBuilder()
-                  .basicAuthentication("admin", "KIKuKoPass2018")
-                  .build();
+        .basicAuthentication("admin", "KIKuKoPass2018")
+        .build();
 
     // exception for illegal answers
     QuerimoniaException kikukoException =
@@ -54,7 +56,7 @@ public class KiKuKoContactExtractors {
     ObjectMapper mapper = new ObjectMapper();
     String[] extractorArray;
     try {
-      String extractorString = (String)new JSONObject(returnValue).get("body");
+      String extractorString = (String) new JSONObject(returnValue).get("body");
       extractorArray = mapper.readValue(extractorString, String[].class);
     } catch (IOException | JSONException e) {
       e.printStackTrace();

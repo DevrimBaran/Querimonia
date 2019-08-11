@@ -1,7 +1,9 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.sun.istack.Nullable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -19,19 +21,34 @@ public class LineStopCombination implements Identifiable<Long> {
 
   @Id
   @GeneratedValue
+  @JsonIgnore
   private long id;
 
+  @JsonProperty("Linie")
+  @Nullable
   private String line;
 
+  @JsonProperty("Haltestelle")
+  @Nullable
   private String stop;
 
+  @JsonProperty("Ort")
+  @Nullable
   private String place;
 
   @SuppressWarnings("unused")
   @JsonCreator
-  public LineStopCombination(@JsonProperty("line") String line,
-                             @JsonProperty("stop") String stop,
-                             @JsonProperty("place") String place) {
+  public LineStopCombination(
+      @Nullable
+      @JsonProperty("Linie")
+          String line,
+      @Nullable
+      @JsonProperty("Haltestelle")
+          String stop,
+      @Nullable
+      @JsonProperty("Ort")
+          String place
+  ) {
     this.line = line;
     this.stop = stop;
     this.place = place;
@@ -46,14 +63,20 @@ public class LineStopCombination implements Identifiable<Long> {
     return id;
   }
 
+  @JsonProperty("Linie")
+  @Nullable
   public String getLine() {
     return line;
   }
 
+  @JsonProperty("Haltestelle")
+  @Nullable
   public String getStop() {
     return stop;
   }
 
+  @JsonProperty("Ort")
+  @Nullable
   public String getPlace() {
     return place;
   }

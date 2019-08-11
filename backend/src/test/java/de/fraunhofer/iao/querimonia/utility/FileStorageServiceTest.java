@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.utility;
 
 import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;

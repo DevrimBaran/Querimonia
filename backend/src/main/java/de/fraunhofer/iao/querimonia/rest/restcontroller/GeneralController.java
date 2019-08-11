@@ -1,9 +1,9 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.manager.CombinationManager;
-import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
-import de.fraunhofer.iao.querimonia.db.manager.ResponseComponentManager;
+import de.fraunhofer.iao.querimonia.manager.CombinationManager;
+import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.manager.ResponseComponentManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

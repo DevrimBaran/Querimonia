@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
-import de.fraunhofer.iao.querimonia.db.manager.CombinationManager;
-import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.manager.CombinationManager;
+import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
