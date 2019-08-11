@@ -19,84 +19,103 @@ class TextBuilder extends Component {
   // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
   constructor (props) {
     super(props);
-
+    this.variableRegex = /\${[a-zA-U0-9]*}/g;
     this.state = {
       text: '',
-      components: [],
-      actions: []
+      components: { ids: [] },
+      actions: { ids: [] }
     };
   }
 
-  add = (componentId) => {
-    const component = this.state.components.find((component) => {
-      return component.component.id === componentId;
-    });
-    this.setState({
-      text: this.state.text + this.insertEntities(component.component.texts[0], componentId) + '\r\n',
-      components: this.state.components.filter(component => component.component.id !== componentId)
-    }
-    );
-  };
   onChange = () => {
     this.setState({ text: this.refs.responseText.value });
-  }
-  cycle = (componentId) => {
+  };
+
+  add = (componentId) => {
+    let newComponents = { ids: [] };
+    this.state.components.ids.filter(id => id !== componentId).forEach((id) => {
+      newComponents[id] = this.state.components[id];
+      newComponents.ids.push(id);
+    });
     this.setState({
-      components: this.state.components.map((component) => {
-        if (component.component.id === componentId) component.activeTextIndex = ((component.activeTextIndex + 1) % component.component.texts.length);
-        return component;
-      })
-    }
-    );
+      text: this.state.text + this.insertEntities(componentId) + '\r\n',
+      components: newComponents
+    });
+  };
+
+  cycle = (componentId) => {
+    const component = this.state.components[componentId];
+    component.activeTextIndex = ((component.activeTextIndex + 1) % component.component.texts.length);
+    this.setState((state) => {
+      return {
+        components: {
+          ...state.components,
+          componentId: component
+        }
+      };
+    });
   };
 
   finish = (mailto) => {
     document.location.href = mailto;
     // document.location.href = document.location.origin + '/complaints';
-  }
+  };
 
-  insertEntities = (text, componentId) => {
-    const component = this.state.components.find((component) => {
-      return component.component.id === componentId;
-    });
-    const variableRegex = /\${[a-zA-U0-9]*}/g;
-    const variables = text.match(variableRegex) || [];
+  insertEntities = (componentId) => {
+    const component = this.state.components[componentId];
+    let text = component.component.texts[component.activeTextIndex] || '';
+    const variables = text.match(this.variableRegex) || [];
+
     variables.forEach(variable => {
-      const preferredEntity = component.entities.find(entity => entity.preferred && `\${${entity.label}}` === variable);
-      const firstSuitableEntity = component.entities.find(entity => `\${${entity.label}}` === variable);
-      const componentEntityLabel = component.activeEntityLabel || (preferredEntity ? preferredEntity.value : false) || (firstSuitableEntity ? firstSuitableEntity.value : false) || null;
-      const entity = component.entities.find(entity => entity.value === componentEntityLabel);
-      text = text.replace(variable, componentEntityLabel);
-      entity.start = text.indexOf(componentEntityLabel);
-      entity.end = text.indexOf(componentEntityLabel) + componentEntityLabel.length;
+      let entity = component.activeEntities[variable];
+      entity.start = text.indexOf(variable);
+      entity.end = text.indexOf(variable) + entity.value.length;
+      entity.variable = variable;
+      text = text.replace(variable, entity.value);
     });
     return text;
   };
 
-  setActiveEntity = (componentId, activeEntityLabel) => {
+  setActiveEntity = (componentId, variable, entity) => {
+    let updatedComponents = this.state.components;
+    updatedComponents[componentId].activeEntities[variable] = entity;
     this.setState({
-      components: this.state.components.map((component) => {
-        if (component.component.id === componentId) component.activeEntityLabel = activeEntityLabel;
-        return component;
-      })
+      components: updatedComponents
+    });
+  };
+
+  setUpActiveEntities = (component) => {
+    component.activeEntities = {};
+    component.component.texts.forEach((text) => {
+      const variables = text.match(this.variableRegex) || [];
+      variables.forEach((variable) => {
+        if (Object.keys(component.activeEntities).includes(variable)) return;
+        const possibleEntities = component.entities.filter(entity => entity.label === variable.substring(2, 2 + entity.label.length));
+        component.activeEntities[variable] = possibleEntities.find(entity => entity.preferred) || possibleEntities[0];
+      });
     });
   };
 
   setData = (data) => {
     console.log(data);
-    const components = data.components;
-    const actions = data.actions;
-    components.forEach((component) => {
+    const components = data.components.filter(component => component.component.texts.length !== 0).reduce((obj, component) => {
       component.activeTextIndex = 0;
-    });
-    this.setState({
-      components: components,
-      actions: actions });
+      this.setUpActiveEntities(component);
+      obj[component.id] = component;
+      obj.ids.push(component.id);
+      return obj;
+    }, { ids: [] });
+    const actions = data.actions.reduce((obj, component) => {
+      obj[component.id] = component;
+      obj.ids.push(component.id);
+      return obj;
+    }, { ids: [] });
+    this.setState({ components, actions });
     console.log({ components, actions });
   };
 
   fetch = () => {
-    Api.get('/api/responses/' + this.props.complaintId, '')
+    Api.get('/api/complaints/' + this.props.complaintId + '/response', '')
       .catch(() => {
         return { status: 404 };
       })
@@ -107,6 +126,7 @@ class TextBuilder extends Component {
   componentDidMount () {
     this.fetch();
   }
+
   render () {
     const mail = 'querimonia@g-laber.de';
     const subject = 'Querimonia Beschwerdeabschluss ' + this.props.complaintId;
@@ -129,10 +149,10 @@ class TextBuilder extends Component {
         <Collapsible className='Content' label='Aktionen' collapse={false} id='actions' />
         <Content>
           {
-            this.state.actions.map((action, i) => {
-              const id = action.id;
+            this.state.actions.ids.map((id) => {
+              const action = this.state.actions[id];
               return (
-                <Input key={i} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
+                <Input key={id} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
               );
             })
           }
@@ -140,16 +160,15 @@ class TextBuilder extends Component {
         <Collapsible className='Content' label='Antworten' collapse={false} id='responses' />
         <Content>
           {
-            this.state.components.map((component) => {
-              const id = component.component.id;
+            this.state.components.ids.map((id) => {
+              const component = this.state.components[id];
               return (
                 <div className='response' key={id}>
                   <span className='content'>
-                    <ChangeableEntityText taggedText={{ text: this.insertEntities(component.component.texts[component.activeTextIndex], id), entities: component.entities }}
-                      possibleEntities={component.entities}
+                    <ChangeableEntityText taggedText={{ text: this.insertEntities(id), entities: Object.keys(component.activeEntities).map(key => component.activeEntities[key]) }}
                       setActiveEntity={this.setActiveEntity}
-                      activeEntity={component.activeEntityLabel || null}
-                      complaintId={id} />
+                      entities={component.entities}
+                      responseId={id} />
                     <div className='part'>{component.component.name}</div>
                   </span>
                   <i className='fa fa-check add' onClick={() => { this.add(id); }} />

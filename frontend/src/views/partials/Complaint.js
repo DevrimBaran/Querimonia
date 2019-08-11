@@ -103,7 +103,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
             {
               active.properties.map((properties, index) =>
                 !editCategorieBool ? (
-                  <span>
+                  <span key={index}>
                     <span id='subjects'>{(properties.probabilities[properties.value] ? properties.value : '---')}</span>
                     <Tooltip htmlFor='subjects'>
                       {Object.keys(properties.probabilities).map(subject => <div key={subject}>{`${subject}: ${properties.probabilities[subject]}`} <br /></div>)}
@@ -112,7 +112,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, index, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                   </span>
                 ) : (
-                  <span>
+                  <span key={index}>
                     <select id='chooseCategorie'>
                       {Object.keys(properties.probabilities).map(subject => subject === properties.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
                     </select>
@@ -183,7 +183,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                       text: entity.value,
                       entities: [{ label: entity['label'], start: 0, end: entity.value.length, color: entity['color'] }]
                     }} />
-                    <Input key={i} type={'checkbox'} class={'preferEntityCheckbox'} />
+                    <Input key={i} type={'checkbox'} className={'preferEntityCheckbox'} />
                   </li>;
                 })
               }

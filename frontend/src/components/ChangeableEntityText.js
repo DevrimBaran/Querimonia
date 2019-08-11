@@ -13,14 +13,22 @@ import Input from './Input';
 class ChangeableEntityText extends Component {
   constructor (props) {
     super(props);
-    this.state = {};
+    this.state = {
+      taggedText: this.props.taggedText
+    };
   }
 
+  createEntity = (tag, value) => {
+    return {
+      ...tag,
+      value: value,
+      id: tag.variable + '_dummyEntity_' + this.props.responseId,
+      label: tag.label[0].label
+    };
+  };
+
   renderModal = (tag, id) => {
-    const correctEntities = this.props.possibleEntities.flat().filter((entity) => {
-      console.error('entity', entity.label);
-      console.error('tag', tag.label[0].label);
-      console.error('------');
+    const fittingEntities = this.props.entities.flat().filter((entity) => {
       return entity.label === tag.label[0].label;
     }).map((entity) => {
       return {
@@ -29,20 +37,32 @@ class ChangeableEntityText extends Component {
       };
     });
     return <Modal htmlFor={id} key={id}>
-      Wählen sie eine der folgenden Entitäten:
+      Um die Entität auzutauschen wählen sie eine der folgenden Entitäten:
       <div style={{ padding: '5px' }}>
-        <Input type='select' required values={correctEntities} id={id + '_select'} value={this.props.activeEntity || this.props.possibleEntities[0]} onChange={() => this.props.setActiveEntity(this.props.complaintId, document.getElementById(id + '_select').value)} />
+        <Input type='select'
+          values={fittingEntities}
+          id={id + '_select'}
+          onChange={() => this.props.setActiveEntity(this.props.responseId, tag.variable, this.createEntity(tag, document.getElementById(id + '_select').value || ''))} />
       </div>
-      Oder geben sie ganze einfach eine neue Entität ein:
+      ... oder geben sie ganze einfach eine neue Entität ein:
       <div style={{ padding: '5px' }}>
         <Input type='text' id={id + '_input'} placeholder={'Entität'} />
-        <button onClick={() => this.props.setActiveEntity(this.props.complaintId, document.getElementById(id + '_input').value)}>Entität ändern</button>
+        <button
+          onClick={() => this.props.setActiveEntity(this.props.responseId, tag.variable, this.createEntity(tag, document.getElementById(id + '_input' || '').value))}>Entität ändern</button>
       </div>
     </Modal>;
   };
 
+  componentWillUpdate (props) {
+    if (props.taggedText.text !== this.state.taggedText.text) {
+      this.setState({
+        taggedText: props.taggedText
+      });
+    }
+  }
+
   render () {
-    return <TaggedText taggedText={this.props.taggedText} appendHtml={this.renderModal} />;
+    return <TaggedText taggedText={this.state.taggedText} appendHtml={this.renderModal} />;
   }
 }
 

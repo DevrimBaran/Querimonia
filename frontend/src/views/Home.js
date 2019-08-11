@@ -91,7 +91,7 @@ function Home () {
                   durch den Upload einer Datei (bisher unterstützte Dateiformate: PDF, WORD, TXT)
                   eine Beschwerde zu importieren oder manuell eine einzugeben.
                 </p>
-                <img src={screen1} />
+                <img src={screen1} alt={'screen1'} />
               </div>
               <div className='introduction_box'>
                 <h6>Beschwerde ansehen</h6>
@@ -99,7 +99,7 @@ function Home () {
                   und die Beschwerden sind in einer Tabelle (Anliegen, Vorschau, Emotion, Sentiment, Kategorie, Datum)
                   eingeordnet.
                 </p>
-                <img src={screen2} />
+                <img src={screen2} alt={'screen1'} />
               </div>
               <div className='introduction_box'>
                 <h6>Antwort generieren</h6>
@@ -109,7 +109,7 @@ function Home () {
                   um eine Antwort zusammenzuklicken. Auf der rechten Seite sieht der Nutzer
                   den Originaltext und die entdeckten Entitäten.
                 </p>
-                <img src={screen3} />
+                <img src={screen3} alt={'screen1'} />
               </div>
             </center>
             <center>
