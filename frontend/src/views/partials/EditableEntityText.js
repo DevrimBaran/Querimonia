@@ -30,7 +30,7 @@ class EditableEntityText extends Component {
         if (Array.isArray(data)) {
         // deep copy of data
           let entities = JSON.parse(JSON.stringify(data));
-          // Updates the entity list with the new values
+          // Updates the entity list and responses with the new values
           this.props.refreshEntities(this.props.active, entities);
           this.setState({
             taggedText: ({ text: this.props.taggedText.text, entities: data })
@@ -60,7 +60,7 @@ class EditableEntityText extends Component {
       if (Array.isArray(data)) {
       // deep copy of data
         let entities = JSON.parse(JSON.stringify(data));
-        // Updates the entity list with the new values
+        // Updates the entity list and responses with the new values
         this.props.refreshEntities(this.props.active, entities);
         this.setState({
           taggedText: ({ text: this.props.taggedText.text, entities: data }),
@@ -210,7 +210,7 @@ class EditableEntityText extends Component {
         {/* eslint-disable-next-line */}
       <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
         {/* eslint-disable-next-line */}
-      <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+      <i className={'far fa-trash-alt'} onClick={() => { if (window.confirm('Wollen sie die Entität wirklich löschen?')) this.deleteEntity(label.id)} } style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
       </div>;
     });
     return <Modal key={id + '_modal'} htmlFor={id}>

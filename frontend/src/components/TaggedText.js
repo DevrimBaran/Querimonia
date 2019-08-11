@@ -7,6 +7,9 @@
 
 import React, { Component } from 'react';
 import Tooltip from './Tooltip';
+import merge from 'deepmerge';
+
+import { connect } from 'react-redux';
 
 const LABEL_COLORS = {
   default: '#cccccc'
@@ -129,7 +132,8 @@ class TaggedText extends Component {
     let linearGradient = '';
     let textColor = '#202124';
     labels.forEach((label, i) => {
-      const color = label.color || LABEL_COLORS['default'];
+      const color = (tag.extractor && this.props.colors[tag.extractor] && this.props.colors[tag.extractor][label.label]
+        ? this.props.colors[tag.extractor][label.label] : label.color) || LABEL_COLORS['default'];
       textColor = this.getTextColor(color);
       linearGradient += color +
         (i !== 0 ? ' ' + String(individualHeightPercentage * (i)) + '%,' : ',') +
@@ -149,7 +153,8 @@ class TaggedText extends Component {
   createTooltip = (tag, id) => {
     let labels = tag.label;
     let labelArray = labels.map((label, i) => {
-      const color = label.color || LABEL_COLORS['default'];
+      const color = (tag.extractor && this.props.colors[tag.extractor] && this.props.colors[tag.extractor][label.label]
+        ? this.props.colors[tag.extractor][label.label] : label.color) || LABEL_COLORS['default'];
       return <div key={i}>
         <span className='dot' style={
           {
@@ -192,4 +197,18 @@ class TaggedText extends Component {
   };
 }
 
-export default (TaggedText);
+const mapStateToProps = (state) => ({
+  colors: state.currentConfig.extractors.reduce((obj, extractor) => {
+    let labels = {};
+    extractor.colors.map((color) => {
+      labels[color.label] = color.color;
+    });
+    obj[extractor.name] = labels;
+    return obj;
+  }, {}),
+  defaultColors: state.currentConfig.extractors.reduce((obj, extractor) => {
+    return merge(obj, extractor.colors);
+  }, {})
+});
+
+export default connect(mapStateToProps)(TaggedText);
