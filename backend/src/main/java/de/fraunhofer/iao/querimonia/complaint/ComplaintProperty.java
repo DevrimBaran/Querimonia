@@ -1,6 +1,7 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.fraunhofer.iao.querimonia.utility.XmlMapAdapter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -12,6 +13,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -123,7 +125,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
   }
 
   @NonNull
-  @XmlPath("classification")
+  @XmlJavaTypeAdapter(XmlMapAdapter.class)
   public Map<String, Double> getProbabilities() {
     return probabilities;
   }
