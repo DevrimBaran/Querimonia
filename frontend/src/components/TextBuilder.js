@@ -115,7 +115,7 @@ class TextBuilder extends Component {
   };
 
   fetch = (refresh) => {
-    (refresh ? Api.patch('/api/responses/' + this.props.complaintId + '/refresh', '') : Api.get('/api/responses/' + this.props.complaintId, ''))
+    (refresh ? Api.patch('/api/complaints/' + this.props.complaintId + '/response', '') : Api.get('/api/complaints/' + this.props.complaintId + '/response/refresh', ''))
       .catch(() => {
         return { status: 404 };
       })
