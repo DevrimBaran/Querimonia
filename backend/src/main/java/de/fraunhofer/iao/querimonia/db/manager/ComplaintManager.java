@@ -34,6 +34,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -210,6 +211,17 @@ public class ComplaintManager {
    */
   public TextInput getText(long complaintId) {
     return new TextInput(getComplaint(complaintId).getText());
+  }
+
+  public String getXml(long complaintId) {
+    String result;
+    try {
+      return getComplaint(complaintId).toXml();
+    } catch (JAXBException e){
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Xml konnte nicht erstellt " +
+          "werden", "Xml-Converter Fehler");
+    }
+
   }
 
   /**

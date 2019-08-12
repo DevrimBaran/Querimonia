@@ -1,5 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
+import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
 import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -129,6 +130,12 @@ public class ComplaintController {
         HttpStatus.CREATED);
   }
 
+  @PostMapping(value = "/api/complaints/import", produces = "application/json",
+                consumes = "application/xml")
+  public ResponseEntity<?> uploadXml(@RequestBody Complaint xmlInput){
+    return new ResponseEntity<>(xmlInput, HttpStatus.OK);
+  }
+
   /**
    * Returns a specific complaint with the given id.
    *
@@ -162,6 +169,11 @@ public class ComplaintController {
   @GetMapping("/api/complaints/{complaintId}/text")
   public ResponseEntity<?> getText(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.getText(complaintId));
+  }
+
+  @GetMapping("/api/complaints/{complaintId}/xml")
+  public ResponseEntity<?> getXml(@PathVariable long complaintId) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.getXml(complaintId));
   }
 
   /**

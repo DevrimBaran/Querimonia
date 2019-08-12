@@ -30,7 +30,10 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -67,7 +70,6 @@ import java.util.Map;
  * </ul>
  */
 @XmlRootElement(name = "fraunhoferTextDocument")
-@XmlAccessorType(XmlAccessType.NONE)
 @Entity
 @JsonPropertyOrder(value = {
     "id",
@@ -432,6 +434,14 @@ public class Complaint implements Identifiable<Long> {
     return this.receiveDate.atTime(receiveTime).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)+('Z');
   }
 
+  @XmlPath("input/metadata/date[@type='creation']/text()")
+  private void setDate(String localDateTime){
+    this.receiveDate = LocalDate.parse(localDateTime.substring(0, localDateTime.length()-1),
+        DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    this.receiveTime = LocalTime.parse(localDateTime.substring(0, localDateTime.length()-1),
+        DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+  }
+
   /**
    * Checks if two complaints are considered equal. A complaint is equal to another if their
    * text, state, subject, emotion, entities and their response is equal.
@@ -493,27 +503,18 @@ public class Complaint implements Identifiable<Long> {
         .toString();
   }
 
-  public static void main(String[] args) throws JAXBException, IOException {
+  public String toXml() throws JAXBException {
     // create JAXB context and instantiate marshaller
     JAXBContext context = JAXBContextFactory.createContext(new Class[]{Complaint.class}, null);
-    System.out.println(context.getClass().getName());
     Marshaller m = context.createMarshaller();
     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     m.setProperty(Marshaller.JAXB_FRAGMENT, true);
 
-
-    RestTemplate template = new RestTemplate();
-
-    String complaintStr = template.getForObject("https://querimonia.iao.fraunhofer" +
-        ".de/dev/api/complaints/434", String.class);
-    System.out.println(complaintStr);
-//    complaintStr = complaintStr.replaceFirst("2019-07-31", "31.07.2019");
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
-    Complaint complaint = mapper.readValue(complaintStr, Complaint.class);
-
-    m.marshal(complaint, System.out);
-
-
+    // Write to File
+    // File xmlFile = new File(targetPath);
+    StringWriter stringWriter = new StringWriter();
+    stringWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    m.marshal(this, stringWriter);
+    return stringWriter.toString();
   }
 }
