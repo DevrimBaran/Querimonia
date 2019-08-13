@@ -179,7 +179,7 @@ build-backend-dev: &base-backend
     - cd backend/
     - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
     - echo 'build'
-    - mvn $D_OPTS -o package
+    - mvn $D_OPTS package
   artifacts:
     paths:
       - backend/target/*.jar
