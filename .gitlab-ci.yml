@@ -207,6 +207,7 @@ test-backend-dev:
   stage: test
   script:
     - cd backend/
+    - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
     - mvn $D_OPTS -o test
   only:
     - backend
@@ -217,6 +218,7 @@ test-backend-dev-featurebranch:
   stage: test
   script:
     - cd backend/
+    - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
     - mvn $D_OPTS -o test
   allow_failure: true
   only:
