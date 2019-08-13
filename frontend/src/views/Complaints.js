@@ -28,7 +28,7 @@ class Complaints extends Component {
       editTendency: false,
       editEmotion: false,
       loadingEntitiesFinished: false,
-      refreshResponse: false
+      refreshResponse: null
     };
   }
   componentDidMount = () => {
@@ -103,17 +103,17 @@ class Complaints extends Component {
   /**
    *  updates the entity-list and responses
    **/
-  refreshEntities = (active, data) => {
+  refreshEntities = (active, data, refreshResponse) => {
     active.entities = data;
-    this.setState({ active: active, refreshResponse: true });
+    this.setState({ active: active, refreshResponse: refreshResponse });
   }
 
   renderSingle = (active) => {
     if (this.state.active === null || this.state.active.id !== active.id) this.activateComplaint(active);
     let booleans = [this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editTendency, this.state.editEmotion, this.state.refreshResponse];
     let methods = [this.editCategorie, this.editTendency, this.editEmotion, this.refreshEntities];
-    if (this.state.refreshResponse) {
-      this.setState({ refreshResponse: false });
+    if (this.state.refreshResponse !== null) {
+      this.setState({ refreshResponse: null });
     }
     return (Complaint.Single(this.state.active, booleans, methods));
   }

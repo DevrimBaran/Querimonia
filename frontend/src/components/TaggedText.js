@@ -7,7 +7,6 @@
 
 import React, { Component } from 'react';
 import Tooltip from './Tooltip';
-import merge from 'deepmerge';
 
 import { connect } from 'react-redux';
 
@@ -36,6 +35,7 @@ class TaggedText extends Component {
       for (const tag of taggedText.entities) {
         // TODO: uuid
         const id = String(Math.floor(Math.random() * (10000000)));
+        taggedText.text = taggedText.text + '';
         // String before next entity
         !taggedText.text.substring(cpos, tag.start) || html.push(<span key={key++} data-key={html.length}>{taggedText.text.substring(cpos, tag.start)}</span>);
         // String that is entity
@@ -200,14 +200,13 @@ class TaggedText extends Component {
 const mapStateToProps = (state) => ({
   colors: state.currentConfig.extractors.reduce((obj, extractor) => {
     let labels = {};
-    extractor.colors.map((color) => {
-      labels[color.label] = color.color;
-    });
+    if (extractor.colors) {
+      extractor.colors.map((color) => {
+        labels[color.label] = color.color;
+      });
+    }
     obj[extractor.name] = labels;
     return obj;
-  }, {}),
-  defaultColors: state.currentConfig.extractors.reduce((obj, extractor) => {
-    return merge(obj, extractor.colors);
   }, {})
 });
 

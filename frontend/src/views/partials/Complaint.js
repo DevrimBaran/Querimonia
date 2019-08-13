@@ -264,14 +264,14 @@ function changePreference (active, refreshEntities, entity) {
         // deep copy of data
           let entities = JSON.parse(JSON.stringify(data));
           // Updates the entity list and responses with the new values
-          refreshEntities(active, entities);
+          refreshEntities(active, entities, false);
         }
       });
     } else if (Array.isArray(data)) {
       // deep copy of data
       let entities = JSON.parse(JSON.stringify(data));
       // Updates the entity list and responses with the new values
-      refreshEntities(active, entities);
+      refreshEntities(active, entities, false);
     }
   });
 }
