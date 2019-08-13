@@ -206,6 +206,7 @@ test-backend-dev:
   <<: *base-backend
   stage: test
   script:
+    - cd backend/
     - mvn $D_OPTS -o test
   only:
     - backend
@@ -215,6 +216,7 @@ test-backend-dev-featurebranch:
   <<: *base-backend
   stage: test
   script:
+    - cd backend/
     - mvn $D_OPTS -o test
   allow_failure: true
   only:
