@@ -10,8 +10,6 @@ variables:
   #DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
   # backend
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
   D_OPTS: "-B -e -C -T 1C"
 
 cache:
@@ -107,11 +105,11 @@ deploy-frontend-mock:
   tags:
     - shell
   script:
-    - cp -r frontend/mock/* /home/beschwerdemanagement/export/live/frontend-mock/
+    - cp -r frontend/mock/* /home/beschwerdemanagement/export/live/frontend_mock/
     - echo 'rollback data'
     - mkdir                  /home/beschwerdemanagement/export/rollback/frontend/frontend_mock_$CI_COMMIT_SHA
     - cp -r frontend/mock/*  /home/beschwerdemanagement/export/rollback/frontend/frontend_mock_$CI_COMMIT_SHA
-  allow_failure: true
+  allow_failure: false
   only:
     - frontend
 
@@ -120,7 +118,7 @@ deploy-frontend-dev:
   tags:
     - shell
   script:
-    - cp -r frontend/build/* /home/beschwerdemanagement/export/live/frontend-dev/
+    - cp -r frontend/build/* /home/beschwerdemanagement/export/live/frontend_dev/
     - echo 'rollback data'
     - mkdir                  /home/beschwerdemanagement/export/rollback/frontend/frontend_dev_$CI_COMMIT_SHA
     - cp -r frontend/build/* /home/beschwerdemanagement/export/rollback/frontend/frontend_dev_$CI_COMMIT_SHA
@@ -164,7 +162,7 @@ deploy-python:
   script:
     # copy python to destination and systemd script
     - chmod -R +rw python/
-    - cp -r python/* /home/beschwerdemanagement/export/live/python-dev/
+    - cp -r python/* /home/beschwerdemanagement/export/live/python_dev/
     - echo 'rollback data'
     - mkdir          /home/beschwerdemanagement/export/rollback/python/python_dev_$CI_COMMIT_SHA
     - cp -r python/* /home/beschwerdemanagement/export/rollback/python/python_dev_$CI_COMMIT_SHA
@@ -180,9 +178,9 @@ build-backend-dev: &base-backend
   script:
     - cd backend/
     - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
-    - mvn $D_OPTS $MAVEN_CLI_OPTS compile
+    - mvn $D_OPTS compile
     - echo 'build'
-    - mvn $D_OPTS $MAVEN_CLI_OPTS -o package -Dmaven.test.skip=true
+    - mvn $D_OPTS -o package -Dmaven.test.skip=true
   artifacts:
     paths:
       - backend/target/*.jar
@@ -207,7 +205,7 @@ test-backend-dev:
   <<: *base-backend
   stage: test
   script:
-    - mvn $D_OPTS $MAVEN_CLI_OPTS -o test
+    - mvn $D_OPTS -o test
   only:
     - backend
     - master
@@ -216,7 +214,7 @@ test-backend-dev-featurebranch:
   <<: *base-backend
   stage: test
   script:
-    - mvn $D_OPTS $MAVEN_CLI_OPTS -o test
+    - mvn $D_OPTS -o test
   allow_failure: true
   only:
     - /^backend.+$/
@@ -251,7 +249,7 @@ master:
     - cp -r frontend/build/* /home/beschwerdemanagement/export/master/frontend/
     # backend
     - chmod +x backend/target/*.jar
-    - cp -r backend/target/*.jar /home/beschwerdemanagement/export/live/backend_master/
+    - cp -r backend/target/*.jar /home/beschwerdemanagement/export/live/master/backend/
     - echo 'rollback data'
     - mkdir                      /home/beschwerdemanagement/export/rollback/backend/backend_master_$CI_COMMIT_SHA
     - cp -r backend/target/*.jar /home/beschwerdemanagement/export/rollback/backend/backend_master_$CI_COMMIT_SHA
