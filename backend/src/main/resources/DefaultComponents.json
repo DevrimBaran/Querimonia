@@ -426,7 +426,14 @@
       "Als Entschädigung wird Ihnen der genannte Betrag von ${Geldbetrag} so bald wie möglich überwiesen.\n"
     ],
     "rulesXml": "<Rules><And><Predecessor matches=\"Lösungsvorschlag.*\" position=\"last\"/><EntityAvailable label=\"Geldbetrag\"/></And></Rules>",
-    "actions": []
+    "actions": [ {
+      "name": "Erstattung",
+      "actionCode": "COMPENSATION",
+      "parameters": {
+        "Kontodaten": "Beispiel",
+        "Betrag": "15"
+      }
+    }]
   },
   {
     "name": "KontaktMitTelefon",
@@ -448,7 +455,14 @@
       "Wir werden Sie wie gewünscht möglichst bald über die Adresse ${E-Mail} per E-Mail kontaktieren.\n"
     ],
     "rulesXml": "<Rules><And><Or><Predecessor matches=\"Lösungsvorschlag.*\" position=\"last\"/><Predecessor matches=\"Erstattung.*\" position=\"last\"/></Or><EntityAvailable label=\"E-Mail\"/></And></Rules>",
-    "actions": []
+    "actions": [ {
+      "name": "E-Mail",
+      "actionCode": "SEND_MAIL",
+      "parameters": {
+        "E-Mail": "beispiel@gmail.com",
+        "Text": "Beispieltext"
+      }
+    }]
   },
   {
     "name": "Schluss",
