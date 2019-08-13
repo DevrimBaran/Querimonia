@@ -179,7 +179,7 @@ build-backend-dev: &base-backend
     - cd backend/
     - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
     - echo 'build'
-    - mvn $D_OPTS package
+    - mvn $D_OPTS package -Dmaven.test.skip=true
   artifacts:
     paths:
       - backend/target/*.jar
@@ -204,7 +204,8 @@ test-backend-dev:
   <<: *base-backend
   stage: test
   script:
-    - echo "no tests"
+    - cd backend/
+    - mvn $D_OPTS test
   only:
     - backend
     - master
@@ -214,8 +215,7 @@ test-backend-dev-featurebranch:
   stage: test
   script:
     - cd backend/
-    - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
-    - mvn $D_OPTS -o test
+    - mvn $D_OPTS test
   allow_failure: true
   only:
     - /^backend.+$/
