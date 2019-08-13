@@ -178,8 +178,6 @@ build-backend-dev: &base-backend
   script:
     - cd backend/
     - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
-    - mvn $D_OPTS org.apache.maven.plugins:maven-dependency-plugin:3.0.2:go-offline
-    - mvn $D_OPTS compile
     - echo 'build'
     - mvn $D_OPTS -o package
   artifacts:
