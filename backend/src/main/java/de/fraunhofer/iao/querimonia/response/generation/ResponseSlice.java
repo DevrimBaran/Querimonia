@@ -40,7 +40,7 @@ public class ResponseSlice {
     int templatePosition = 0;
 
     // check if template text has correct placeholder formatting
-    if (!text.matches("[^${}]+(\\$\\{\\w*}[^${}]*)*")) {
+    if (!text.matches("[^${}]+(\\$\\{(\\w|-)*}[^${}]*)*")) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Text der Komponente ist falsch "
           + "formatiert: " + text, "Ungültiger Textbaustein");
     }
