@@ -184,7 +184,7 @@ build-backend-dev: &base-backend
     - mvn $D_OPTS -o package -Dmaven.test.skip=true
   artifacts:
     paths:
-      - backend/target/*.jar
+      - backend/target/
       - backend/doc/openapi.yaml
   allow_failure: false
   only:
