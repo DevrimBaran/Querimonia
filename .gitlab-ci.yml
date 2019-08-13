@@ -181,10 +181,10 @@ build-backend-dev: &base-backend
     - mvn $D_OPTS org.apache.maven.plugins:maven-dependency-plugin:3.0.2:go-offline
     - mvn $D_OPTS compile
     - echo 'build'
-    - mvn $D_OPTS -o package -Dmaven.test.skip=true
+    - mvn $D_OPTS -o package
   artifacts:
     paths:
-      - backend/target/
+      - backend/target/*.jar
       - backend/doc/openapi.yaml
   allow_failure: false
   only:
@@ -206,9 +206,7 @@ test-backend-dev:
   <<: *base-backend
   stage: test
   script:
-    - cd backend/
-    - mvn dependency:get -Dartifact=org.apache.maven.plugins:maven-surefire-plugin:2.22.2
-    - mvn $D_OPTS -o test
+    - echo "no tests"
   only:
     - backend
     - master
