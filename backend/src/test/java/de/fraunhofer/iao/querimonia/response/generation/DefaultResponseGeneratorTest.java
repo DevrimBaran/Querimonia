@@ -132,8 +132,8 @@ public class DefaultResponseGeneratorTest {
       ResponseComponent correctComponent = correctCompletedComponent.getComponent();
       ResponseComponent testComponent = testCompletedComponent.getComponent();
 
-      assertEquals(correctCompletedComponent.getResponsePartId(),
-          testCompletedComponent.getResponsePartId());
+      assertEquals(correctCompletedComponent.getId(),
+          testCompletedComponent.getId());
       assertEquals(correctComponent, testComponent);
 
       for (int j = 0; j < correctCompletedComponent.getEntities().size(); j++) {

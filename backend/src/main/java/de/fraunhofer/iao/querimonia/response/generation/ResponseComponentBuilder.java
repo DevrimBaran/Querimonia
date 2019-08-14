@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Builder class for {@link ResponseComponent response components}.
+ */
 public class ResponseComponentBuilder {
   @NonNull
   private String componentName = "";
@@ -71,6 +74,11 @@ public class ResponseComponentBuilder {
     return this;
   }
 
+  /**
+   * Creates a new response component with the attributes of this builder.
+   *
+   * @return the new response component.
+   */
   public ResponseComponent createResponseComponent() {
     return new ResponseComponent(id, Objects.requireNonNull(componentName), priority,
         componentTexts, Objects.requireNonNull(actions), Objects.requireNonNull(rulesXml));

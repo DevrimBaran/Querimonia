@@ -8,6 +8,11 @@ import java.util.List;
 /**
  * Rules are used for response components and actions. Rules determine, when a component may be used
  * during the response generation.
+ *
+ * <p>Rules are structured like logical expressions in a tree structure. There is one
+ * <b>root rule</b> which can have child rules. Only rules that combine child rules in a logical
+ * operation like disjunction may have child rules. Rules without children are called leaf rules
+ * and are elementary logical expressions that check certain attributes of complaints.</p>
  */
 public interface Rule {
 

@@ -8,6 +8,9 @@ import org.springframework.lang.Nullable;
 
 import java.util.List;
 
+/**
+ * This rule checks if a certain entity is available and its content matches a certain regex.
+ */
 public class EntityRule implements Rule {
 
   private final String entityLabel;

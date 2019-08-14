@@ -42,13 +42,14 @@ public class ResponseComponent implements Identifiable<Long> {
    */
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @Column(name = "componentId")
   @JsonProperty("id")
-  private long componentId;
+  private long id;
 
   /**
    * A unique identifier for components.
    */
-  @Column(name = "name", unique = true, nullable = false)
+  @Column(name = "name", nullable = false)
   @JsonProperty("name")
   @NonNull
   private String componentName = "";
@@ -78,7 +79,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @JoinColumn(name = "component_id")
   @Column(name = "action_id")
   @NonNull
-  private List<Action> actions = List.of();
+  private List<Action> actions = new ArrayList<>();
 
   /**
    * The rules in xml format.
@@ -111,7 +112,7 @@ public class ResponseComponent implements Identifiable<Long> {
                     @NonNull List<Action> actions,
                     @NonNull String rulesXml
   ) {
-    this.componentId = id;
+    this.id = id;
     this.componentName = componentName;
     this.priority = priority;
     this.componentTexts = componentTexts;
@@ -124,15 +125,23 @@ public class ResponseComponent implements Identifiable<Long> {
   @SuppressWarnings("unused")
   @JsonCreator
   ResponseComponent(
-      @JsonProperty("name") String componentName,
-      @JsonProperty("priority") int priority,
+      @NonNull
+      @JsonProperty("name")
+          String componentName,
+      @JsonProperty("priority")
+          int priority,
+      @NonNull
       @JsonProperty(value = "texts", defaultValue = "[]")
           List<String> componentTexts,
-      @JsonProperty("rulesXml") String rulesXml,
+      @NonNull
+      @JsonProperty("rulesXml")
+          String rulesXml,
+      @NonNull
       @JsonProperty(value = "actions", defaultValue = "[]")
           List<Action> actions,
       @JsonProperty("id")
           long id,
+      @NonNull
       @JsonProperty("requiredEntities")
           String[] requiredEntities
   ) {
@@ -140,7 +149,7 @@ public class ResponseComponent implements Identifiable<Long> {
   }
 
   @SuppressWarnings("unused")
-  private ResponseComponent() {
+  ResponseComponent() {
     // required for hibernate
     this.componentSlices = createSlices();
     this.rootRule = parseRulesXml(this.rulesXml);
@@ -171,25 +180,39 @@ public class ResponseComponent implements Identifiable<Long> {
   @JsonProperty("id")
   @Override
   public Long getId() {
-    return componentId;
+    return id;
   }
 
-  public ResponseComponent withId(long componentId) {
-    return new ResponseComponentBuilder(this)
-        .setId(componentId)
-        .createResponseComponent();
-  }
-
+  /**
+   * Returns the name of the component. The name is used to give the user a way to identify
+   * components.
+   *
+   * @return the name of the component.
+   */
   @NonNull
   public String getComponentName() {
     return componentName;
   }
 
+  /**
+   * Returns the list of alternative texts of the component. This list contains alternative
+   * variations of the text that this part of the response should have. In these texts,
+   * placeholders are allowed like described in the wiki.
+   *
+   * @return the list of alternative texts of the component.
+   */
   @NonNull
   public List<String> getComponentTexts() {
     return componentTexts;
   }
 
+  /**
+   * Returns the rules of the component in the xml format. This string must match the xsd schema
+   * that is used for the rules. The rules define if and when this component may be used in the
+   * response generation.
+   *
+   * @return the rules of the component in the xml format.
+   */
   @NonNull
   public String getRulesXml() {
     return rulesXml;
@@ -207,10 +230,16 @@ public class ResponseComponent implements Identifiable<Long> {
     return rootRule;
   }
 
+  /**
+   * Returns the priority of the component. Components with higher priority should be checked
+   * first in the response generation. With different values of priority, the sequence of
+   * components can be defined.
+   *
+   * @return the priority of the component.
+   */
   public int getPriority() {
     return priority;
   }
-
 
   private Rule parseRulesXml(String rulesXml) {
     return RuleParser.parseRules(rulesXml);
@@ -222,14 +251,61 @@ public class ResponseComponent implements Identifiable<Long> {
         .collect(Collectors.toList());
   }
 
+  /**
+   * Returns the actions of the component. The actions gets executed when a complaint that uses
+   * this component gets closed.
+   *
+   * @return the actions of the component.
+   */
   @NonNull
   public List<Action> getActions() {
     return actions;
   }
 
+  /**
+   * Returns a copy of this component.
+   *
+   * @return a copy of this component.
+   */
   @JsonIgnore
   public ResponseComponent copy() {
     return new ResponseComponentBuilder(this).createResponseComponent();
+  }
+
+  public ResponseComponent withId(long componentId) {
+    return new ResponseComponentBuilder(this)
+        .setId(componentId)
+        .createResponseComponent();
+  }
+
+  public ResponseComponent withComponentName(@NonNull String componentName) {
+    return new ResponseComponentBuilder(this)
+        .setComponentName(componentName)
+        .createResponseComponent();
+  }
+
+  public ResponseComponent withPriority(int priority) {
+    return new ResponseComponentBuilder(this)
+        .setPriority(priority)
+        .createResponseComponent();
+  }
+
+  public ResponseComponent withComponentTexts(@NonNull List<String> componentTexts) {
+    return new ResponseComponentBuilder(this)
+        .setComponentTexts(componentTexts)
+        .createResponseComponent();
+  }
+
+  public ResponseComponent withActions(@NonNull List<Action> actions) {
+    return new ResponseComponentBuilder(this)
+        .setActions(actions)
+        .createResponseComponent();
+  }
+
+  public ResponseComponent withRulesXml(@NonNull String rulesXml) {
+    return new ResponseComponentBuilder(this)
+        .setRulesXml(rulesXml)
+        .createResponseComponent();
   }
 
   @Override
@@ -267,7 +343,7 @@ public class ResponseComponent implements Identifiable<Long> {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE)
-        .append("componentId", componentId)
+        .append("componentId", id)
         .append("componentName", componentName)
         .append("priority", priority)
         .append("componentTexts", componentTexts)

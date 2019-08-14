@@ -14,11 +14,6 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
 
   private final String categoryName;
 
-  private KiKuKoClassifier(String categoryName) {
-    super("tool", "Beschwerde3Klassifikator2");
-    this.categoryName = categoryName;
-  }
-
   public KiKuKoClassifier(String domainName, String categoryName) {
     super("tool", domainName);
     this.categoryName = categoryName;
@@ -42,10 +37,6 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
             .getTyp();
 
     return new ComplaintProperty(categoryName, probs);
-  }
-
-  public static void main(String[] args) {
-    System.out.println(new KiKuKoClassifier("Klassifizierer"));
   }
 
 }

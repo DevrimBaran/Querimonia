@@ -14,6 +14,11 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a response to a complaint. It contains
+ * {@link CompletedResponseComponent components} the are parts of the response text and actions,
+ * that get executed on closing the complaints.
+ */
 @Entity
 public class ResponseSuggestion implements Identifiable<Long> {
 
@@ -44,7 +49,17 @@ public class ResponseSuggestion implements Identifiable<Long> {
   }
 
   @SuppressWarnings("unused")
-  public ResponseSuggestion() {
+  private ResponseSuggestion() {
+    // for hibernate
+  }
+
+  /**
+   * Returns a response that has no actions and no components.
+   *
+   * @return a response that has no actions and no components.
+   */
+  public static ResponseSuggestion getEmptyResponse() {
+    return new ResponseSuggestion();
   }
 
   @NonNull

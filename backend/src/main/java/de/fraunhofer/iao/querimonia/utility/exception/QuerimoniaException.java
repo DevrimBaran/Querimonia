@@ -28,10 +28,6 @@ public class QuerimoniaException extends ResponseStatusException {
   @SuppressWarnings("unused")
   private Object suppressed;
 
-  public QuerimoniaException(HttpStatus status, Throwable cause, String title) {
-    this(status, cause.getMessage(), cause, title);
-  }
-
   /**
    * Creates a new Querimonia Exception.
    *
@@ -49,6 +45,13 @@ public class QuerimoniaException extends ResponseStatusException {
     this.message = message;
   }
 
+  /**
+   * Creates a new Querimonia Exception with the cause exception type set to RuntimeException.
+   *
+   * @param status  the http status code of the response.
+   * @param message the message of the exception.
+   * @param title   a title for a dialog window.
+   */
   public QuerimoniaException(HttpStatus status, String message, String title) {
     this(status, message, new RuntimeException(message), title);
   }

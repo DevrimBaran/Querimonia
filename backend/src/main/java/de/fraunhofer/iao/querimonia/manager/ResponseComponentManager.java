@@ -161,7 +161,7 @@ public class ResponseComponentManager {
             .anyMatch(id -> id == componentId);
         if (componentIsUsed) {
           // set to empty response
-          builder.setResponseSuggestion(new ResponseSuggestion());
+          builder.setResponseSuggestion(ResponseSuggestion.getEmptyResponse());
           complaintRepository.save(builder.createComplaint());
           responseSuggestionRepository.delete(suggestion);
           completedComponentRepository.deleteAll(completedComponents);

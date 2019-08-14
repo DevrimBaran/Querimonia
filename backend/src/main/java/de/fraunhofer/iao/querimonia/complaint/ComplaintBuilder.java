@@ -46,7 +46,7 @@ public class ComplaintBuilder {
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();
   @NonNull
-  private ResponseSuggestion responseSuggestion = new ResponseSuggestion();
+  private ResponseSuggestion responseSuggestion = ResponseSuggestion.getEmptyResponse();
   @NonNull
   private Map<String, Integer> wordList = new HashMap<>();
   @NonNull

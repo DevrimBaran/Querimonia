@@ -19,6 +19,7 @@ public class KikukoResponse {
   private LinkedHashMap<String, List<FoundEntity>> pipelines;
   private String content;
 
+  @SuppressWarnings("unused")
   @JsonCreator
   public KikukoResponse(@JsonProperty("pipelines")
                             LinkedHashMap<String, List<FoundEntity>> pipelines,

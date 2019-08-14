@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import org.springframework.lang.NonNull;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -18,7 +19,6 @@ import java.util.stream.Collectors;
 
 /**
  * The default response generator.
- * TODO: better doc
  */
 public class DefaultResponseGenerator implements ResponseGenerator {
 
@@ -38,6 +38,33 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     List<ResponseComponent> responseComponentsFiltered =
         filterComponents(complaintBuilder, responseComponents);
 
+    // find all entities
+    List<NamedEntity> allEntities = getAllEntities(complaintBuilder);
+
+    return createResponseSuggestion(complaintBuilder, responseComponentsFiltered, allEntities);
+  }
+
+  /**
+   * Returns the components that could be potentially used in the response.
+   */
+  private List<ResponseComponent> filterComponents(ComplaintBuilder complaintData,
+                                                   List<ResponseComponent> responseComponents) {
+    List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
+    responseComponents.stream()
+        .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
+        .sorted(Comparator.comparingInt(ResponseComponent::getPriority))
+        .forEach(responseComponentsFiltered::add);
+
+    // reverse for highest priority is first in the list
+    Collections.reverse(responseComponentsFiltered);
+    return responseComponentsFiltered;
+  }
+
+  /**
+   * Returns all entities of a complaint and adds entities for the upload date and time.
+   */
+  @NonNull
+  private List<NamedEntity> getAllEntities(ComplaintBuilder complaintBuilder) {
     List<NamedEntity> allEntities = new ArrayList<>(complaintBuilder.getEntities());
 
     // add upload date entities
@@ -74,26 +101,13 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         .setValue(formattedTime)
         .setColor(getColorOfEntity(complaintBuilder, "Eingangszeit"))
         .createNamedEntity());
-
-    return getResponseSuggestion(complaintBuilder, responseComponentsFiltered, allEntities);
+    return allEntities;
   }
 
-  private List<ResponseComponent> filterComponents(ComplaintBuilder complaintData,
-                                                   List<ResponseComponent> responseComponents) {
-    List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
-    responseComponents.stream()
-        .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
-        .sorted(Comparator.comparingInt(ResponseComponent::getPriority))
-        .forEach(responseComponentsFiltered::add);
-
-    Collections.reverse(responseComponentsFiltered);
-    return responseComponentsFiltered;
-  }
-
-  private ResponseSuggestion getResponseSuggestion(ComplaintBuilder complaintData,
-                                                   List<ResponseComponent> filteredComponents,
-                                                   List<NamedEntity> allEntities) {
-    List<CompletedResponseComponent> generatedResponse = new ArrayList<>();
+  private ResponseSuggestion createResponseSuggestion(ComplaintBuilder complaintData,
+                                                      List<ResponseComponent> filteredComponents,
+                                                      List<NamedEntity> allEntities) {
+    var generatedResponse = new ArrayList<CompletedResponseComponent>();
 
     outer:
     while (true) {
@@ -111,6 +125,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
 
           generatedResponse
               .add(new CompletedResponseComponent(currentRuledObject, matchingEntities));
+          // restart on the component with the highest priority again
           continue outer;
         }
       }

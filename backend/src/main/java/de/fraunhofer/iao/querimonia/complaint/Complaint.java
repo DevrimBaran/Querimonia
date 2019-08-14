@@ -1,11 +1,8 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
@@ -15,27 +12,18 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.springframework.lang.NonNull;
-import org.springframework.web.client.RestTemplate;
 import tec.uom.lib.common.function.Identifiable;
-import org.eclipse.persistence.jaxb.JAXBContextFactory;
-
 
 import javax.persistence.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -160,7 +148,7 @@ public class Complaint implements Identifiable<Long> {
   @OneToOne(cascade = CascadeType.ALL)
   @JsonIgnore
   @NonNull
-  private ResponseSuggestion responseSuggestion = new ResponseSuggestion();
+  private ResponseSuggestion responseSuggestion = ResponseSuggestion.getEmptyResponse();
 
   /**
    * A list of all words in the complaint text, which are not stop words, mapped to their absolute

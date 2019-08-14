@@ -10,7 +10,6 @@ import java.util.List;
 
 /**
  * A rule that checks if the upload time is in a certain range.
- * 
  */
 public class UploadTimeRule implements Rule {
 

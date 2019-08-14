@@ -24,6 +24,10 @@ public class StartupCleaner {
     this.complaintManager = complaintManager;
   }
 
+  /**
+   * Is called after launch. It sets all complaint with state {@link ComplaintState#ANALYSING} to
+   * the error state with a log message.
+   */
   @PostConstruct
   public void clearAnalyzingComplaints() {
     var toClearUp = complaintManager.getComplaintsWithState(ComplaintState.ANALYSING);

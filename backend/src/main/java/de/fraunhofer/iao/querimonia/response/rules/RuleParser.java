@@ -21,6 +21,9 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to parse rules from XML to {@link Rule} objects.
+ */
 public class RuleParser {
 
   /**
@@ -30,13 +33,14 @@ public class RuleParser {
    *                 as given in the docs folder.
    *
    * @return the root rule, parsed from the xml string.
+   *
+   * @throws QuerimoniaException on parse errors.
    */
   public static Rule parseRules(String rulesXml) {
     // allow empty rules
     if (rulesXml.isEmpty()) {
       return Rule.TRUE;
     }
-
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     try {
       DocumentBuilder builder = factory.newDocumentBuilder();
@@ -45,12 +49,14 @@ public class RuleParser {
       Element root = doc.getDocumentElement();
 
       if (root.getTagName().equals("Rules") && root.hasChildNodes()) {
+        // get root node
         return getRuleFromNode((Element) root.getFirstChild());
       } else {
         // wrong root element
         throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Fehlerhaftes XML: "
             + "Root-Element muss 'Rules' heißen.", "XML Error");
       }
+
     } catch (ParserConfigurationException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Unerwarter Fehler: "
           + "XML-Parser falsch konfiguriert.", "XML Error");
@@ -93,7 +99,8 @@ public class RuleParser {
         List<Rule> andChildRules = extractChildRules(element);
         return new AndRule(andChildRules);
       default:
-        throw new IllegalStateException("Malformed XML");
+        throw new QuerimoniaException(HttpStatus.BAD_REQUEST,
+            "Ungültiges XML-Format, der Tag " + tag + " ist ungültig.", "Ungültiger Tag");
     }
   }
 
