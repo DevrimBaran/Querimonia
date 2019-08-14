@@ -142,6 +142,11 @@
     </repositories>
     <pluginRepositories>
         <pluginRepository>
+            <id>mvn-artifact</id>
+            <name>Maven Artifact</name>
+            <url>https://mvnrepository.com/artifact</url>
+        </pluginRepository>
+        <pluginRepository>
             <id>spring-snapshots</id>
             <name>Spring Snapshots</name>
             <url>https://repo.spring.io/snapshot</url>
