@@ -35,7 +35,7 @@ public class ResponseComponentFilter {
   }
 
   /**
-   * Checks if a response component contains certain sction.
+   * Checks if a response component contains certain section.
    *
    * @param responseComponent the component that gets checked.
    * @param optionalActionCode the Action-Code, if not present this will return true.

@@ -69,35 +69,50 @@ paths:
                     state: NEW
                     configuration:
                       id: 94
-                      name: Volle Konfiguration
+                      name: Kein Sentiment
                       extractors:
-                        - name: QuerimoniaExtract
-                          type: KIKUKO_DOMAIN
-                          colors:
-                            - label: Name
-                              color: "#ffd666"
-                            - label: Ort
-                              color: "#90ff8a"
-                            - label: Linie
-                              color: "#aff4fa"
-                            - label: Haltestelle
-                              color: "#cc89f5"
-                            - label: Datum
-                              color: "#cdc0cf"
-                            - label: Eingangsdatum
-                              color: "#e9bdf0"
-                            - label: Geldbetrag
-                              color: "#f5ff8a"
+                        - name: 'Linien Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Linie
+                          color: '#aff4fa'
+                        - name: '[Extern] Geldbetrag'
+                          type: KIKUKO_TOOL
+                          label: Geldbetrag
+                          color: '#f5ff8a'
+                        - name: 'Vorgangsnummer'
+                          type: KIKUKO_TOOL
+                          label: Vorgangsnummer
+                          color: '#ffaeae'
+                        - name: '[Extern] Datum Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Datum
+                          color: '#c7c7c7'
+                        - name: '[Extern] Personen Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Name
+                          color: '#ffaeae'
+                        - name: '[Extern] Telefonnummer'
+                          type: KIKUKO_TOOL
+                          label: Telefonnummer
+                          color: '#acc2b9'
+                        - name: '[Fuzzy] Haltestellen'
+                          type: KIKUKO_TOOL
+                          label: Haltestelle
+                          color: '#408080'
+                        - name: '[Fuzzy] Ortsnamen'
+                          type: KIKUKO_TOOL
+                          label: Ort
+                          color: '#cdfa8f'
                       classifiers:
                         - type: KIKUKO_CLASSIFIER
                           name: Beschwerde3Klassifikator2
                           propertyName: Kategorie
                       sentimentAnalyzer:
-                        type: QUERIMONIA_SENTIMENT
-                        name: Default
+                        type: NONE
+                        name: NONE
                       emotionAnalyzer:
-                        type: QUERIMONIA_EMOTION
-                        name: Default
+                        type: NONE
+                        name: NONE
                       active: true
                     receiveDate: '2019-08-05'
                     receiveTime: '18:59:02'
@@ -291,35 +306,50 @@ paths:
                 state: ANALYSING
                 configuration:
                   id: 94
-                  name: Volle Konfiguration
+                  name: Kein Sentiment
                   extractors:
-                    - name: QuerimoniaExtract
-                      type: KIKUKO_DOMAIN
-                      colors:
-                        - label: Name
-                          color: "#ffd666"
-                        - label: Ort
-                          color: "#90ff8a"
-                        - label: Linie
-                          color: "#aff4fa"
-                        - label: Haltestelle
-                          color: "#cc89f5"
-                        - label: Datum
-                          color: "#cdc0cf"
-                        - label: Eingangsdatum
-                          color: "#e9bdf0"
-                        - label: Geldbetrag
-                          color: "#f5ff8a"
+                    - name: 'Linien Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Linie
+                      color: '#aff4fa'
+                    - name: '[Extern] Geldbetrag'
+                      type: KIKUKO_TOOL
+                      label: Geldbetrag
+                      color: '#f5ff8a'
+                    - name: 'Vorgangsnummer'
+                      type: KIKUKO_TOOL
+                      label: Vorgangsnummer
+                      color: '#ffaeae'
+                    - name: '[Extern] Datum Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Datum
+                      color: '#c7c7c7'
+                    - name: '[Extern] Personen Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Name
+                      color: '#ffaeae'
+                    - name: '[Extern] Telefonnummer'
+                      type: KIKUKO_TOOL
+                      label: Telefonnummer
+                      color: '#acc2b9'
+                    - name: '[Fuzzy] Haltestellen'
+                      type: KIKUKO_TOOL
+                      label: Haltestelle
+                      color: '#408080'
+                    - name: '[Fuzzy] Ortsnamen'
+                      type: KIKUKO_TOOL
+                      label: Ort
+                      color: '#cdfa8f'
                   classifiers:
                     - type: KIKUKO_CLASSIFIER
                       name: Beschwerde3Klassifikator2
                       propertyName: Kategorie
                   sentimentAnalyzer:
-                    type: QUERIMONIA_SENTIMENT
-                    name: Default
+                    type: NONE
+                    name: NONE
                   emotionAnalyzer:
-                    type: QUERIMONIA_EMOTION
-                    name: Default
+                    type: NONE
+                    name: NONE
                   active: true
                 receiveDate: '2019-08-06'
                 receiveTime: '12:59:45.267471'
@@ -406,35 +436,50 @@ paths:
                 state: CLOSED
                 configuration:
                   id: 94
-                  name: Volle Konfiguration
+                  name: Kein Sentiment
                   extractors:
-                    - name: QuerimoniaExtract
-                      type: KIKUKO_DOMAIN
-                      colors:
-                        - label: Name
-                          color: "#ffd666"
-                        - label: Ort
-                          color: "#90ff8a"
-                        - label: Linie
-                          color: "#aff4fa"
-                        - label: Haltestelle
-                          color: "#cc89f5"
-                        - label: Datum
-                          color: "#cdc0cf"
-                        - label: Eingangsdatum
-                          color: "#e9bdf0"
-                        - label: Geldbetrag
-                          color: "#f5ff8a"
+                    - name: 'Linien Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Linie
+                      color: '#aff4fa'
+                    - name: '[Extern] Geldbetrag'
+                      type: KIKUKO_TOOL
+                      label: Geldbetrag
+                      color: '#f5ff8a'
+                    - name: 'Vorgangsnummer'
+                      type: KIKUKO_TOOL
+                      label: Vorgangsnummer
+                      color: '#ffaeae'
+                    - name: '[Extern] Datum Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Datum
+                      color: '#c7c7c7'
+                    - name: '[Extern] Personen Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Name
+                      color: '#ffaeae'
+                    - name: '[Extern] Telefonnummer'
+                      type: KIKUKO_TOOL
+                      label: Telefonnummer
+                      color: '#acc2b9'
+                    - name: '[Fuzzy] Haltestellen'
+                      type: KIKUKO_TOOL
+                      label: Haltestelle
+                      color: '#408080'
+                    - name: '[Fuzzy] Ortsnamen'
+                      type: KIKUKO_TOOL
+                      label: Ort
+                      color: '#cdfa8f'
                   classifiers:
                     - type: KIKUKO_CLASSIFIER
                       name: Beschwerde3Klassifikator2
                       propertyName: Kategorie
                   sentimentAnalyzer:
-                    type: QUERIMONIA_SENTIMENT
-                    name: Default
+                    type: NONE
+                    name: NONE
                   emotionAnalyzer:
-                    type: QUERIMONIA_EMOTION
-                    name: Default
+                    type: NONE
+                    name: NONE
                   active: true
                 receiveDate: '2019-08-04'
                 receiveTime: '16:14:41'
@@ -580,35 +625,50 @@ paths:
                 state: CLOSED
                 configuration:
                   id: 94
-                  name: Volle Konfiguration
+                  name: Kein Sentiment
                   extractors:
-                    - name: QuerimoniaExtract
-                      type: KIKUKO_DOMAIN
-                      colors:
-                        - label: Name
-                          color: "#ffd666"
-                        - label: Ort
-                          color: "#90ff8a"
-                        - label: Linie
-                          color: "#aff4fa"
-                        - label: Haltestelle
-                          color: "#cc89f5"
-                        - label: Datum
-                          color: "#cdc0cf"
-                        - label: Eingangsdatum
-                          color: "#e9bdf0"
-                        - label: Geldbetrag
-                          color: "#f5ff8a"
+                    - name: 'Linien Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Linie
+                      color: '#aff4fa'
+                    - name: '[Extern] Geldbetrag'
+                      type: KIKUKO_TOOL
+                      label: Geldbetrag
+                      color: '#f5ff8a'
+                    - name: 'Vorgangsnummer'
+                      type: KIKUKO_TOOL
+                      label: Vorgangsnummer
+                      color: '#ffaeae'
+                    - name: '[Extern] Datum Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Datum
+                      color: '#c7c7c7'
+                    - name: '[Extern] Personen Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Name
+                      color: '#ffaeae'
+                    - name: '[Extern] Telefonnummer'
+                      type: KIKUKO_TOOL
+                      label: Telefonnummer
+                      color: '#acc2b9'
+                    - name: '[Fuzzy] Haltestellen'
+                      type: KIKUKO_TOOL
+                      label: Haltestelle
+                      color: '#408080'
+                    - name: '[Fuzzy] Ortsnamen'
+                      type: KIKUKO_TOOL
+                      label: Ort
+                      color: '#cdfa8f'
                   classifiers:
                     - type: KIKUKO_CLASSIFIER
                       name: Beschwerde3Klassifikator2
                       propertyName: Kategorie
                   sentimentAnalyzer:
-                    type: QUERIMONIA_SENTIMENT
-                    name: Default
+                    type: NONE
+                    name: NONE
                   emotionAnalyzer:
-                    type: QUERIMONIA_EMOTION
-                    name: Default
+                    type: NONE
+                    name: NONE
                   active: true
                 receiveDate: '2019-08-04'
                 receiveTime: '16:14:41'
@@ -2205,7 +2265,8 @@ components:
       required:
         - name
         - type
-        - colors
+        - öabel
+        - color
       properties:
         name:
           type: string
@@ -2408,8 +2469,7 @@ components:
               id: 99
               name: EingangsdatumMitDatum
               priority: 100
-              rulesXml: <Rules><And><Predecessor matches="Begrüßung.*" position="last"/><EntityAvailable
-                label="Eingangsdatum"/></And></Rules>
+              rulesXml: <Rules><And><Predecessor matches="Begrüßung.*" position="last"/><EntityAvailable label="Eingangsdatum"/></And></Rules>
               requiredEntities:
                 - Eingangsdatum
               texts:
@@ -2605,12 +2665,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/QuerimoniaException'
-
-  examples:
-    # TODO add more examples
-    complaintText:
-      value:
-        text: 'In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig und gehäuft Buslinien der WSW ausfallen und Fahrten entgegen dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer benutze ich eher selten die Busse der WSW. Wenn ich sie benutze, ergeben sich auffällig häufig Ausfälle und deutliche Verspätungen. Dies betrifft auffallend oft die als schnell konzipierten CE-Linien, nach meiner jüngeren Erfahrung CE61/CE62, weniger auch CE64/CE65 (Elberfeld-Cronenberg), und Nebenlinien wie etwa 643. Einzelne Ihrer Mitarbeiter berichten mir übereinstimmend, die Personaldecke sei zu dünn, um Ausfälle einzelner Mitarbeiter auszugleichen. Wegen spürbaren Personalmangels - nicht, wie Sie schreiben, vereinzelt wegen Krankheit - würden häufig Fahrten ausfallen. Viele Fahrer berichten anschaulich, dass in manchen Stoßzeiten vergeblich wartende Passagiere an Haltestellen stünden. Teilweise berichtet man mir von gezielten Maßnahmen, um Einsparungen herbeizuführen sowie nicht ausgeglichenen Überstunden. Ihre Fahrer sehen dies unmittelbar mit der Politik der WSW verknüpft, die CE-Linien ab März/April 2013 auszudünnen.Der Vorgang, auf den sich Ihr Schreiben bezieht, lief tatsächlich so ab: Am 1. 2. 2013 wartete ich an der Morianstraße in Wuppertal mit meinem x Monate alten Sohn nachmittags auf eine Busverbindung nach Ronsdorf, Haltestelle Kniprodestraße. Ich beabsichtigte, den Bus CE62 um 15:47 Uhr zu nehmen. Wir waren auf dem Weg zu einer Nachmittagsveranstaltung für Eltern mit Kleinstkindern, die ich verpasste:Die CE62 um 15:47 Uhr fuhr nicht, ebenso nicht die nachfolgenden Busse der Linie CE62:- 16:07 Uhr- 16:27 UhrEs fuhren ferner nicht die Busse der Linie 620 um- 15:55 Uhr- 16:15 Uhr- 16:35 Uhrdie Haltestelle an. Ihr Schreiben legt nahe, dass es sich nur um vereinzelte Fälle handele. Unmittelbar bei meinem nächsten Fahrtantritt mit der WSW eine Woche später kam es wiederum zu einem Ausfall. Am Freitag, 8. 2. 2013, fiel Linie CE61 um 15:38 Uhr an der Haltestelle Am Stadtbahnhof in Richtung Barmen aus. Mit ca. 25 Minuten Verspätung erreichte ich mit der Linie 640 (ab 15:48 Uhr) gegen 16:25 Uhr den Alten Markt in Barmen.Heute, am 21. 2. 2013, fielen die Busse der Linie CE64 von Wuppertal Hbf in Richtung Cronenberg um 06:40 Uhr und um 07:00 Uhr aus. Ein Fahrgast erreichte deshalb nicht pünktlich seine Arbeitsstelle in Solingen. Würde ich häufiger fahren, würde ich vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre Dienstleistungen bestmöglich fahrplangemäß anzubieten.'
 
   securitySchemes:
     basicAuth:

@@ -47,7 +47,6 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private boolean setByUser = false;
 
   @JsonProperty("preferred")
-  @Column(name = "prefered") // TODO fix later
   private boolean preferred = false;
 
   @NonNull

@@ -51,7 +51,7 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
                 .setStart(entity.getStartposition())
                 .setEnd(entity.getEndposition())
                 .setExtractor(domainName)
-                .setColor(getColor(label))
+                .setColor(extractorDefinition.getColor())
                 .setValue(entity.getTyp().containsValue(1.0d)
                     ? entity.getText()
                     : entity.getTyp().keySet().stream().findFirst().orElse(entity.getText()))
@@ -60,14 +60,6 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
     });
 
     return entities;
-  }
-
-  private String getColor(String label) {
-    return extractorDefinition.getColors().stream()
-        .filter(colorDefinition -> colorDefinition.getLabel().equals(label))
-        .findAny()
-        .map(ColorDefinition::getColor)
-        .orElse("#232323");
   }
 
 }
