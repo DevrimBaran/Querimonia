@@ -124,7 +124,7 @@
         <repository>
             <id>mvn-artifact</id>
             <name>Maven Artifact</name>
-            <url>https://mvnrepository.com/artifact/org.eclipse.persistence</url>
+            <url>https://mvnrepository.com/artifact</url>
         </repository>
         <repository>
             <id>spring-snapshots</id>
