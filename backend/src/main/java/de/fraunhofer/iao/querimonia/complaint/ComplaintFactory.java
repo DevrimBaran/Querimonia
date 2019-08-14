@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.log.LogCategory;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
@@ -15,6 +14,7 @@ import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerFactory;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.log.LogCategory;
 import org.springframework.lang.NonNull;
 
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 /**
  * This factory is used to create complaint objects. It manages the analysis and response
  * generation process.
- * <p>Plaint complaints can be created with {@link #createBaseComplaint(String, Configuration)
+ * <p>Plain complaints can be created with {@link #createBaseComplaint(String, Configuration)
  * createBaseComplaint}. These can be analyzed with
  * {@link #analyzeComplaint(ComplaintBuilder, boolean) analyzeComplaint}.</p>
  */
@@ -99,8 +99,8 @@ public class ComplaintFactory {
     var tendency = extractTendency(complaintBuilder, sentimentAnalyzerDefinition);
     var sentiment = new Sentiment(emotionProperty, tendency);
     var wordList = stopWordFilter.filterStopWords(complaintText);
-
     createResponse(complaintBuilder);
+
     return complaintBuilder
         .setSentiment(sentiment)
         .setProperties(complaintProperties)
@@ -170,7 +170,6 @@ public class ComplaintFactory {
     Stream<NamedEntity> entityStream = configuration
         .getExtractors()
         .stream()
-        .parallel()
         .map(definition -> extractEntitiesAndLog(complaintBuilder, complaintText, definition))
         .flatMap(List::stream)
         .distinct();

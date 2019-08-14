@@ -7,10 +7,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.log.LogEntry;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -111,6 +111,7 @@ public class Complaint implements Identifiable<Long> {
    */
   @Column(length = TEXT_MAX_LENGTH)
   @NonNull
+  @JsonIgnore
   private String text = "";
 
   /**
@@ -142,13 +143,14 @@ public class Complaint implements Identifiable<Long> {
    */
   @OneToOne(cascade = CascadeType.ALL)
   @NonNull
-  private Sentiment sentiment = new Sentiment();
+  private Sentiment sentiment = Sentiment.getDefaultSentiment();
 
   /**
    * The list of all named entities in the complaint text.
    */
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "complaint_id")
+  @JsonIgnore
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();
 
@@ -176,7 +178,6 @@ public class Complaint implements Identifiable<Long> {
    * The date when the complaint was received.
    */
   @NonNull
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate receiveDate = LocalDate.now();
   @NonNull
   private LocalTime receiveTime = LocalTime.now();
@@ -271,6 +272,7 @@ public class Complaint implements Identifiable<Long> {
    * @return the complaint text.
    */
   @NonNull
+  @JsonIgnore
   public String getText() {
     return text;
   }
@@ -312,6 +314,7 @@ public class Complaint implements Identifiable<Long> {
    * @return the list of {@link NamedEntity named entities} that occur in the complaint text.
    */
   @NonNull
+  @JsonIgnore
   @XmlPath("output/analysis[1][@type='extractor']/output/annotation")
   public List<NamedEntity> getEntities() {
     return new ArrayList<>(entities);
@@ -351,6 +354,7 @@ public class Complaint implements Identifiable<Long> {
   public ComplaintState getState() {
     return state;
   }
+
   /**
    * Returns a new complaint with all the properties of this complaint but with the given state
    * as the complaint state attribute.

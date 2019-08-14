@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.rules;
 
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.junit.Test;
 
 import java.time.LocalDate;
@@ -8,7 +8,6 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test class for the RuleParser
@@ -45,7 +44,7 @@ public class RuleParserTest {
   public void testRuleProperty() {
     PropertyRule correctRule = new PropertyRule("Kategorie", "Sonstiges");
     PropertyRule testRule = (PropertyRule) RuleParser.parseRules("<Rules>" +
-        "<Property name=\"Kategorie\" value=\"Sonstiges\" />" +
+        "<Property name=\"Kategorie\" matches=\"Sonstiges\" />" +
         "</Rules>");
     assertEquals(correctRule, testRule);
   }

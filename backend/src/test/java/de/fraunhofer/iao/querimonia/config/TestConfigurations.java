@@ -36,7 +36,8 @@ public class TestConfigurations {
       .setId(3)
       .setName("C")
       .setClassifiers(List.of())
-      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, "Unknown",
+          "#ffffff")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .createConfiguration();
@@ -45,7 +46,8 @@ public class TestConfigurations {
       .setId(4)
       .setName("D")
       .setClassifiers(List.of())
-      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, "Unknown",
+          "#ffffff")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .createConfiguration();
@@ -54,7 +56,8 @@ public class TestConfigurations {
       .setId(5)
       .setName("E")
       .setClassifiers(List.of())
-      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, "Unknown",
+          "#ffffff")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .setActive(true)
@@ -64,7 +67,8 @@ public class TestConfigurations {
       .setId(6)
       .setName("F")
       .setClassifiers(List.of())
-      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, List.of())))
+      .setExtractors(List.of(new ExtractorDefinition("None", ExtractorType.NONE, "Unknown",
+          "#ffffff")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
       .setActive(true)

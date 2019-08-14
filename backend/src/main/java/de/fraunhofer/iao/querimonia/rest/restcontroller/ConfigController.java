@@ -1,18 +1,10 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.manager.ConfigurationManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -133,10 +125,10 @@ public class ConfigController {
    * Returns the count of the configurations saved in the database.
    *
    * @return a response entity with:
-   * <ul>
-   *   <li>status code 200 and the count of the configurations on success</li>
-   *   <li>status code 500 on an unexpected server error</li>
-   * </ul>
+   *     <ul>
+   *       <li>status code 200 and the count of the configurations on success</li>
+   *       <li>status code 500 on an unexpected server error</li>
+   *     </ul>
    */
   @GetMapping("api/config/count")
   public ResponseEntity<?> countConfigurations() {
@@ -148,10 +140,10 @@ public class ConfigController {
    * Returns the currently active configuration.
    *
    * @return a response entity with:
-   * <ul>
-   *   <li>status code 200 and the current configuration on success.</li>
-   *   <li>status code 500 on an unexpected server error</li>
-   * </ul>
+   *     <ul>
+   *       <li>status code 200 and the current configuration on success.</li>
+   *       <li>status code 500 on an unexpected server error</li>
+   *     </ul>
    */
   @GetMapping("api/config/current")
   public ResponseEntity<?> getCurrentConfiguration() {
@@ -162,12 +154,13 @@ public class ConfigController {
    * Sets the active configuration to the configuration with the given id.
    *
    * @param configId the id of the configuration that should be used
+   *
    * @return a response entity with:
-   * <ul>
-   *   <li>status code 200 and the current configuration on success.</li>
-   *   <li>status code 404 if no configuration with the given id exists.</li>
-   *   <li>status code 500 on an unexpected server error</li>
-   * </ul>
+   *     <ul>
+   *       <li>status code 200 and the current configuration on success.</li>
+   *       <li>status code 404 if no configuration with the given id exists.</li>
+   *       <li>status code 500 on an unexpected server error</li>
+   *     </ul>
    */
   @PutMapping("api/config/current")
   public ResponseEntity<?> updateCurrentConfiguration(@RequestParam int configId) {
@@ -176,13 +169,27 @@ public class ConfigController {
   }
 
   /**
+   * Adds example configurations to the database.
+   *
+   * @return a response entity with:
+   *    <ul>
+   *      <li>status code 200 and the added configurations</li>
+   *      <li>status code 500 on an unexpected server error</li>
+   *    </ul>
+   */
+  @PostMapping("api/config/default")
+  public ResponseEntity<?> addDefaultConfigurations() {
+    return ControllerUtility.tryAndCatch(configurationManager::addDefaultConfigurations);
+  }
+
+  /**
    * Deletes all configuration of the database.
    *
    * @return a response entity with:
-   * <ul>
-   *   <li>status code 201 on success.</li>
-   *   <li>status code 500 on an unexpected server error</li>
-   * </ul>
+   *     <ul>
+   *       <li>status code 204 on success.</li>
+   *       <li>status code 500 on an unexpected server error</li>
+   *     </ul>
    */
   @DeleteMapping("api/config/all")
   public ResponseEntity<?> deleteAllConfigurations() {
@@ -191,6 +198,7 @@ public class ConfigController {
 
   /**
    * Returns the configuration that is currently active.
+   *
    * @return Extractors listed by tool, pipeline and domain
    */
   @GetMapping("api/config/allExtractors")

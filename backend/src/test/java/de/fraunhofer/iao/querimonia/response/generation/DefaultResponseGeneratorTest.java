@@ -2,18 +2,20 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.repository.MockComponentRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.*;
+import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.COMPLAINT_F;
 import static de.fraunhofer.iao.querimonia.response.component.TestComponents.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 /**

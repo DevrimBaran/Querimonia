@@ -1,5 +1,5 @@
 /**
- * This package contains complaints and classes to create complaint instances.
+ * This package contains classes to create complaint instances and analyze complaint texts.
  */
 
 @NonNullApi

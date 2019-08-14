@@ -6,13 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,9 +55,19 @@ public class Action {
 
   @JsonCreator
   @SuppressWarnings("unused")
-  public Action(@NonNull @JsonProperty("name") String name,
-                @NonNull @JsonProperty("actionCode") ActionCode actionCode,
-                @NonNull @JsonProperty("parameters") HashMap<String, String> parameters) {
+  public Action(
+      @NonNull
+      @JsonProperty("name")
+          String name,
+
+      @NonNull
+      @JsonProperty("actionCode")
+          ActionCode actionCode,
+
+      @NonNull
+      @JsonProperty("parameters")
+          HashMap<String, String> parameters
+  ) {
     this.name = name;
     this.actionCode = actionCode;
     this.parameters = parameters;

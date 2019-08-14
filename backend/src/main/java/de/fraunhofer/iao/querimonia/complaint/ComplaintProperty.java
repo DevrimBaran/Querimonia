@@ -67,12 +67,16 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
    * @param probabilities the probability map for the property.
    * @param setByUser   the flag if the property is set by the user.
    */
-  public ComplaintProperty(@NonNull String name, @NonNull String value,
-                           @NonNull Map<String, Double> probabilities, boolean setByUser) {
+  public ComplaintProperty(
+      @NonNull String name,
+      @NonNull String value,
+      @NonNull Map<String, Double> probabilities,
+      boolean isSetByUser
+  ) {
     this.value = value;
     this.name = name;
     this.probabilities = probabilities;
-    this.setByUser = setByUser;
+    this.setByUser = isSetByUser;
   }
 
   /**

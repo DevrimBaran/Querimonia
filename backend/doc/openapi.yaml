@@ -5,11 +5,11 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.7.4
+  version: 0.8.2
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
-  - url: https://querimonia.iao.fraunhofer.de/dev
+  - url: https://querimonia.iao.fraunhofer.de/dev/
   - url: https://querimonia.iao.fraunhofer.de/
   - url: http://localhost:8080/
 tags:
@@ -27,6 +27,8 @@ tags:
     description: Hier werden Einstellungen verwaltet, es können Extraktoren, Klassifizierer und Sentiment-Analysierer festgelegt werden.
   - name: stats
     description: Hier können verschiedene Statistiken über die Beschwerden abgerufen werden.
+  - name: demo
+    description: Mit diesen Endpunkten kann die Datenbank mit Beispielen gefüllt werden.
 paths:
   /api/complaints:
     get:
@@ -67,35 +69,50 @@ paths:
                     state: NEW
                     configuration:
                       id: 94
-                      name: Volle Konfiguration
+                      name: Kein Sentiment
                       extractors:
-                        - name: QuerimoniaExtract
-                          type: KIKUKO_DOMAIN
-                          colors:
-                            - label: Name
-                              color: "#ffd666"
-                            - label: Ort
-                              color: "#90ff8a"
-                            - label: Linie
-                              color: "#aff4fa"
-                            - label: Haltestelle
-                              color: "#cc89f5"
-                            - label: Datum
-                              color: "#cdc0cf"
-                            - label: Eingangsdatum
-                              color: "#e9bdf0"
-                            - label: Geldbetrag
-                              color: "#f5ff8a"
+                        - name: 'Linien Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Linie
+                          color: '#aff4fa'
+                        - name: '[Extern] Geldbetrag'
+                          type: KIKUKO_TOOL
+                          label: Geldbetrag
+                          color: '#f5ff8a'
+                        - name: 'Vorgangsnummer'
+                          type: KIKUKO_TOOL
+                          label: Vorgangsnummer
+                          color: '#ffaeae'
+                        - name: '[Extern] Datum Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Datum
+                          color: '#c7c7c7'
+                        - name: '[Extern] Personen Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Name
+                          color: '#ffaeae'
+                        - name: '[Extern] Telefonnummer'
+                          type: KIKUKO_TOOL
+                          label: Telefonnummer
+                          color: '#acc2b9'
+                        - name: '[Fuzzy] Haltestellen'
+                          type: KIKUKO_TOOL
+                          label: Haltestelle
+                          color: '#408080'
+                        - name: '[Fuzzy] Ortsnamen'
+                          type: KIKUKO_TOOL
+                          label: Ort
+                          color: '#cdfa8f'
                       classifiers:
                         - type: KIKUKO_CLASSIFIER
                           name: Beschwerde3Klassifikator2
                           propertyName: Kategorie
                       sentimentAnalyzer:
-                        type: QUERIMONIA_SENTIMENT
-                        name: Default
+                        type: NONE
+                        name: NONE
                       emotionAnalyzer:
-                        type: QUERIMONIA_EMOTION
-                        name: Default
+                        type: NONE
+                        name: NONE
                       active: true
                     receiveDate: '2019-08-05'
                     receiveTime: '18:59:02'
@@ -125,35 +142,50 @@ paths:
                     state: NEW
                     configuration:
                       id: 94
-                      name: Volle Konfiguration
+                      name: Kein Sentiment
                       extractors:
-                        - name: QuerimoniaExtract
-                          type: KIKUKO_DOMAIN
-                          colors:
-                            - label: Name
-                              color: "#ffd666"
-                            - label: Ort
-                              color: "#90ff8a"
-                            - label: Linie
-                              color: "#aff4fa"
-                            - label: Haltestelle
-                              color: "#cc89f5"
-                            - label: Datum
-                              color: "#cdc0cf"
-                            - label: Eingangsdatum
-                              color: "#e9bdf0"
-                            - label: Geldbetrag
-                              color: "#f5ff8a"
+                        - name: 'Linien Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Linie
+                          color: '#aff4fa'
+                        - name: '[Extern] Geldbetrag'
+                          type: KIKUKO_TOOL
+                          label: Geldbetrag
+                          color: '#f5ff8a'
+                        - name: 'Vorgangsnummer'
+                          type: KIKUKO_TOOL
+                          label: Vorgangsnummer
+                          color: '#ffaeae'
+                        - name: '[Extern] Datum Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Datum
+                          color: '#c7c7c7'
+                        - name: '[Extern] Personen Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Name
+                          color: '#ffaeae'
+                        - name: '[Extern] Telefonnummer'
+                          type: KIKUKO_TOOL
+                          label: Telefonnummer
+                          color: '#acc2b9'
+                        - name: '[Fuzzy] Haltestellen'
+                          type: KIKUKO_TOOL
+                          label: Haltestelle
+                          color: '#408080'
+                        - name: '[Fuzzy] Ortsnamen'
+                          type: KIKUKO_TOOL
+                          label: Ort
+                          color: '#cdfa8f'
                       classifiers:
                         - type: KIKUKO_CLASSIFIER
                           name: Beschwerde3Klassifikator2
                           propertyName: Kategorie
                       sentimentAnalyzer:
-                        type: QUERIMONIA_SENTIMENT
-                        name: Default
+                        type: NONE
+                        name: NONE
                       emotionAnalyzer:
-                        type: QUERIMONIA_EMOTION
-                        name: Default
+                        type: NONE
+                        name: NONE
                       active: true
                     receiveDate: '2019-08-04'
                     receiveTime: '21:55:33'
@@ -184,35 +216,50 @@ paths:
                     state: NEW
                     configuration:
                       id: 94
-                      name: Volle Konfiguration
+                      name: Kein Sentiment
                       extractors:
-                        - name: QuerimoniaExtract
-                          type: KIKUKO_DOMAIN
-                          colors:
-                            - label: Name
-                              color: "#ffd666"
-                            - label: Ort
-                              color: "#90ff8a"
-                            - label: Linie
-                              color: "#aff4fa"
-                            - label: Haltestelle
-                              color: "#cc89f5"
-                            - label: Datum
-                              color: "#cdc0cf"
-                            - label: Eingangsdatum
-                              color: "#e9bdf0"
-                            - label: Geldbetrag
-                              color: "#f5ff8a"
+                        - name: 'Linien Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Linie
+                          color: '#aff4fa'
+                        - name: '[Extern] Geldbetrag'
+                          type: KIKUKO_TOOL
+                          label: Geldbetrag
+                          color: '#f5ff8a'
+                        - name: 'Vorgangsnummer'
+                          type: KIKUKO_TOOL
+                          label: Vorgangsnummer
+                          color: '#ffaeae'
+                        - name: '[Extern] Datum Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Datum
+                          color: '#c7c7c7'
+                        - name: '[Extern] Personen Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Name
+                          color: '#ffaeae'
+                        - name: '[Extern] Telefonnummer'
+                          type: KIKUKO_TOOL
+                          label: Telefonnummer
+                          color: '#acc2b9'
+                        - name: '[Fuzzy] Haltestellen'
+                          type: KIKUKO_TOOL
+                          label: Haltestelle
+                          color: '#408080'
+                        - name: '[Fuzzy] Ortsnamen'
+                          type: KIKUKO_TOOL
+                          label: Ort
+                          color: '#cdfa8f'
                       classifiers:
                         - type: KIKUKO_CLASSIFIER
                           name: Beschwerde3Klassifikator2
                           propertyName: Kategorie
                       sentimentAnalyzer:
-                        type: QUERIMONIA_SENTIMENT
-                        name: Default
+                        type: NONE
+                        name: NONE
                       emotionAnalyzer:
-                        type: QUERIMONIA_EMOTION
-                        name: Default
+                        type: NONE
+                        name: NONE
                       active: true
                     receiveDate: '2019-08-04'
                     receiveTime: '16:14:41'
@@ -289,35 +336,50 @@ paths:
                 state: ANALYSING
                 configuration:
                   id: 94
-                  name: Volle Konfiguration
+                  name: Kein Sentiment
                   extractors:
-                    - name: QuerimoniaExtract
-                      type: KIKUKO_DOMAIN
-                      colors:
-                        - label: Name
-                          color: "#ffd666"
-                        - label: Ort
-                          color: "#90ff8a"
-                        - label: Linie
-                          color: "#aff4fa"
-                        - label: Haltestelle
-                          color: "#cc89f5"
-                        - label: Datum
-                          color: "#cdc0cf"
-                        - label: Eingangsdatum
-                          color: "#e9bdf0"
-                        - label: Geldbetrag
-                          color: "#f5ff8a"
+                    - name: 'Linien Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Linie
+                      color: '#aff4fa'
+                    - name: '[Extern] Geldbetrag'
+                      type: KIKUKO_TOOL
+                      label: Geldbetrag
+                      color: '#f5ff8a'
+                    - name: 'Vorgangsnummer'
+                      type: KIKUKO_TOOL
+                      label: Vorgangsnummer
+                      color: '#ffaeae'
+                    - name: '[Extern] Datum Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Datum
+                      color: '#c7c7c7'
+                    - name: '[Extern] Personen Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Name
+                      color: '#ffaeae'
+                    - name: '[Extern] Telefonnummer'
+                      type: KIKUKO_TOOL
+                      label: Telefonnummer
+                      color: '#acc2b9'
+                    - name: '[Fuzzy] Haltestellen'
+                      type: KIKUKO_TOOL
+                      label: Haltestelle
+                      color: '#408080'
+                    - name: '[Fuzzy] Ortsnamen'
+                      type: KIKUKO_TOOL
+                      label: Ort
+                      color: '#cdfa8f'
                   classifiers:
                     - type: KIKUKO_CLASSIFIER
                       name: Beschwerde3Klassifikator2
                       propertyName: Kategorie
                   sentimentAnalyzer:
-                    type: QUERIMONIA_SENTIMENT
-                    name: Default
+                    type: NONE
+                    name: NONE
                   emotionAnalyzer:
-                    type: QUERIMONIA_EMOTION
-                    name: Default
+                    type: NONE
+                    name: NONE
                   active: true
                 receiveDate: '2019-08-06'
                 receiveTime: '12:59:45.267471'
@@ -404,35 +466,50 @@ paths:
                 state: CLOSED
                 configuration:
                   id: 94
-                  name: Volle Konfiguration
+                  name: Kein Sentiment
                   extractors:
-                    - name: QuerimoniaExtract
-                      type: KIKUKO_DOMAIN
-                      colors:
-                        - label: Name
-                          color: "#ffd666"
-                        - label: Ort
-                          color: "#90ff8a"
-                        - label: Linie
-                          color: "#aff4fa"
-                        - label: Haltestelle
-                          color: "#cc89f5"
-                        - label: Datum
-                          color: "#cdc0cf"
-                        - label: Eingangsdatum
-                          color: "#e9bdf0"
-                        - label: Geldbetrag
-                          color: "#f5ff8a"
+                    - name: 'Linien Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Linie
+                      color: '#aff4fa'
+                    - name: '[Extern] Geldbetrag'
+                      type: KIKUKO_TOOL
+                      label: Geldbetrag
+                      color: '#f5ff8a'
+                    - name: 'Vorgangsnummer'
+                      type: KIKUKO_TOOL
+                      label: Vorgangsnummer
+                      color: '#ffaeae'
+                    - name: '[Extern] Datum Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Datum
+                      color: '#c7c7c7'
+                    - name: '[Extern] Personen Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Name
+                      color: '#ffaeae'
+                    - name: '[Extern] Telefonnummer'
+                      type: KIKUKO_TOOL
+                      label: Telefonnummer
+                      color: '#acc2b9'
+                    - name: '[Fuzzy] Haltestellen'
+                      type: KIKUKO_TOOL
+                      label: Haltestelle
+                      color: '#408080'
+                    - name: '[Fuzzy] Ortsnamen'
+                      type: KIKUKO_TOOL
+                      label: Ort
+                      color: '#cdfa8f'
                   classifiers:
                     - type: KIKUKO_CLASSIFIER
                       name: Beschwerde3Klassifikator2
                       propertyName: Kategorie
                   sentimentAnalyzer:
-                    type: QUERIMONIA_SENTIMENT
-                    name: Default
+                    type: NONE
+                    name: NONE
                   emotionAnalyzer:
-                    type: QUERIMONIA_EMOTION
-                    name: Default
+                    type: NONE
+                    name: NONE
                   active: true
                 receiveDate: '2019-08-04'
                 receiveTime: '16:14:41'
@@ -578,35 +655,50 @@ paths:
                 state: CLOSED
                 configuration:
                   id: 94
-                  name: Volle Konfiguration
+                  name: Kein Sentiment
                   extractors:
-                    - name: QuerimoniaExtract
-                      type: KIKUKO_DOMAIN
-                      colors:
-                        - label: Name
-                          color: "#ffd666"
-                        - label: Ort
-                          color: "#90ff8a"
-                        - label: Linie
-                          color: "#aff4fa"
-                        - label: Haltestelle
-                          color: "#cc89f5"
-                        - label: Datum
-                          color: "#cdc0cf"
-                        - label: Eingangsdatum
-                          color: "#e9bdf0"
-                        - label: Geldbetrag
-                          color: "#f5ff8a"
+                    - name: 'Linien Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Linie
+                      color: '#aff4fa'
+                    - name: '[Extern] Geldbetrag'
+                      type: KIKUKO_TOOL
+                      label: Geldbetrag
+                      color: '#f5ff8a'
+                    - name: 'Vorgangsnummer'
+                      type: KIKUKO_TOOL
+                      label: Vorgangsnummer
+                      color: '#ffaeae'
+                    - name: '[Extern] Datum Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Datum
+                      color: '#c7c7c7'
+                    - name: '[Extern] Personen Extraktor'
+                      type: KIKUKO_TOOL
+                      label: Name
+                      color: '#ffaeae'
+                    - name: '[Extern] Telefonnummer'
+                      type: KIKUKO_TOOL
+                      label: Telefonnummer
+                      color: '#acc2b9'
+                    - name: '[Fuzzy] Haltestellen'
+                      type: KIKUKO_TOOL
+                      label: Haltestelle
+                      color: '#408080'
+                    - name: '[Fuzzy] Ortsnamen'
+                      type: KIKUKO_TOOL
+                      label: Ort
+                      color: '#cdfa8f'
                   classifiers:
                     - type: KIKUKO_CLASSIFIER
                       name: Beschwerde3Klassifikator2
                       propertyName: Kategorie
                   sentimentAnalyzer:
-                    type: QUERIMONIA_SENTIMENT
-                    name: Default
+                    type: NONE
+                    name: NONE
                   emotionAnalyzer:
-                    type: QUERIMONIA_EMOTION
-                    name: Default
+                    type: NONE
+                    name: NONE
                   active: true
                 receiveDate: '2019-08-04'
                 receiveTime: '16:14:41'
@@ -726,10 +818,47 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/complaints/default:
+    post:
+      tags:
+        - complaints
+        - demo
+      summary: Fügt Beispiel-Beschwerden in die Datenbank ein
+      description: >
+        Fügt eine Menge an Beispiel-Beschwerden in die Datenbank ein. Dabei kann die Anzahl begrenzt
+        werden. Hier werden <b>nur die Texte</b> importiert und die Analyse gestartet. Es kann die
+        verwendete Konfiguration bestimmt werden.
+      parameters:
+        - name: count
+          in: query
+          description: Die maximal Anzahl an Beispiel-Beschwerden, die in Datenbank geladen werden sollen. Falls dies nicht angegeben wird, werden 150 Beispielbeschwerden geladen. Es können bis zu 767 Beschwerden geladen werden.
+          schema:
+            type: integer
+            format: int32
+            minimum: 0
+            maximum: 767
+            example: 150
+            default: 150
+        - $ref: '#/components/parameters/ConfigIdQueryParameter'
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Complaint'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
   /api/complaints/all:
     delete:
       tags:
         - complaints
+        - demo
       summary: Löscht alle Beschwerden aus der Datenbank
       description: Löscht alle Beschwerden aus der Datenbank.
       operationId: deleteAllComplaints
@@ -963,6 +1092,41 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/combinations/default:
+    post:
+      tags:
+        - combinations
+        - demo
+      summary: Fügt Beispiel-Kombinationen in die Datenbank ein.
+      description: Fügt die Kombinationen aus den Beispieldaten aus dem Bereich Wuppertal hinzu.
+
+      operationId: addDefaultCombinations
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LineStopCombination'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/combinations/all:
+    delete:
+      tags:
+        - combinations
+        - demo
+      summary: Löscht alle Kombinationen aus der Datenbank.
+      description: Alle Kombinationen werden aus der Datenbank entfernt.
+      operationId: deleteCombinations
+      responses:
+        204:
+          description: Löschen erfolgreich.
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
   /api/combinations/{complaintId}:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
@@ -982,68 +1146,11 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Combination'
+                  $ref: '#/components/schemas/LineStopCombination'
         404:
           $ref: '#/components/responses/NotFoundError'
         500:
           $ref: '#/components/responses/UnexpectedError'
-
-
-  /api/responses/{complaintId}:
-    parameters:
-      - $ref: '#/components/parameters/ComplaintIdParameter'
-
-    get:
-      tags:
-        - responses
-      summary: Gibt die generierte Antwort zu einer Beschwerde zurück.
-      description: Zur jeder Beschwerde wird eine Antwort generiert, die über diese Schnittstelle abgerufen werden kann. Eine Antwort enthält eine Liste an Antwortbausteinen sowie eine Liste an Aktionen.
-      operationId: getResponse
-      deprecated: true
-      responses:
-        200:
-          description: Die Antwort der Beschwerde wird zurückgegeben.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseSuggestion'
-        404:
-          $ref: '#/components/responses/NotFoundError'
-        500:
-          $ref: '#/components/responses/UnexpectedError'
-
-  /api/responses/{complaintId}/refresh:
-    parameters:
-      - $ref: '#/components/parameters/ComplaintIdParameter'
-
-    patch:
-      tags:
-        - responses
-      summary: Generiert eine neue Antwort zu einer Beschwerde.
-      description: Die Antwort zu einer Beschwerde wird neugeneriert und zurückgegben.
-      operationId: refreshResponse
-      deprecated: true
-      responses:
-        200:
-          description: Die neu generierte Antwort der Beschwerde wird zurückgegeben.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResponseSuggestion'
-        400:
-          description: Die Beschwerde wurde bereits geschlossen.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
-        404:
-          $ref: '#/components/responses/NotFoundError'
-        500:
-          description: Fehlerhaft konfigurierte Textbausteine/Aktionen, unerwarteter Serverfehler
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/QuerimoniaException'
 
   /api/complaints/{complaintId}/response:
     parameters:
@@ -1171,6 +1278,7 @@ paths:
     post:
       tags:
         - components
+        - demo
       summary: Fügt dem System eine Menge an Standard-Antwortbausteinen hinzu.
       description: Fügt eine Menge an Standard-Antwortbausteinen hinzu. Diese enthält verschiedene Bausteine für Begrüßungen, Eingangsdaten, Problembeschreibungen, Entschuldigungen, Lösungsvorschläge, Erstattungen und Schlüsse. Die Bausteine gehören zu den Kategorien Fahrer unfreundlich, Fahrt nicht erfolgt, Sonstiges. Jeder Baustein hat drei verschiedene Texte und verschiedene Varianten mit/ohne Platzhaltern.
 
@@ -1293,8 +1401,9 @@ paths:
     delete:
       tags:
         - components
+        - demo
       summary: Löscht alle Antwortbausteine aus der Datenbank.
-      description: Alle Antwortbausteine werden aus der Datenbank entfernt.
+      description: Alle Antwortbausteine werden aus der Datenbank entfernt. Alle Antworten der Beschwerden werden dabei gelöscht.
       operationId: deleteAllResponseComponents
       responses:
         204:
@@ -1351,23 +1460,38 @@ paths:
             example:
               name: Kein Sentiment
               extractors:
-                - name: QuerimoniaExtract
-                  type: KIKUKO_DOMAIN
-                  colors:
-                    - label: Name
-                      color: "#ffd666"
-                    - label: Ort
-                      color: "#90ff8a"
-                    - label: Linie
-                      color: "#aff4fa"
-                    - label: Haltestelle
-                      color: "#cc89f5"
-                    - label: Datum
-                      color: "#cdc0cf"
-                    - label: Eingangsdatum
-                      color: "#e9bdf0"
-                    - label: Geldbetrag
-                      color: "#f5ff8a"
+                - name: 'Linien Extraktor'
+                  type: KIKUKO_TOOL
+                  label: Linie
+                  color: '#aff4fa'
+                - name: '[Extern] Geldbetrag'
+                  type: KIKUKO_TOOL
+                  label: Geldbetrag
+                  color: '#f5ff8a'
+                - name: 'Vorgangsnummer'
+                  type: KIKUKO_TOOL
+                  label: Vorgangsnummer
+                  color: '#ffaeae'
+                - name: '[Extern] Datum Extraktor'
+                  type: KIKUKO_TOOL
+                  label: Datum
+                  color: '#c7c7c7'
+                - name: '[Extern] Personen Extraktor'
+                  type: KIKUKO_TOOL
+                  label: Name
+                  color: '#ffaeae'
+                - name: '[Extern] Telefonnummer'
+                  type: KIKUKO_TOOL
+                  label: Telefonnummer
+                  color: '#acc2b9'
+                - name: '[Fuzzy] Haltestellen'
+                  type: KIKUKO_TOOL
+                  label: Haltestelle
+                  color: '#408080'
+                - name: '[Fuzzy] Ortsnamen'
+                  type: KIKUKO_TOOL
+                  label: Ort
+                  color: '#cdfa8f'
               classifiers:
                 - type: KIKUKO_CLASSIFIER
                   name: Beschwerde3Klassifikator2
@@ -1518,12 +1642,31 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/config/default:
+    post:
+      tags:
+        - config
+        - demo
+      summary: Fügt Beispielkonfigurationen in die Datenbank ein.
+      description: Fügt Beispielkonfigurationen in die Datenbank ein. Der erste Konfiguration wird **aktiviert**.
+      operationId: addDefaultConfigurations
+      responses:
+        200:
+          description: Erfolgreiches Einfügen der Beispielkonfigurationen. Gibt die Beispielkonfigurationen zurück.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AnalyzerConfiguration'
+
   /api/config/all:
     delete:
       tags:
         - config
+        - demo
       summary: Löscht alle Konfigurationen.
-      description: Löscht alle Konfigurationen aus der Datenbank und setzt das System auf eine Default-Konfiguration zurück.
+      description: Löscht alle Konfigurationen aus der Datenbank und setzt das System auf eine Default-Konfiguration zurück. Alle Referenzen in den Beschwerden werden gelöscht.
       operationId: deleteAllConfigurations
       responses:
         204:
@@ -1582,6 +1725,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/MostCommonWords'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/reset:
+    post:
+      tags:
+        - demo
+      summary: Setzt das System auf einen Demo-Zustand zurück.
+      description: >
+        Es werden folgende Schritte durchgeführt:
+        <ol>
+          <li>Alle Beschwerden, Konfigurationen, Kombinationen, Antwortbausteine etc. werden gelöscht</li>
+          <li>Die Beispielkonfigurationen, -bausteine, -kombinationen werden in die Datenbank geladen</li>
+        </ol>
+        Es werden noch keine Beschwerden in die Datenbank geladen.
+      operationId: reset
+      responses:
+        204:
+          description: Reset erfolgreich
         500:
           $ref: '#/components/responses/UnexpectedError'
 
@@ -1756,14 +1918,12 @@ components:
       required:
         - state
         - configuration
-        - text
         - preview
         - receiveDate
         - receiveTime
         - properties
         - emotion
         - sentiment
-        - entities
       type: object
       description: Diese Datenstuktur modelliert eine Beschwerde (oder eine eingegangen Meldung von anderer Art). Eine Beschwerde besitzt eine eindeutige ID, einen Zustand (in Bearbeitung, geschlossen), den Meldetext, Eingangsdatum, sowie weitere Eigenschaften wie Sentiment und Kategorie. Weiterhin ist zu jeder Beschwerde gespeichert mit welcher Konfigutartion sie analysiert wurde.
       properties:
@@ -1774,12 +1934,6 @@ components:
           example: 1
           description: Die eindeutige ID der Beschwerde.
           readOnly: true
-        text:
-          type: string
-          description: Der volle Beschwerdetext.
-          example: "Guten Tag,\nMein Bus kam heute viel zu spät!\nSie müssen mir den Schaden ersetzen!!"
-          readOnly: true
-          deprecated: true
         preview:
           type: string
           description: Die ersten zwei Zeilen der Beschwerde.
@@ -1806,12 +1960,6 @@ components:
           description: Die Ergebnisse der Klassifikatoren, zum Beispiel für die Kategorie der Beschwerde.
           items:
             $ref: '#/components/schemas/ComplaintProperty'
-        entities:
-          type: array
-          description: Die Entitäten der Beschwerde.
-          items:
-            $ref: '#/components/schemas/NamedEntity'
-          deprecated: true
         sentiment:
           type: object
           description: Enthält die Ergbnisse der Sentiment-Analyse.
@@ -2147,7 +2295,8 @@ components:
       required:
         - name
         - type
-        - colors
+        - öabel
+        - color
       properties:
         name:
           type: string
@@ -2157,26 +2306,17 @@ components:
           type: string
           enum:
             - KIKUKO_TOOL
-            - KIKUKO_PIPELINE
-            - KIKUKO_DOMAIN
             - NONE
           description: Eine Bezeichner für den Typ von Entraktor. KIkukoTool wird für Tools von KIkuko verwendet.
           example: "KIKUKO_TOOL"
-        colors:
-          type: array
-          description: Gibt für beliebige Entity-Labels einen Farbcode an, mit der die Entität dargestellt wird.
-          items:
-            type: object
-            description: Gibt für ein Label die zugehörige Farbe an.
-            properties:
-              label:
-                description: Das Label der Entität.
-                type: string
-                example: 'Name'
-              color:
-                description: Der Farbwert der Entität.
-                type: string
-                example: '#CCAABB'
+        label:
+          type: string
+          description: Der Typ der Entität
+          example: 'Name'
+        color:
+          type: string
+          example: '#934030'
+          description: Farbwert, der extrahierten Entitäten
 
     LogItem:
       description: Ein Eintrag im Log zu einer Beschwerde.
@@ -2359,8 +2499,7 @@ components:
               id: 99
               name: EingangsdatumMitDatum
               priority: 100
-              rulesXml: <Rules><And><Predecessor matches="Begrüßung.*" position="last"/><EntityAvailable
-                label="Eingangsdatum"/></And></Rules>
+              rulesXml: <Rules><And><Predecessor matches="Begrüßung.*" position="last"/><EntityAvailable label="Eingangsdatum"/></And></Rules>
               requiredEntities:
                 - Eingangsdatum
               texts:
@@ -2482,24 +2621,18 @@ components:
         line:
           type: string
           example: "293"
+          nullable: true
           description: Linienbezeichnung
         stop:
           description: Haltestellenbezeichnun
           type: string
+          nullable: true
           example: "Kirchplatz"
         place:
           description: Ortsname
           type: string
           example: "Wuppertal"
-
-    Combination:
-      description: Eine Kombination von zueinander gehörigen Entitäten
-      type: object
-      properties:
-        entities:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamedEntity'
+          nullable: true
 
     EntityArray:
       description: Array aus Named Entities
@@ -2562,12 +2695,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/QuerimoniaException'
-
-  examples:
-  # TODO add more examples
-    complaintText:
-      value:
-        text: 'In Ihrem Schreiben vom 8. 2. 2013 schreiben Sie, nur "ein" Bus der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf sei ausgefallen. Dies kann so nicht stimmen. Vielmehr stellt sich mir und anderen die Frage, weshalb ständig und gehäuft Buslinien der WSW ausfallen und Fahrten entgegen dem Fahrplan nicht angeboten werden. Als Rad-, Bahn- und gelegentlicher Autofahrer benutze ich eher selten die Busse der WSW. Wenn ich sie benutze, ergeben sich auffällig häufig Ausfälle und deutliche Verspätungen. Dies betrifft auffallend oft die als schnell konzipierten CE-Linien, nach meiner jüngeren Erfahrung CE61/CE62, weniger auch CE64/CE65 (Elberfeld-Cronenberg), und Nebenlinien wie etwa 643. Einzelne Ihrer Mitarbeiter berichten mir übereinstimmend, die Personaldecke sei zu dünn, um Ausfälle einzelner Mitarbeiter auszugleichen. Wegen spürbaren Personalmangels - nicht, wie Sie schreiben, vereinzelt wegen Krankheit - würden häufig Fahrten ausfallen. Viele Fahrer berichten anschaulich, dass in manchen Stoßzeiten vergeblich wartende Passagiere an Haltestellen stünden. Teilweise berichtet man mir von gezielten Maßnahmen, um Einsparungen herbeizuführen sowie nicht ausgeglichenen Überstunden. Ihre Fahrer sehen dies unmittelbar mit der Politik der WSW verknüpft, die CE-Linien ab März/April 2013 auszudünnen.Der Vorgang, auf den sich Ihr Schreiben bezieht, lief tatsächlich so ab: Am 1. 2. 2013 wartete ich an der Morianstraße in Wuppertal mit meinem x Monate alten Sohn nachmittags auf eine Busverbindung nach Ronsdorf, Haltestelle Kniprodestraße. Ich beabsichtigte, den Bus CE62 um 15:47 Uhr zu nehmen. Wir waren auf dem Weg zu einer Nachmittagsveranstaltung für Eltern mit Kleinstkindern, die ich verpasste:Die CE62 um 15:47 Uhr fuhr nicht, ebenso nicht die nachfolgenden Busse der Linie CE62:- 16:07 Uhr- 16:27 UhrEs fuhren ferner nicht die Busse der Linie 620 um- 15:55 Uhr- 16:15 Uhr- 16:35 Uhrdie Haltestelle an. Ihr Schreiben legt nahe, dass es sich nur um vereinzelte Fälle handele. Unmittelbar bei meinem nächsten Fahrtantritt mit der WSW eine Woche später kam es wiederum zu einem Ausfall. Am Freitag, 8. 2. 2013, fiel Linie CE61 um 15:38 Uhr an der Haltestelle Am Stadtbahnhof in Richtung Barmen aus. Mit ca. 25 Minuten Verspätung erreichte ich mit der Linie 640 (ab 15:48 Uhr) gegen 16:25 Uhr den Alten Markt in Barmen.Heute, am 21. 2. 2013, fielen die Busse der Linie CE64 von Wuppertal Hbf in Richtung Cronenberg um 06:40 Uhr und um 07:00 Uhr aus. Ein Fahrgast erreichte deshalb nicht pünktlich seine Arbeitsstelle in Solingen. Würde ich häufiger fahren, würde ich vermutlich noch häufiger dadurch Zeit verlieren. Ich bitte Sie daher freundlich, Ihre Dienstleistungen bestmöglich fahrplangemäß anzubieten.'
 
   securitySchemes:
     basicAuth:

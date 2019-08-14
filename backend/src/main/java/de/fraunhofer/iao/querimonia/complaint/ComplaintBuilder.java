@@ -1,12 +1,12 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
-import de.fraunhofer.iao.querimonia.log.ComplaintLog;
-import de.fraunhofer.iao.querimonia.log.LogCategory;
-import de.fraunhofer.iao.querimonia.log.LogEntry;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.log.ComplaintLog;
+import de.fraunhofer.iao.querimonia.utility.log.LogCategory;
+import de.fraunhofer.iao.querimonia.utility.log.LogEntry;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 

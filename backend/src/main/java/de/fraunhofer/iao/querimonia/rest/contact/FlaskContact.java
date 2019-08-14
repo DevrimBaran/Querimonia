@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.contact;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.fraunhofer.iao.querimonia.exception.QuerimoniaException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

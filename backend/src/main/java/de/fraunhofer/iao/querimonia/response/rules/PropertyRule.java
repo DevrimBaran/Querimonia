@@ -6,6 +6,7 @@ import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseCompone
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A rule that checks if the value of a complaint property matches.
@@ -29,11 +30,13 @@ public class PropertyRule implements Rule {
   @Override
   public boolean isPotentiallyRespected(ComplaintBuilder complaint) {
     // check if the name of the complaint matches
-    return
+    var propertyValues =
         complaint.getProperties()
-        .stream()
-        .filter(complaintProperty -> complaintProperty.getName().equals(name))
-        .map(ComplaintProperty::getValue)
+            .stream()
+            .filter(complaintProperty -> complaintProperty.getName().equals(name))
+            .map(ComplaintProperty::getValue)
+            .collect(Collectors.toList());
+    return !propertyValues.isEmpty() && propertyValues.stream()
         .allMatch(value -> value.matches(propertyRegex));
   }
 

@@ -1,5 +1,5 @@
 /**
- * This package contains configurations, which define how querimonia analyses complaints.
+ * This package manages configurations, which define how querimonia analyses complaints.
  */
 
 @NonNullFields

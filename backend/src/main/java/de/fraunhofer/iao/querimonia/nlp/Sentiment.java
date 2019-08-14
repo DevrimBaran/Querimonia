@@ -25,13 +25,6 @@ import static javax.persistence.CascadeType.ALL;
 @Entity
 public class Sentiment implements Comparable<Sentiment> {
 
-  /**
-   * Fallback sentiment when no sentiment is available.
-   */
-  public static Sentiment getDefaultSentiment() {
-    return new Sentiment(ComplaintProperty.getDefaultProperty("Emotion"), 0.0);
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @JsonIgnore
@@ -43,29 +36,69 @@ public class Sentiment implements Comparable<Sentiment> {
   private double tendency;
 
   @JsonCreator
-  public Sentiment(@NonNull @JsonProperty("emotion") ComplaintProperty emotion,
-                   @JsonProperty("tendency") double tendency) {
+  public Sentiment(
+      @JsonProperty("emotion")
+      @NonNull
+          ComplaintProperty emotion,
+      @JsonProperty("tendency")
+          double tendency
+  ) {
     this.emotion = emotion;
     this.tendency = tendency;
   }
 
-  public Sentiment() {
+  @SuppressWarnings("unused")
+  private Sentiment() {
     // for hibernate
   }
 
+  /**
+   * Fallback sentiment when no sentiment is available.
+   */
+  public static Sentiment getDefaultSentiment() {
+    return new Sentiment(ComplaintProperty.getDefaultProperty("Emotion"), 0.0);
+  }
+
+  /**
+   * Returns the emotion property of the complaint text.
+   *
+   * @return the emotion property of the complaint.
+   */
   @NonNull
   public ComplaintProperty getEmotion() {
     return emotion;
   }
 
+  /**
+   * Returns the tendency of the complaint. The tendency is a value between -1 and 1. Positive
+   * values mean positive sentiment, where greater values also imply a more positive sentiment.
+   * Negative values mean negative sentiment, where smaller values also imply a more negative
+   * sentiment.
+   *
+   * @return the tendency of the complaint.
+   */
   public double getTendency() {
     return tendency;
   }
 
+  /**
+   * Returns a copy of this sentiment object with the emotion set to the given value.
+   *
+   * @param emotionProperty the emotion that the copy should have.
+   *
+   * @return a copy of this sentiment object with the emotion set to the given value.
+   */
   public Sentiment withEmotion(ComplaintProperty emotionProperty) {
     return new Sentiment(emotionProperty, this.tendency);
   }
 
+  /**
+   * Returns a copy of this sentiment object with the tendency set to the given value.
+   *
+   * @param tendency the tendency that the copy should have.
+   *
+   * @return a copy of this sentiment object with the tendency set to the given value.
+   */
   public Sentiment withTendency(double tendency) {
     return new Sentiment(this.emotion, tendency);
   }

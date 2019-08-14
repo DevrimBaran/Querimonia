@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.complaint;
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
-import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.TestEntities;
 import de.fraunhofer.iao.querimonia.response.component.TestComponents;
@@ -13,14 +12,12 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestDates.*;
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.TestTexts.*;
 
-// TODO add more attributes to the test complaints
 public class TestComplaints {
 
   public static final Complaint COMPLAINT_A = new ComplaintBuilder(TEXT_A)

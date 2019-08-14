@@ -9,8 +9,8 @@
  * controller}. Complaints can also be edited and deleted.</p>
  *
  * <p>All requests for creating/editing/deleting complaints are managed in the
- * {@link de.fraunhofer.iao.querimonia.db.manager manager}-package. This uses the connection to
- * the database in the {@link de.fraunhofer.iao.querimonia.db.repository repository}-package.</p>
+ * {@link de.fraunhofer.iao.querimonia.manager manager}-package. This uses the connection to
+ * the database in the {@link de.fraunhofer.iao.querimonia.repository repository}-package.</p>
  *
  * <p>Complaint objects get created in the {@link de.fraunhofer.iao.querimonia.complaint
  * complaint}-package. The complaint text gets analyzed with different tools, which are

@@ -22,6 +22,7 @@ import java.util.Objects;
  *        .createConfiguration();}</pre>
  */
 public class ConfigurationBuilder {
+
   @Nullable
   private String name;
   @Nullable
@@ -109,17 +110,38 @@ public class ConfigurationBuilder {
     return this;
   }
 
+  /**
+   * Sets the {@link Configuration#getEmotionAnalyzer() emtion analyzer} of the configuration.
+   *
+   * @param emotionAnalyzer the {@link EmotionAnalyzerDefinition definition} of the emotion
+   *                        analyzer, that should be used for the analysis.
+   *
+   * @return this configuration builder.
+   */
   public ConfigurationBuilder setEmotionAnalyzer(
       @NonNull EmotionAnalyzerDefinition emotionAnalyzer) {
     this.emotionAnalyzer = emotionAnalyzer;
     return this;
   }
 
+  /**
+   * Sets the active state of the configuration. There can only be one active configuration, that
+   * is used for the analysis by default.
+   *
+   * @param active if the configuration should be active or not.
+   *
+   * @return this configuration builder.
+   */
   public ConfigurationBuilder setActive(boolean active) {
     this.active = active;
     return this;
   }
 
+  /**
+   * Creates a configuration with the attributes of this builder.
+   *
+   * @return a new configuration with the attributes of this builder.
+   */
   public Configuration createConfiguration() {
     return new Configuration(id, Objects.requireNonNull(name), Objects.requireNonNull(extractors),
         Objects.requireNonNull(classifiers), Objects.requireNonNull(sentimentAnalyzer),

@@ -1,13 +1,13 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.db.combination.LineStopCombination;
-import de.fraunhofer.iao.querimonia.db.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.db.manager.ConfigurationManager;
-import de.fraunhofer.iao.querimonia.db.manager.LineStopCombinationManager;
-import de.fraunhofer.iao.querimonia.db.repository.MockCombinationRepository;
-import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
-import de.fraunhofer.iao.querimonia.db.repository.MockComponentRepository;
-import de.fraunhofer.iao.querimonia.db.repository.MockConfigurationRepository;
+import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.manager.CombinationManager;
+import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.manager.ConfigurationManager;
+import de.fraunhofer.iao.querimonia.repository.MockCombinationRepository;
+import de.fraunhofer.iao.querimonia.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.repository.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.repository.MockConfigurationRepository;
 import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.junit.Before;
@@ -42,12 +42,15 @@ public class CombinationControllerTest {
     componentRepository = new MockComponentRepository();
     configurationRepository = new MockConfigurationRepository();
     combinationRepository = new MockCombinationRepository();
+    var fileStorageService = new FileStorageService(fileStorageProperties);
 
     ComplaintManager complaintManager = new ComplaintManager(
-        new FileStorageService(fileStorageProperties), complaintRepository, componentRepository,
-        new ConfigurationManager(configurationRepository, complaintRepository), combinationRepository);
+        fileStorageService, complaintRepository, componentRepository,
+        new ConfigurationManager(configurationRepository, complaintRepository, fileStorageService),
+        combinationRepository);
 
-    LineStopCombinationManager combinationManager = new LineStopCombinationManager(combinationRepository);
+    CombinationManager combinationManager =
+        new CombinationManager(combinationRepository, fileStorageService);
 
     combinationController = new CombinationController(complaintManager, combinationManager);
   }

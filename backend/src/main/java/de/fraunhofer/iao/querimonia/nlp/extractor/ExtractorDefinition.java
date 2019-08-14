@@ -10,11 +10,10 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * This class is used to define the extractor which should be used in the a configuration.
+ * This class is used to define the extractor which should be used in the a configuration. Each
+ * extractor can extract one kind of named entity.
  */
 @Entity
 public class ExtractorDefinition {
@@ -31,11 +30,12 @@ public class ExtractorDefinition {
   @NonNull
   private ExtractorType type = ExtractorType.NONE;
 
-  @ElementCollection(fetch = FetchType.LAZY)
-  @CollectionTable(name = "color_table", joinColumns = @JoinColumn(name = "id"))
-  @Column(name = "color")
   @NonNull
-  private List<ColorDefinition> colors = new ArrayList<>();
+  @Column(length = 100)
+  private String color = "#ffffff";
+
+  @NonNull
+  private String label = "Name";
 
   @SuppressWarnings("unused")
   private ExtractorDefinition() {
@@ -44,18 +44,24 @@ public class ExtractorDefinition {
 
   @JsonCreator
   @SuppressWarnings("unused")
-  public ExtractorDefinition(@NonNull
-                             @JsonProperty("name")
-                                 String name,
-                             @NonNull
-                             @JsonProperty("type")
-                                 ExtractorType type,
-                             @NonNull
-                             @JsonProperty("colors")
-                                 List<ColorDefinition> colors) {
+  public ExtractorDefinition(
+      @NonNull
+      @JsonProperty("name")
+          String name,
+      @NonNull
+      @JsonProperty("type")
+          ExtractorType type,
+      @NonNull
+      @JsonProperty("color")
+          String color,
+      @NonNull
+      @JsonProperty("label")
+          String label
+  ) {
     this.name = name;
     this.type = type;
-    this.colors = colors;
+    this.color = color;
+    this.label = label;
   }
 
   public int getId() {
@@ -73,8 +79,13 @@ public class ExtractorDefinition {
   }
 
   @NonNull
-  public List<ColorDefinition> getColors() {
-    return colors;
+  public String getColor() {
+    return color;
+  }
+
+  @NonNull
+  public String getLabel() {
+    return label;
   }
 
   @Override
@@ -92,7 +103,8 @@ public class ExtractorDefinition {
     return new EqualsBuilder()
         .append(name, that.name)
         .append(type, that.type)
-        .append(colors, that.colors)
+        .append(color, that.color)
+        .append(label, that.label)
         .isEquals();
   }
 
@@ -101,7 +113,8 @@ public class ExtractorDefinition {
     return new HashCodeBuilder(17, 37)
         .append(name)
         .append(type)
-        .append(colors)
+        .append(color)
+        .append(label)
         .toHashCode();
   }
 
@@ -111,7 +124,8 @@ public class ExtractorDefinition {
         .append("id", id)
         .append("name", name)
         .append("type", type)
-        .append("colors", colors)
+        .append("label", label)
+        .append("color", color)
         .toString();
   }
 

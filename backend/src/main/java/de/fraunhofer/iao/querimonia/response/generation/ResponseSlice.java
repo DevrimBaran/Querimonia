@@ -1,5 +1,8 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
+import org.springframework.http.HttpStatus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,8 +40,9 @@ public class ResponseSlice {
     int templatePosition = 0;
 
     // check if template text has correct placeholder formatting
-    if (!text.matches("[^${}]+(\\$\\{\\w*}[^${}]+)*")) {
-      throw new IllegalArgumentException("Illegal component format");
+    if (!text.matches("[^${}]+(\\$\\{(\\w|-)*}[^${}]*)*")) {
+      throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Text der Komponente ist falsch "
+          + "formatiert: " + text, "Ungültiger Textbaustein");
     }
 
 

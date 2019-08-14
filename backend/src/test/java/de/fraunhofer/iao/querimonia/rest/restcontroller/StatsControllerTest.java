@@ -2,8 +2,8 @@ package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.db.repository.MockComplaintRepository;
 import de.fraunhofer.iao.querimonia.nlp.analyze.TokenAnalyzer;
+import de.fraunhofer.iao.querimonia.repository.MockComplaintRepository;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,7 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.Optional;
 
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Unit test class for StatsController
