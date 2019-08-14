@@ -35,7 +35,7 @@ class ImportBlock extends Component {
       <td><Sentiment tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{data.receiveDate} {data.receiveTime}</td>
-      <td></td>
+      <td />
     </tr>);
   }
 

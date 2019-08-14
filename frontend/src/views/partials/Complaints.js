@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { fetchStuff } from '../../redux/actions';
+import { fetchStuff, refreshComplaint } from '../../redux/actions';
 
 import Block from '../../components/Block';
 import Row from '../../components/Row';
@@ -67,6 +67,12 @@ function Header () {
 function List (data, dispatch, helpers) {
   return (
     <tr className='pointer' key={data.id} onClick={helpers && helpers.transitionTo('/complaints/' + data.id)}>
+      <td>
+        <Link to='/complaints'>
+          <i className='fas fa-sync' onClick={() => dispatch(refreshComplaint)} />
+        </Link>
+        {helpers && helpers.remove(data.id)}
+      </td>
       <td><h3>{data.id}</h3></td>
       <td>{data.state}</td>
       <td>{data.preview}</td>
@@ -74,9 +80,6 @@ function List (data, dispatch, helpers) {
       <td><Sentiment tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{data.receiveDate} {data.receiveTime}</td>
-      <td>
-        {helpers && helpers.remove(data.id)}
-      </td>
     </tr>
   );
 }

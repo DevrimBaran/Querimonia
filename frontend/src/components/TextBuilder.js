@@ -39,6 +39,7 @@ class TextBuilder extends Component {
     return (
       <React.Fragment>
         <Input type='textarea' min='5' value={this.state.response} onChange={this.changeText} />
+        {this.props.counter}
         <Collapsible label='Antworten / Aktionen' />
         <Content>
           <Tabbed>
@@ -64,7 +65,8 @@ const mapStateToProps = (state, props) => {
     entities: state.complaintStuff.entities,
     complaintId: state.complaintStuff.id,
     components: state.complaintStuff.components,
-    actions: state.complaintStuff.actions
+    actions: state.complaintStuff.actions,
+    counter: state.complaintStuff.counter
   };
 };
 
