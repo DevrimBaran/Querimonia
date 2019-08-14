@@ -145,6 +145,9 @@
             <id>mvn-artifact</id>
             <name>Maven Artifact</name>
             <url>https://mvnrepository.com/artifact</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </pluginRepository>
         <pluginRepository>
             <id>spring-snapshots</id>
