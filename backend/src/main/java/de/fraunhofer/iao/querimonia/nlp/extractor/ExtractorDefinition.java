@@ -42,6 +42,14 @@ public class ExtractorDefinition {
     // for hibernate
   }
 
+  /**
+   * Creates new extractor definition, also used for JSON creation.
+   *
+   * @param name  the name of the extractor.
+   * @param type  the type of the extractor.
+   * @param color the color of the entities.
+   * @param label the label of the entities.
+   */
   @JsonCreator
   @SuppressWarnings("unused")
   public ExtractorDefinition(

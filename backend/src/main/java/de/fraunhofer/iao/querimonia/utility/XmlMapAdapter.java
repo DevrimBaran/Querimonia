@@ -5,20 +5,27 @@ import org.eclipse.persistence.oxm.annotations.XmlPath;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class XmlMapAdapter extends XmlAdapter<XmlMapAdapter.AdaptedMap, Map<String, Double>> {
 
-  public static class AdaptedMap{
+  public static class AdaptedMap {
     @XmlPath("class/")
     public List<Entry> entryList = new ArrayList<>();
   }
+
   public static class Entry {
-    public Entry(String value, Double confidence){
+    public Entry(String value, Double confidence) {
       this.value = value;
       this.confidence = confidence;
     }
-    private Entry(){}
+
+    private Entry() {
+    }
+
     @XmlValue()
     public String value;
     @XmlAttribute()
@@ -28,9 +35,10 @@ public class XmlMapAdapter extends XmlAdapter<XmlMapAdapter.AdaptedMap, Map<Stri
 
   @Override
   public Map<String, Double> unmarshal(AdaptedMap adaptedMap) {
-    Map<String , Double> unmarshaledMap = new HashMap<>();
-    for (Entry entry: adaptedMap.entryList)
+    Map<String, Double> unmarshaledMap = new HashMap<>();
+    for (Entry entry : adaptedMap.entryList) {
       unmarshaledMap.put(entry.value, entry.confidence);
+    }
     return unmarshaledMap;
   }
 

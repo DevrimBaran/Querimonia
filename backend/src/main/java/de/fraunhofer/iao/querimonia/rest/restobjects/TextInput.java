@@ -2,7 +2,6 @@ package de.fraunhofer.iao.querimonia.rest.restobjects;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.eclipse.persistence.oxm.annotations.XmlVirtualAccessMethods;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,7 +22,10 @@ public class TextInput {
     this.text = text;
   }
 
-  public TextInput(){}
+  @SuppressWarnings("unused")
+  public TextInput() {
+    // for xml creation.
+  }
 
   public String getText() {
     return text;

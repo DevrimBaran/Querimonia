@@ -418,19 +418,21 @@ public class Complaint implements Identifiable<Long> {
   }
 
   /**
-   * Formatting the receiveDate and Time for xml creation
+   * Formatting the receiveDate and Time for xml creation.
+   *
    * @return String to display in the xml
    */
   @XmlPath("input/metadata/date[@type='creation']/text()")
-  private String getDate(){
-    return this.receiveDate.atTime(receiveTime).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)+('Z');
+  private String getDate() {
+    return this.receiveDate.atTime(receiveTime).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+        + ('Z');
   }
 
   @XmlPath("input/metadata/date[@type='creation']/text()")
-  private void setDate(String localDateTime){
-    this.receiveDate = LocalDate.parse(localDateTime.substring(0, localDateTime.length()-1),
+  private void setDate(String localDateTime) {
+    this.receiveDate = LocalDate.parse(localDateTime.substring(0, localDateTime.length() - 1),
         DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-    this.receiveTime = LocalTime.parse(localDateTime.substring(0, localDateTime.length()-1),
+    this.receiveTime = LocalTime.parse(localDateTime.substring(0, localDateTime.length() - 1),
         DateTimeFormatter.ISO_LOCAL_DATE_TIME);
   }
 
@@ -497,7 +499,7 @@ public class Complaint implements Identifiable<Long> {
 
   public String toXml() throws JAXBException {
     // create JAXB context and instantiate marshaller
-    JAXBContext context = JAXBContextFactory.createContext(new Class[]{Complaint.class}, null);
+    JAXBContext context = JAXBContextFactory.createContext(new Class[] {Complaint.class}, null);
     Marshaller m = context.createMarshaller();
     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     m.setProperty(Marshaller.JAXB_FRAGMENT, true);

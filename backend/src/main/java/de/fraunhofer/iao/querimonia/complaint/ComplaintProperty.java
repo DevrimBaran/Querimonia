@@ -6,7 +6,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.lang.NonNull;
 
@@ -65,7 +64,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
    * @param name          the name of the property.
    * @param value         the value of the property.
    * @param probabilities the probability map for the property.
-   * @param setByUser   the flag if the property is set by the user.
+   * @param isSetByUser   the flag if the property is set by the user.
    */
   public ComplaintProperty(
       @NonNull String name,

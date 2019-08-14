@@ -131,8 +131,8 @@ public class ComplaintController {
   }
 
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
-                consumes = "application/xml")
-  public ResponseEntity<?> uploadXml(@RequestBody Complaint xmlInput){
+               consumes = "application/xml")
+  public ResponseEntity<?> uploadXml(@RequestBody Complaint xmlInput) {
     return new ResponseEntity<>(xmlInput, HttpStatus.OK);
   }
 

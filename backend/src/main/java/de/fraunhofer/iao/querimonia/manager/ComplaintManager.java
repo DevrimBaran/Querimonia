@@ -225,14 +225,12 @@ public class ComplaintManager {
   }
 
   public String getXml(long complaintId) {
-    String result;
     try {
       return getComplaint(complaintId).toXml();
-    } catch (JAXBException e){
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Xml konnte nicht erstellt " +
-          "werden", "Xml-Converter Fehler");
+    } catch (JAXBException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Xml konnte nicht erstellt "
+          + "werden", "Xml-Converter Fehler");
     }
-
   }
 
   /**

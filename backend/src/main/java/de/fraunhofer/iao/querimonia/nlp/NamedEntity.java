@@ -19,7 +19,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlType;
 
 /**
  * This is a simple POJO that represents a named entity in a text. A named entity is a part of a
@@ -57,7 +56,6 @@ public class NamedEntity implements Comparable<NamedEntity> {
   private boolean setByUser = false;
 
   @JsonProperty("preferred")
-  @Column(name = "prefered") // TODO fix later
   @XmlPath("results/result[1][@type='preferred']/text()")
   private boolean preferred = false;
 
@@ -110,6 +108,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
     this.color = color;
   }
 
+  // constructor for builder.
   NamedEntity(long id, @NonNull String label, @NonNull String value, int start, int end,
                      boolean setByUser, boolean preferred, @NonNull String extractor,
                      @NotNull String color) {
@@ -125,7 +124,7 @@ public class NamedEntity implements Comparable<NamedEntity> {
   }
 
   @SuppressWarnings("unused")
-  public NamedEntity() {
+  private NamedEntity() {
     // constructor for hibernate
   }
 
