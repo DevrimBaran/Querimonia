@@ -9,7 +9,7 @@ info:
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
-  - url: https://querimonia.iao.fraunhofer.de/dev
+  - url: https://querimonia.iao.fraunhofer.de/dev/
   - url: https://querimonia.iao.fraunhofer.de/
   - url: http://localhost:8080/
 tags:
@@ -142,35 +142,50 @@ paths:
                     state: NEW
                     configuration:
                       id: 94
-                      name: Volle Konfiguration
+                      name: Kein Sentiment
                       extractors:
-                        - name: QuerimoniaExtract
-                          type: KIKUKO_DOMAIN
-                          colors:
-                            - label: Name
-                              color: "#ffd666"
-                            - label: Ort
-                              color: "#90ff8a"
-                            - label: Linie
-                              color: "#aff4fa"
-                            - label: Haltestelle
-                              color: "#cc89f5"
-                            - label: Datum
-                              color: "#cdc0cf"
-                            - label: Eingangsdatum
-                              color: "#e9bdf0"
-                            - label: Geldbetrag
-                              color: "#f5ff8a"
+                        - name: 'Linien Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Linie
+                          color: '#aff4fa'
+                        - name: '[Extern] Geldbetrag'
+                          type: KIKUKO_TOOL
+                          label: Geldbetrag
+                          color: '#f5ff8a'
+                        - name: 'Vorgangsnummer'
+                          type: KIKUKO_TOOL
+                          label: Vorgangsnummer
+                          color: '#ffaeae'
+                        - name: '[Extern] Datum Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Datum
+                          color: '#c7c7c7'
+                        - name: '[Extern] Personen Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Name
+                          color: '#ffaeae'
+                        - name: '[Extern] Telefonnummer'
+                          type: KIKUKO_TOOL
+                          label: Telefonnummer
+                          color: '#acc2b9'
+                        - name: '[Fuzzy] Haltestellen'
+                          type: KIKUKO_TOOL
+                          label: Haltestelle
+                          color: '#408080'
+                        - name: '[Fuzzy] Ortsnamen'
+                          type: KIKUKO_TOOL
+                          label: Ort
+                          color: '#cdfa8f'
                       classifiers:
                         - type: KIKUKO_CLASSIFIER
                           name: Beschwerde3Klassifikator2
                           propertyName: Kategorie
                       sentimentAnalyzer:
-                        type: QUERIMONIA_SENTIMENT
-                        name: Default
+                        type: NONE
+                        name: NONE
                       emotionAnalyzer:
-                        type: QUERIMONIA_EMOTION
-                        name: Default
+                        type: NONE
+                        name: NONE
                       active: true
                     receiveDate: '2019-08-04'
                     receiveTime: '21:55:33'
@@ -201,35 +216,50 @@ paths:
                     state: NEW
                     configuration:
                       id: 94
-                      name: Volle Konfiguration
+                      name: Kein Sentiment
                       extractors:
-                        - name: QuerimoniaExtract
-                          type: KIKUKO_DOMAIN
-                          colors:
-                            - label: Name
-                              color: "#ffd666"
-                            - label: Ort
-                              color: "#90ff8a"
-                            - label: Linie
-                              color: "#aff4fa"
-                            - label: Haltestelle
-                              color: "#cc89f5"
-                            - label: Datum
-                              color: "#cdc0cf"
-                            - label: Eingangsdatum
-                              color: "#e9bdf0"
-                            - label: Geldbetrag
-                              color: "#f5ff8a"
+                        - name: 'Linien Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Linie
+                          color: '#aff4fa'
+                        - name: '[Extern] Geldbetrag'
+                          type: KIKUKO_TOOL
+                          label: Geldbetrag
+                          color: '#f5ff8a'
+                        - name: 'Vorgangsnummer'
+                          type: KIKUKO_TOOL
+                          label: Vorgangsnummer
+                          color: '#ffaeae'
+                        - name: '[Extern] Datum Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Datum
+                          color: '#c7c7c7'
+                        - name: '[Extern] Personen Extraktor'
+                          type: KIKUKO_TOOL
+                          label: Name
+                          color: '#ffaeae'
+                        - name: '[Extern] Telefonnummer'
+                          type: KIKUKO_TOOL
+                          label: Telefonnummer
+                          color: '#acc2b9'
+                        - name: '[Fuzzy] Haltestellen'
+                          type: KIKUKO_TOOL
+                          label: Haltestelle
+                          color: '#408080'
+                        - name: '[Fuzzy] Ortsnamen'
+                          type: KIKUKO_TOOL
+                          label: Ort
+                          color: '#cdfa8f'
                       classifiers:
                         - type: KIKUKO_CLASSIFIER
                           name: Beschwerde3Klassifikator2
                           propertyName: Kategorie
                       sentimentAnalyzer:
-                        type: QUERIMONIA_SENTIMENT
-                        name: Default
+                        type: NONE
+                        name: NONE
                       emotionAnalyzer:
-                        type: QUERIMONIA_EMOTION
-                        name: Default
+                        type: NONE
+                        name: NONE
                       active: true
                     receiveDate: '2019-08-04'
                     receiveTime: '16:14:41'
