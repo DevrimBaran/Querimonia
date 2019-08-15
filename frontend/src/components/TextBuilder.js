@@ -115,7 +115,7 @@ class TextBuilder extends Component {
   };
 
   fetch = (refresh) => {
-    (refresh ? Api.patch('/api/complaints/' + this.props.complaintId + '/response', '') : Api.get('/api/complaints/' + this.props.complaintId + '/response/refresh', ''))
+    (refresh ? Api.patch('/api/complaints/' + this.props.complaintId + '/response/refresh', '') : Api.get('/api/complaints/' + this.props.complaintId + '/response', ''))
       .catch(() => {
         return { status: 404 };
       })
@@ -128,8 +128,8 @@ class TextBuilder extends Component {
   }
 
   render () {
-    if (this.props.refreshResponse) {
-      this.fetch(true);
+    if (this.props.refreshResponse !== null) {
+      this.fetch(this.props.refreshResponse);
     }
     const mail = 'querimonia@g-laber.de';
     const subject = 'Querimonia Beschwerdeabschluss ' + this.props.complaintId;

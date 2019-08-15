@@ -31,7 +31,7 @@ class EditableEntityText extends Component {
         // deep copy of data
           let entities = JSON.parse(JSON.stringify(data));
           // Updates the entity list and responses with the new values
-          this.props.refreshEntities(this.props.active, entities);
+          this.props.refreshEntities(this.props.active, entities, true);
           this.setState({
             taggedText: ({ text: this.props.taggedText.text, entities: data })
           });
@@ -61,7 +61,7 @@ class EditableEntityText extends Component {
       // deep copy of data
         let entities = JSON.parse(JSON.stringify(data));
         // Updates the entity list and responses with the new values
-        this.props.refreshEntities(this.props.active, entities);
+        this.props.refreshEntities(this.props.active, entities, true);
         this.setState({
           taggedText: ({ text: this.props.taggedText.text, entities: data }),
           editFormActive: false,
