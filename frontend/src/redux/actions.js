@@ -109,6 +109,24 @@ export function deleteEntity (complaintId, id = 0) {
     });
   };
 }
+
+export function addEntity (complaintId, query, originalLabelID) {
+  return function (dispatch, getState) {
+    dispatch((dispatch) => {
+      originalLabelID
+        ? Api.put('/api/complaints/' + complaintId + '/entities/' + originalLabelID, query)
+        : Api.post('/api/complaints/' + complaintId + '/entities', query).then(data => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'MODIFY_ENTITY',
+            data: data
+          });
+        });
+    });
+  };
+}
 export function fetchData (endpoint) {
   return function (dispatch, getState) {
     const { filter, pagination } = getState()[endpoint];

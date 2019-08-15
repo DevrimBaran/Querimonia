@@ -20,14 +20,14 @@ class TaggedText extends Component {
     if (entities) {
       for (const entity of entities) {
         // String before next entity
-        !text.substring(cpos, entity.start) || html.push(<span key={key++}>{text.substring(cpos, entity.start)}</span>);
+        !text.substring(cpos, entity.start) || html.push(<span key={key++} data-key={html.length}>{text.substring(cpos, entity.start)}</span>);
         // String that is entity
-        html.push(<Tag key={key++} text={text.substring(entity.start, entity.end)} ids={entity.ids} />);
+        html.push(<Tag key={key++} data-key={html.length} text={text.substring(entity.start, entity.end)} ids={entity.ids} />);
         cpos = entity.end;
       }
     }
     // String from last entity to end of text or complete text if there are no entities
-    html.push(<span key={key++}>{text.substring(cpos, text.length)}</span>);
+    html.push(<span key={key++} data-key={html.length}>{text.substring(cpos, text.length)}</span>);
     return html;
   };
 
