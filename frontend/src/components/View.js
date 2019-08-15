@@ -18,6 +18,9 @@ import Input from './Input';
 import Table from './Table';
 import Filter from './Filter';
 import Pagination from './Pagination';
+import Button from './Button';
+import Debug from './Debug';
+import Tabbed from './Tabbed';
 
 class Fetching extends Component {
   componentDidMount = () => {
@@ -39,7 +42,7 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
     edit = (id) => {
       return (
         <Link to={'/' + endpoint + '/' + id}>
-          <i className='far fa-edit' />
+          <Button icon='far fa-edit'>Bearbeiten</Button>
         </Link>
       );
     }
@@ -57,15 +60,15 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
         });
       };
       return (
-        <Link onClick={dispatchCopy} to={'/' + endpoint + '/0'}>
-          <i className='far fa-copy' />
+        <Link to={'/' + endpoint + '/0'}>
+          <Button icon='far fa-copy' onClick={dispatchCopy}>Kopieren</Button>
         </Link>
       );
     }
     remove = (id) => {
       return (
         <Link to={'/' + endpoint}>
-          <i className='far fa-trash-alt' onClick={() => this.props.dispatch(remove(endpoint, id))} />
+          <Button icon='far fa-trash-alt' onClick={() => this.props.dispatch(remove(endpoint, id))}>Löschen</Button>
         </Link>
       );
     }
@@ -156,11 +159,24 @@ const getEndpointView = (endpoint, partial, stateToProps) => {
 class View extends Component {
   constructor (props) {
     super(props);
-    this.state = {};
+    this.state = {
+      errorString: null,
+      errorInfo: null
+    };
   }
-
+  componentDidCatch = (errorString, errorInfo) => {
+    this.setState({ errorString, errorInfo });
+  }
   render () {
     const { path, component, endpoint, stateToProps, ...injected } = { ...this.props };
+    if (this.state.errorString) {
+      return (
+        <Tabbed>
+          <Debug label='Nachricht' data={this.state.errorString} />
+          <Debug label='Info' data={this.state.errorInfo} />
+        </Tabbed>
+      );
+    }
     if (endpoint) {
       return (
         <Route {...injected} path={path} endpoint={endpoint} component={getEndpointView(endpoint, component, stateToProps)} />

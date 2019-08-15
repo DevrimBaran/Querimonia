@@ -25,6 +25,7 @@ import Tabbed from '../../components/Tabbed';
 import TextBuilder from '../../components/TextBuilder';
 import Table from '../../components/Table';
 import Input from '../../components/Input';
+import Button from '../../components/Button';
 
 /**
  * extracts the key with the maximal value
@@ -50,7 +51,8 @@ function getMaxKey (data) {
 function Header () {
   return (
     <thead>
-      <tr style={{ filter: 'brightness(100%)' }}>
+      <tr>
+        <th> </th>
         <th>Anliegen</th>
         <th>Status</th>
         <th>Vorschau</th>
@@ -58,21 +60,25 @@ function Header () {
         <th>Sentiment</th>
         <th>Kategorie</th>
         <th>Datum</th>
-        <th> </th>
       </tr>
     </thead>
   );
 }
 
 function List (data, dispatch, helpers) {
+  const refresh = (e) => {
+    e.stopPropagation();
+    if (data.state !== 'CLOSED' && data.state !== 'ANALYSING') {
+      dispatch(refreshComplaint(data.id));
+    }
+    return false;
+  };
   return (
-    <tr className='pointer' key={data.id} onClick={helpers && helpers.transitionTo('/complaints/' + data.id)}>
-      <td>
-        <Link to='/complaints'>
-          <i className='fas fa-sync' onClick={() => dispatch(refreshComplaint)} />
-        </Link>
+    <tr className={data.state !== 'ERROR' ? 'pointer' : ''} key={data.id} onClick={helpers && data.state !== 'ERROR' ? helpers.transitionTo('/complaints/' + data.id) : undefined}>
+      <th>
+        <Button disabled={data.state === 'CLOSED' || data.state === 'ANALYSING'} icon='fas fa-sync' onClick={refresh}>Erneut auswerten</Button>
         {helpers && helpers.remove(data.id)}
-      </td>
+      </th>
       <td><h3>{data.id}</h3></td>
       <td>{data.state}</td>
       <td>{data.preview}</td>

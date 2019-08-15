@@ -128,6 +128,17 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
         ids: action.data.map(item => item.id)
       };
     }
+    case 'UPDATE_SINGLE': {
+      return {
+        ...state,
+        fetching: false,
+        active: false,
+        byId: {
+          ...state.byId,
+          [action.data.id]: action.data
+        }
+      };
+    }
     default:
       return state;
   }

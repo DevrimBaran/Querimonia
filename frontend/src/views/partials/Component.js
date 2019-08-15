@@ -34,11 +34,11 @@ function Header () {
 function List (data, dispatch, helpers) {
   return (
     <tr key={data.id}>
-      <td>
+      <th>
         {helpers.edit(data.id)}
         {helpers.copy(data.id)}
         {helpers.remove(data.id)}
-      </td>
+      </th>
       <td><h3>{data.id}</h3></td>
       <td>{data.name}</td>
       <td>{data.priority}</td>

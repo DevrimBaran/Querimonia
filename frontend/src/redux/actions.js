@@ -43,17 +43,33 @@ export function saveActive (endpoint) {
 }
 export function remove (endpoint, id) {
   return function (dispatch, getState) {
-    const { data } = getState()[endpoint];
     dispatch((dispatch) => {
       Api.delete('/api/' + endpoint + '/' + id, {})
         .then(response => {
-          if (data.status && data.status === 500) {
+          if (response.status && response.status === 500) {
             // alert(data.message);
           }
           dispatch({
             type: 'FETCH_END',
-            data: data,
+            data: response,
             endpoint: endpoint
+          });
+        });
+    });
+  };
+}
+export function refreshComplaint (id) {
+  return function (dispatch, getState) {
+    dispatch((dispatch) => {
+      Api.patch('/api/complaints/' + id + '/refresh', { keepUserInformation: true })
+        .then(response => {
+          if (response.status && response.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'UPDATE_SINGLE',
+            data: response,
+            endpoint: 'complaints'
           });
         });
     });
