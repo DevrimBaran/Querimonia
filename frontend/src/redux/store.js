@@ -173,6 +173,7 @@ const initialState = {
     actions: [],
     log: [],
     combinations: [],
+    text: null,
     counter: 0,
     id: 0,
     done: false

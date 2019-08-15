@@ -34,6 +34,7 @@ class TextBuilder extends Component {
       used: { ...state.used, [id]: true }
     }));
   }
+
   render () {
     // const { ...passThrough } = { ...this.props };
     return (

@@ -50,6 +50,7 @@ class Modal extends Component {
           <div className='background' onClick={this.hideModals} />
           <div className='content'>
             <i style={{ color: 'red', cursor: 'pointer', display: 'block', float: 'right' }} onClick={this.hideModals} className='far fa-times-circle fa-x' />
+            <br />
             {this.props.children}
           </div>
         </div>),

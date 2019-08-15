@@ -168,9 +168,10 @@ export function fetchStuff (id) {
     dispatch((dispatch) => {
       Promise.all([
         Api.get('/api/complaints/' + id + '/entities', {}),
-        Api.get('/api/responses/' + id, {}),
+        Api.get('/api/complaints/' + id + '/response', {}),
         Api.get('/api/combinations/' + id, {}),
-        Api.get('/api/complaints/' + id + '/log', {})
+        Api.get('/api/complaints/' + id + '/log', {}),
+        Api.get('/api/complaints/' + id + '/text', {})
       ]).then(data => {
         dispatch({
           type: 'FETCH_SINGLE_COMPLAINT_END',
@@ -178,7 +179,8 @@ export function fetchStuff (id) {
           components: data[1].components,
           actions: data[1].actions,
           combinations: data[2],
-          log: data[3]
+          log: data[3],
+          text: data[4].text
         });
       });
     });

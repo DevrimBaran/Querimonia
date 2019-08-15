@@ -124,18 +124,16 @@ class DeepObject extends Component {
     }
   }
   render () {
-    if (this.props.template && this.props.template.label) {
+    if (this.props.template) {
       if (this.isArray()) {
         return (
           <div className='deep-object'>
-            {(<strong>{this.props.template.label.replace(/\$i/g, (Number(this.props.name) + 1))}</strong>)}
             {this.renderData(this.props.data)}
           </div>
         );
       } else {
         return (
           <div className='object'>
-            {(<strong>{this.props.template.label.replace(/\$i/g, (Number(this.props.name) + 1))}</strong>)}
             {this.renderData(this.props.data)}
           </div>
         );

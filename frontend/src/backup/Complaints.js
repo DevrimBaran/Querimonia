@@ -27,7 +27,8 @@ class Complaints extends Component {
       editCategorie: false,
       editTendency: false,
       editEmotion: false,
-      loadingEntitiesFinished: false
+      loadingEntitiesFinished: false,
+      refreshResponse: null
     };
   }
   componentDidMount = () => {
@@ -36,20 +37,25 @@ class Complaints extends Component {
   }
 
   activateComplaint = (active) => {
-    Api.get('/api/complaints/' + active.id + '/entities', '')
+    let requests = [];
+    requests.push(Api.get('/api/complaints/' + active.id + '/entities', '')
       .catch(() => {
         return { status: 404 };
-      })
-      // eslint-disable-next-line no-return-assign
-      .then((data) => {
-        this.setState({
-          active: {
-            ...active,
-            entities: data
-          },
-          loadingEntitiesFinished: true
-        });
+      }));
+    requests.push(Api.get('/api/complaints/' + active.id + '/text', '')
+      .catch(() => {
+        return { status: 404 };
+      }));
+    Promise.all(requests).then((values) => {
+      this.setState({
+        active: {
+          ...active,
+          entities: values.find(value => Array.isArray(value)),
+          text: values.find(value => !Array.isArray(value)).text
+        },
+        loadingEntitiesFinished: true
       });
+    });
   };
 
   /**
@@ -95,16 +101,21 @@ class Complaints extends Component {
   }
 
   /**
-   *  updates the entity-list
+   *  updates the entity-list and responses
    **/
-  refreshEntities = (active, data) => {
+  refreshEntities = (active, data, refreshResponse) => {
     active.entities = data;
-    this.setState({ active: active });
+    this.setState({ active: active, refreshResponse: refreshResponse });
   }
 
   renderSingle = (active) => {
     if (this.state.active === null || this.state.active.id !== active.id) this.activateComplaint(active);
-    return (Complaint.Single(this.state.active, this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editTendency, this.state.editEmotion, this.editCategorie, this.editTendency, this.editEmotion, this.refreshEntities));
+    let booleans = [this.state.loadingEntitiesFinished, this.state.editCategorie, this.state.editTendency, this.state.editEmotion, this.state.refreshResponse];
+    let methods = [this.editCategorie, this.editTendency, this.editEmotion, this.refreshEntities];
+    if (this.state.refreshResponse !== null) {
+      this.setState({ refreshResponse: null });
+    }
+    return (Complaint.Single(this.state.active, booleans, methods));
   }
 
   update = () => {
@@ -139,6 +150,7 @@ class Complaints extends Component {
     let active = this.props.match.params.id ? this.props.data.byId[this.props.match.params.id] : null;
     if (active) {
       active.entities = [];
+      active.text = '';
     } return (
       <React.Fragment>
         { active ? (

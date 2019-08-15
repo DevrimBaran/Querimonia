@@ -16,6 +16,7 @@
 @import 'components/tabbed';
 @import 'components/autocomplete';
 @import 'components/modal';
+@import 'components/_errorPopup.scss';
 @import 'components/tooltip';
 #root {
     display: flex;
@@ -218,9 +219,7 @@ a > i {
     & > div, & > input {
         width: 100%;
     }
-    & > label, & > i {
-        padding: 0 5px;
-    }
+
 }
 .deep-object {
     display: flex;
@@ -244,7 +243,8 @@ a > i {
 }
 .object > .object {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    flex-direction: row;
 }
 .padding {
     padding: 0 30px;

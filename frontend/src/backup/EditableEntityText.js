@@ -18,7 +18,8 @@ class EditableEntityText extends Component {
       taggedText: this.props.taggedText,
       editFormActive: false,
       editActive: false,
-      originalLabels: null
+      originalLabels: null,
+      originalLabelID: null
     };
   }
 
@@ -29,8 +30,8 @@ class EditableEntityText extends Component {
         if (Array.isArray(data)) {
         // deep copy of data
           let entities = JSON.parse(JSON.stringify(data));
-          // Updates the entity list with the new values
-          this.props.refreshEntities(this.props.active, entities);
+          // Updates the entity list and responses with the new values
+          this.props.refreshEntities(this.props.active, entities, true);
           this.setState({
             taggedText: ({ text: this.props.taggedText.text, entities: data })
           });
@@ -48,38 +49,44 @@ class EditableEntityText extends Component {
       let color = extractor.colors.find((color) => color.label === extractorQuery[0]);
       query['label'] = extractorQuery[0];
       query['extractor'] = extractorQuery[1];
-      query['value'] = this.state.newEntityString;
       query['color'] = color.color;
     }
     if (!(query['label'] && query['extractor'])) {
       return;
     }
-    Api.post('/api/complaints/' + this.state.complaintId + '/entities', query)
-      .then((data) => {
-        if (Array.isArray(data)) {
-          // deep copy of data
-          let entities = JSON.parse(JSON.stringify(data));
-          // Updates the entity list with the new values
-          this.props.refreshEntities(this.props.active, entities);
-          this.setState({
-            taggedText: ({ text: this.props.taggedText.text, entities: data }),
-            editFormActive: false,
-            editEntity: false
-          });
-          // Api.patch('/api/responses/' + this.state.complaintId + '/refresh');
-        }
-      });
+    (this.state.originalLabelID
+      ? Api.put('/api/complaints/' + this.state.complaintId + '/entities/' + this.state.originalLabelID, query)
+      : Api.post('/api/complaints/' + this.state.complaintId + '/entities', query)).then((data) => {
+      if (Array.isArray(data)) {
+      // deep copy of data
+        let entities = JSON.parse(JSON.stringify(data));
+        // Updates the entity list and responses with the new values
+        this.props.refreshEntities(this.props.active, entities, true);
+        this.setState({
+          taggedText: ({ text: this.props.taggedText.text, entities: data }),
+          editFormActive: false,
+          editEntity: false
+        });
+      // Api.patch('/api/responses/' + this.state.complaintId + '/refresh');
+      }
+    });
   };
 
   // edit or copy the Entity
   editEntity = (id, deleteEnabled) => {
     const originalLabel = this.state.originalLabels.get(id);
-    this.setState({
-      newEntityQuery: { ...this.state.newEntityQuery, label: originalLabel.label, extractor: originalLabel.extractor },
-      editEntity: true });
-    this.startEdit();
+    let originalLabelID = null;
     if (deleteEnabled) {
-      this.deleteEntity(id);
+      originalLabelID = originalLabel.id;
+    }
+    this.setState({
+      newEntityQuery: { ...this.state.newEntityQuery, label: originalLabel.label, extractor: originalLabel.extractor, color: originalLabel.color },
+      editEntity: true,
+      originalLabelID: originalLabelID });
+    this.startEdit();
+    // Modal.hideModals();
+    for (const modal of document.querySelectorAll('.modal.show')) {
+      modal.classList.remove('show');
     }
   };
 
@@ -144,10 +151,11 @@ class EditableEntityText extends Component {
       query['start'] = globalOffsetStart;
       query['end'] = globalOffsetEnd;
       query['setByUser'] = true;
+      query['value'] = newLabelString;
       this.startEdit();
       if (this.state.editEntity) {
         this.setState({
-          newEntityQuery: { ...this.state.newEntityQuery, start: globalOffsetStart, end: globalOffsetEnd, setByUser: true }
+          newEntityQuery: { ...this.state.newEntityQuery, start: query['start'], end: query['end'], value: query['value'], setByUser: query['setByUser'] }
         });
         this.addEntity();
       } else {
@@ -162,7 +170,8 @@ class EditableEntityText extends Component {
           editFormActive: true,
           newEntityQuery: query,
           newEntityString: newLabelString,
-          extractorList: extractorList
+          extractorList: extractorList,
+          originalLabelID: null
         });
       }
     }
@@ -183,17 +192,27 @@ class EditableEntityText extends Component {
   renderModal = (tag, id) => {
     let labels = tag.label;
     let labelArray = labels.map((label, i) => {
-      return <div key={i}>
-        {`${label.label}: `}
+      return <div style={
+        (i !== 0 ? { marginTop: '0.4em',
+          border: '2px solid ' + label.color,
+          textAlign: 'center',
+          padding: '4px' }
+          : { border: '2px solid ' + label.color,
+            textAlign: 'center',
+            padding: '4px' })
+      } key={i}>
+        <i>{label.label}</i>
+        <br />
+        <b>{label.value}</b>
+        <br />
         {/* eslint-disable-next-line */}
       <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label.id, false)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
         {/* eslint-disable-next-line */}
       <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label.id, true)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
         {/* eslint-disable-next-line */}
-      <i className={'far fa-trash-alt'} onClick={this.deleteEntity.bind(this, label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+      <i className={'far fa-trash-alt'} onClick={() => { if (window.confirm('Wollen sie die Entität wirklich löschen?')) this.deleteEntity(label.id)} } style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
       </div>;
     });
-    labelArray.unshift(this.state.taggedText.text.substring(tag.start, tag.end));
     return <Modal key={id + '_modal'} htmlFor={id}>
       {
         labelArray

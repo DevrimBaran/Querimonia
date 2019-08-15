@@ -16,15 +16,18 @@ import Tabbed from './../../components/Tabbed';
 import TextBuilder from './../../components/TextBuilder';
 import Tooltip from './../../components/Tooltip';
 import Input from '../../components/Input';
+import Api from '../../utility/Api';
 
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import EditableEntityText from './EditableEntityText';
+import Log from '../../components/Log';
+import Combinations from '../../components/Combinations';
 
 function Header () {
   return (
     <thead>
-      <tr style={{ filter: 'brightness(100%)' }}>
+      <tr>
         <th>Anliegen</th>
         <th>Vorschau</th>
         <th>Emotion</th>
@@ -40,31 +43,40 @@ function List (data) {
   let sent = data.sentiment.tendency;
   return (
     <tr key={data.id}>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
+      <td><Link to={'/complaints/' + data.id}><h3>{data.id}</h3></Link></td>
       <td style={{ textAlign: 'left' }}><Link to={'/complaints/' + data.id}><p>{data.preview}</p></Link></td>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
+      <td><Link to={'/complaints/' + data.id}>
         <span className='sentiment'>
           {getMaxKey(data.sentiment.emotion.probabilities)}
         </span></Link></td>
       <td><Link to={'/complaints/' + data.id}>
-        <span role='img' className='emotion'>
-          {sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'} ({sent.toFixed(2)})
+        <span style={{ fontSize: '140%' }} role='img' className='emotion'>
+          {getSmiley(sent, false)}
         </span></Link></td>
-      <td style={{ background: 'rgb(240, 240, 240)' }}><Link to={'/complaints/' + data.id}>
-        <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</span></Link></td>
+      <td><Link to={'/complaints/' + data.id}>
+        <span className='small' style={{ fontWeight: 'normal' }}>{data.properties.map((properties) => (properties.probabilities[properties.value] ? properties.value : '---')).join(', ')}</span></Link></td>
       <td><Link to={'/complaints/' + data.id}><div className='date'><p>{data.receiveDate} {data.receiveTime}</p></div></Link></td>
     </tr>
   );
 }
 
-function Single (active, loadingEntitiesFinished, editCategorieBool, editTendencyBool, editEmotionBool, editCategorie, editTendency, editEmotion, refreshEntities) {
+function Single (active, booleans, methods) {
+  let loadingEntitiesFinished = booleans[0];
+  let editCategorieBool = booleans[1];
+  let editTendencyBool = booleans[2];
+  let editEmotionBool = booleans[3];
+  let refreshResponse = booleans[4];
+  let editCategorie = methods[0];
+  let editTendency = methods[1];
+  let editEmotion = methods[2];
+  let refreshEntities = methods[3];
   let sent = active && active.sentiment ? active.sentiment.tendency : null;
   return loadingEntitiesFinished ? (
     <React.Fragment>
       <Block>
         <Row vertical>
           <h6 className='center'>Antwort</h6>
-          <TextBuilder complaintId={active.id} />
+          <TextBuilder complaintId={active.id} refreshResponse={refreshResponse} />
         </Row>
       </Block>
       <Block>
@@ -77,6 +89,9 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
               </div>
               <div label='Original'>
                 {active.text}
+              </div>
+              <div label='Logs'>
+                <Log complaintId={active.id} />
               </div>
             </Tabbed>
           </Content>
@@ -91,12 +106,15 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
             <b> ID: </b>
             {active.id}
             <br />
+            <b> Konfiguration: </b>
+            <Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>
+            <br />
             <b> Kategorie: </b>
             {
               active.properties.map((properties, index) =>
                 !editCategorieBool ? (
-                  <span>
-                    <span id='subjects'>{properties.value}</span>
+                  <span key={index}>
+                    <span id='subjects'>{(properties.probabilities[properties.value] ? properties.value : '---')}</span>
                     <Tooltip htmlFor='subjects'>
                       {Object.keys(properties.probabilities).map(subject => <div key={subject}>{`${subject}: ${properties.probabilities[subject]}`} <br /></div>)}
                     </Tooltip>
@@ -104,7 +122,7 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   <i className={'far fa-edit'} onClick={editCategorie.bind(this, active, index, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                   </span>
                 ) : (
-                  <span>
+                  <span key={index}>
                     <select id='chooseCategorie'>
                       {Object.keys(properties.probabilities).map(subject => subject === properties.value ? <option selected='selected'>{`${subject}`}</option> : <option >{`${subject}`}</option>)};
                     </select>
@@ -120,11 +138,11 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
             {
               !editTendencyBool ? (
                 <span>
-                  <span id='sentiments'>{sent < -0.6 ? '🤬' : sent < -0.2 ? '😞' : sent < 0.2 ? '😐' : sent < 0.6 ? '😊' : '😁'}</span>
+                  <span style={{ fontSize: '120%' }} id='sentiments' role='img'>{getSmiley(sent, false)}</span>
                   <Tooltip htmlFor='sentiments'>
-                    {sent.toFixed(2)}
+                    {getSmiley(sent, true) + ' (' + sent.toFixed(2) + ')'}
                   </Tooltip>
-                  <i className={'far fa-edit'} onClick={editTendency.bind(this, active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
+                  <i className={'far fa-edit'} onClick={() => editTendency(active, false)} style={{ cursor: 'pointer', paddingLeft: '8px' }} />
                 </span>
               ) : (
                 <span>
@@ -170,18 +188,24 @@ function Single (active, loadingEntitiesFinished, editCategorieBool, editTendenc
                   return labelCompare === 0 ? entity1.start - entity2.start : labelCompare;
                 }).map((entity, i) => {
                   console.log(entity);
-                  return <li key={i}> {entity['label']} {': '}
+                  return <li key={i}>
+                    <i key={i} onClick={() => changePreference(active, refreshEntities, entity)} style={{ cursor: 'pointer', padding: '4px', color: (entity.preferred ? 'orange' : 'lightgray') }} className={'fas fa-crown'} />
+                    {entity['label']} {': '}
                     <TaggedText taggedText={{
-                      text: '' + active.text.substring(entity['start'], entity['end']),
-                      entities: [{ label: entity['label'], start: 0, end: entity['end'] - entity['start'], color: entity['color'] }]
+                      text: entity.value,
+                      entities: [{ label: entity['label'], extractor: entity['extractor'], start: 0, end: entity.value.length, color: entity['color'] }]
                     }} />
                   </li>;
                 })
               }
             </ul>) : ''}
           </Content>
+          <Collapsible label='Kombinationen' />
+          <Content>
+            <Combinations complaintId={active.id} />
+          </Content>
         </Row>
-      </Block>)
+      </Block>
     </React.Fragment>
   ) : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>);
 }
@@ -203,6 +227,53 @@ function getMaxKey (data) {
     }
   }
   return (keys[maxIndex]);
+}
+
+/**
+ * returns a representation of the tendency
+ * @param {*} value tendency-value
+ * @param {*} text boolean whether text or emoji should be displayed
+ */
+function getSmiley (value, text) {
+  let emotions = [];
+  if (text) {
+    emotions = ['Glücklich', 'Fröhlich', 'Zufrieden', 'Erfreut', 'Neutral', 'Betrübt', 'Unzufrieden', 'Verärgert', 'Sauer'];
+  } else {
+    emotions = ['😍', '😁', '😀', '🙂', '😐', '😞', '☹️', '😠', '🤬'];
+  }
+  return emotions[(value > 0.8 ? 0 : value > 0.6 ? 1 : value > 0.4 ? 2 : value > 0.1 ? 3 : value > -0.2 ? 4 : value > -0.4 ? 5 : value > -0.6 ? 6 : value > -0.8 ? 7 : 8)];
+}
+
+/**
+ * Changes the preference of an entity.
+ * Other entities with the same label are set to false
+ * @param {*} entity Entity where the preference is to be changed
+ */
+function changePreference (active, refreshEntities, entity) {
+  let entityOld = active.entities.flat().find((e) => {
+    return e.label === entity.label && e.preferred === true;
+  });
+  let query = entity;
+  query.preferred = !entity.preferred;
+  Api.put('/api/complaints/' + active.id + '/entities/' + entity.id, query).then((data) => {
+    if (entityOld) {
+      let query2 = entityOld;
+      query2.preferred = false;
+      Api.put('/api/complaints/' + active.id + '/entities/' + entityOld.id, query2).then((data) => {
+        if (Array.isArray(data)) {
+        // deep copy of data
+          let entities = JSON.parse(JSON.stringify(data));
+          // Updates the entity list and responses with the new values
+          refreshEntities(active, entities, false);
+        }
+      });
+    } else if (Array.isArray(data)) {
+      // deep copy of data
+      let entities = JSON.parse(JSON.stringify(data));
+      // Updates the entity list and responses with the new values
+      refreshEntities(active, entities, false);
+    }
+  });
 }
 
 export default { Header, List, Single };

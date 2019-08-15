@@ -21,6 +21,7 @@ import Config from './views/partials/Config';
 import logo from './assets/img/StuproLogo2.svg';
 import OpenApi from './components/OpenApi';
 import Api from './utility/Api';
+import { ErrorPopupComponent } from './components/ErrorPopup';
 
 function init () {
   return (dispatch, getState) => {
@@ -88,6 +89,7 @@ class App extends Component {
             </li>
           </ul>
         </nav>
+        <ErrorPopupComponent />
 
         <View exact path='/' component={Home} />
         <View endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />

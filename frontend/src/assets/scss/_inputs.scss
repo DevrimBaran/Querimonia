@@ -94,8 +94,6 @@ input[type="checkbox"] {
 
 input[type="checkbox"] + label::before {
     @extend %inputs;
-    width: 2em;
-    height: 2em;
     display: block;
     content: "";
     float: left;
