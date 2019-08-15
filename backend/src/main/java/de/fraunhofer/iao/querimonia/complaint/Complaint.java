@@ -344,22 +344,6 @@ public class Complaint implements Identifiable<Long> {
   }
 
   /**
-   * Returns a new complaint with all the properties of this complaint but with the given state
-   * as the complaint state attribute.
-   *
-   * @param state the new state, which the copied complaint should have.
-   *
-   * @return a new complaint with all the properties of this complaint but with the given state
-   *     as the complaint state attribute.
-   */
-  @NonNull
-  public Complaint withState(@NonNull ComplaintState state) {
-    return new ComplaintBuilder(this)
-        .setState(state)
-        .createComplaint();
-  }
-
-  /**
    * Returns the configuration that was used to analyze this complaint. The configuration
    * contains information about the tools that where used in the analysis process.
    *
@@ -368,21 +352,6 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   public Configuration getConfiguration() {
     return configuration;
-  }
-
-  /**
-   * Returns a new complaint with all the properties of this complaint but with the given
-   * configuration as attribute.
-   *
-   * @param configuration the new configuration, which the copied complaint should have.
-   *
-   * @return a new complaint with all the properties of this complaint but with the given
-   *     configuration as attribute.
-   */
-  public Complaint withConfiguration(Configuration configuration) {
-    return new ComplaintBuilder(this)
-        .setConfiguration(configuration)
-        .createComplaint();
   }
 
   /**
@@ -416,6 +385,39 @@ public class Complaint implements Identifiable<Long> {
   public List<LogEntry> getLog() {
     return new ArrayList<>(log);
   }
+
+  /**
+   * Returns a new complaint with all the properties of this complaint but with the given state
+   * as the complaint state attribute.
+   *
+   * @param state the new state, which the copied complaint should have.
+   *
+   * @return a new complaint with all the properties of this complaint but with the given state
+   *     as the complaint state attribute.
+   */
+  @NonNull
+  public Complaint withState(@NonNull ComplaintState state) {
+    return new ComplaintBuilder(this)
+        .setState(state)
+        .createComplaint();
+  }
+
+  /**
+   * Returns a new complaint with all the properties of this complaint but with the given
+   * configuration as attribute.
+   *
+   * @param configuration the new configuration, which the copied complaint should have.
+   *
+   * @return a new complaint with all the properties of this complaint but with the given
+   *     configuration as attribute.
+   */
+  public Complaint withConfiguration(Configuration configuration) {
+    return new ComplaintBuilder(this)
+        .setConfiguration(configuration)
+        .createComplaint();
+  }
+
+  // xml creation
 
   /**
    * Formatting the receiveDate and Time for xml creation.

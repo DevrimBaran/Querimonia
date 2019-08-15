@@ -51,7 +51,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
                                                    List<ResponseComponent> responseComponents) {
     List<ResponseComponent> responseComponentsFiltered = new ArrayList<>();
     responseComponents.stream()
-        .filter(template -> template.getRootRule().isPotentiallyRespected(complaintData))
+        // check that the root rule may be respected
+        .filter(component -> component.getRootRule().isPotentiallyRespected(complaintData))
+        // sort by priority
         .sorted(Comparator.comparingInt(ResponseComponent::getPriority))
         .forEach(responseComponentsFiltered::add);
 
@@ -112,19 +114,19 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     outer:
     while (true) {
       for (int i = 0; i < filteredComponents.size(); i++) {
-        ResponseComponent currentRuledObject = filteredComponents.get(i);
+        ResponseComponent currentComponent = filteredComponents.get(i);
         // find first respected rule, use the component and remove it from the list
-        if (currentRuledObject.getRootRule().isRespected(complaintData, generatedResponse)) {
+        if (currentComponent.getRootRule().isRespected(complaintData, generatedResponse)) {
           filteredComponents.remove(i);
 
           // filter the entities so only the required ones get added
           var matchingEntities = allEntities.stream()
               .filter(namedEntity ->
-                  currentRuledObject.getRequiredEntities().contains(namedEntity.getLabel()))
+                  currentComponent.getRequiredEntities().contains(namedEntity.getLabel()))
               .collect(Collectors.toList());
 
           generatedResponse
-              .add(new CompletedResponseComponent(currentRuledObject, matchingEntities));
+              .add(new CompletedResponseComponent(currentComponent, matchingEntities));
           // restart on the component with the highest priority again
           continue outer;
         }
@@ -133,7 +135,9 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       break;
     }
 
-    List<Action> validActions = filteredComponents.stream()
+    // get list of all actions used in the response
+    List<Action> validActions = generatedResponse.stream()
+        .map(CompletedResponseComponent::getComponent)
         .map(ResponseComponent::getActions)
         .flatMap(List::stream)
         .collect(Collectors.toList());

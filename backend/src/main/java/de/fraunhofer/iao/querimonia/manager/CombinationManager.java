@@ -3,6 +3,8 @@ package de.fraunhofer.iao.querimonia.manager;
 import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
 import de.fraunhofer.iao.querimonia.repository.CombinationRepository;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ import java.util.stream.StreamSupport;
  */
 @Service
 public class CombinationManager {
+
+  private static final Logger logger = LoggerFactory.getLogger(CombinationManager.class);
 
   private final CombinationRepository lineStopCombinationRepository;
   private final FileStorageService fileStorageService;
@@ -56,8 +60,10 @@ public class CombinationManager {
    * @return the example combinations.
    */
   public List<LineStopCombination> addDefaultCombinations() {
-    return addLineStopCombinations(fileStorageService
+    List<LineStopCombination> combinations = addLineStopCombinations(fileStorageService
         .getJsonObjectsFromFile(LineStopCombination[].class, "DefaultCombinations.json"));
+    logger.info("Added default combinations.");
+    return combinations;
   }
 
   /**
@@ -65,5 +71,6 @@ public class CombinationManager {
    */
   public void deleteAllCombinations() {
     lineStopCombinationRepository.deleteAll();
+    logger.info("Deleted all combinations.");
   }
 }

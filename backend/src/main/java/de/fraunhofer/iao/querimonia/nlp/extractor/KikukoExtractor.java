@@ -6,7 +6,6 @@ import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContact;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.FoundEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.kikuko.KikukoResponse;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,19 +14,6 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
   private final String domainName;
   private final ExtractorDefinition extractorDefinition;
-  private static final HashMap<String, String> knownExtractors;
-
-  static {
-    knownExtractors = new HashMap<>();
-    knownExtractors.put("Linien Extraktor", "Linie");
-    knownExtractors.put("Vorgangsnummer", "Vorgangsnummer");
-    knownExtractors.put("[Extern] Datum Extraktor", "Datum");
-    knownExtractors.put("[Extern] Geldbetrag", "Geldbetrag");
-    knownExtractors.put("[Extern] Personen Extraktor", "Name");
-    knownExtractors.put("[Extern] Telefonnummer", "Telefon");
-    knownExtractors.put("[Fuzzy] Haltestellen", "Haltestelle");
-    knownExtractors.put("[Fuzzy] Ortsnamen", "Ort");
-  }
 
   public KikukoExtractor(String domainType, String domainName,
                          ExtractorDefinition extractorDefinition) {
@@ -45,16 +31,21 @@ public class KikukoExtractor extends KiKuKoContact implements EntityExtractor {
 
     allPipes.forEach((name, entityList) -> {
       for (FoundEntity entity : entityList) {
-        String label = knownExtractors.getOrDefault(name, name);
         entities.add(
-            new NamedEntityBuilder().setLabel(label)
+            new NamedEntityBuilder()
+                .setLabel(extractorDefinition.getLabel())
                 .setStart(entity.getStartposition())
                 .setEnd(entity.getEndposition())
                 .setExtractor(domainName)
                 .setColor(extractorDefinition.getColor())
                 .setValue(entity.getTyp().containsValue(1.0d)
                     ? entity.getText()
-                    : entity.getTyp().keySet().stream().findFirst().orElse(entity.getText()))
+                    : entity
+                        .getTyp()
+                        .keySet()
+                        .stream()
+                        .findFirst()
+                        .orElse(entity.getText()))
                 .createNamedEntity());
       }
     });

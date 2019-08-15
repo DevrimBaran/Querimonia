@@ -49,7 +49,7 @@ public class ResponseSuggestion implements Identifiable<Long> {
   }
 
   @SuppressWarnings("unused")
-  private ResponseSuggestion() {
+  public ResponseSuggestion() {
     // for hibernate
   }
 

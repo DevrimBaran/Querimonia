@@ -9,6 +9,8 @@ import de.fraunhofer.iao.querimonia.rest.contact.KiKuKoContactExtractors;
 import de.fraunhofer.iao.querimonia.rest.restobjects.AvailableExtractors;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import de.fraunhofer.iao.querimonia.utility.exception.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,8 @@ import java.util.stream.StreamSupport;
  */
 @Service
 public class ConfigurationManager {
+
+  private static final Logger logger = LoggerFactory.getLogger(ConfigurationManager.class);
 
   private final ConfigurationRepository configurationRepository;
   private final ComplaintRepository complaintRepository;
@@ -197,11 +201,13 @@ public class ConfigurationManager {
   public synchronized List<Configuration> addDefaultConfigurations() {
     var configurations = fileStorageService.getJsonObjectsFromFile(Configuration[].class,
         "DefaultConfigurations.json");
+    configurations
+        .forEach(this::addConfiguration);
     configurations.stream()
-        .map(this::addConfiguration)
         .findFirst()
         .map(Configuration::getId)
         .map(this::updateCurrentConfiguration);
+    logger.info("Added default configurations.");
     return configurations;
   }
 
@@ -220,6 +226,7 @@ public class ConfigurationManager {
       }
     }
     configurationRepository.deleteAll(toBeDeleted);
+    logger.info("Deleted all configurations");
   }
 
   /**

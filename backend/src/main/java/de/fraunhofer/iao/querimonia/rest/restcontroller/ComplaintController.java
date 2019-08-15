@@ -130,10 +130,12 @@ public class ComplaintController {
         HttpStatus.CREATED);
   }
 
+  // TODO @Samuel Javadoc
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/xml")
   public ResponseEntity<?> uploadXml(@RequestBody Complaint xmlInput) {
     return new ResponseEntity<>(xmlInput, HttpStatus.OK);
+    // TODO save in database?
   }
 
   /**
@@ -174,6 +176,7 @@ public class ComplaintController {
   @GetMapping("/api/complaints/{complaintId}/xml")
   public ResponseEntity<?> getXml(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.getXml(complaintId));
+    // TODO string will be text/plain, should this return application/xml?
   }
 
   /**
@@ -421,6 +424,7 @@ public class ComplaintController {
    *       <li>status code 500 on an unexpected server error</li>
    *     </ul>
    */
+  @PostMapping("api/complaints/default")
   public ResponseEntity<?> addDefaultComplaints(Optional<Integer> count, Optional<Long> configId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.addExampleComplaints(count,
         configId));

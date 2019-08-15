@@ -31,9 +31,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +54,7 @@ import static de.fraunhofer.iao.querimonia.complaint.ComplaintState.*;
  * Manager class for complaints. Complaints can be added, edited and deleted.
  */
 @Service
+@EnableAsync
 public class ComplaintManager {
 
   private static final Logger logger = LoggerFactory.getLogger(ComplaintManager.class);
@@ -157,17 +160,19 @@ public class ComplaintManager {
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadText(TextInput, Optional) uploadText
    */
-  public Complaint uploadText(TextInput input, Optional<Long> configId) {
+  public synchronized Complaint uploadText(TextInput input, Optional<Long> configId) {
     Configuration configuration = getConfigurationFromId(configId);
 
     var complaintBuilder = complaintFactory.createBaseComplaint(input.getText(), configuration);
     complaintBuilder.setState(ANALYSING);
 
     var complaint = complaintBuilder.createComplaint();
-    // store unfinished state
+    // store unfinished state (otherwise the id would be 0 when returned)
     storeComplaint(complaint);
-    // update id (otherwise the id would be 0 when returned)
-    complaintBuilder.setId(complaint.getId());
+    // update id for builder
+    complaintBuilder
+        .setId(complaint.getId())
+        .appendLogItem(LogCategory.GENERAL, "Beschwerde erstellt.");
 
     // run analysis
     runAnalysisAsync(complaintBuilder, false, ComplaintState.NEW);
@@ -224,6 +229,7 @@ public class ComplaintManager {
     return new TextInput(getComplaint(complaintId).getText());
   }
 
+  // TODO javadoc @Samuel
   public String getXml(long complaintId) {
     try {
       return getComplaint(complaintId).toXml();
@@ -299,7 +305,7 @@ public class ComplaintManager {
    *
    * @see ComplaintController#refreshComplaint(long, Optional, Optional) refreshComplaint
    */
-  public synchronized Complaint refreshComplaint(
+  public Complaint refreshComplaint(
       long complaintId,
       Optional<Boolean> keepUserInformation,
       Optional<Long> configId) {
@@ -434,6 +440,7 @@ public class ComplaintManager {
 
     List<NamedEntity> complaintEntities = builder.getEntities();
     if (!complaintEntities.contains(entity)) {
+      // only add if not already there
       // todo value formatting!
       complaintEntities.add(entity);
       builder.appendLogItem(LogCategory.GENERAL, "Entität " + entity + " hinzugefügt");
@@ -603,6 +610,7 @@ public class ComplaintManager {
    */
   public void deleteAllComplaints() {
     complaintRepository.deleteAll();
+    logger.info("Deleted all complaints.");
   }
 
   /**
@@ -642,6 +650,7 @@ public class ComplaintManager {
    *
    * @param complaint the complaint that gets saved.
    */
+  @Transactional
   public synchronized void storeComplaint(Complaint complaint) {
     // store the configuration
     try {

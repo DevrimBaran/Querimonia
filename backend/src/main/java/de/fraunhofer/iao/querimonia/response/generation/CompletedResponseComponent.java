@@ -57,7 +57,7 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   }
 
   @SuppressWarnings("unused")
-  private CompletedResponseComponent() {
+  public CompletedResponseComponent() {
     // for hibernate
   }
 

@@ -65,8 +65,7 @@ public class ComplaintFactory {
         .setConfiguration(configuration)
         .setPreview(makePreview(complaintText))
         .setReceiveDate(LocalDate.now(ZoneId.of("Europe/Berlin")))
-        .setReceiveTime(LocalTime.now(ZoneId.of("Europe/Berlin")))
-        .appendLogItem(LogCategory.GENERAL, "Beschwerde erstellt.");
+        .setReceiveTime(LocalTime.now(ZoneId.of("Europe/Berlin")));
   }
 
   /**
@@ -90,21 +89,27 @@ public class ComplaintFactory {
     String complaintText = complaintBuilder.getText();
 
     // analysis
-    var complaintProperties = configuration.getClassifiers().stream().parallel()
+    var complaintProperties = configuration
+        .getClassifiers()
+        .stream()
+        // note: parallel doesnt seem to improve performance
+        .parallel()
         .map(classifierDefinition -> classifyComplaint(complaintBuilder, complaintText,
             classifierDefinition))
         .collect(Collectors.toList());
+
     var emotionProperty = extractEmotion(complaintBuilder, emotionAnalyzerDefinition);
     extractEntities(complaintBuilder, configuration, keepUserInformation);
     var tendency = extractTendency(complaintBuilder, sentimentAnalyzerDefinition);
     var sentiment = new Sentiment(emotionProperty, tendency);
     var wordList = stopWordFilter.filterStopWords(complaintText);
+    complaintBuilder
+        .setSentiment(sentiment)
+        .setWordList(wordList)
+        .setProperties(complaintProperties);
     createResponse(complaintBuilder);
 
-    return complaintBuilder
-        .setSentiment(sentiment)
-        .setProperties(complaintProperties)
-        .setWordList(wordList);
+    return complaintBuilder;
   }
 
   @NonNull
@@ -153,7 +158,8 @@ public class ComplaintFactory {
    */
   public void createResponse(ComplaintBuilder complaintBuilder) {
     var response = responseGenerator.generateResponse(complaintBuilder);
-    complaintBuilder.setResponseSuggestion(response)
+    complaintBuilder
+        .setResponseSuggestion(response)
         .appendLogItem(LogCategory.ANALYSIS,
             "Antwort mit " + response.getResponseComponents().size() + " Komponenten und "
                 + response.getActions().size() + " Aktionen generiert.");

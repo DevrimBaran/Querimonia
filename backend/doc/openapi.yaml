@@ -5,7 +5,7 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.8.2
+  version: 0.8.3
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
   - url: https://beschwerdemanagement.iao.fraunhofer.de/
@@ -1472,11 +1472,11 @@ paths:
                   type: KIKUKO_TOOL
                   label: Vorgangsnummer
                   color: '#ffaeae'
-                - name: '[Extern] Datum Extraktor'
+                - name: '[Regex] Datums Extraktion 2'
                   type: KIKUKO_TOOL
                   label: Datum
                   color: '#c7c7c7'
-                - name: '[Extern] Personen Extraktor'
+                - name: '[Extern] Person'
                   type: KIKUKO_TOOL
                   label: Name
                   color: '#ffaeae'
@@ -1740,6 +1740,7 @@ paths:
           <li>Die Beispielkonfigurationen, -bausteine, -kombinationen werden in die Datenbank geladen</li>
         </ol>
         Es werden noch keine Beschwerden in die Datenbank geladen.
+        <p><b>Achtung!</b> Operation kann ein paar Minuten dauern.</p>
       operationId: reset
       responses:
         204:
@@ -1979,36 +1980,51 @@ components:
         state: NEW
         configuration:
           id: 94
-          name: Volle Konfiguration
+          name: Kein Sentiment
           extractors:
-            - name: QuerimoniaExtract
-              type: KIKUKO_DOMAIN
-              colors:
-                - label: Name
-                  color: "#ffd666"
-                - label: Ort
-                  color: "#90ff8a"
-                - label: Linie
-                  color: "#aff4fa"
-                - label: Haltestelle
-                  color: "#cc89f5"
-                - label: Datum
-                  color: "#cdc0cf"
-                - label: Eingangsdatum
-                  color: "#e9bdf0"
-                - label: Geldbetrag
-                  color: "#f5ff8a"
+            - name: 'Linien Extraktor'
+              type: KIKUKO_TOOL
+              label: Linie
+              color: '#aff4fa'
+            - name: '[Extern] Geldbetrag'
+              type: KIKUKO_TOOL
+              label: Geldbetrag
+              color: '#f5ff8a'
+            - name: 'Vorgangsnummer'
+              type: KIKUKO_TOOL
+              label: Vorgangsnummer
+              color: '#ffaeae'
+            - name: '[Regex] Datums Extraktion 2'
+              type: KIKUKO_TOOL
+              label: Datum
+              color: '#c7c7c7'
+            - name: '[Extern] Person'
+              type: KIKUKO_TOOL
+              label: Name
+              color: '#ffaeae'
+            - name: '[Extern] Telefonnummer'
+              type: KIKUKO_TOOL
+              label: Telefonnummer
+              color: '#acc2b9'
+            - name: '[Fuzzy] Haltestellen'
+              type: KIKUKO_TOOL
+              label: Haltestelle
+              color: '#408080'
+            - name: '[Fuzzy] Ortsnamen'
+              type: KIKUKO_TOOL
+              label: Ort
+              color: '#cdfa8f'
           classifiers:
             - type: KIKUKO_CLASSIFIER
               name: Beschwerde3Klassifikator2
               propertyName: Kategorie
           sentimentAnalyzer:
-            type: QUERIMONIA_SENTIMENT
-            name: Default
+            type: NONE
+            name: NONE
           emotionAnalyzer:
-            type: QUERIMONIA_EMOTION
-            name: Default
-          active: true
+            type: NONE
+            name: NONE
+          active: false
         receiveDate: '2019-08-04'
         receiveTime: '16:14:41'
         sentiment:
@@ -2140,7 +2156,7 @@ components:
           example: "QuerimoniaExtract"
         color:
           type: string
-          description: Die Farbe, mit der die Entität angezeigt werden soll.
+          description: Die Farbe, mit der die Entität angezeigt werden soll. Dieser Wert wird nicht aktualisiert bei Konfigurationsänderungen. Daher sollte dieser Wert als nur Fallback verwendet werden.
           example: '#9829DD'
       example:
         id: 593

@@ -22,6 +22,7 @@ public interface Rule {
    * @param complaint            the complaint which should be checked.
    * @param currentResponseState the current state of the response generation. Contains all response
    *                             components that are used until now.
+   *
    * @return true, if the complaint respects this rule, else false.
    */
   boolean isRespected(ComplaintBuilder complaint,
@@ -32,6 +33,7 @@ public interface Rule {
    * response generation.
    *
    * @param complaint the complaint that gets checked.
+   *
    * @return true, if the complaint could respect the rule.
    */
   boolean isPotentiallyRespected(ComplaintBuilder complaint);

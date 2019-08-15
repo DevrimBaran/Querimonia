@@ -37,7 +37,7 @@ import java.util.List;
 public class FileStorageService {
 
   public static final String JSON_ERROR_TEXT =
-      "Die Default-Antwortbausteine konnten nicht geladen werden.";
+      "Die Default-Elemente konnten nicht geladen werden.";
   private final Path fileStorageLocation;
 
   /**

@@ -13,6 +13,8 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import de.fraunhofer.iao.querimonia.utility.exception.NotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import java.util.stream.Stream;
  */
 @Service
 public class ResponseComponentManager {
+
+  private static final Logger logger = LoggerFactory.getLogger(ResponseComponentManager.class);
 
   private final ResponseComponentRepository componentRepository;
   private final ComplaintRepository complaintRepository;
@@ -79,6 +83,7 @@ public class ResponseComponentManager {
         .getJsonObjectsFromFile(ResponseComponent[].class, "DefaultComponents.json");
 
     defaultComponents.forEach(componentRepository::save);
+    logger.info("Added default components.");
     return defaultComponents;
   }
 
@@ -206,6 +211,7 @@ public class ResponseComponentManager {
           .createComplaint();
       complaintRepository.save(complaint);
     }
+    logger.info("Deleted all components.");
   }
 
   public synchronized ResponseComponent updateComponent(long componentId,

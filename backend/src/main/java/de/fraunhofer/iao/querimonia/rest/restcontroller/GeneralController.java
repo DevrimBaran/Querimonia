@@ -4,8 +4,11 @@ import de.fraunhofer.iao.querimonia.manager.CombinationManager;
 import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.manager.ConfigurationManager;
 import de.fraunhofer.iao.querimonia.manager.ResponseComponentManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -13,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
  * This controller contains general endpoints that dont belong to any category.
  */
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class GeneralController {
+
+  private static final Logger logger = LoggerFactory.getLogger(GeneralController.class);
 
   private final ComplaintManager complaintManager;
   private final ConfigurationManager configurationManager;
@@ -48,6 +54,7 @@ public class GeneralController {
   @PostMapping("api/reset")
   public ResponseEntity<?> reset() {
     return ControllerUtility.tryAndCatch(() -> {
+      logger.info("Starting system reset...");
       complaintManager.deleteAllComplaints();
       configurationManager.deleteAllConfigurations();
       combinationManager.deleteAllCombinations();
