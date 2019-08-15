@@ -115,10 +115,10 @@ function Single (active, dispatch, helpers) {
           <Content>
             <Tabbed vertical>
               <div label='Überarbeitet'>
-                <TaggedText text={active.text} entities={helpers.props.complaintStuff.entities} />
+                <TaggedText text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
               </div>
               <div label='Original'>
-                {active.text}
+                {helpers.props.complaintStuff.text}
               </div>
               <div label='Log'>
                 {helpers.props.complaintStuff.log.map((entry, i) => (

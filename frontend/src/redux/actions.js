@@ -93,6 +93,24 @@ export function deleteEntity (complaintId, id = 0) {
     });
   };
 }
+
+export function addEntity (complaintId, query, originalLabelID) {
+  return function (dispatch, getState) {
+    dispatch((dispatch) => {
+      originalLabelID
+        ? Api.put('/api/complaints/' + complaintId + '/entities/' + originalLabelID, query)
+        : Api.post('/api/complaints/' + complaintId + '/entities', query).then(data => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'MODIFY_ENTITY',
+            data: data
+          });
+        });
+    });
+  };
+}
 export function fetchData (endpoint) {
   return function (dispatch, getState) {
     const { filter, pagination } = getState()[endpoint];
@@ -152,9 +170,10 @@ export function fetchStuff (id) {
     dispatch((dispatch) => {
       Promise.all([
         Api.get('/api/complaints/' + id + '/entities', {}),
-        Api.get('/api/responses/' + id, {}),
+        Api.get('/api/complaints/' + id + '/response', {}),
         Api.get('/api/combinations/' + id, {}),
-        Api.get('/api/complaints/' + id + '/log', {})
+        Api.get('/api/complaints/' + id + '/log', {}),
+        Api.get('/api/complaints/' + id + '/text', {})
       ]).then(data => {
         dispatch({
           type: 'FETCH_SINGLE_COMPLAINT_END',
@@ -162,7 +181,8 @@ export function fetchStuff (id) {
           components: data[1].components,
           actions: data[1].actions,
           combinations: data[2],
-          log: data[3]
+          log: data[3],
+          text: data[4].text
         });
       });
     });

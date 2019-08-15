@@ -8,15 +8,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { changeEntity, deleteEntity } from '../redux/actions';
+import { changeEntity, deleteEntity, addEntity } from '../redux/actions';
 
 class Tag extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      style: ' '
+      style: ' ',
+      editActive: false
     };
     this.tooltip = React.createRef();
+    this.tooltip2 = React.createRef();
     this.entity = React.createRef();
   }
   getLuminance = (color) => {
@@ -56,9 +58,6 @@ class Tag extends Component {
   edit = (e) => {
 
   }
-  copy = (e) => {
-
-  }
   remove = (id) => (e) => {
     this.props.dispatch(deleteEntity(this.props.complaintId, id));
   }
@@ -66,37 +65,116 @@ class Tag extends Component {
     const entity = this.props.entities.byId[id] || {};
     this.modifyEntity({ id: id, preferred: !entity.preferred });
   }
-  createTooltip = (entities) => {
+  editEntity = (label, deleteEnabled) => {
+    const originalLabel = label;
+    let originalLabelID = null;
+    if (deleteEnabled) {
+      originalLabelID = originalLabel.id;
+    }
+
+    this.setState({
+      newEntityQuery: { ...this.state.newEntityQuery, label: originalLabel.label, extractor: originalLabel.extractor, color: originalLabel.color },
+      originalLabelID: originalLabelID });
+    this.startEdit();
+  };
+  startEdit = () => {
+    if (this.state.editFormActive) return;
+    if (this.state.editActive) {
+      window.removeEventListener('mouseup', this.handleMouseUp);
+    } else {
+      window.addEventListener('mouseup', this.handleMouseUp);
+    }
+
+    this.setState({
+      editActive: !this.state.editActive
+    });
+  };
+  handleMouseUp = (e) => {
+    e.stopPropagation();
+    const selectedText = document.getSelection();
+    if (selectedText && selectedText.anchorNode.parentNode.attributes['data-key'] && selectedText.focusNode.parentNode.attributes['data-key'] && selectedText.toString()) {
+      const newLabelString = selectedText.toString();
+      const baseOffset = selectedText.anchorOffset;
+      const extentOffset = selectedText.focusOffset;
+      const baseKey = selectedText.anchorNode.parentNode.attributes['data-key'].value;
+      const extentKey = selectedText.focusNode.parentNode.attributes['data-key'].value;
+      let globalOffsetStart = 0;
+      let globalOffsetEnd = 0;
+      Array.from(selectedText.focusNode.parentNode.parentNode.childNodes)
+        .filter((htmlElement) => {
+          return htmlElement.tagName === 'SPAN';
+        }).map((spanElement) => {
+          return {
+            key: spanElement.attributes['data-key'].value,
+            text: spanElement.innerHTML
+          };
+        }).forEach((element, i, thisArray) => {
+          if (element.key === baseKey) {
+            for (let j = 0; j < i; j++) {
+              globalOffsetStart += thisArray[j].text.length;
+            }
+            globalOffsetStart += baseOffset;
+          }
+          if (element.key === extentKey) {
+            for (let j = 0; j < i; j++) {
+              globalOffsetEnd += thisArray[j].text.length;
+            }
+            globalOffsetEnd += extentOffset;
+          }
+        });
+      if (globalOffsetEnd < globalOffsetStart) {
+        let temp = globalOffsetStart;
+        globalOffsetStart = globalOffsetEnd;
+        globalOffsetEnd = temp;
+      }
+      let query = {};
+      query['start'] = globalOffsetStart;
+      query['end'] = globalOffsetEnd;
+      query['setByUser'] = true;
+      query['value'] = newLabelString;
+      this.startEdit();
+      this.setState({
+        newEntityQuery: { ...this.state.newEntityQuery, start: query['start'], end: query['end'], value: query['value'], setByUser: query['setByUser'] }
+      });
+      this.props.dispatch(addEntity(this.props.complaintId, this.state.newEntityQuery, this.state.originalLabelID));
+    }
+  };
+  createTooltip = (entities, b) => {
     return (
-      <div ref={this.tooltip} className='tooltip'>
-        <table>
-          <thead>
-            <tr>
-              <th> </th>
-              <th>Name</th>
-              <th>Text</th>
-              <th> </th>
-            </tr>
-          </thead>
-          <tbody>
-            {entities.map((entity, i) => (
-              <tr key={i}>
-                <td>
-                  <span className='dot' style={{ backgroundColor: entity.color }} />
-                </td>
-                <td>{entity.label}</td>
-                <td>{entity.value}</td>
-                <td className='nowrap'>
-                  <i onClick={this.edit} className='far fa-edit' />
-                  <i onClick={this.copy} className='far fa-copy' />
-                  <i onClick={this.remove(entity.id)} className='far fa-trash-alt' />
-                  <i onClick={this.preferr(entity.id)} className={(entity.preferred ? 'fas' : 'far') + ' fa-star'} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      b ? (<div ref={this.tooltip} className='tooltip'>
+        {entities.map((label, i) => (
+          <div>
+            <span className='dot' style={{ marginRight: '0.4em', backgroundColor: label.color }} />
+            {label.label}
+          </div>
+        ))}
+      </div>)
+        : (<div ref={this.tooltip2} className='tooltip'>
+          {entities.map((label, i) => (
+            <div style={
+              (i !== 0 ? { marginLeft: '0.4em',
+                border: '2px solid ' + label.color,
+                textAlign: 'center',
+                float: 'left',
+                padding: '4px' }
+                : { border: '2px solid ' + label.color,
+                  textAlign: 'center',
+                  float: 'left',
+                  padding: '4px' })
+            } key={i}>
+              <i>{label.label}</i>
+              <br />
+              <b>{label.value}</b>
+              <br />
+              {/* eslint-disable-next-line */}
+      <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label, false)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              {/* eslint-disable-next-line */}
+      <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label, true)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              {/* eslint-disable-next-line */}
+      <i className={'far fa-trash-alt'} onClick={this.remove(label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+            </div>
+          ))}
+        </div>)
     );
   }
   onMouseEnter = (e) => {
@@ -136,6 +214,31 @@ class Tag extends Component {
     if (tooltip) {
       tooltip.classList.remove('show');
     }
+
+    const tooltip2 = this.tooltip2.current;
+    if (tooltip2) {
+      tooltip2.classList.remove('show');
+    }
+  }
+  onMouseClick = (e) => {
+    this.onMouseLeave(e);
+
+    const element = e.target;
+    const rect = element.getBoundingClientRect();
+    const tooltip = this.tooltip2.current;
+    if (tooltip) {
+      tooltip.classList.add('show');
+      tooltip.style.left = (rect.x + rect.width * 0.5) + 'px';
+      if (rect.y >= tooltip.offsetHeight) {
+        tooltip.classList.remove('bottom');
+        tooltip.classList.add('top');
+        tooltip.style.top = (rect.y) + 'px';
+      } else {
+        tooltip.classList.remove('top');
+        tooltip.classList.add('bottom');
+        tooltip.style.top = (rect.y + rect.height) + 'px';
+      }
+    }
   }
   render () {
     const { text, ids, entities, dispatch, complaintId, ...passThrough } = { ...this.props };
@@ -143,19 +246,22 @@ class Tag extends Component {
       color: '#cccccc'
     });
     const styles = this.getColorStyles(relevantEntities);
-    const tooltip = this.createTooltip(relevantEntities);
+    const tooltip = this.createTooltip(relevantEntities, true);
+    const tooltip2 = this.createTooltip(relevantEntities, false);
     const inject = {
       className: 'entity',
       ref: this.entity,
       style: styles,
       onMouseEnter: this.onMouseEnter,
-      onMouseLeave: this.onMouseLeave
+      onMouseLeave: this.onMouseLeave,
+      onClick: this.onMouseClick
     };
     return (
       <span data-tag-id={ids.join(',')} {...inject} {...passThrough}>
         <style>{this.state.style}</style>
         {text}
         {ReactDOM.createPortal(tooltip, document.body)}
+        {ReactDOM.createPortal(tooltip2, document.body)}
       </span>
     );
   }
