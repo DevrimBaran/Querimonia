@@ -92,7 +92,7 @@ public class ComplaintController {
    *     <li>status code 404 with the exception as body when the config with the given id does
    *     not exist.</li>
    *     <li>status code 400 with the exception as body when the text could not be extracted
-   *     from the file.</li>>
+   *     from the file.</li>
    *     <li>status code 500 and the exception as response body on an unexpected server error.</li>
    *     </ul>
    */

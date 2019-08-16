@@ -39,7 +39,7 @@ import java.util.Map;
  * To create a complaint, use a {@link ComplaintBuilder} to create or modify a complaint with all
  * properties. For creating a complaint from only its text, use a {@link ComplaintFactory}.
  * </p>
- * <p><h2>{@link ComplaintState States of complaints}</h2></p>
+ * <h2>{@link ComplaintState States of complaints}</h2>
  * <p>Complaints have different states during the workflow:</p>
  * <ul>
  *   <li>{@link ComplaintState#ANALYSING}: Complaint that get uploaded start in this state. The

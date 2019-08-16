@@ -24,6 +24,11 @@ public class ComplaintUpdateRequest {
 
   /**
    * Creates a new complaint update request.
+   *
+   * @param newEmotion  the emotion that the complaint should have.
+   * @param newTendency the tendency that the complaint should have.
+   * @param newState    the new state that the complaint should have.
+   * @param newSubject  the subject that the complaint should have.
    */
   @JsonCreator
   public ComplaintUpdateRequest(@Nullable
