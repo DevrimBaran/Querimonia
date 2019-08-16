@@ -42,6 +42,8 @@ public class FileStorageService {
 
   /**
    * Creates a new file storage service. Only used by spring for autowired generation.
+   *
+   * @param fileStorageProperties the properties that contain the file location.
    */
   @Autowired
   public FileStorageService(FileStorageProperties fileStorageProperties) {
