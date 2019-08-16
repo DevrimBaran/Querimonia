@@ -5,13 +5,13 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.8.3
+  version: 0.8.4
 servers:
-  - url: https://beschwerdemanagement.iao.fraunhofer.de/dev/
-  - url: https://beschwerdemanagement.iao.fraunhofer.de/
-  - url: https://querimonia.iao.fraunhofer.de/dev/
-  - url: https://querimonia.iao.fraunhofer.de/
-  - url: http://localhost:8080/
+  - url: https://beschwerdemanagement.iao.fraunhofer.de/dev
+  - url: https://beschwerdemanagement.iao.fraunhofer.de
+  - url: https://querimonia.iao.fraunhofer.de/dev
+  - url: https://querimonia.iao.fraunhofer.de
+  - url: http://localhost:8080
 tags:
   - name: complaints
     description: Hier können Beschwerden hochgeladen, verwaltet und editiert werden.
@@ -571,6 +571,7 @@ paths:
       summary: Gibt den Text einer Beschwerde zurück
       description: Gibt den Text der Beschwerde mit der gegebenen ID zurück.
 
+      operationId: getText
       responses:
         200:
           description: Erfolgreiche Anfrage.
@@ -837,9 +838,10 @@ paths:
             format: int32
             minimum: 0
             maximum: 767
-            example: 150
             default: 150
+            example: 10
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
+      operationId: addDefaultComplaints
       responses:
         200:
           description: Erfolgreiche Anfrage.
@@ -955,7 +957,7 @@ paths:
               label: Linie
               start: 619
               end: 621
-              value: 62
+              value: '62'
               setByUser: true
               preferred: false
               extractor: QuerimoniaExtract
@@ -1225,7 +1227,6 @@ paths:
               type: string
               enum: [id_desc, id_asc, priority_desc, priority_asc, name_desc, name_asc]
               default: name_asc
-              example: name_asc
         - $ref: '#/components/parameters/KeywordsParameter'
         - $ref: '#/components/parameters/ActionCode'
 
@@ -1952,7 +1953,6 @@ components:
           readOnly: true
         receiveTime:
           type: string
-          format: date-time
           description: Die Eingangszeit der Beschwerde im System im Format hh:mm:ss
           example: "13:45:00"
           readOnly: true
@@ -2053,7 +2053,6 @@ components:
         - value
         - probabilities
         - setByUser
-      readOnly: true
       properties:
         name:
           type: string
@@ -2311,7 +2310,7 @@ components:
       required:
         - name
         - type
-        - öabel
+        - label
         - color
       properties:
         name:
@@ -2591,7 +2590,6 @@ components:
         timestamp:
           description: Der genaue Zeitpunkt, wann der Fehler aufgetreten ist.
           type: string
-          format: date-time
           example: '2019-07-04T15:24:23.3942221'
         statusCode:
           description: Der HTTP-Status Code, der zuückgegeben wird.
