@@ -2,9 +2,15 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
+import de.fraunhofer.iao.querimonia.manager.ResponseComponentManager;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
+import de.fraunhofer.iao.querimonia.repository.MockComplaintRepository;
+import de.fraunhofer.iao.querimonia.repository.MockCompletedComponentRepository;
 import de.fraunhofer.iao.querimonia.repository.MockComponentRepository;
+import de.fraunhofer.iao.querimonia.repository.MockSuggestionRepository;
+import de.fraunhofer.iao.querimonia.utility.FileStorageProperties;
+import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -15,7 +21,7 @@ import java.util.List;
 
 import static de.fraunhofer.iao.querimonia.complaint.TestComplaints.COMPLAINT_F;
 import static de.fraunhofer.iao.querimonia.response.component.TestComponents.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 
 /**
@@ -27,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DefaultResponseGeneratorTest {
 
+  private MockComponentRepository mockComponentRepository;
   private DefaultResponseGenerator defaultResponseGenerator;
 
   private static List<ResponseComponent> testComponents = new ArrayList<>();
@@ -47,9 +54,9 @@ public class DefaultResponseGeneratorTest {
 
   @Before
   public void setup() {
-    MockComponentRepository templateRepository = new MockComponentRepository();
-    templateRepository.saveAll(testComponents);
-    defaultResponseGenerator = new DefaultResponseGenerator(templateRepository);
+    mockComponentRepository = new MockComponentRepository();
+    mockComponentRepository.saveAll(testComponents);
+    defaultResponseGenerator = new DefaultResponseGenerator(mockComponentRepository);
   }
 
   @Test
@@ -142,5 +149,24 @@ public class DefaultResponseGeneratorTest {
         assertEquals(correctEntity.getValue(), testEntity.getValue());
       }
     }
+  }
+
+  @Test
+  public void testGenerationWithDefaultComponents() {
+    FileStorageProperties fileStorageProperties = new FileStorageProperties();
+    fileStorageProperties.setUploadDir("src/test/resources/uploads/");
+    FileStorageService fileStorageService = new FileStorageService(fileStorageProperties);
+
+    ResponseComponentManager responseComponentManager = new ResponseComponentManager(
+        mockComponentRepository,
+        new MockComplaintRepository(),
+        new MockSuggestionRepository(),
+        new MockCompletedComponentRepository(),
+        fileStorageService);
+
+    responseComponentManager.addDefaultComponents();
+    ComplaintBuilder complaintBuilder = new ComplaintBuilder(COMPLAINT_F);
+    ResponseSuggestion testResponseSuggestion = defaultResponseGenerator.generateResponse(complaintBuilder);
+    assertFalse(testResponseSuggestion.getResponseComponents().isEmpty());
   }
 }
