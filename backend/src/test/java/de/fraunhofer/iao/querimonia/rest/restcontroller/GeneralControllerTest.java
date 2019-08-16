@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.Combination;
 import de.fraunhofer.iao.querimonia.complaint.TestComplaints;
 import de.fraunhofer.iao.querimonia.config.TestConfigurations;
 import de.fraunhofer.iao.querimonia.manager.CombinationManager;
@@ -73,7 +73,7 @@ public class GeneralControllerTest {
   public void testReset() {
     mockComplaintRepository.save(TestComplaints.COMPLAINT_A);
     mockConfigurationRepository.save(TestConfigurations.CONFIGURATION_A);
-    mockCombinationRepository.save(new LineStopCombination("123", "Test", "tseT"));
+    mockCombinationRepository.save(new Combination("123", "Test", "tseT"));
     mockComponentRepository.save(TestComponents.COMPONENT_A);
 
     GeneralController generalController = new GeneralController(
