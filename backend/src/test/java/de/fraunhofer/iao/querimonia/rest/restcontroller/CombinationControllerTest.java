@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.Combination;
 import de.fraunhofer.iao.querimonia.manager.CombinationManager;
 import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.manager.ConfigurationManager;
@@ -63,26 +63,26 @@ public class CombinationControllerTest {
   @Test
   @SuppressWarnings("unchecked")
   public void testGetAllCombinations() {
-    LineStopCombination combination1 = new LineStopCombination("U6", "Hauptbahnhof", "Stuttgart");
-    LineStopCombination combination2 = new LineStopCombination("U6", null, "Stuttgart");
-    LineStopCombination combination3 = new LineStopCombination("U6", "Hauptbahnhof", null);
-    LineStopCombination combination4 = new LineStopCombination(null, "Hauptbahnhof", "Stuttgart");
-    List<LineStopCombination> correctCombinations = List.of(combination1, combination2, combination3, combination4);
+    Combination combination1 = new Combination("U6", "Hauptbahnhof", "Stuttgart");
+    Combination combination2 = new Combination("U6", null, "Stuttgart");
+    Combination combination3 = new Combination("U6", "Hauptbahnhof", null);
+    Combination combination4 = new Combination(null, "Hauptbahnhof", "Stuttgart");
+    List<Combination> correctCombinations = List.of(combination1, combination2, combination3, combination4);
     combinationRepository.saveAll(correctCombinations);
 
     ResponseEntity<?> responseEntity = combinationController.getAllCombinations();
     assertNotNull(responseEntity.getBody());
-    List<LineStopCombination> testCombinations = (List<LineStopCombination>) responseEntity.getBody();
+    List<Combination> testCombinations = (List<Combination>) responseEntity.getBody();
 
     assertEquals(correctCombinations, testCombinations);
   }
 
   @Test
   public void testAddCombinations() {
-    LineStopCombination combination = new LineStopCombination("U6", "Hauptbahnhof", "Stuttgart");
+    Combination combination = new Combination("U6", "Hauptbahnhof", "Stuttgart");
     combinationController.addCombinations(Collections.singletonList(combination));
 
-    Iterator<LineStopCombination> iterator = combinationRepository.findAll().iterator();
+    Iterator<Combination> iterator = combinationRepository.findAll().iterator();
     assertEquals(combination, iterator.next());
     assertFalse(iterator.hasNext());
   }

@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.complaint;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.Nullable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -17,7 +18,7 @@ import javax.persistence.Id;
  * This POJO is a combination of a line, a stop and a place. It is used to group named entities.
  */
 @Entity
-public class LineStopCombination implements Identifiable<Long> {
+public class Combination implements Identifiable<Long> {
 
   @Id
   @GeneratedValue
@@ -26,19 +27,22 @@ public class LineStopCombination implements Identifiable<Long> {
 
   @JsonProperty("Linie")
   @Nullable
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String line;
 
   @JsonProperty("Haltestelle")
   @Nullable
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String stop;
 
   @JsonProperty("Ort")
   @Nullable
+  @JsonInclude(JsonInclude.Include.NON_EMPTY)
   private String place;
 
   @SuppressWarnings("unused")
   @JsonCreator
-  public LineStopCombination(
+  public Combination(
       @Nullable
       @JsonProperty("Linie")
           String line,
@@ -55,7 +59,7 @@ public class LineStopCombination implements Identifiable<Long> {
   }
 
   @SuppressWarnings("unused")
-  private LineStopCombination() {
+  private Combination() {
     // for hibernate
   }
 
@@ -91,7 +95,7 @@ public class LineStopCombination implements Identifiable<Long> {
       return false;
     }
 
-    LineStopCombination that = (LineStopCombination) o;
+    Combination that = (Combination) o;
 
     return new EqualsBuilder()
         .append(id, that.id)

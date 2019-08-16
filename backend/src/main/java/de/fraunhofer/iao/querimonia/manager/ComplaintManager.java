@@ -1,10 +1,6 @@
 package de.fraunhofer.iao.querimonia.manager;
 
-import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintFactory;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintProperty;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintState;
+import de.fraunhofer.iao.querimonia.complaint.*;
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -18,7 +14,6 @@ import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ResponseController;
-import de.fraunhofer.iao.querimonia.rest.restobjects.Combination;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
@@ -319,7 +314,11 @@ public class ComplaintManager {
         .setState(ANALYSING);
 
     // run analysis
-    runAnalysisAsync(builder, keepUserInformation.orElse(false), complaint.getState());
+    var state = complaint.getState();
+    if (state == ERROR) {
+      state = NEW;
+    }
+    runAnalysisAsync(builder, keepUserInformation.orElse(false), state);
     complaint = builder.createComplaint();
     storeComplaint(complaint);
     return complaint;
@@ -555,28 +554,57 @@ public class ComplaintManager {
     for (NamedEntity line : lineEntities) {
       for (NamedEntity place : placeEntities) {
         for (NamedEntity stop : stopEntities) {
-          // combination of three
-          if (lineStopCombinationRepository.existsByLineAndPlaceAndStop(line.getValue(),
-              place.getValue(), stop.getValue())) {
-            result.add(new Combination(List.of(line, place, stop)));
-            // combination of line and place
-          } else if (lineStopCombinationRepository.existsByLineAndPlace(line.getValue(),
-              place.getValue())) {
-            result.add(new Combination(List.of(line, place)));
-            // combination of line and stop
-          } else if (lineStopCombinationRepository.existsByLineAndStop(line.getValue(),
-              stop.getValue())) {
-            result.add(new Combination(List.of(line, stop)));
-
-            // combination of line and stop
-          } else if (lineStopCombinationRepository.existsByPlaceAndStop(place.getValue(),
-              stop.getValue())) {
-            result.add(new Combination(List.of(place, stop)));
-          }
+          createCombinations(result, line.getValue(), place.getValue(), stop.getValue());
         }
       }
     }
+    // also find combinations of two
+    for (NamedEntity place : placeEntities) {
+      for (NamedEntity stop : stopEntities) {
+        createCombinations(result, null, place.getValue(), stop.getValue());
+      }
+    }
+    for (NamedEntity line : lineEntities) {
+      for (NamedEntity stop : stopEntities) {
+        createCombinations(result, line.getValue(), null, stop.getValue());
+      }
+    }
+    for (NamedEntity place : placeEntities) {
+      for (NamedEntity line : lineEntities) {
+        createCombinations(result, line.getValue(), place.getValue(), null);
+      }
+    }
     return new ArrayList<>(result);
+  }
+
+  private void createCombinations(HashSet<Combination> result, String line,
+                                  String place, String stop) {
+    // combination of three
+    if (lineStopCombinationRepository.existsByLineAndPlaceAndStop(line, place,
+        stop)) {
+      result.add(new Combination(line, stop, place));
+      // combination of line and place
+    } else if (lineStopCombinationRepository.existsByLineAndPlace(line, place)
+        && isCombinationAbsent(result, line, null, place)) {
+      result.add(new Combination(line, null, place));
+      // combination of line and stop
+    } else if (lineStopCombinationRepository.existsByLineAndStop(line, stop)
+        && isCombinationAbsent(result, line, stop, null)) {
+      result.add(new Combination(line, stop, null));
+
+      // combination of line and stop
+    } else if (lineStopCombinationRepository.existsByPlaceAndStop(place, stop)
+        && isCombinationAbsent(result, null, stop, place)) {
+      result.add(new Combination(null, stop, place));
+    }
+  }
+
+  private boolean isCombinationAbsent(HashSet<Combination> combinations,
+                                      String line, String stop, String place) {
+    return combinations.stream()
+        .filter(combination -> line == null || combination.getLine().equals(line))
+        .filter(combination -> place == null || combination.getPlace().equals(place))
+        .noneMatch(combination -> stop == null || combination.getStop().equals(stop));
   }
 
   /**

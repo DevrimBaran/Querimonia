@@ -1,13 +1,13 @@
 package de.fraunhofer.iao.querimonia.repository;
 
-import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.Combination;
 import org.springframework.data.repository.CrudRepository;
 
 
 /**
- * This repository manages {@link LineStopCombination combinations} of lines, stops and places.
+ * This repository manages {@link Combination combinations} of lines, stops and places.
  */
-public interface CombinationRepository extends CrudRepository<LineStopCombination, Long> {
+public interface CombinationRepository extends CrudRepository<Combination, Long> {
 
   /**
    * Checks if the given combination exists.

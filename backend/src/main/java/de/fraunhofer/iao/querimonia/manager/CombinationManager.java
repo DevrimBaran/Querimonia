@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.manager;
 
-import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.Combination;
 import de.fraunhofer.iao.querimonia.repository.CombinationRepository;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class CombinationManager {
    *
    * @return all combinations of lines, stops and places of the database.
    */
-  public List<LineStopCombination> getAllCombinations() {
+  public List<Combination> getAllCombinations() {
     return StreamSupport.stream(lineStopCombinationRepository.findAll().spliterator(), false)
         .distinct()
         .collect(Collectors.toList());
@@ -47,8 +47,8 @@ public class CombinationManager {
    *
    * @return the added combinations.
    */
-  public List<LineStopCombination> addLineStopCombinations(
-      List<LineStopCombination> lineStopCombinations) {
+  public List<Combination> addLineStopCombinations(
+      List<Combination> lineStopCombinations) {
     return StreamSupport.stream(lineStopCombinationRepository
         .saveAll(lineStopCombinations).spliterator(), false)
         .collect(Collectors.toList());
@@ -59,9 +59,9 @@ public class CombinationManager {
    *
    * @return the example combinations.
    */
-  public List<LineStopCombination> addDefaultCombinations() {
-    List<LineStopCombination> combinations = addLineStopCombinations(fileStorageService
-        .getJsonObjectsFromFile(LineStopCombination[].class, "DefaultCombinations.json"));
+  public List<Combination> addDefaultCombinations() {
+    List<Combination> combinations = addLineStopCombinations(fileStorageService
+        .getJsonObjectsFromFile(Combination[].class, "DefaultCombinations.json"));
     logger.info("Added default combinations.");
     return combinations;
   }
