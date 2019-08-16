@@ -1,8 +1,8 @@
 package de.fraunhofer.iao.querimonia.repository;
 
-import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.Combination;
 
-public class MockCombinationRepository extends MockRepository<LineStopCombination> implements
+public class MockCombinationRepository extends MockRepository<Combination> implements
     CombinationRepository {
   @Override
   public boolean existsByLineAndPlaceAndStop(String line, String place, String stop) {

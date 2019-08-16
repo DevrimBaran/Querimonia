@@ -1,6 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
-import de.fraunhofer.iao.querimonia.complaint.LineStopCombination;
+import de.fraunhofer.iao.querimonia.complaint.Combination;
 import de.fraunhofer.iao.querimonia.manager.CombinationManager;
 import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import org.springframework.http.HttpStatus;
@@ -60,7 +60,7 @@ public class CombinationController {
    */
   @PostMapping("api/combinations")
   public ResponseEntity<?> addCombinations(
-      @RequestBody List<LineStopCombination> lineStopCombinations) {
+      @RequestBody List<Combination> lineStopCombinations) {
     return ControllerUtility.tryAndCatch(
         () -> combinationManager.addLineStopCombinations(lineStopCombinations),
         HttpStatus.CREATED);
