@@ -224,6 +224,13 @@ public class ConfigControllerTest {
   }
 
   @Test
+  public void testAddDefaultConfigurations() {
+    // Only throws an exception because mock repositories cannot contain the ID 0
+    configController.addDefaultConfigurations();
+    assertTrue(mockConfigurationRepository.count() >= 1);
+  }
+
+  @Test
   public void testDeleteAllConfigurations() {
     configController.addConfiguration(CONFIGURATION_D);
     configController.addConfiguration(CONFIGURATION_E);
