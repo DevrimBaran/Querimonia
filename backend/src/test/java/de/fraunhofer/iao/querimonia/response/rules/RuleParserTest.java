@@ -35,7 +35,7 @@ public class RuleParserTest {
     RuleParser.parseRules("<Rules><Rules>");
   }
 
-  @Test(expected = IllegalStateException.class)
+  @Test(expected = QuerimoniaException.class)
   public void testRuleMalformed() {
     RuleParser.parseRules("<Rules><SomeBS></SomeBS></Rules>");
   }
