@@ -60,9 +60,9 @@ public class GeneralController {
       combinationManager.deleteAllCombinations();
       responseComponentManager.deleteAllComponents();
 
-      configurationManager.addDefaultConfigurations();
       responseComponentManager.addDefaultComponents();
       combinationManager.addDefaultCombinations();
+      configurationManager.addDefaultConfigurations();
     });
   }
 
