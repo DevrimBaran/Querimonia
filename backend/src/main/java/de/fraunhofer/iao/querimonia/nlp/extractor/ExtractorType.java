@@ -8,5 +8,6 @@ public enum ExtractorType {
   KIKUKO_TOOL,
   KIKUKO_DOMAIN,
   KIKUKO_PIPELINE,
+  MOCK,
   NONE
 }

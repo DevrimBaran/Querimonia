@@ -19,6 +19,9 @@ public class SentimentAnalyzerFactory {
         return complaintText -> 0.0;
       case QUERIMONIA_SENTIMENT:
         return new FlaskSentiment();
+      case MOCK:
+        return new MockSentimentAnalyzer(
+            ((MockSentimentAnalyzerDefinition) definition).getExpectedSentiment());
       default:
         throw new IllegalArgumentException("Unbekannter Typ: " + definition.getType().name());
     }

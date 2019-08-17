@@ -20,6 +20,9 @@ public class EmotionAnalyzerFactory {
 
     if (emotionAnalyzerDefinition.getType().equals(EmotionAnalyzerType.QUERIMONIA_EMOTION)) {
       return new FlaskEmotion();
+    } else if (emotionAnalyzerDefinition.getType().equals(EmotionAnalyzerType.MOCK)) {
+      return new MockEmotionAnalyzer(
+          ((MockEmotionAnalyzerDefinition) emotionAnalyzerDefinition).getExpectedEmotions());
     }
 
     // create emotion analyzers

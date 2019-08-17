@@ -11,6 +11,11 @@ public enum ClassifierType {
   KIKUKO_CLASSIFIER,
 
   /**
+   * A mock classifier that works without KiKuKo.
+   */
+  MOCK,
+
+  /**
    * Defines that no classifier should be used.
    */
   NONE

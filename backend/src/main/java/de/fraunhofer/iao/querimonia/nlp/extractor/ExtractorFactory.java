@@ -24,6 +24,8 @@ public class ExtractorFactory {
         return new KikukoExtractor("pipeline", definition.getName(), definition);
       case KIKUKO_DOMAIN:
         return new KikukoExtractor("domain", definition.getName(), definition);
+      case MOCK:
+        return new MockExtractor(((MockExtractorDefinition) definition).getExpectedEntities());
       default:
         throw new IllegalArgumentException(
             "Unbekannter Typ: " + definition.getType().name());
