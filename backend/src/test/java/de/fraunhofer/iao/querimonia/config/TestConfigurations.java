@@ -10,7 +10,10 @@ import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerDefinition;
 import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerType;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static de.fraunhofer.iao.querimonia.config.TestAnalysers.*;
 
 public class TestConfigurations {
 
@@ -71,6 +74,16 @@ public class TestConfigurations {
           "#ffffff")))
       .setSentimentAnalyzer(new SentimentAnalyzerDefinition(SentimentAnalyzerType.NONE, ""))
       .setEmotionAnalyzer(new EmotionAnalyzerDefinition(EmotionAnalyzerType.NONE, ""))
+      .setActive(true)
+      .createConfiguration();
+
+  public static final Configuration CONFIGURATION_G = new ConfigurationBuilder()
+      .setId(7)
+      .setName("G")
+      .setClassifiers(Collections.singletonList(MOCK_CLASSIFIER_A))
+      .setExtractors(List.of(MOCK_EXTRACTOR_A, MOCK_EXTRACTOR_B))
+      .setSentimentAnalyzer(MOCK_SENTIMENT_ANALYZER_A)
+      .setEmotionAnalyzer(MOCK_EMOTION_ANALYZER_A)
       .setActive(true)
       .createConfiguration();
 }
