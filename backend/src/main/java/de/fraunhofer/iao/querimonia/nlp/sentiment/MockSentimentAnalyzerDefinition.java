@@ -9,7 +9,11 @@ public class MockSentimentAnalyzerDefinition extends SentimentAnalyzerDefinition
 
   private double expectedSentiment;
 
-  public MockSentimentAnalyzerDefinition(double expectedSentiment) {
+  public MockSentimentAnalyzerDefinition(
+      SentimentAnalyzerType type,
+      String name,
+      double expectedSentiment) {
+    super(type, name);
     this.expectedSentiment = expectedSentiment;
   }
 

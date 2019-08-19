@@ -10,7 +10,11 @@ public class MockEmotionAnalyzerDefinition extends EmotionAnalyzerDefinition {
 
   private Map<String, Double> expectedEmotions;
 
-  public MockEmotionAnalyzerDefinition(Map<String, Double> expectedEmotions) {
+  public MockEmotionAnalyzerDefinition(
+      EmotionAnalyzerType type,
+      String name,
+      Map<String, Double> expectedEmotions) {
+    super(type, name);
     this.expectedEmotions = expectedEmotions;
   }
 
