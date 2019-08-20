@@ -7,8 +7,7 @@
 
 import React from 'react';
 
-import { fetchStuff, refreshComplaint } from '../../redux/actions';
-
+import { changeEntityPreference, fetchStuff, refreshComplaint } from '../../redux/actions';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
@@ -48,6 +47,18 @@ function getMaxKey (data) {
   return (keys[maxIndex]);
 }
 
+/**
+ * Changes the preference of an entity.
+ * Other entities with the same label are set to false
+ * @param {*} entity Entity where the preference is to be changed
+ */
+function changePreference (active, entities, dispatch, entity) {
+  let entityOld = entities.flat().find((e) => {
+    return e.label === entity.label && e.preferred === true;
+  });
+  dispatch(changeEntityPreference(active.id, entity, entityOld));
+}
+
 function Header () {
   return (
     <thead>
@@ -83,7 +94,7 @@ function List (data, dispatch, helpers) {
       <td>{data.state}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td><Sentiment fixed={null} tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{data.receiveDate} {data.receiveTime}</td>
     </tr>
@@ -155,8 +166,12 @@ function Single (active, dispatch, helpers) {
           </div>
           <Collapsible label='Details' />
           <div>
-            <Table>
+            <Table className='details-table'>
               <tbody>
+                <tr>
+                  <td>Konfiguration</td>
+                  <td><Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link></td>
+                </tr>
                 <tr>
                   <td>Eingangsdatum</td>
                   <td>{active.receiveDate}</td>
@@ -181,7 +196,7 @@ function Single (active, dispatch, helpers) {
                 }
                 <tr>
                   <td>Sentiment</td>
-                  <td><Sentiment tendency={active.sentiment ? active.sentiment.tendency : 0} /></td>
+                  <td><Sentiment fixed={2} tendency={active.sentiment ? active.sentiment.tendency : null} /></td>
                 </tr>
                 <tr>
                   <td>Emotion</td>
@@ -192,7 +207,7 @@ function Single (active, dispatch, helpers) {
           </div>
           <Collapsible label='Entitäten' />
           <Content>
-            <Table>
+            <Table className='details-table'>
               <tbody>
                 {(() => {
                   if (!(helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids)) {
@@ -210,6 +225,7 @@ function Single (active, dispatch, helpers) {
                       <tr key={'' + entity.label + i}>
                         <td>{entity.label}</td>
                         <td><Tag text={entity.value} ids={[entity.id]} /></td>
+                        <td><i key={i} onClick={() => changePreference(active, entities, dispatch, entity)} style={{ cursor: 'pointer', padding: '3px', color: (entity.preferred ? 'orange' : 'lightgray') }} className={'fas fa-crown'} /></td>
                       </tr>
                     )));
                 })()}
