@@ -83,6 +83,9 @@ function Home () {
                 </p>
               </div>
               <br />
+              <br />
+              <br />
+              <br />
               <h1> Wie funktioniert Querimonia?</h1>
               <div className='introduction_box'>
                 <h6>Hinzufügen einer Beschwerde</h6>
