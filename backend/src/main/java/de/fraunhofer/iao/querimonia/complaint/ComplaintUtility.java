@@ -21,11 +21,13 @@ public class ComplaintUtility {
    */
   public static Optional<String> getEntryWithHighestProbability(
       Map<String, Double> probabilityMap) {
-    return probabilityMap.entrySet()
-        .stream()
+    Optional<Map.Entry<String, Double>> result = probabilityMap.entrySet().stream()
         // find entry with highest probability
-        .max(Comparator.comparingDouble(Map.Entry::getValue))
-        .map(Map.Entry::getKey);
+        .max(Comparator.comparingDouble(Map.Entry::getValue));
+    if(result.isPresent() && result.map(Map.Entry::getValue).get() == 0){
+      return (Optional.of("Sonstiges"));
+    }
+    return result.map(Map.Entry::getKey);
   }
 
   /**

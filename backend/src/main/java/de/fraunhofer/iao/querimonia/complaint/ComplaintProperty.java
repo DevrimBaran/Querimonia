@@ -87,7 +87,7 @@ public class ComplaintProperty implements Comparable<ComplaintProperty> {
   public ComplaintProperty(@NonNull String name, @NonNull Map<String, Double> probabilities) {
     this.probabilities = probabilities;
     this.value = ComplaintUtility.getEntryWithHighestProbability(probabilities)
-        .orElse("");
+        .orElse("Unbekannt");
     this.setByUser = false;
     this.name = name;
   }
