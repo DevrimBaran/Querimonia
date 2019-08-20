@@ -141,7 +141,7 @@ function Single (active, dispatch, helpers) {
           </Content>
           <div style={{ display: 'none' }}>
             <div style={{ display: 'block', paddingTop: '10px', margin: 'auto', textAlign: 'center', borderTop: '1px solid lightGrey', width: '90%', marginTop: '10px' }}>
-              <i style={editActive ? { color: 'rgb(31, 130, 191)', cursor: 'pointer' } : { color: 'rgb(9, 101, 158)', cursor: 'pointer' }}
+              <i style={editActive ? { color: 'rgb(36,191,64)', cursor: 'pointer' } : { color: 'rgb(158,72,59)', cursor: 'pointer' }}
                 className='fas fa-plus-circle fa-2x'
                 onClick={this.startEdit} />
               {editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}

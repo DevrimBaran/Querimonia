@@ -15,7 +15,6 @@ import iatPartner from './../assets/img/iat.png';
 import screen1 from './../assets/img/screen1.jpg';
 import screen2 from './../assets/img/screen2.jpg';
 import screen3 from './../assets/img/screen3.jpg';
-import './Home.scss';
 
 function Home () {
   return (
