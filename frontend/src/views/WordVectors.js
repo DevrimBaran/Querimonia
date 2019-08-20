@@ -236,7 +236,7 @@ class WordVectors extends Component {
         <Block>
           <h1 className='center'>Wortvektoren</h1>
           <Content className='center'style={{ flexBasis: '100%' }}>
-            <div className='smallmargin'>
+            <div className='margin' style={{ maxWidth: '400px', margin: 'auto', textAlign: 'justify', marginBottom: '10px'}}>
               <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
               {this.renderDescription()}
             </div>
