@@ -20,7 +20,6 @@ const initialState = {
         label: 'Stimmung',
         name: 'sentiment',
         type: 'select',
-        multiple: true,
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },
@@ -35,18 +34,17 @@ const initialState = {
         label: 'Kategorie',
         name: 'subject',
         type: 'select',
-        multiple: true,
         values: [
           { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
           { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
           { label: 'Sonstiges', value: 'Sonstiges' }
+
         ]
       },
       {
         label: 'Status',
         name: 'status',
         type: 'select',
-        multiple: true,
         values: [
           { label: 'Neu', value: 'NEW' },
           { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
@@ -106,7 +104,6 @@ const initialState = {
       {
         label: 'Aktion',
         name: 'action_code',
-        multiple: true,
         type: 'select',
         values: [
           { label: 'E-Mail', value: 'SEND_MAIL' },
@@ -176,7 +173,6 @@ const initialState = {
     text: null,
     counter: 0,
     id: 0,
-    text: '',
     done: false
   }
 };
