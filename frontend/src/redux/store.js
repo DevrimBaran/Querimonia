@@ -176,7 +176,6 @@ const initialState = {
     text: null,
     counter: 0,
     id: 0,
-    text: '',
     done: false
   }
 };

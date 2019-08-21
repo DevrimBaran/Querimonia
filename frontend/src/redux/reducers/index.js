@@ -186,7 +186,6 @@ function complaintStuff (state = {}, action) {
         text: null,
         id: action.id,
         counter: 0,
-        text: '',
         done: false
       };
     }
