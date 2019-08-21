@@ -1,0 +1,52 @@
+%font {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: $primaryTextColor;
+}
+
+html {
+    @extend %font;
+}
+h1, .h1 {
+    @extend %font;
+    font-size: 2em;
+    font-weight: bold;
+}
+h2, .h2 {
+    @extend %font;
+    font-size: 1.3em;
+    font-weight: bold;
+}
+h3, .h3 {
+    @extend %font;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+h4, .h4 {
+    @extend %font;
+    font-size: 1.2em;
+    color: $secondaryTextColor;
+}
+h5, .h5 {
+    @extend %font;
+    font-size: 1.3em;
+    font-weight: normal;
+    color: $secondaryTextColor;
+}
+h6, .h6 {
+    @extend %font;
+    font-size: 1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    color: $secondaryTextColor;
+}
+p, .p {
+    @extend %font;
+    font-size: 1em;
+}
+a, .a {
+    @extend p;
+    color: $primaryTextColor;
+}
+label, .label {
+    @extend %font;
+}
