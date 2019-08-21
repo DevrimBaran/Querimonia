@@ -18,6 +18,8 @@
 @import 'components/modal';
 @import 'components/_errorPopup.scss';
 @import 'components/tooltip';
+@import 'home';
+
 #root {
     display: flex;
     overflow: hidden;
@@ -204,6 +206,28 @@
         }
         & > td:nth-of-type(even), th {
             background: rgba($black, 0.4);
+        }
+    }
+}
+.details-table {
+    width: calc(100%);
+    height: 100%;
+    overflow: auto;
+    table {
+        // margin: 0px auto;
+        position: relative;
+        width: 100%;
+        border-spacing: 0px;
+    }
+    td {
+        padding: 1px;
+        text-align: left;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    tbody tr:hover {
+        & > td {
+            background: rgba($black, 0.1);
         }
     }
 }

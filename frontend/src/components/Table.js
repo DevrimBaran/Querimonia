@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 
 class Table extends Component {
   render () {
-    const classes = 'responsive-table';
+    const classes = (this.props.className ? this.props.className : 'responsive-table');
     const { className, ...passThroughProps } = this.props;
 
     let injectedProp = {

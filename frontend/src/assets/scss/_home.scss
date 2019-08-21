@@ -19,16 +19,17 @@
 }   
 .introduction_box{
     padding:20px;
-    border: solid 2px grey;
-    box-shadow: 10px 10px 15px silver;
-    border-radius: 20px;
     margin: 30px;
     width: 80%;
+    text-align: justify;
+    margin-right: 10%;
+    margin-left: 10%;
  img{
-    border: solid 2px lightgreen;
+    border: solid 4px lightgreen;
     box-shadow: 10px 10px 15px silver;
-    border-radius: 10px;
-    width:60%;
+    border-radius: 20px;
+    width:100%;
+    margin-top: 5%;
  }
 }
 .example{

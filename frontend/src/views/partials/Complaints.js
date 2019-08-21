@@ -7,8 +7,7 @@
 
 import React from 'react';
 
-import { fetchStuff, refreshComplaint } from '../../redux/actions';
-
+import { changeEntityPreference, fetchStuff, refreshComplaint } from '../../redux/actions';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
@@ -43,6 +42,18 @@ function getMaxKey (data) {
     }
   }
   return (keys[maxIndex]);
+}
+
+/**
+ * Changes the preference of an entity.
+ * Other entities with the same label are set to false
+ * @param {*} entity Entity where the preference is to be changed
+ */
+function changePreference (active, entities, dispatch, entity) {
+  let entityOld = entities.flat().find((e) => {
+    return e.label === entity.label && e.preferred === true;
+  });
+  dispatch(changeEntityPreference(active.id, entity, entityOld));
 }
 
 function Header () {
@@ -83,7 +94,7 @@ function List (data, dispatch, helpers) {
       <td>{data.state}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td><Sentiment fixed={null} tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{data.receiveDate} {data.receiveTime}</td>
     </tr>
@@ -135,7 +146,7 @@ function Single (active, dispatch, helpers) {
           </Content>
           <div style={{ display: 'none' }}>
             <div style={{ display: 'block', paddingTop: '10px', margin: 'auto', textAlign: 'center', borderTop: '1px solid lightGrey', width: '90%', marginTop: '10px' }}>
-              <i style={editActive ? { color: 'rgb(31, 130, 191)', cursor: 'pointer' } : { color: 'rgb(9, 101, 158)', cursor: 'pointer' }}
+              <i style={editActive ? { color: 'rgb(36,191,64)', cursor: 'pointer' } : { color: 'rgb(158,72,59)', cursor: 'pointer' }}
                 className='fas fa-plus-circle fa-2x'
                 onClick={this.startEdit} />
               {editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}
@@ -149,8 +160,12 @@ function Single (active, dispatch, helpers) {
           </div>
           <Collapsible label='Details' />
           <div>
-            <Table>
+            <Table className='details-table'>
               <tbody>
+                <tr>
+                  <td>Konfiguration</td>
+                  <td><Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link></td>
+                </tr>
                 <tr>
                   <td>Eingangsdatum</td>
                   <td>{active.receiveDate}</td>
@@ -175,7 +190,7 @@ function Single (active, dispatch, helpers) {
                 }
                 <tr>
                   <td>Sentiment</td>
-                  <td><Sentiment tendency={active.sentiment ? active.sentiment.tendency : 0} /></td>
+                  <td><Sentiment fixed={2} tendency={active.sentiment ? active.sentiment.tendency : null} /></td>
                 </tr>
                 <tr>
                   <td>Emotion</td>
@@ -186,7 +201,7 @@ function Single (active, dispatch, helpers) {
           </div>
           <Collapsible label='Entitäten' />
           <Content>
-            <Table>
+            <Table className='details-table'>
               <thead>
                 <tr>
                   <th>Name</th>
@@ -210,6 +225,7 @@ function Single (active, dispatch, helpers) {
                       <tr key={'' + entity.label + i}>
                         <td>{entity.label}</td>
                         <td><Tag text={entity.value} ids={[entity.id]} /></td>
+                        <td><i key={i} onClick={() => changePreference(active, entities, dispatch, entity)} style={{ cursor: 'pointer', padding: '3px', color: (entity.preferred ? 'orange' : 'lightgray') }} className={'fas fa-crown'} /></td>
                       </tr>
                     )));
                 })()}
