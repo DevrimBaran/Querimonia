@@ -14,6 +14,7 @@ import Import from './views/Import';
 import WordVectors from './views/WordVectors';
 import TagCloud from './views/TagCloud';
 import Impressum from './views/Impressum';
+import Stats from './views/Stats';
 import Complaints from './views/partials/Complaints';
 import Components from './views/partials/Component';
 import Config from './views/partials/Config';
@@ -79,6 +80,9 @@ class App extends Component {
               <NavLink activeClassName='active' to='/tagcloud'>Worthäufigkeiten</NavLink>
             </li>
             <li>
+              <NavLink activeClassName='active' to='/stats'>Statistik</NavLink>
+            </li>
+            <li>
               { /* wird nur in development und mock gerendered */ }
               <OpenApi />
             </li>
@@ -107,7 +111,8 @@ class App extends Component {
         */}
         <Route path='/wordvectors' component={WordVectors} />
         <Route path='/tagcloud' component={TagCloud} />
-        <Route path='/impressum' foo='bar' component={Impressum} />
+        <Route path='/impressum' component={Impressum} />
+        <Route path='/stats' component={Stats} />
       </Router>
     );
   }

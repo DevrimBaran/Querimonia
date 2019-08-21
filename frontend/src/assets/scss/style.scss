@@ -18,6 +18,8 @@
 @import 'components/modal';
 @import 'components/_errorPopup.scss';
 @import 'components/tooltip';
+@import 'home';
+
 #root {
     display: flex;
     overflow: hidden;
@@ -179,15 +181,19 @@
     tbody th {
         position: sticky;
         background-color: $primary;
+        border-bottom: 1px solid $black;
         left: 0;
         z-index: 1;
+        .row {
+            align-items: center;
+            justify-content: space-evenly;
+        }
     }
     td {
         background: rgba($black, 0.1);
         max-width: 600px;
         text-align: left;
-        border-bottom-style: solid;
-        border-width: 1px;
+        border-bottom: 1px solid $black;
         padding-left:10px;
         padding-right:10px;
     }
@@ -200,6 +206,34 @@
         }
         & > td:nth-of-type(even), th {
             background: rgba($black, 0.4);
+        }
+    }
+}
+.details-table {
+    width: calc(100%);
+    height: 100%;
+    overflow: auto;
+    table {
+        // margin: 0px auto;
+        position: relative;
+        width: 100%;
+        border-spacing: 0px;
+    }
+    th {
+        padding: 1px;
+        text-align: left;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    td {
+        padding: 1px;
+        text-align: left;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    tbody tr:hover {
+        & > td {
+            background: rgba($black, 0.1);
         }
     }
 }

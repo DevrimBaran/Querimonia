@@ -12,7 +12,7 @@ import Content from './../components/Content';
 import Response from './../components/Response';
 import Input from './../components/Input';
 import Collapsible from './Collapsible';
-import Debug from './Debug';
+// import Debug from './Debug';
 import Tabbed from './Tabbed';
 
 class TextBuilder extends Component {
@@ -40,7 +40,6 @@ class TextBuilder extends Component {
     return (
       <React.Fragment>
         <Input type='textarea' min='5' value={this.state.response} onChange={this.changeText} />
-        {this.props.counter}
         <Collapsible label='Antworten / Aktionen' />
         <Content>
           <Tabbed>
@@ -52,7 +51,9 @@ class TextBuilder extends Component {
               }
             </div>
             <div label='Aktionen'>
-              <Debug data={this.props.actions} />
+              {this.props.actions.map((action, index) => (
+                <Input type='checkbox' label={action.name} key={index} />
+              ))}
             </div>
           </Tabbed>
         </Content>

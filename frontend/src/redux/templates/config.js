@@ -17,32 +17,23 @@ export default (extractors) => ({
         type: 'object',
         label: '#$i',
         children: {
-          type: {
-            type: 'conditional',
+          name: {
+            type: 'select',
             label: 'Typ',
             attributes: {
-              name2: 'name',
-              label2: 'Name',
               values: extractors
             }
           },
-          colors: {
-            type: 'array',
-            label: 'Entitäten',
-            children: {
-              type: 'object',
-              label: '#$i',
-              children: {
-                label: {
-                  type: 'text',
-                  label: 'Name'
-                },
-                color: {
-                  type: 'color',
-                  label: 'Farbe'
-                }
-              }
-            }
+          type: {
+            type: 'hidden'
+          },
+          label: {
+            type: 'text',
+            label: 'Name'
+          },
+          color: {
+            type: 'color',
+            label: 'Farbe'
           }
         }
       }

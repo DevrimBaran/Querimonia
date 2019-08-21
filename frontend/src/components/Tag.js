@@ -30,14 +30,19 @@ class Tag extends Component {
     }
   };
   averageLuminance = (avg, entity, array) => {
-    return avg + (this.getLuminance(entity.color) / array.length);
+    const color = (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
+      ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
+    return avg + (this.getLuminance(color) / array.length);
   }
   minLuminance = (min, entity, array) => {
-    return Math.min(min, this.getLuminance(entity.color));
+    const color = (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
+      ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
+    return Math.min(min, this.getLuminance(color));
   }
   getGradient = (entity, i, entities) => {
     const pers = 100 / entities.length;
-    const color = entity.color || '#cccccc';
+    const color = (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
+      ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return `${color} ${pers * i}%, ${color} ${pers * (i + 1)}%`;
   }
   getColorStyles = (entities) => {
@@ -59,7 +64,9 @@ class Tag extends Component {
 
   }
   remove = (id) => (e) => {
-    this.props.dispatch(deleteEntity(this.props.complaintId, id));
+    if (window.confirm('Wollen sie die Entität wirklich löschen?')) {
+      this.props.dispatch(deleteEntity(this.props.complaintId, id));
+    }
   }
   preferr = (id) => (e) => {
     const entity = this.props.entities.byId[id] || {};
@@ -268,12 +275,26 @@ class Tag extends Component {
 }
 
 const mapStateToProps = (state, props) => {
+  let colors = null;
+  state.currentConfig.extractors.reduce((obj, extractor) => {
+    let labels = {};
+    if (extractor.colors) {
+      extractor.colors.map((color) => {
+        labels[color.label] = color.color;
+      });
+    };
+    obj[extractor.name] = labels;
+    colors = obj;
+  }, {});
   if (props.entities) {
-    return {};
+    return {
+      colors: colors
+    };
   }
   return {
     entities: state.complaintStuff.entities,
-    complaintId: state.complaintStuff.id
+    complaintId: state.complaintStuff.id,
+    colors: colors
   };
 };
 

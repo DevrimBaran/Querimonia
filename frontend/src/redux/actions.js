@@ -93,6 +93,38 @@ export function changeEntity (complaintId, id = 0, changes) {
     });
   };
 }
+export function changeEntityPreference (complaintId, entity, entityOld) {
+  return function (dispatch, getState) {
+    let query = entity;
+    query.preferred = !entity.preferred;
+    dispatch((dispatch) => {
+      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), { query })
+        .then(data => {
+          if (data.status && data.status === 500) {
+            // alert(data.message);
+          }
+          dispatch({
+            type: 'MODIFY_ENTITY',
+            data: data
+          });
+          if (entityOld) {
+            let query2 = entityOld;
+            query2.preferred = false;
+            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), { query2 })
+              .then(data => {
+                if (data.status && data.status === 500) {
+                  // alert(data.message);
+                }
+                dispatch({
+                  type: 'MODIFY_ENTITY',
+                  data: data
+                });
+              });
+          }
+        });
+    });
+  };
+}
 export function deleteEntity (complaintId, id = 0) {
   return function (dispatch, getState) {
     dispatch((dispatch) => {
@@ -127,6 +159,7 @@ export function addEntity (complaintId, query, originalLabelID) {
     });
   };
 }
+
 export function fetchData (endpoint) {
   return function (dispatch, getState) {
     const { filter, pagination } = getState()[endpoint];

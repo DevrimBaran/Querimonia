@@ -4,7 +4,15 @@ import React from 'react';
 const smilies = [
   {
     smiley: '🤬',
+    tendency: -0.8
+  },
+  {
+    smiley: '😠',
     tendency: -0.6
+  },
+  {
+    smiley: '☹️',
+    tendency: -0.4
   },
   {
     smiley: '😞',
@@ -12,23 +20,50 @@ const smilies = [
   },
   {
     smiley: '😐',
-    tendency: 0.2
+    tendency: 0.1
   },
   {
-    smiley: '😊',
+    smiley: '🙂',
+    tendency: 0.4
+  },
+  {
+    smiley: '😀',
     tendency: 0.6
   },
   {
     smiley: '😁',
+    tendency: 0.8
+  },
+  {
+    smiley: '😍',
     tendency: 1
   }
 ];
 
 export default function Sentiment (props) {
+  if (!props.tendency) {
+    return (
+      <span role='img' className='emotion'>
+        ---
+      </span>
+    );
+  }
   const smiley = smilies.find(smiley => props.tendency < smiley.tendency).smiley;
+  if (!props.fixed) {
+    return (
+      <span style={{ fontSize: '150%' }} role='img' className='emotion'>
+        {smiley}
+      </span>
+    );
+  }
   return (
     <span role='img' className='emotion'>
-      {smiley} ({props.tendency.toFixed(props.fixed)})
+      <span style={{ fontSize: '120%' }} role='img' className='emotion'>
+        {smiley}
+      </span>
+      <span role='img' className='emotion'>
+        ({props.tendency.toFixed(props.fixed)})
+      </span>
     </span>
   );
 }
