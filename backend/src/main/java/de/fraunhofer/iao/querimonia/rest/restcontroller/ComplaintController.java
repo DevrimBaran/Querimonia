@@ -151,7 +151,7 @@ public class ComplaintController {
    *     <li>status code 500 and the querimonia exception body on an unexpected server error</li>
    *     </ul>
    */
-  @GetMapping("/api/complaints/{complaintId}")
+  @GetMapping(value = "/api/complaints/{complaintId}", produces = "application/json")
   public ResponseEntity<?> getComplaint(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.getComplaint(complaintId));
   }
@@ -173,10 +173,9 @@ public class ComplaintController {
     return ControllerUtility.tryAndCatch(() -> complaintManager.getText(complaintId));
   }
 
-  @GetMapping("/api/complaints/{complaintId}/xml")
+  @GetMapping(value = "/api/complaints/{complaintId}/xml", produces = "application/xml")
   public ResponseEntity<?> getXml(@PathVariable long complaintId) {
-    return ControllerUtility.tryAndCatch(() -> complaintManager.getXml(complaintId));
-    // TODO string will be text/plain, should this return application/xml?
+    return ControllerUtility.tryAndCatch(() -> complaintManager.getComplaint(complaintId));
   }
 
   /**
