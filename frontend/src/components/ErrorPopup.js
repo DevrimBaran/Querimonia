@@ -40,6 +40,6 @@ export function showErrorPopup (errorResponse) {
     const errorPopupElement = document.getElementById('errorPopup');
     const errorMessageElement = document.getElementById('errorMessage');
     errorPopupElement.classList.add('show');
-    errorMessageElement.innerText += `Status Code: ${error.statusCode} ${error.title}: ${error.message} \r\n`;
+    errorMessageElement.innerText += `Status Code: ${error.statusCode || status} ${error.title || error.error}: ${error.message} \r\n`;
   });
 }
