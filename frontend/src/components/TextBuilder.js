@@ -40,7 +40,6 @@ class TextBuilder extends Component {
     return (
       <React.Fragment>
         <Input type='textarea' min='5' value={this.state.response} onChange={this.changeText} />
-        {this.props.counter}
         <Collapsible label='Antworten / Aktionen' />
         <Content>
           <Tabbed>

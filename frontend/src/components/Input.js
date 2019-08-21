@@ -56,6 +56,11 @@ class Input extends Component {
         value: value
       });
     }
+    componentDidUpdate = (prevProps) => {
+      if (prevProps.defaultValue !== this.props.defaultValue) {
+        console.log('defaultValue', this.props.defaultValue);
+      }
+    }
     render () {
       const classes = '';
       const { className, onChange, type, label, values, value, name, ...passThroughProps } = this.props;

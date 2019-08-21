@@ -15,12 +15,9 @@ import Content from '../../components/Content';
 import Collapsible from '../../components/Collapsible';
 import Sentiment from '../../components/Sentiment';
 import Tag from '../../components/Tag';
-import Email from '../../components/Email';
-
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 import TaggedText from '../../components/TaggedText';
-import Modal from '../../components/Modal';
 import Tabbed from '../../components/Tabbed';
 import TextBuilder from '../../components/TextBuilder';
 import Table from '../../components/Table';
@@ -52,7 +49,6 @@ function Header () {
   return (
     <thead>
       <tr>
-        <th> </th>
         <th>Anliegen</th>
         <th>Status</th>
         <th>Vorschau</th>
@@ -74,12 +70,16 @@ function List (data, dispatch, helpers) {
     return false;
   };
   return (
-    <tr className={data.state !== 'ERROR' ? 'pointer' : ''} key={data.id} onClick={helpers && data.state !== 'ERROR' ? helpers.transitionTo('/complaints/' + data.id) : undefined}>
+    <tr className='pointer' key={data.id} onClick={helpers ? helpers.transitionTo('/complaints/' + data.id) : undefined}>
       <th>
-        <Button disabled={data.state === 'CLOSED' || data.state === 'ANALYSING'} icon='fas fa-sync' onClick={refresh}>Erneut auswerten</Button>
-        {helpers && helpers.remove(data.id)}
+        <Row>
+          {data.id}
+          <div>
+            <Button disabled={data.state === 'CLOSED' || data.state === 'ANALYSING'} icon='fas fa-sync' onClick={refresh}>Erneut auswerten</Button>
+            {helpers && helpers.remove(data.id)}
+          </div>
+        </Row>
       </th>
-      <td><h3>{data.id}</h3></td>
       <td>{data.state}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
@@ -107,12 +107,6 @@ function Single (active, dispatch, helpers) {
         <Row vertical>
           <h6 className='center'>Anwort</h6>
           <TextBuilder />
-          <Modal htmlFor={'[complaint="' + active.id + '"]'}>
-            <a href={'mailto:subject=Antwort%20auf%20Anliegen%20#' + active.id + '&body=' + encodeURIComponent('Lorem Ipsum')}>Mailto</a>
-            <Email subject={'Querimonia - Abschluss #' + active.id} to='' name={'Abschluss_' + active.id} label='Download .eml Datei'>
-              Test
-            </Email>
-          </Modal>
         </Row>
       </Block>
       <Block>
@@ -193,6 +187,12 @@ function Single (active, dispatch, helpers) {
           <Collapsible label='Entitäten' />
           <Content>
             <Table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Wert</th>
+                </tr>
+              </thead>
               <tbody>
                 {(() => {
                   if (!(helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids)) {
@@ -213,6 +213,27 @@ function Single (active, dispatch, helpers) {
                       </tr>
                     )));
                 })()}
+              </tbody>
+            </Table>
+          </Content>
+          <Collapsible label='Kombinationen' />
+          <Content>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Linie</th>
+                  <th>Haltestelle</th>
+                  <th>Ort</th>
+                </tr>
+              </thead>
+              <tbody>
+                {helpers.props.complaintStuff.combinations.map((combination, index) => (
+                  <tr key={index}>
+                    <td>{combination.line}</td>
+                    <td>{combination.stop}</td>
+                    <td>{combination.place}</td>
+                  </tr>
+                ))}
               </tbody>
             </Table>
           </Content>

@@ -20,7 +20,6 @@ function Header () {
   return (
     <thead>
       <tr>
-        <th />
         <th>ID</th>
         <th>Name</th>
         <th>Priorität</th>
@@ -35,11 +34,15 @@ function List (data, dispatch, helpers) {
   return (
     <tr key={data.id}>
       <th>
-        {helpers.edit(data.id)}
-        {helpers.copy(data.id)}
-        {helpers.remove(data.id)}
+        <Row>
+          {data.id}
+          <div>
+            {helpers.edit(data.id)}
+            {helpers.copy(data.id)}
+            {helpers.remove(data.id)}
+          </div>
+        </Row>
       </th>
-      <td><h3>{data.id}</h3></td>
       <td style={{ textAlign: 'left' }}>{data.name}</td>
       <td>{data.priority}</td>
       <td>{data.texts.length}</td>
