@@ -40,10 +40,15 @@ $inputBorder: 2px solid;
         margin: 6px 0 0;
         padding: 10px 10px;
         width: 100%;
-        max-width: 400px;
         outline: none;
         &:focus {
             border-color: $primary;
+        }
+    }
+    &.inline {
+        margin: 0;
+        input, textarea, select {
+            width: auto;
         }
     }
 }

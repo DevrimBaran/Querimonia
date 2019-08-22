@@ -63,7 +63,7 @@ class Input extends Component {
     }
     render () {
       const classes = '';
-      const { className, onChange, type, label, values, value, name, ...passThroughProps } = this.props;
+      const { className, onChange, type, label, values, value, name, inline, ...passThroughProps } = this.props;
 
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,
@@ -128,7 +128,7 @@ class Input extends Component {
         }
       }
       return (
-        <div className='input'>
+        <div className={inline ? 'input inline' : 'input'}>
           { label && (<label htmlFor={this.props.name}>{label}</label>) }
           { input }
         </div>

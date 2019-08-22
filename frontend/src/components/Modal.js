@@ -16,7 +16,7 @@ class Modal extends Component {
       htmlFor: props.htmlFor
     };
   }
-  // TODO 
+  // TODO
   onClick = (e) => {
     const modal = this.modal.current;
     this.hideModals();

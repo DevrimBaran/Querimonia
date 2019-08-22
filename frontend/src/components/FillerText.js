@@ -69,6 +69,8 @@ class FillerText extends Component {
       return labels[str] && (
         <Input
           style={this.getColorStyles(labels[str])}
+          label={str}
+          inline
           onChange={this.onChange}
           index={i}
           key={i}
@@ -80,7 +82,7 @@ class FillerText extends Component {
               (labels[str].find(e => e.preferred) ||
                 { value: str }).value
             )}
-          values={[{ label: str, value: str, style: { color: '#202124' } }].concat(labels[str].map(e => ({
+          values={labels[str].map(e => ({
             label: e.value,
             value: e.value,
             style: {
@@ -89,7 +91,7 @@ class FillerText extends Component {
                 ? '#202124'
                 : '#ffffff'
             }
-          })))
+          }))
           }
         />
       );
