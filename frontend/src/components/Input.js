@@ -128,10 +128,10 @@ class Input extends Component {
         }
       }
       return (
-        <React.Fragment>
+        <div className='input'>
           { label && (<label htmlFor={this.props.name}>{label}</label>) }
           { input }
-        </React.Fragment>
+        </div>
       );
     }
 }

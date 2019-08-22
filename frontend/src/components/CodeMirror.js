@@ -154,8 +154,8 @@ class CodeMirror extends Component {
       this.script.remove();
     }
     componentDidUpdate = (prevProps, prevState, prevContext) => {
-      this.remove();
-      this.inject();
+      // this.remove();
+      // this.inject();
     }
     componentDidMount = () => {
       this.inject();

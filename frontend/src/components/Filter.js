@@ -10,6 +10,7 @@ import { fetchData } from '../redux/actions';
 import { connect } from 'react-redux';
 // import Collapsible from '../components/Collapsible';
 import Input from '../components/Input';
+import Form from '../components/Form';
 
 class Filter extends Component {
   submit = (e) => {
@@ -36,10 +37,10 @@ class Filter extends Component {
     return (
       <React.Fragment>
         {/* <Collapsible label='Filter' className='Filter' /> */}
-        <form action={pathname} onSubmit={this.submit}>
+        <Form action={pathname} onSubmit={this.submit}>
           {mappedInputs}
           {mappedInputs.length > 0 && (<Input type='submit' value='Anwenden' />)}
-        </form>
+        </Form>
       </React.Fragment>
     );
   }
