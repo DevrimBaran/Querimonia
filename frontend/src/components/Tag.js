@@ -150,7 +150,7 @@ class Tag extends Component {
     return (
       b ? (<div ref={this.tooltip} className='tooltip'>
         {entities.map((label, i) => (
-          <div>
+          <div key={i}>
             <span className='dot' style={{ marginRight: '0.4em', backgroundColor: label.color }} />
             {label.label}
           </div>

@@ -95,7 +95,11 @@ class FillerText extends Component {
       );
     });
   };
-  componentDidUpdate = () => {
+  componentDidUpdate (prevProps) {
+    if (prevProps.selected !== this.props.selected) {
+      // eslint-disable-next-line
+      this.setState({ text: this.parseText() });
+    }
   }
   componentDidMount = () => {
     this.setState({ text: this.parseText() });

@@ -206,6 +206,7 @@ function Single (active, dispatch, helpers) {
                 <tr>
                   <th>Name</th>
                   <th>Wert</th>
+                  <th>Bevorzugt</th>
                 </tr>
               </thead>
               <tbody>
