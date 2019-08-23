@@ -18,14 +18,14 @@ $inputBorder: 2px solid;
     @extend %font;
     position: relative;
     display: inline-block;
-    margin: 15px 10px;
+    padding: 10px 10px;
     flex-grow: 1;
     label {
         font-family: inherit;
         white-space: nowrap;
         position: absolute;
-        top: -7px;
-        left: 10px;
+        top: 5px;
+        left: 20px;
         z-index: 1;
         font-size: 14px;
         line-height: 14px;
