@@ -128,7 +128,7 @@ class Input extends Component {
         }
       }
       return (
-        <div className={inline ? 'input inline' : 'input'}>
+        <div className={inline ? 'input inline' : 'input'} style={ type === 'hidden' ? { display: 'none' } : {}}>
           { label && (<label htmlFor={this.props.name}>{label}</label>) }
           { input }
         </div>

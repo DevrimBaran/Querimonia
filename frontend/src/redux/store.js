@@ -8,6 +8,11 @@ import rootReducer from './reducers/index';
 const middleware = applyMiddleware(thunk, logger);
 
 const initialState = {
+  login: {
+    name: null,
+    password: null,
+    role: 'guest'
+  },
   complaints: {
     data: {
       byId: {},

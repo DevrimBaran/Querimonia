@@ -231,10 +231,32 @@ function fetchable (state = { data: {}, filter: [], pagination: {} }, action, en
   };
 }
 
+function login (state, action) {
+  switch (action.type) {
+    case 'LOGIN': {
+      return {
+        name: action.name,
+        password: action.password,
+        role: action.role
+      };
+    }
+    case 'LOGOUT': {
+      return {
+        name: null,
+        password: null,
+        role: 'guest'
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
+
 const rootReducer = function (state, action) {
   return {
+    login: login(state.login, action),
     complaints: fetchable(state.complaints, action, 'complaints'),
-    actions: fetchable(state.actions, action, 'actions'),
     config: fetchable(state.config, action, 'config'),
     components: fetchable(state.components, action, 'components'),
     currentConfig: currentConfig(state.currentConfig, action),
