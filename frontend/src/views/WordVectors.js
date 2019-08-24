@@ -236,15 +236,13 @@ class WordVectors extends Component {
         <Block>
           <h1 className='center'>Wortvektoren</h1>
           <Content className='center'style={{ flexBasis: '100%' }}>
-            <div className='margin' style={{ maxWidth: '400px', margin: 'auto', textAlign: 'justify', marginBottom: '10px' }}>
+            <div className='smallmargin' style={{ maxWidth: '400px', margin: 'auto', textAlign: 'justify', marginBottom: '10px' }}>
               <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
               {this.renderDescription()}
             </div>
             <div className='smallmargin'>
               <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
-              <div className='smallmargin'>
-                <input className='center' type='button' name='berechneButton' onClick={this.calculate} value='Berechnen' />
-              </div>
+              <Input type='submit' name='berechneButton' onClick={this.calculate} value='Berechnen' />
             </div>
             <table className='center'>
               <thead>

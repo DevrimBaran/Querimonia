@@ -1,6 +1,33 @@
 @import '../variables';
 
 .autocomplete {
+    position: relative;
+    display: inline-block;
+    flex-grow: 1;
+
+    label {
+        font-family: inherit;
+        white-space: nowrap;
+        position: absolute;
+        top: 5px;
+        left: 24px;
+        z-index: 1;
+        font-size: 14px;
+        line-height: 14px;
+        font-weight: bold;
+        &::before {
+            content: '';
+            top: 5px;
+            left: -4px;
+            width: calc(100% + 8px);
+            display: block;
+            height: 1px;
+            position: relative;
+            background-color: $white;
+            box-sizing: content-box;
+            z-index: -2;
+        }
+    }
     .input {
         display: inline-flex;
         flex-direction: column;
@@ -8,6 +35,7 @@
             width: 100%;
         }
     }
+
     .predictions {
         @extend %inputs;
         display: flex;
@@ -24,6 +52,7 @@
             &.active {
                 color: $primary;
             }
+
         }
     }
 }
