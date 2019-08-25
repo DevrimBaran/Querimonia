@@ -276,9 +276,11 @@ class Tag extends Component {
 
 const mapStateToProps = (state, props) => {
   let colors = null;
+  /* eslint-disable-next-line */
   state.currentConfig.extractors.reduce((obj, extractor) => {
     let labels = {};
     if (extractor.colors) {
+      /* eslint-disable-next-line */
       extractor.colors.map((color) => {
         labels[color.label] = color.color;
       });

@@ -126,7 +126,7 @@ function Single (active, dispatch, helpers) {
           <Content>
             <Tabbed vertical>
               <div label='Überarbeitet'>
-                <TaggedText text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
+                <TaggedText active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
               </div>
               <div label='Original'>
                 {helpers.props.complaintStuff.text}
