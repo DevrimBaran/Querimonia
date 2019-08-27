@@ -13,6 +13,7 @@ import Content from './../components/Content';
 import Api from './../utility/Api';
 import WordCloud from 'react-d3-cloud';
 import Table from './../components/Table';
+import Input from './../components/Input';
 
 class TagCloud extends Component {
   constructor (props) {
@@ -133,24 +134,19 @@ class TagCloud extends Component {
             <div>
               <Row vertical={false} style={{ justifyContent: 'space-around' }}>
                 <div>
-                  <label htmlFor='minDate'>Eingangsdatum (von):</label><br />
-                  <input type='date' id='minDate' ref='minDate' />
+                  <Input type='date' label='Eingangsdatum (von):' id='minDate' ref='minDate' />
                 </div>
                 <div>
-                  <label htmlFor='maxDate'>Eingangsdatum (bis):</label><br />
-                  <input type='date' id='maxDate' ref='maxDate' />
+                  <Input type='date' label='Eingangsdatum (bis):' id='maxDate' ref='maxDate' />
                 </div>
                 <div>
-                  <label htmlFor='cloudActive'>Nur Wörter anzeigen:</label><br />
-                  <input type='checkbox' id='onlyWords' ref='onlyWords' defaultChecked />
+                  <Input type='checkbox' label='Nur Wörter anzeigen:' id='onlyWords' ref='onlyWords' defaultChecked />
                 </div>
                 <div>
-                  <label htmlFor='count'>Wortanzahl:</label><br />
-                  <input type='number' id='count' ref='count' defaultValue='70' min='0' />
+                  <Input type='number' label='Wortanzahl:' id='count' ref='count' defaultValue='70' min='0' />
                 </div>
                 <div>
-                  <label htmlFor='cloudActive'>Listenansicht</label><br />
-                  <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
+                  <Input type='checkbox' label='Listenansicht' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
                 </div>
               </Row>
             </div>

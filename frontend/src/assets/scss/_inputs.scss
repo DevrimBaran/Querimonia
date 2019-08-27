@@ -46,6 +46,7 @@ $inputBorder: 2px solid;
     input, textarea, select {
         font-family: inherit;
         position: relative;
+        background-color: $white;
         color: $primaryTextColor;
         border: 1px solid $black;
         border-radius: 10px;

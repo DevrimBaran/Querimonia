@@ -1,4 +1,5 @@
 import calculateEntities from '../../utility/calculateEntities';
+
 const defaults = {
   components: {
     id: 0,
@@ -193,9 +194,9 @@ function complaintStuff (state = {}, action) {
       return {
         ...state,
         entities: {
-          byId: action.entities.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
-          ids: action.entities.map(item => item.id),
-          calculated: calculateEntities(action.entities)
+          byId: action.entities.reduce ? action.entities.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}) : {},
+          ids: action.entities.map ? action.entities.map(item => item.id) : [],
+          calculated: action.entities.map ? calculateEntities(action.entities) : []
         },
         components: action.components,
         actions: action.actions,

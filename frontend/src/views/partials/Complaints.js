@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { changeEntityPreference, fetchStuff, refreshComplaint } from '../../redux/actions/actions';
+import { changeEntityPreference, refreshComplaint } from '../../redux/actions/';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
@@ -101,14 +101,12 @@ function List (data, dispatch, helpers) {
   );
 }
 function Single (active, dispatch, helpers) {
-  if ((helpers.props.complaintStuff.done && helpers.props.complaintStuff.id !== active.id) ||
-    (!helpers.props.complaintStuff.done && helpers.props.complaintStuff.id === 0)) {
-    dispatch(fetchStuff(active.id));
-  };
-  if (!helpers.props.complaintStuff.done) {
+  if (!helpers.props.complaintStuff.done || !active) {
     return (
       <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>
     );
+  } else {
+    console.log(active);
   }
   const editActive = true;
   const editFormActive = true;

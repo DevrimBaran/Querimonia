@@ -10,6 +10,39 @@ export default (extractors) => ({
       type: 'text',
       label: 'Name'
     },
+    sentimentAnalyzer: {
+      type: 'object',
+      label: 'Sentiment',
+      children: {
+        name: {
+          label: 'Name',
+          type: 'text'
+        },
+        type: {
+          label: 'Typ',
+          type: 'text'
+        }
+      }
+    },
+    emotionAnalyzer: {
+      type: 'object',
+      label: 'Emotion',
+      children: {
+        name: {
+          label: 'Name',
+          type: 'text'
+        },
+        type: {
+          label: 'Typ',
+          type: 'text'
+        }
+      }
+    },
+    active: {
+      type: 'checkbox',
+      label: 'Aktiv',
+      attributes: { readOnly: true }
+    },
     extractors: {
       type: 'array',
       label: 'Extraktoren',
@@ -46,64 +79,21 @@ export default (extractors) => ({
         label: '#$i',
         children: {
           name: {
-            type: 'text',
-            label: 'Name'
+            type: 'select',
+            label: 'Typ',
+            attributes: {
+              values: extractors
+            }
           },
           propertyName: {
             type: 'text',
             label: 'Eigenschaft'
           },
           type: {
-            type: 'select',
-            label: 'Typ',
-            attributes: {
-              values: [{ label: 'NONE', value: 'NONE' }, { label: 'KIKUKO_CLASSIFIER', value: 'KIKUKO_CLASSIFIER' }]
-            }
-            /*
-            type: 'conditional',
-            label: 'Typ',
-            attributes: {
-              name2: 'name',
-              label2: 'Name',
-              values: extractors
-            }
-            */
+            type: 'hidden'
           }
         }
       }
-    },
-    sentimentAnalyzer: {
-      type: 'object',
-      label: 'Sentiment',
-      children: {
-        name: {
-          label: 'Name',
-          type: 'text'
-        },
-        type: {
-          label: 'Typ',
-          type: 'text'
-        }
-      }
-    },
-    emotionAnalyzer: {
-      type: 'object',
-      label: 'Emotion',
-      children: {
-        name: {
-          label: 'Name',
-          type: 'text'
-        },
-        type: {
-          label: 'Typ',
-          type: 'text'
-        }
-      }
-    },
-    active: {
-      type: 'checkbox',
-      label: 'Aktiv',
-      attributes: { readOnly: true }
     }
   }
 });

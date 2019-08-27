@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import { fetchData } from '../redux/actions/actions';
+import { fetchData } from '../redux/actions';
 import { connect } from 'react-redux';
 // import Collapsible from '../components/Collapsible';
 import Input from '../components/Input';

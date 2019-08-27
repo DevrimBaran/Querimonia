@@ -156,13 +156,13 @@
 .plus-item {
     position: absolute;
     opacity: 0.15;
-    color: green;
+    color: $primary;
     cursor: pointer;
     bottom: 10px;
     right: 30px;
     border-radius:50%;
 }
-.plus-item:hover {
+:hover > .plus-item {
     opacity: 1;
     background: white;
 }
@@ -267,10 +267,12 @@ a > i {
     & > div, & > input {
         width: 100%;
     }
-
+    & > i {
+        cursor: pointer;
+    }
 }
 .deep-object {
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     align-items: stretch;
     & + .deep-object {
@@ -284,15 +286,27 @@ a > i {
         text-align: center;
     }
     & > i {
-        padding: 0 5px;
+        cursor: pointer;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin: 5px auto 0;
         text-align: center;
         background-color: rgba($primary, 0.8);
+        &:hover {
+            background-color: rgba($primary, 1);
+        }
     }
 }
 .object > .object {
     display: flex;
     align-items: center;
     flex-direction: row;
+    flex-wrap: wrap;
+    & > h3 {
+        width: 100%;
+    }
 }
 .padding {
     padding: 0 30px;

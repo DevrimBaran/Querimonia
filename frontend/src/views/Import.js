@@ -15,6 +15,7 @@ import Block from './../components/Block';
 import Content from './../components/Content';
 import Row from './../components/Row';
 import Sentiment from './../components/Sentiment';
+// import Input from './../components/Input';
 
 class ImportBlock extends Component {
   constructor (props) {

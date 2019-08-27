@@ -90,6 +90,7 @@ class DeepObject extends Component {
       if (template.children) {
         return (
           <span className='deep-array' key={key}>
+            {template.label.replace(/\$i/g, (Number(key) + 1))}
             <DeepObject data={value} template={template} name={key} key={key} deepChange={this.deepChange} />
             <i className='fa fa-trash' onClick={this.remove(key)} />
           </span>
@@ -110,6 +111,7 @@ class DeepObject extends Component {
       if (template.type === 'array') {
         return (
           <React.Fragment>
+            {template.label && template.label.indexOf('$i') === -1 && <h3>{template.label}</h3>}
             {data.map(this.renderIndex)}
             <i className='fa fa-plus' onClick={this.add} />
           </React.Fragment>
@@ -119,7 +121,12 @@ class DeepObject extends Component {
         if (this.props.filter) {
           keys = keys.filter(this.props.filter);
         }
-        return (keys.map(this.renderKey));
+        return (
+          <React.Fragment>
+            {template.label && template.label.indexOf('$i') === -1 && <h3>{template.label}</h3> }
+            {keys.map(this.renderKey)}
+          </React.Fragment>
+        );
       }
     }
   }

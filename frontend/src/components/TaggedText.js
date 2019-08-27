@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import Tag from './Tag';
 import Modal from './Modal';
 import Button from '../components/Button';
-import { addEntity } from '../redux/actions/actions';
+import { addEntity } from '../redux/actions/';
 import Table from './Table';
 
 class TaggedText extends Component {
@@ -51,15 +51,6 @@ class TaggedText extends Component {
     return html;
   };
 
-  buildModal= (text) => {
-    const id = 'entityAdd_Modal';
-    let html = [];
-    html.push(<i id={id} className={'fas fa-plus-circle fa-2x'} />);
-    html.push(this.renderModal(id, text));
-    this.setState({
-      html: html
-    });
-  };
   addEntity = () => {
     let extractorLabel = document.getElementById('extractorChoose').value;
     let extractorInformation = this.state.extractorList[extractorLabel];
@@ -149,9 +140,7 @@ class TaggedText extends Component {
               {Object.keys(this.state.extractorList).map((extractor, i) => this.state.selectExtractor === extractor ? <option selected key={i}>{`${extractor}`}</option> : <option key={i}>{`${extractor}`}</option>)};
             </select></td>
             <td>
-              <textarea readOnly className='entitytextbox' name='note'>
-                {!this.state.editActive ? value : 'Bitte markieren sie den gewünschten Abschnitt!'}
-              </textarea>
+              <textarea readOnly className='entitytextbox' name='note' defaultValue={!this.state.editActive ? value : 'Bitte markieren sie den gewünschten Abschnitt!'} />
               <Button style={{ width: '50%', height: '25px', marginTop: '3px', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-marker' onClick={this.startEdit}>{!this.state.editActive ? 'Auswählen' : 'Abbrechen'}</Button>
             </td>
             <td>
@@ -165,15 +154,16 @@ class TaggedText extends Component {
 
   render () {
     const { text, entities } = { ...this.props };
-    if (!this.state.html) {
-      this.buildModal(text);
-    }
     return (
-      <span>{this.parseText(text, entities.calculated)}
+      <div>
+        <p>
+          <span>{this.parseText(text, entities.calculated)}</span>
+        </p>
         <div className='plus-item'>
-          {this.state.html}
-        </div></span>
-
+          <i id={'entityAdd_Modal'} className={'fas fa-plus-circle fa-2x'} />
+        </div>
+        {this.renderModal('entityAdd_Modal', text)};
+      </div>
     );
   }
 }

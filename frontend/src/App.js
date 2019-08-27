@@ -4,10 +4,11 @@
  */
 
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom';
+import { BrowserRouter as Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import View from './components/View';
+import Login from './components/Login';
 
 import Home from './views/Home';
 import Import from './views/Import';
@@ -19,10 +20,11 @@ import Complaints from './views/partials/Complaints';
 import Components from './views/partials/Component';
 import Config from './views/partials/Config';
 
-import logo from './assets/img/StuproLogo2.svg';
-import OpenApi from './components/OpenApi';
+// import OpenApi from './components/OpenApi';
 import Api from './utility/Api';
 import { ErrorPopupComponent } from './components/ErrorPopup';
+
+import logo from './assets/img/StuproLogo2.svg';
 
 function init () {
   return (dispatch, getState) => {
@@ -55,65 +57,29 @@ class App extends Component {
       basepath = '/';
     }
     return (
-      <Router basename={basepath}>
-        <nav id='menu'>
-          <a href={basepath}>
-            <img src={logo} id='logo' alt='logo' width='100%' />
-          </a>
-          <ul>
-            <li>
-              <NavLink activeClassName='active' to='/complaints'>Beschwerden</NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName='active' to='/import'>Import</NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName='active' to='/components'>Regeln</NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName='active' to='/config'>Konfigurationen</NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName='active' to='/wordvectors'>Wortvektoren</NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName='active' to='/tagcloud'>Worthäufigkeiten</NavLink>
-            </li>
-            <li>
-              <NavLink activeClassName='active' to='/stats'>Statistik</NavLink>
-            </li>
-            <li>
-              { /* wird nur in development und mock gerendered */ }
-              <OpenApi />
-            </li>
-          </ul>
-          <ul style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
-            <li>
-              <NavLink activeClassName='active' to='/impressum'>Impressum</NavLink>
-            </li>
-          </ul>
-        </nav>
-        <ErrorPopupComponent />
-
-        <View exact path='/' component={Home} />
-        <View endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-        <View endpoint='components' path='/components/:id?' component={Components} />
-        <View endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
-        <View path='/import' component={Import} />
-        {/*
-        <View endpoint='complaints' path='/complaints/:id?' component={Complaints} />
-        <Route exact path='/' component={Home} />
-        <Route path='/templates/:id?' component={TemplatesComponent >
-        <Route path='/config/:id?' component={Config} />
-        <Route path='/import' component={Import} />
-        <Route path='/export' component={Export} />
-        <Route path='/statistics' component={Statistics} />
-        */}
-        <Route path='/wordvectors' component={WordVectors} />
-        <Route path='/tagcloud' component={TagCloud} />
-        <Route path='/impressum' component={Impressum} />
-        <Route path='/stats' component={Stats} />
-      </Router>
+      <React.Fragment>
+        <Router basename={basepath}>
+          <nav id='menu'>
+            <a href='/'>
+              <img src={logo} id='logo' alt='logo' width='100%' />
+            </a>
+            <ul id='mainMenu' />
+            <div>
+              <Login />
+            </div>
+          </nav>
+          <ErrorPopupComponent />
+          <View role={['guest', 'user', 'admin']} exact path='/' component={Home} />
+          <View label='Beschwerden' role={['user', 'admin']} endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
+          <View label='Regeln' role={['admin']} endpoint='components' path='/components/:id?' component={Components} />
+          <View label='Konfigurationen' role={['admin']} endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
+          <View label='Import' role={['admin']} path='/import' component={Import} />
+          <View label='Wortvektoren' role={['user', 'admin']} path='/wordvectors' component={WordVectors} />
+          <View label='Wordhäufigkeit' role={['user', 'admin']} path='/tagcloud' component={TagCloud} />
+          <View label='Statistiken' role={['user', 'admin']} path='/stats' component={Stats} />
+          <View label='Impressum' role={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
+        </Router>
+      </React.Fragment>
     );
   }
 }

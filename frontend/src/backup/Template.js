@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { saveActive } from '../../redux/actions/actions';
+import { saveActive } from '../../redux/actions';
 
 import merge from 'deepmerge';
 

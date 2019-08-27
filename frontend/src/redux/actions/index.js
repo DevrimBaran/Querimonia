@@ -1,19 +1,39 @@
 import Api from '../../utility/Api';
 
-export function activate (endpoint, id) {
+export function setActive (endpoint, id) {
   return function (dispatch, getState) {
-    const { active } = getState()[endpoint].data;
-    dispatch((dispatch) => {
-      Api.put('/api/' + endpoint + '/' + active.id, active);
-    });
-    dispatch({
-      type: 'SET_ACTIVE',
-      endpoint: endpoint,
-      id: id
-    });
-    dispatch((dispatch) => {
-      Api.put('/api/' + endpoint + '/' + active.id, active);
-    });
+    const { byId, fetching } = getState()[endpoint].data;
+    if (fetching) console.log('setActive while fetching...');
+    if (byId[id]) {
+      dispatch({
+        type: 'SET_ACTIVE',
+        endpoint: endpoint,
+        id: id
+      });
+      if (endpoint === 'complaints') {
+        dispatch(fetchStuff(id));
+      }
+    } else {
+      dispatch((dispatch) => {
+        Api.get('/api/' + endpoint + '/' + id, {})
+          .then(data => {
+            console.log(data);
+            dispatch({
+              type: 'UPDATE_SINGLE',
+              endpoint: endpoint,
+              data: data
+            });
+            dispatch({
+              type: 'SET_ACTIVE',
+              endpoint: endpoint,
+              id: id
+            });
+            if (endpoint === 'complaints') {
+              dispatch(fetchStuff(id));
+            }
+          });
+      });
+    }
   };
 }
 export function saveActive (endpoint) {

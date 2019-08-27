@@ -37,20 +37,25 @@ class TextBuilder extends Component {
 
   render () {
     // const { ...passThrough } = { ...this.props };
+    const disableResponses = this.props.components.filter(c => !this.state.used[c.id]).length === 0;
+    const disableActions = this.props.actions.length === 0;
     return (
       <React.Fragment>
         <Input type='textarea' min='5' value={this.state.response} onChange={this.changeText} />
-        <Collapsible label='Antworten / Aktionen' />
+        <Collapsible label='Antworten / Aktionen'
+          disabled={disableResponses && disableActions}
+          collapse={disableResponses && disableActions}
+        />
         <Content>
           <Tabbed>
-            <div label='Antworten'>
+            <div label='Antworten' disabled={disableResponses}>
               {
                 this.props.components.filter(c => !this.state.used[c.id]).map((component, i) => (
                   <Response key={component.id} component={component.component} onSelect={(e) => { this.onSelect(e.value, component.id); }} />
                 ))
               }
             </div>
-            <div label='Aktionen'>
+            <div label='Aktionen' disabled={disableActions}>
               {this.props.actions.map((action, index) => (
                 <Input type='checkbox' label={action.name} key={index} />
               ))}

@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { setCurrentConfig } from '../../redux/actions/actions';
+import { setCurrentConfig } from '../../redux/actions/';
 import template from '../../redux/templates/config';
 
 import Block from '../../components/Block';
