@@ -40,28 +40,41 @@ $inputBorder: 2px solid;
             position: relative;
             background-color: $white;
             box-sizing: content-box;
-            z-index: -1;
+            z-index: -2;
         }
     }
     input, textarea, select {
         font-family: inherit;
         position: relative;
         color: $primaryTextColor;
-        border: 1px solid $black;
+        border: 1.5px solid $black;
         border-radius: 10px;
         left: 0;
         padding: 10px 14px;
         height: 40px;
         width: 100%;
         min-width: 75px;
-        background-color: $white;
         outline: none;
         &:focus {
             border-color: $primary;
         }
     }
+
     input[type=submit], input[type=button], button {
         max-width: 200px;
+        background-color: $primaryAccentColorActive;
+        color: $primaryTextColor;
+        font-weight: bold;
+        box-shadow: 0 7px $grey;
+        border: none;
+        &:hover {
+            background-color: $primaryAccentColor;
+        }
+        &:active {
+            background-color: $primaryAccentColor;
+            box-shadow: 0 4px $dimgray;
+            transform: translateY(2px);
+        }
     }
     select {
         padding-left: 10px; /* chrome + ff add aditional padding to selects -.- */
@@ -74,85 +87,85 @@ $inputBorder: 2px solid;
     }
 }
 
-// /*
-// *   Buttons
-// **/
-
-// input[type=submit], input[type=button], button {
-//     @extend %inputs;
-//     @extend %standardSize;
-//     background-color: $buttonColor;
-//     display: block;
-//     cursor: pointer;
-//     &[disabled] {
-//         cursor: not-allowed;
-//     }
-// }
-
-// input[type=submit]:hover, input[type=button]:hover, button:hover {
-//     background-color: $buttonColorHover;
-// }
-
-// input[type=submit].important, input[type=button].important, button.important {
-//     background-color: $secondaryAccentColor;
-//     border-color: $primaryTextColor;
-//     color: $inverseTextColor;
-//     font-weight: bold;
-// }
-
-// input[type=submit].important:hover, input[type=button].important:hover, button.important:hover {
-//     background-color: $secondaryAccentColorActive;
-// }
-
-// /*
-// *   Inputfelder (mit Text)
-// **/
-
-// input[type=text], input[type=date], input[type=number] {
-//     @extend %font;
-//     @extend %inputs;
-//     @extend %standardSize;
-//     padding-left: 5px;
-//     margin: $inputMargin;
-// }
-
-// /*
-// *   Textareas
-// **/
-
-// textarea {
-//     @extend %inputs;
-//     @extend %font;
-//     width: 100%;
-//     height: 150px;
-//     .visible {
-//         padding-left: 5px;
-//     }
-// }
-
-// /*
-// *   Checkboxen
-// **/
-
-// input[type="checkbox"] {
-//     @extend %inputs;
-//     width: 2em;
-//     height: 2em;
-//     display: block;
-//     margin-left: auto;
-//     margin-right: auto;
-// }
-
-// input[type="checkbox"] + label::before {
-//     @extend %inputs;
-//     display: block;
-//     content: "";
-//     float: left;
-//     margin-right: 5px;
-// }
-
-// input[type="checkbox"]:checked+label::before {
-//     box-shadow: inset 0px 0px 0px 3px #fff;
-//     background-color: #8cad2d;
-// }
+ ///*
+ //*   Buttons
+ //**/
+ //
+ //input[type=submit], input[type=button], button {
+ //    @extend %inputs;
+ //    @extend %standardSize;
+ //    background-color: $buttonColor;
+ //    display: block;
+ //    cursor: pointer;
+ //    &[disabled] {
+ //        cursor: not-allowed;
+ //    }
+ //}
+ //
+ //input[type=submit]:hover, input[type=button]:hover, button:hover {
+ //    background-color: $buttonColorHover;
+ //}
+ //
+ //input[type=submit].important, input[type=button].important, button.important {
+ //    background-color: $secondaryAccentColor;
+ //    border-color: $primaryTextColor;
+ //    color: $inverseTextColor;
+ //    font-weight: bold;
+ //}
+ //
+ //input[type=submit].important:hover, input[type=button].important:hover, button.important:hover {
+ //    background-color: $secondaryAccentColorActive;
+ //}
+ //
+ ///*
+ //*   Inputfelder (mit Text)
+ //**/
+ //
+ //input[type=text], input[type=date], input[type=number] {
+ //    @extend %font;
+ //    @extend %inputs;
+ //    @extend %standardSize;
+ //    padding-left: 5px;
+ //    margin: $inputMargin;
+ //}
+ //
+ ///*
+ //*   Textareas
+ //**/
+ //
+ //textarea {
+ //    @extend %inputs;
+ //    @extend %font;
+ //    width: 100%;
+ //    height: 150px;
+ //    .visible {
+ //        padding-left: 5px;
+ //    }
+ //}
+ //
+ ///*
+ //*   Checkboxen
+ //**/
+ //
+ //input[type="checkbox"] {
+ //    @extend %inputs;
+ //    width: 2em;
+ //    height: 2em;
+ //    display: block;
+ //    margin-left: auto;
+ //    margin-right: auto;
+ //}
+ //
+ //input[type="checkbox"] + label::before {
+ //    @extend %inputs;
+ //    display: block;
+ //    content: "";
+ //    float: left;
+ //    margin-right: 5px;
+ //}
+ //
+ //input[type="checkbox"]:checked+label::before {
+ //    box-shadow: inset 0px 0px 0px 3px #fff;
+ //    background-color: #8cad2d;
+ //}
 

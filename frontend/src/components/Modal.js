@@ -7,6 +7,7 @@
 
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import Button from '../components/Button';
 
 class Modal extends Component {
   constructor (props) {
@@ -30,29 +31,31 @@ class Modal extends Component {
     }
   }
   componentDidMount = () => {
-    const elements = document.querySelectorAll(this.state.htmlFor);
-    elements.forEach((element) => {
+    const element = document.getElementById(this.state.htmlFor);
+    if (element) {
       element.classList.add('hasModal');
       element.addEventListener('click', this.onClick);
-    });
+    }
   }
   componentWillUnmount = () => {
-    const elements = document.querySelectorAll(this.state.htmlFor);
-    elements.forEach((element) => {
+    const element = document.getElementById(this.state.htmlFor);
+    if (element) {
       element.classList.remove('hasModal');
       element.removeEventListener('click', this.onClick);
-    });
+    }
   }
   render () {
-    const { htmlFor } = { ...this.props };
+    const { title, htmlFor } = { ...this.props };
     return (
       ReactDOM.createPortal(
         (<div ref={this.modal} className='modal' htmlFor={htmlFor} >
           <div className='background' onClick={this.hideModals} />
           <div className='content'>
-            <i style={{ color: 'red', cursor: 'pointer', display: 'block', float: 'right' }} onClick={this.hideModals} className='far fa-times-circle fa-x' />
+            <b style={{ align: 'center' }}>{title}</b>
+            <br />
             <br />
             {this.props.children}
+            <Button style={{ position: 'absolute', right: 25, bottom: 15, cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-door-open' onClick={this.hideModals}>Beenden</Button>
           </div>
         </div>),
         document.body

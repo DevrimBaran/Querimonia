@@ -49,4 +49,5 @@ a, .a {
 }
 label, .label {
     @extend %font;
+    letter-spacing: 0.5px;
 }

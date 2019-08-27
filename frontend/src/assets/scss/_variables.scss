@@ -2,9 +2,10 @@
 **/
 $black: #202124;
 $white: #fff;
-$lightgrey: rgba(0, 0, 0, 0.04);
-$grey: rgba(0,0,0,.12);
+$lightgrey: rgba(40, 40, 40, 0.04);
+$grey: rgba(0,0,0,.22);
 $primary: #179c7d;
+$dimgray: dimgray;
 $secondary: rgb(31, 130, 191);
 
 /*Benutzt diese Farben!
@@ -47,6 +48,7 @@ $standardmarginleft: $standardmargin;
 .white {
     color: $white;
 }
+
 .lightgrey {
     color: $lightgrey;
 }

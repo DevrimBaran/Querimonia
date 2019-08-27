@@ -133,11 +133,11 @@ class TagCloud extends Component {
             <div>
               <Row vertical={false} style={{ justifyContent: 'space-around' }}>
                 <div>
-                  <label htmlFor='minDate'>Von:</label><br />
+                  <label htmlFor='minDate'>Eingangsdatum (von):</label><br />
                   <input type='date' id='minDate' ref='minDate' />
                 </div>
                 <div>
-                  <label htmlFor='maxDate'>Bis:</label><br />
+                  <label htmlFor='maxDate'>Eingangsdatum (bis):</label><br />
                   <input type='date' id='maxDate' ref='maxDate' />
                 </div>
                 <div>
