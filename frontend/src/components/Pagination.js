@@ -7,7 +7,7 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchData } from '../redux/actions';
+import { fetchData } from '../redux/actions/actions';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 

@@ -15,11 +15,12 @@ class Collapsible extends Component {
       this.setState({ collapse: !this.state.collapse });
     }
     render () {
+      let { style, disabled, collapse, label, ...passThrough } = { ...this.props };
       return (
-        <div id={this.props.id} className={'collapsible'} data-collapse={this.state.collapse} style={this.props.style || {}}>
-          <span onClick={this.handleClick} className='handle'>
+        <div className={disabled ? 'collapsible disabled' : 'collapsible'} data-collapse={this.state.collapse} style={style || {}} {...passThrough} >
+          <span onClick={disabled ? undefined : this.handleClick} className='handle'>
             <i className={this.state.collapse ? 'fa fa-caret-right' : 'fa fa-caret-down'} />
-            <span className='h6'>{this.props.label}</span>
+            <span className='h6'>{label}</span>
           </span>
         </div>
       );

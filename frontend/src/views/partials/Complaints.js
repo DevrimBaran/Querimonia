@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { changeEntityPreference, fetchStuff, refreshComplaint } from '../../redux/actions';
+import { changeEntityPreference, fetchStuff, refreshComplaint } from '../../redux/actions/actions';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
@@ -199,7 +199,10 @@ function Single (active, dispatch, helpers) {
               </tbody>
             </Table>
           </div>
-          <Collapsible label='Entitäten' />
+          <Collapsible label='Entitäten'
+            disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+            collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+          />
           <Content>
             <Table className='details-table'>
               <thead>
@@ -233,7 +236,10 @@ function Single (active, dispatch, helpers) {
               </tbody>
             </Table>
           </Content>
-          <Collapsible label='Kombinationen' />
+          <Collapsible label='Kombinationen'
+            disabled={helpers.props.complaintStuff.combinations && helpers.props.complaintStuff.combinations.length === 0}
+            collapse={helpers.props.complaintStuff.combinations && helpers.props.complaintStuff.combinations.length === 0}
+          />
           <Content>
             <Table>
               <thead>

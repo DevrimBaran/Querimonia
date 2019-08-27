@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import Tag from './Tag';
 import Modal from './Modal';
 import Button from '../components/Button';
-import { addEntity } from '../redux/actions';
+import { addEntity } from '../redux/actions/actions';
 import Table from './Table';
 
 class TaggedText extends Component {

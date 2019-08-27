@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { changeEntity, deleteEntity, addEntity } from '../redux/actions';
+import { changeEntity, deleteEntity, addEntity } from '../redux/actions/actions';
 
 class Tag extends Component {
   constructor (props) {

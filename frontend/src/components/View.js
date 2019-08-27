@@ -9,7 +9,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Route, Link } from 'react-router-dom';
 
-import { saveActive, fetchData, remove } from '../redux/actions';
+import { saveActive, fetchData, remove } from '../redux/actions/actions';
 
 import Block from './Block';
 import Row from './Row';
@@ -189,4 +189,8 @@ class View extends Component {
   }
 }
 
-export default View;
+const mapSateToProps = (state, props) => {
+  return { login: state.login };
+};
+
+export default connect(mapSateToProps)(View);

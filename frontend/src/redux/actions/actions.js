@@ -1,4 +1,4 @@
-import Api from '../utility/Api';
+import Api from '../../utility/Api';
 
 export function activate (endpoint, id) {
   return function (dispatch, getState) {

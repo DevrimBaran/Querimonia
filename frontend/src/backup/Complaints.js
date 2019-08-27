@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchData, fetchCurrentConfig } from '../redux/actions';
+import { fetchData, fetchCurrentConfig } from '../redux/actions/actions';
 
 import Complaint from './partials/Complaint';
 import Api from '../utility/Api';

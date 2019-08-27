@@ -35,6 +35,16 @@
             background-color: $primaryBackgroundColor;
         }
     }
+    &.disabled .handle {
+        color: $grey;
+        cursor: initial;
+        &::before {
+            border-top: 1px solid $tertiaryBackgroundColor;
+        }
+        span {
+            color: $grey;
+        }
+    }
     &[data-collapse=true] {
         & + * {
             display: none;
