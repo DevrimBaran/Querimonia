@@ -657,8 +657,9 @@ public class ComplaintManager {
 
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     complaintFactory.createResponse(builder);
-
     storeComplaint(builder.createComplaint());
+
+    // reloading from db for correct ids
     return getComplaint(complaintId).getResponseSuggestion();
   }
 
