@@ -101,10 +101,10 @@ public class RuleTest {
   public void testEntityRule() {
     ComplaintBuilder complaint = new ComplaintBuilder(COMPLAINT_F);
     List<CompletedResponseComponent> completedResponseComponents = Collections.emptyList();
-    EntityRule entityRule1 = new EntityRule("Name", "Peter");
-    EntityRule entityRule2 = new EntityRule("Eingangsdatum", "2019-06-20");
-    EntityRule entityRule3 = new EntityRule("Eingangszeit", "12:00");
-    EntityRule entityRule4 = new EntityRule("Datum", "heute");
+    EntityRule entityRule1 = new EntityRule("Name", "Peter", 1, 1);
+    EntityRule entityRule2 = new EntityRule("Eingangsdatum", "2019-06-20", 1, 1);
+    EntityRule entityRule3 = new EntityRule("Eingangszeit", "12:00", 1, 1);
+    EntityRule entityRule4 = new EntityRule("Datum", "heute", 1, 1);
 
     assertTrue(entityRule1.isRespected(complaint, completedResponseComponents));
     assertTrue(entityRule2.isRespected(complaint, completedResponseComponents));
