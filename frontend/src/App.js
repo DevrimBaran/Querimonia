@@ -15,7 +15,7 @@ import Import from './views/Import';
 import WordVectors from './views/WordVectors';
 import TagCloud from './views/TagCloud';
 import Impressum from './views/Impressum';
-import Stats from './views/Stats';
+import Statistics from './views/Statistics';
 import Complaints from './views/partials/Complaints';
 import Components from './views/partials/Component';
 import Config from './views/partials/Config';
@@ -60,24 +60,22 @@ class App extends Component {
       <React.Fragment>
         <Router basename={basepath}>
           <nav id='menu'>
-            <a href='/'>
+            <a href={basepath}>
               <img src={logo} id='logo' alt='logo' width='100%' />
             </a>
             <ul id='mainMenu' />
-            <div>
-              <Login />
-            </div>
+            <Login />
           </nav>
           <ErrorPopupComponent />
-          <View role={['guest', 'user', 'admin']} exact path='/' component={Home} />
-          <View label='Beschwerden' role={['user', 'admin']} endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-          <View label='Regeln' role={['admin']} endpoint='components' path='/components/:id?' component={Components} />
-          <View label='Konfigurationen' role={['admin']} endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
-          <View label='Import' role={['admin']} path='/import' component={Import} />
-          <View label='Wortvektoren' role={['user', 'admin']} path='/wordvectors' component={WordVectors} />
-          <View label='Wordhäufigkeit' role={['user', 'admin']} path='/tagcloud' component={TagCloud} />
-          <View label='Statistiken' role={['user', 'admin']} path='/stats' component={Stats} />
-          <View label='Impressum' role={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
+          <View accessRole={['guest', 'user', 'admin']} exact path='/' component={Home} />
+          <View label='Beschwerden' accessRole={['user', 'admin']} endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
+          <View label='Regeln' accessRole={['admin']} endpoint='components' path='/components/:id?' component={Components} />
+          <View label='Konfigurationen' accessRole={['admin']} endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
+          <View label='Import' accessRole={['admin']} path='/import' component={Import} />
+          <View label='Wortvektoren' accessRole={['user', 'admin']} path='/wordvectors' component={WordVectors} />
+          <View label='Wordhäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
+          <View label='Statistiken' accessRole={['user', 'admin']} path='/stats' component={Statistics} />
+          <View label='Impressum' accessRole={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
         </Router>
       </React.Fragment>
     );

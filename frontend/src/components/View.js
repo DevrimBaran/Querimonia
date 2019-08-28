@@ -8,13 +8,12 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Route, Switch, NavLink } from 'react-router-dom';
+import { Route, NavLink, Redirect } from 'react-router-dom';
 import Debug from './Debug';
 import Tabbed from './Tabbed';
 import SingleView from './SingleView';
 import ListView from './ListView';
 
-const mainMenu = document.getElementById('mainMenu');
 class View extends Component {
   constructor (props) {
     super(props);
@@ -40,25 +39,22 @@ class View extends Component {
         </Tabbed>
       );
     }
-    if (this.props.role && !this.props.role.includes(this.props.login.role)) {
-      return <React.Fragment />;
+    if (this.props.accessRole && !this.props.accessRole.includes(this.props.login.role)) {
+      return <Redirect to='/' from={path} />;
     }
-    console.log(mainMenu);
     if (endpoint) {
       return (
         <React.Fragment>
           {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={'/' + endpoint}>{label}</NavLink>), this.li)}
-          <Switch>
-            <Route {...injected} path={'/' + endpoint + '/:id'} endpoint={endpoint} component={SingleView(endpoint, component, stateToProps)} />
-            <Route {...injected} path={'/' + endpoint} endpoint={endpoint} component={ListView(endpoint, component, stateToProps)} />
-          </Switch>
+          <Route {...injected} exact path={'/' + endpoint + '/:id'} endpoint={endpoint} component={SingleView(endpoint, component, stateToProps)} />
+          <Route {...injected} exact path={'/' + endpoint} endpoint={endpoint} component={ListView(endpoint, component, stateToProps)} />
         </React.Fragment>
       );
     } else {
       return (
         <React.Fragment>
           {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={path}>{label}</NavLink>), this.li)}
-          <Route {...injected} path={path} component={component} />
+          <Route {...injected} exact path={path} component={component} />
         </React.Fragment>
       );
     }
