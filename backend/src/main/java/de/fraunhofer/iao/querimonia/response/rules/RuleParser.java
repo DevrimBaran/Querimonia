@@ -148,7 +148,15 @@ public class RuleParser {
     if (element.hasAttribute("matches")) {
       value = element.getAttribute("matches");
     }
-    return new EntityRule(element.getAttribute("label"), value);
+    int countMin = 1;
+    if (element.hasAttribute("countMin")) {
+      countMin = Integer.parseInt(element.getAttribute("countMin"));
+    }
+    int countMax = Integer.MAX_VALUE;
+    if (element.hasAttribute("countMax")) {
+      countMax = Integer.parseInt(element.getAttribute("countMax"));
+    }
+    return new EntityRule(element.getAttribute("label"), value, countMin, countMax);
   }
 
   private static Rule getUploadTimeRule(Element element) {

@@ -60,6 +60,7 @@ public class QuerimoniaException extends ResponseStatusException {
     return timestamp;
   }
 
+  @JsonProperty("status")
   public int getStatusCode() {
     return statusCode;
   }

@@ -80,7 +80,7 @@ public class RuleParserTest {
 
   @Test
   public void testRuleEntityAvailable() {
-    EntityRule correctRule = new EntityRule("Name", "Peter");
+    EntityRule correctRule = new EntityRule("Name", "Peter", 1, Integer.MAX_VALUE);
     EntityRule testRule = (EntityRule) RuleParser.parseRules("<Rules>" +
         "<EntityAvailable label=\"Name\" matches=\"Peter\" />" +
         "</Rules>");
@@ -107,7 +107,7 @@ public class RuleParserTest {
 
   @Test
   public void testRuleNot() {
-    NotRule correctRule = new NotRule(new EntityRule("Name", "Hans"));
+    NotRule correctRule = new NotRule(new EntityRule("Name", "Hans", 1,Integer.MAX_VALUE));
     NotRule testRule = (NotRule) RuleParser.parseRules("<Rules>" +
         "<Not>" +
         "<EntityAvailable label=\"Name\" matches=\"Hans\" />" +
@@ -118,8 +118,8 @@ public class RuleParserTest {
 
   @Test
   public void testRuleOr() {
-    OrRule correctRule = new OrRule(List.of(new EntityRule("Name", "Hans"),
-        new EntityRule("Name", "Peter")));
+    OrRule correctRule = new OrRule(List.of(new EntityRule("Name", "Hans", 1, Integer.MAX_VALUE),
+        new EntityRule("Name", "Peter", 1, Integer.MAX_VALUE)));
     OrRule testRule = (OrRule) RuleParser.parseRules("<Rules>" +
         "<Or>" +
         "<EntityAvailable label=\"Name\" matches=\"Hans\" />" +
@@ -131,8 +131,8 @@ public class RuleParserTest {
 
   @Test
   public void testRuleAnd() {
-    AndRule correctRule = new AndRule(List.of(new EntityRule("Name", "Hans"),
-        new EntityRule("Name", "Peter")));
+    AndRule correctRule = new AndRule(List.of(new EntityRule("Name", "Hans", 1, Integer.MAX_VALUE),
+        new EntityRule("Name", "Peter", 1, Integer.MAX_VALUE)));
     AndRule testRule = (AndRule) RuleParser.parseRules("<Rules>" +
         "<And>" +
         "<EntityAvailable label=\"Name\" matches=\"Hans\" />" +
