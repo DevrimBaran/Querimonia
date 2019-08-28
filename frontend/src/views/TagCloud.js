@@ -11,9 +11,49 @@ import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
 import Api from './../utility/Api';
-import WordCloud from 'react-d3-cloud';
-import Table from './../components/Table';
+import D3 from './../components/D3';
 import Input from './../components/Input';
+
+var cloud = require('../assets/js/d3.layout.cloud');
+const renderCloud = (target, data, d3) => {
+  let draw = (words) => {
+    d3.select(target).select('svg')
+      .attr('width', layout.size()[0])
+      .attr('height', layout.size()[1])
+      .append('g')
+      .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
+      .selectAll('text')
+      .data(words)
+      .enter().append('text')
+      .style('font-size', function (d) { return d.size + 'px'; })
+      .attr('text-anchor', 'middle')
+      .attr('transform', function (d) {
+        return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
+      })
+      .text(function (d) { return d.text; });
+  };
+
+  let layout = cloud()
+    .size([target.clientWidth, target.clientHeight])
+    .words(data)
+    .padding(5)
+    .rotate(function () { return 0; })
+    .fontSize(function (d) { return d.size; })
+    .on('end', draw);
+
+  layout.start();
+};
+const renderList = (target, data, d3) => {
+  let row = d3.select(target).select('table')
+    .selectAll('tr')
+    .data(data)
+    .enter()
+    .append('tr');
+  row.append('td')
+    .text(d => d.text);
+  row.append('td')
+    .text(d => d.value);
+};
 
 class TagCloud extends Component {
   constructor (props) {
@@ -130,7 +170,6 @@ class TagCloud extends Component {
         <Block>
           <Row vertical>
             <h1 className='center'>Worthäufigkeiten</h1>
-            <br />
             <div>
               <Row vertical={false} style={{ justifyContent: 'space-around' }}>
                 <div>
@@ -154,46 +193,30 @@ class TagCloud extends Component {
               <input type='button' onClick={this.fetchData} value='Aktualisieren' />
             </div>
             <br />
+            <Content>
+              <D3
+                render={this.state.cloudActive ? renderCloud : renderList}
+                data={this.createWordArray(this.state.words)}
+                style={{ width: '100%', height: '100%' }}
+              >
+                {this.state.cloudActive ? <svg /> : <table />}
+              </D3>
+              {/* <WordCloud
+                data={this.createWordArray(this.state.words)}
+                width={window.innerWidth / 100 * 80}
+                // 190 = Filterbar + Downloadbar
+                height={window.innerHeight - 190}
+                padding={0.5}
+                font={'Impact'}
+                //    onWordClick = {()=>{console.log()}}
+              /> */}
+            </Content>
             {this.state.cloudActive
-              ? (<Content className='center' id='TagCloud'>
-                <WordCloud
-                  data={this.createWordArray(this.state.words)}
-                  width={window.innerWidth / 100 * 80}
-                  // 190 = Filterbar + Downloadbar
-                  height={window.innerHeight - 190}
-                  padding={0.5}
-                  font={'Impact'}
-                  //    onWordClick = {()=>{console.log()}}
-                />
-              </Content>)
-              : (<Content className='center' id='OccurrenceList'>
-                <Table className='table'>
-                  <thead>
-                    <tr>
-                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>
-                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Anzahl</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.createWordArray(this.state.words).map((element) => {
-                      return (
-                        <tr><td style={{ borderStyle: 'solid' }}>{element['text']}</td>
-                          <td style={{ borderStyle: 'solid' }}>{element['size']}</td>
-                        </tr>);
-                    })}
-                  </tbody>
-                </Table>
-
-              </Content>)}
+              ? (<i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
+                onClick={this.exportSvg} />)
+              : (<i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
+                onClick={this.exportCsv} />)}
           </Row>
-          {this.state.cloudActive
-            ? (<Content className='center' id='TagCloud'>
-              <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
-                onClick={this.exportSvg} /></Content>)
-            : (<Content className='center' id='TagCloud'>
-              <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
-                onClick={this.exportCsv} /> </Content>)}
-
         </Block>
       </React.Fragment>
     );
