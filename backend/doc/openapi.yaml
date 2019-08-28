@@ -5,7 +5,7 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.9.0
+  version: 0.9.1
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev
   - url: https://beschwerdemanagement.iao.fraunhofer.de
@@ -1729,6 +1729,115 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/stats/categoriesStats:
+    get:
+      tags:
+        - stats
+      summary: Gibt Statistiken für jede vorkommende Kategorie zurück.
+      description: Gibt eine Map zurück, die die Anzahl der Beschwerden, durchschnittliche Tendency, Emotion und die Aufteilung der Stati für jede Kategorie darstellt.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der häufigsten Kategorien, die maximal zurückgegben werden sollen. Ohne Angabe werden alle zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 32
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+      operationId: getCategorieStats
+      responses:
+        200:
+          description: Die häufigsten Kategorien mit den jeweiligen Statistiken.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesStats'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/stats/entitiesStats:
+    get:
+      tags:
+        - stats
+      summary: Gibt die häufigsten gefundenen Entitäten für jeden Entitätstyp zurück.
+      description: Gibt eine Map zurück, der die häufigsten gefundenen Entitäten für jeden Entitätstyp darstellt.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der häufigsten gefundenen Entitäten für jeden Entitätstyp, die maximal zurückgegben werden sollen. Ohne Angabe werden alle zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 32
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+      operationId: getEntitieStats
+      responses:
+        200:
+          description: Die häufigsten gefundenen Entitäten für jeden Entitätstyp.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EntitiesStats'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/stats/rulesStats:
+    get:
+      tags:
+        - stats
+      summary: Gibt die am häufigsten genutzten Regeln mit ihrer Verwendungsanzahl zurück.
+      description: Gibt eine Map zurück, die die ID der Regel mit ihrer Verwendungsanzahl darstellt.
+      parameters:
+        - name: count
+          in: query
+          description: Anzahl der am häufigsten genutzten Regeln, die maximal zurückgegben werden sollen. Ohne Angabe werden alle zurückgegeben.
+          required: false
+          schema:
+            type: integer
+            format: int32
+            example: 32
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/EmotionParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+      operationId: getRuleStats
+      responses:
+        200:
+          description: Die am häufigsten genutzten Regeln mit ihrer Verwendungsanzahl.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RulesStats'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/stats/monthsStats:
+    get:
+      tags:
+        - stats
+      summary: Gibt Statistiken für jeden Monat zurück.
+      description: Gibt eine Map zurück, die die Anzahl der Beschwerden und die Aufteilung der Stati für jeden Monat darstellt.
+      parameters:
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+      operationId: getMonthStats
+      responses:
+        200:
+          description: Die Monate mit den jeweiligen Statistiken.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MonthsStats'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
   /api/reset:
     post:
       tags:
@@ -2577,6 +2686,117 @@ components:
         "Fahrer": 32
         "Bus": 29
         "fahren": 24
+
+    CategoriesStats:
+      description: Enthält die häufigsten Kategorien mit den jeweiligen Statistiken
+      type: object
+      properties:
+        Sonstiges:
+          $ref: '#/components/schemas/CategoryStats'
+        Fahrt nicht erfolgt:
+          $ref: '#/components/schemas/CategoryStats'
+        Fahrer unfreundlich:
+          $ref: '#/components/schemas/CategoryStats'
+
+    CategoryStats:
+      description: Enthält die Statistiken zu einer Kategorie
+      type: object
+      properties:
+        count:
+          description: Emotionen mit ihren Häufigkeiten.
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+          example:
+            32
+        tendency:
+          description: Emotionen mit ihren Häufigkeiten.
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+          example:
+            -0.42
+        emotion:
+          description: Emotionen mit ihren Häufigkeiten.
+          type: object
+          additionalProperties:
+            type: integer
+            format: int64
+          example:
+            "Freude": 17
+            "Trauer": 11
+            "Ueberraschung": 4
+        status:
+          description: Stati mit ihren Häufigkeiten.
+          type: object
+          example:
+            "ERROR": 0.1
+            "ANALYSING": 0.1
+            "NEW": 0.3
+            "IN_PROGRESS": 0.1
+            "CLOSED": 0.4
+
+    EntitiesStats:
+      description: Enthält die Entitätstypen mit den häufigsten vorkommenden Werten
+      type: object
+      properties:
+        Linie:
+          $ref: '#/components/schemas/EntityStats'
+        Haltestelle:
+          $ref: '#/components/schemas/EntityStats'
+        Geldbetrag:
+          $ref: '#/components/schemas/EntityStats'
+
+    EntityStats:
+      description: Enthält die Anzahl der Vorkommen von Entitäten zu einem Entitätstyp
+      type: object
+      example:
+        "CE62": 8
+        "3.15€": 2
+
+    RulesStats:
+      description: Enthält die am häufigsten verwendeten Regeln (ID) mit der jeweiligen Anzahl
+      type: object
+      additionalProperties:
+        type: integer
+        format: int64
+      example:
+        "312": 14
+        "253": 6
+        "123": 2
+
+    MonthsStats:
+      description: Enthält Monate mit den jeweiligen Statistiken
+      type: object
+      properties:
+        2019-6:
+          $ref: '#/components/schemas/MonthStats'
+        2019-7:
+          $ref: '#/components/schemas/MonthStats'
+        2019-8:
+          $ref: '#/components/schemas/MonthStats'
+
+    MonthStats:
+      description: Enthält die Statistiken zu einem Monat
+      type: object
+      properties:
+        count:
+          description: Emotionen mit ihren Häufigkeiten.
+          type: object
+          example:
+            32
+        status:
+          description: Stati mit ihren Häufigkeiten.
+          type: object
+          example:
+            "ERROR": 0.1
+            "ANALYSING": 0.1
+            "NEW": 0.3
+            "IN_PROGRESS": 0.1
+            "CLOSED": 0.4
+
 
     QuerimoniaException:
       description: Rückgabetyp im Fehlerfall.
