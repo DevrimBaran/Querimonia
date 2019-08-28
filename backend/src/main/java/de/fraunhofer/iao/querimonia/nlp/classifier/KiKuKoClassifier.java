@@ -15,7 +15,7 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
   private final String categoryName;
 
   public KiKuKoClassifier(String domainName, String categoryName) {
-    super("tool", domainName);
+    super("pipeline", domainName);
     this.categoryName = categoryName;
   }
 
@@ -32,7 +32,7 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
 
     Map<String, Double> probs =
         response.getPipelines()
-            .get("TempPipeline")
+            .get(domainName)
             .get(0)
             .getTyp();
 

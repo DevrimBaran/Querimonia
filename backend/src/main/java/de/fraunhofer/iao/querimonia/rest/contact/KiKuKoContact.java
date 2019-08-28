@@ -18,8 +18,8 @@ import java.io.IOException;
 public class KiKuKoContact {
 
   private static final String URL = "https://kikuko.iao.fraunhofer.de/apitext";
-  private final String domainType;
-  private final String domainName;
+  protected final String domainType;
+  protected final String domainName;
 
   protected KiKuKoContact(final String domainType, final String domainName) {
     if (!domainType.matches("(tool)|(domain)|(pipeline)")) {
