@@ -63,22 +63,25 @@ $inputBorder: 2px solid;
 
     input[type=submit], input[type=button], button {
         max-width: 200px;
-        background-color: $primaryAccentColorActive;
-        color: $primaryTextColor;
-        font-weight: bold;
+        background-color: $primaryAccentColor;
+        color: $white;
         box-shadow: 0 7px $grey;
         border: none;
+
+
         &:hover {
-            background-color: $primaryAccentColor;
+            background-color: $primaryAccentColorActive;
         }
         &:active {
-            background-color: $primaryAccentColor;
+            background-color: $primaryAccentColorActive;
             box-shadow: 0 4px $dimgray;
             transform: translateY(2px);
         }
     }
+
     select {
         padding-left: 10px; /* chrome + ff add aditional padding to selects -.- */
+
     }
     &.inline {
         margin: 0;

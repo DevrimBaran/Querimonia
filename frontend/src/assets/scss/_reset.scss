@@ -22,14 +22,3 @@ a {
     text-decoration: none;
     color: $secondary;
 }
-
-nav > ul {
-    list-style: none;
-    li > a {
-        display: block;
-        color: $black;
-        &:hover {
-            background-color: $lightgrey;
-        }
-    }
-}

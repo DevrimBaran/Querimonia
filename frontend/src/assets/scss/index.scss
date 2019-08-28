@@ -102,67 +102,8 @@ div.content{
     //padding:  1.3em var(--contentMargin) 0em var(--contentMargin);
     overflow: auto;
 }
-/* Groesste Ueberschrift */
-h1 {
-    font-size: 2em;
-    padding: 0em;
-    margin: 0.5em 0em 0.5em 0em;
-    color: var(--primaryTextColor);
-}
-/* Mittlere Ueberschrift */
-h2 {
-    font-size: 1.3em;
-    padding: 0em;
-    margin: 0.5em 0em 0.5em 0em;
-    color: var(--primaryTextColor);
-}
-/* Kleine Ueberschrift */
-h3 {
-    font-size: 1.1em;
-    color: var(--primaryTextColor);
-    margin-bottom: 0.5em;
-}
-/* Menuepunkte */
-h4 {
-    color: var(--secondaryTextColor);
-    font-size: 1.2em;
-    margin: 0px;
-}
-h4:hover {
-    color: var(--primaryAccentColor);
-}
 
-.menu a{
-    color: var(--secondaryTextColor);
-    font-size: 1.2em;
-    margin: 0px;
-    text-decoration: none;
-    font-weight: bold;
-}
-.menu a:hover {
-    color: var(--primaryAccentColor);
-}
 
-/* Titel für die Tabs */
-h5 {
-    color: var(--secondaryTextColor);
-    font-size: 1.3em;
-    font-weight: normal;
-    text-align: center;
-    margin: auto;
-    padding: 0.2em 0em 0em 0em;
-}
-h5:hover{
-    color: var(--primaryTextColor);
-}
-/* Label, die zwar sichtbar sind aber keine Aufmerksamkeit erregen müssen */
-h6 {
-    text-transform: uppercase;
-    font-size: 1em;
-    color: var(--secondaryTextColor);
-    padding: 0.5em 0em 0.5em 0em;
-    margin: 0em;
-}
 p {
     color: var(--primaryTextColor);
     margin: 0.3em 0.3em 0.3em 0em;
@@ -247,20 +188,6 @@ textarea:focus {
     text-align: right;
     padding-top: 0;
     margin: 0;
-}
-.menu ul{
-    display: inline-block;
-    width: auto;
-    list-style-type: none;
-    padding: 0px;
-}
-.menu li {
-    box-sizing: border-box;
-    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-    background-color: var(--primaryBackgroundColor);
-    padding: 0.3em 1em;
-    margin: auto;
-    margin-top: 0.6em;
 }
 /* Dieser Schatten umgibt groessere Fenster */
 .shadow {

@@ -22,9 +22,26 @@ const initialState = {
     },
     filter: [
       {
-        label: 'Stimmung',
+        label: 'Stichwort',
+        name: 'keywords',
+        multiple: true,
+        type: 'text'
+      },
+      {
+        label: 'Status',
+        name: 'status',
+        type: 'select',
+        values: [
+          { label: 'Neu', value: 'NEW' },
+          { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
+          { label: 'Geschlossen', value: 'CLOSED' }
+        ]
+      },
+      {
+        label: 'Emotionen',
         name: 'sentiment',
         type: 'select',
+
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },
@@ -45,22 +62,6 @@ const initialState = {
           { label: 'Sonstiges', value: 'Sonstiges' }
 
         ]
-      },
-      {
-        label: 'Status',
-        name: 'status',
-        type: 'select',
-        values: [
-          { label: 'Neu', value: 'NEW' },
-          { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
-          { label: 'Geschlossen', value: 'CLOSED' }
-        ]
-      },
-      {
-        label: 'Stichwort',
-        name: 'keywords',
-        multiple: true,
-        type: 'text'
       },
       {
         label: 'Eingangsdatum (von)',

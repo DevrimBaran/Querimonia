@@ -128,22 +128,22 @@ class TagCloud extends Component {
     return (
       <React.Fragment>
         <Block>
+          <h1 className='center'>Worthäufigkeiten</h1>
           <Row vertical>
-            <h1 className='center'>Worthäufigkeiten</h1>
             <br />
             <div>
               <Row vertical={false} style={{ justifyContent: 'space-around' }}>
                 <div>
-                  <Input type='date' label='Eingangsdatum (von):' id='minDate' ref='minDate' />
+                  <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref='minDate' />
                 </div>
                 <div>
-                  <Input type='date' label='Eingangsdatum (bis):' id='maxDate' ref='maxDate' />
-                </div>
-                <div>
-                  <Input type='checkbox' label='Nur Wörter anzeigen:' id='onlyWords' ref='onlyWords' defaultChecked />
+                  <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref='maxDate' />
                 </div>
                 <div>
                   <Input type='number' label='Wortanzahl:' id='count' ref='count' defaultValue='70' min='0' />
+                </div>
+                <div>
+                  <Input type='checkbox' label='Nur Wörter anzeigen:' id='onlyWords' ref='onlyWords' defaultChecked />
                 </div>
                 <div>
                   <Input type='checkbox' label='Listenansicht' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
@@ -151,7 +151,7 @@ class TagCloud extends Component {
               </Row>
             </div>
             <div className='center'>
-              <input type='button' onClick={this.fetchData} value='Aktualisieren' />
+              <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
             </div>
             <br />
             {this.state.cloudActive
