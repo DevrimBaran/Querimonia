@@ -107,6 +107,7 @@ div.content{
 p {
     color: var(--primaryTextColor);
     margin: 0.3em 0.3em 0.3em 0em;
+    max-width: 30em; //ungefähr 60 Zeichen pro Zeile
 }
 .small {
     font-size: 0.85em
