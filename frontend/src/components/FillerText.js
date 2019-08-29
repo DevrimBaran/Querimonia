@@ -47,6 +47,7 @@ class FillerText extends Component {
     };
   };
   onChange = (e) => {
+    console.log(e);
     const name = e.target.getAttribute('index');
     this.text[parseInt(name)] = e.value;
     this.props.onChange && this.props.onChange({

@@ -12,6 +12,7 @@ import CodeMirror from './CodeMirror';
 class Input extends Component {
   constructor (props) {
     super(props);
+    this.target = React.createRef();
     this.state = { conditional: null };
   }
     conditionalChange = (e) => {
@@ -59,7 +60,7 @@ class Input extends Component {
     componentDidMount = () => {
       if (this.props.defaultValue) {
         this.props.onChange && this.props.onChange({
-          target: null,
+          target: this.target.current,
           name: this.props.name,
           value: this.props.defaultValue
         });
@@ -82,7 +83,7 @@ class Input extends Component {
       let input;
       switch (this.props.type) {
         case 'select': {
-          input = (<select value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps}>
+          input = (<select value={value} name={name} onChange={this.onChange} ref={this.target} {...injectedProp} {...passThroughProps}>
             {this.props.required || <option key='null' value=''>-</option>}
             {
               values && values.map((data, i) => {
@@ -124,15 +125,15 @@ class Input extends Component {
           break;
         }
         case 'textarea': {
-          input = <Textarea value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <Textarea value={value} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
         case 'codemirror': {
-          input = <CodeMirror value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <CodeMirror value={value} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
         default: {
-          input = <input value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <input value={value} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
       }

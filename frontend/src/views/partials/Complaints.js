@@ -14,6 +14,7 @@ import Content from '../../components/Content';
 import Collapsible from '../../components/Collapsible';
 import Sentiment from '../../components/Sentiment';
 import Tag from '../../components/Tag';
+import EditEntityModal from '../../components/EditEntityModal';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 import TaggedText from '../../components/TaggedText';
@@ -142,6 +143,7 @@ function Single (active, dispatch, helpers) {
               </div>
             </Tabbed>
           </Content>
+          <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
           <div style={{ display: 'none' }}>
             <div style={{ display: 'block', paddingTop: '10px', margin: 'auto', textAlign: 'center', borderTop: '1px solid lightGrey', width: '90%', marginTop: '10px' }}>
               <i style={editActive ? { color: 'rgb(36,191,64)', cursor: 'pointer' } : { color: 'rgb(158,72,59)', cursor: 'pointer' }}
@@ -248,7 +250,7 @@ function Single (active, dispatch, helpers) {
                 </tr>
               </thead>
               <tbody>
-                {helpers.props.complaintStuff.combinations.map((combination, index) => (
+                {helpers.props.complaintStuff.combinations && helpers.props.complaintStuff.combinations.map && helpers.props.complaintStuff.combinations.map((combination, index) => (
                   <tr key={index}>
                     <td>{combination.line}</td>
                     <td>{combination.stop}</td>

@@ -23,6 +23,7 @@ class Modal extends Component {
     this.hideModals();
     if (modal) {
       modal.classList.add('show');
+      this.props.onOpen && this.props.onOpen(e);
     }
   }
   hideModals = () => {

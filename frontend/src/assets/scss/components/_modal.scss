@@ -5,6 +5,7 @@
 }
 
 .scrollableText {
+    position: relative;
     height: 60%;
     font-size: 16px;
     font-family: Arial;
@@ -12,6 +13,14 @@
     overflow: scroll;
     letter-spacing: 0.5px;
     line-height: 22px;
+    div {
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        &:first-of-type {
+            user-select: none;
+        }
+    }
 }
 .entitytextbox {
     resize: none;

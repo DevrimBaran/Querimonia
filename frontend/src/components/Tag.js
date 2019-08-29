@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { changeEntity, deleteEntity, addEntity } from '../redux/actions/';
+import { changeEntity, deleteEntity } from '../redux/actions/';
 
 class Tag extends Component {
   constructor (props) {
@@ -30,19 +30,22 @@ class Tag extends Component {
     }
   };
   averageLuminance = (avg, entity, array) => {
-    const color = (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
-      ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
+    const color = '#cccccc';
+    // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
+    //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return avg + (this.getLuminance(color) / array.length);
   }
   minLuminance = (min, entity, array) => {
-    const color = (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
-      ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
+    const color = '#cccccc';
+    // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
+    //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return Math.min(min, this.getLuminance(color));
   }
   getGradient = (entity, i, entities) => {
     const pers = 100 / entities.length;
-    const color = (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
-      ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
+    const color = '#cccccc';
+    // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
+    //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return `${color} ${pers * i}%, ${color} ${pers * (i + 1)}%`;
   }
   getColorStyles = (entities) => {
@@ -72,80 +75,6 @@ class Tag extends Component {
     const entity = this.props.entities.byId[id] || {};
     this.modifyEntity({ id: id, preferred: !entity.preferred });
   }
-  editEntity = (label, deleteEnabled) => {
-    const originalLabel = label;
-    let originalLabelID = null;
-    if (deleteEnabled) {
-      originalLabelID = originalLabel.id;
-    }
-
-    this.setState({
-      newEntityQuery: { ...this.state.newEntityQuery, label: originalLabel.label, extractor: originalLabel.extractor, color: originalLabel.color },
-      originalLabelID: originalLabelID });
-    this.startEdit();
-  };
-  startEdit = () => {
-    if (this.state.editFormActive) return;
-    if (this.state.editActive) {
-      window.removeEventListener('mouseup', this.handleMouseUp);
-    } else {
-      window.addEventListener('mouseup', this.handleMouseUp);
-    }
-
-    this.setState({
-      editActive: !this.state.editActive
-    });
-  };
-  handleMouseUp = (e) => {
-    e.stopPropagation();
-    const selectedText = document.getSelection();
-    if (selectedText && selectedText.anchorNode.parentNode.attributes['data-key'] && selectedText.focusNode.parentNode.attributes['data-key'] && selectedText.toString()) {
-      const newLabelString = selectedText.toString();
-      const baseOffset = selectedText.anchorOffset;
-      const extentOffset = selectedText.focusOffset;
-      const baseKey = selectedText.anchorNode.parentNode.attributes['data-key'].value;
-      const extentKey = selectedText.focusNode.parentNode.attributes['data-key'].value;
-      let globalOffsetStart = 0;
-      let globalOffsetEnd = 0;
-      Array.from(selectedText.focusNode.parentNode.parentNode.childNodes)
-        .filter((htmlElement) => {
-          return htmlElement.tagName === 'SPAN';
-        }).map((spanElement) => {
-          return {
-            key: spanElement.attributes['data-key'].value,
-            text: spanElement.innerHTML
-          };
-        }).forEach((element, i, thisArray) => {
-          if (element.key === baseKey) {
-            for (let j = 0; j < i; j++) {
-              globalOffsetStart += thisArray[j].text.length;
-            }
-            globalOffsetStart += baseOffset;
-          }
-          if (element.key === extentKey) {
-            for (let j = 0; j < i; j++) {
-              globalOffsetEnd += thisArray[j].text.length;
-            }
-            globalOffsetEnd += extentOffset;
-          }
-        });
-      if (globalOffsetEnd < globalOffsetStart) {
-        let temp = globalOffsetStart;
-        globalOffsetStart = globalOffsetEnd;
-        globalOffsetEnd = temp;
-      }
-      let query = {};
-      query['start'] = globalOffsetStart;
-      query['end'] = globalOffsetEnd;
-      query['setByUser'] = true;
-      query['value'] = newLabelString;
-      this.startEdit();
-      this.setState({
-        newEntityQuery: { ...this.state.newEntityQuery, start: query['start'], end: query['end'], value: query['value'], setByUser: query['setByUser'] }
-      });
-      this.props.dispatch(addEntity(this.props.complaintId, this.state.newEntityQuery, this.state.originalLabelID));
-    }
-  };
   createTooltip = (entities, b) => {
     return (
       b ? (<div ref={this.tooltip} className='tooltip'>
@@ -174,9 +103,9 @@ class Tag extends Component {
               <b>{label.value}</b>
               <br />
               {/* eslint-disable-next-line */}
-      <i className={'far fa-clone'} onClick={this.editEntity.bind(this, label, false)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+      <i id='editEntity' className={'far fa-clone'} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
               {/* eslint-disable-next-line */}
-      <i className={'far fa-edit'} onClick={this.editEntity.bind(this, label, true)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+      <i id='editEntity' className={'far fa-edit'} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
               {/* eslint-disable-next-line */}
       <i className={'far fa-trash-alt'} onClick={this.remove(label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
             </div>
@@ -287,6 +216,7 @@ const mapStateToProps = (state, props) => {
     };
     obj[extractor.name] = labels;
     colors = obj;
+    return obj;
   }, {});
   if (props.entities) {
     return {
@@ -296,7 +226,7 @@ const mapStateToProps = (state, props) => {
   return {
     entities: state.complaintStuff.entities,
     complaintId: state.complaintStuff.id,
-    colors: colors
+    config: state.complaints.data.active.configuration
   };
 };
 

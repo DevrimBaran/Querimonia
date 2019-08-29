@@ -40,7 +40,8 @@ class View extends Component {
       );
     }
     if (this.props.accessRole && !this.props.accessRole.includes(this.props.login.role)) {
-      return <Redirect to='/' from={path} />;
+      // return <Redirect to='/' from={path} />;
+      return <React.Fragment />;
     }
     if (endpoint) {
       return (
