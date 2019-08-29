@@ -8,7 +8,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Route, NavLink, Redirect } from 'react-router-dom';
+// import { Route, NavLink, Redirect } from 'react-router-dom';
+import { Route, NavLink } from 'react-router-dom';
 import Debug from './Debug';
 import Tabbed from './Tabbed';
 import SingleView from './SingleView';

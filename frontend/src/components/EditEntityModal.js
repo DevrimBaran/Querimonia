@@ -30,7 +30,7 @@ class EditEntityModal extends Component {
   }
 
   addEntity = () => {
-    const { start, end, label, extractorList } = { ...this.state }
+    const { start, end, label, extractorList } = { ...this.state };
     this.props.dispatch(addEntity(this.props.active.id, {
       start: start,
       end: end,
