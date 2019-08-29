@@ -17,7 +17,7 @@ import screen2 from './../assets/img/screen2.jpg';
 import screen3 from './../assets/img/screen3.jpg';
 import '../assets/scss/_images.scss';
 import '../assets/scss/components/_entity.scss';
-import '../assets/scss/components/_introduction.scss';
+import '../assets/scss/components/_boxWithMargin.scss';
 
 function Home () {
   return (
@@ -30,14 +30,16 @@ function Home () {
                 <img src={logo} className='logo' alt='logo' />
                 <br />
               </div>
-              <div className='margin'>
+              <div className='boxWithMargin'>
                 <br />
                 <br />
                 <p>
-                Im Rahmen des Studienprojektes der Universität Stuttgart im Sommersemester 2019
-                wurde am IAT der Universität Stuttgart und dem Fraunhofer IAO die webbasierte
-                Plattform Querimonia für die Erprobung und Anwendung von Verfahren zur Analyse
-                und Aufbereitung von Texten am Beispiel des Beschwerdemanagements entwickelt.
+                Im Rahmen des Studienprojektes der Universität Stuttgart im
+                Sommersemester 2019 wurde am IAT der Universität Stuttgart
+                und dem Fraunhofer IAO die webbasierte Plattform Querimonia
+                für die Erprobung und Anwendung von Verfahren zur Analyse und
+                Aufbereitung von Texten am Beispiel des Beschwerdemanagements
+                entwickelt.
                 </p>
                 <br />
                 <p>
@@ -48,7 +50,7 @@ function Home () {
               </div>
               <br />
               <h2>Beispiel:</h2>
-              <div className='introduction_box'>
+              <div className='boxWithMargin'>
                 <br />
                 <h6>Beschwerdenachricht</h6>
                 <p>
@@ -90,23 +92,23 @@ function Home () {
               <br />
               <br />
               <h1> Wie funktioniert Querimonia?</h1>
-              <div className='introduction_box'>
+              <div className='boxWithMargin'>
                 <h6>Hinzufügen einer Beschwerde</h6>
                 <p>Zum hinzufügen einer Beschwerde hat der Nutzer die Möglichkeit,
                   durch den Upload einer Datei (bisher unterstützte Dateiformate: PDF, WORD, TXT)
                   eine Beschwerde zu importieren oder manuell eine einzugeben.
                 </p>
-                <img className="introduction_image" src={screen1} alt={'screen1'} />
+                <img className='introduction_image' src={screen1} alt={'screen1'} />
               </div>
-              <div className='introduction_box'>
+              <div className='boxWithMargin'>
                 <h6>Beschwerde ansehen</h6>
                 <p>Der Nutzer hat eine Übersicht von allen importierten Beschwerden. Es gibt verschiedene Filtermöglichkeiten
                   und die Beschwerden sind in einer Tabelle (Anliegen, Vorschau, Emotion, Sentiment, Kategorie, Datum)
                   eingeordnet.
                 </p>
-                <img className="introduction_image" src={screen2} alt={'screen1'} />
+                <img className='introduction_image' src={screen2} alt={'screen1'} />
               </div>
-              <div className='introduction_box'>
+              <div className='boxWithMargin'>
                 <h6>Antwort generieren</h6>
                 <p>Wenn der Nutzer auf eine Beschwerde klickt, hat er die Möglichkeit
                   eine Antwort zu generieren. Auf der linken Seite ist ein Textfeld,
@@ -114,7 +116,7 @@ function Home () {
                   um eine Antwort zusammenzuklicken. Auf der rechten Seite sieht der Nutzer
                   den Originaltext und die entdeckten Entitäten.
                 </p>
-                <img className="introduction_image" src={screen3} alt={'screen1'} />
+                <img className='introduction_image' src={screen3} alt={'screen1'} />
               </div>
             </center>
             <center>
