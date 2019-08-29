@@ -15,6 +15,9 @@ import iatPartner from './../assets/img/iat.png';
 import screen1 from './../assets/img/screen1.jpg';
 import screen2 from './../assets/img/screen2.jpg';
 import screen3 from './../assets/img/screen3.jpg';
+import '../assets/scss/_images.scss';
+import '../assets/scss/components/_entity.scss';
+import '../assets/scss/components/_introduction.scss';
 
 function Home () {
   return (
@@ -24,7 +27,7 @@ function Home () {
           <Content>
             <center>
               <div className='header'>
-                <img src={logo} className='logo' alt='logo' width='40%' />
+                <img src={logo} className='logo' alt='logo' />
                 <br />
               </div>
               <div className='margin'>
@@ -45,7 +48,7 @@ function Home () {
               </div>
               <br />
               <h2>Beispiel:</h2>
-              <div className='example'>
+              <div className='introduction_box'>
                 <br />
                 <h6>Beschwerdenachricht</h6>
                 <p>
@@ -93,7 +96,7 @@ function Home () {
                   durch den Upload einer Datei (bisher unterstützte Dateiformate: PDF, WORD, TXT)
                   eine Beschwerde zu importieren oder manuell eine einzugeben.
                 </p>
-                <img src={screen1} alt={'screen1'} />
+                <img className="introduction_image" src={screen1} alt={'screen1'} />
               </div>
               <div className='introduction_box'>
                 <h6>Beschwerde ansehen</h6>
@@ -101,7 +104,7 @@ function Home () {
                   und die Beschwerden sind in einer Tabelle (Anliegen, Vorschau, Emotion, Sentiment, Kategorie, Datum)
                   eingeordnet.
                 </p>
-                <img src={screen2} alt={'screen1'} />
+                <img className="introduction_image" src={screen2} alt={'screen1'} />
               </div>
               <div className='introduction_box'>
                 <h6>Antwort generieren</h6>
@@ -111,7 +114,7 @@ function Home () {
                   um eine Antwort zusammenzuklicken. Auf der rechten Seite sieht der Nutzer
                   den Originaltext und die entdeckten Entitäten.
                 </p>
-                <img src={screen3} alt={'screen1'} />
+                <img className="introduction_image" src={screen3} alt={'screen1'} />
               </div>
             </center>
             <center>
