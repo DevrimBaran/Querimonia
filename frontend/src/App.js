@@ -73,7 +73,7 @@ class App extends Component {
           <View label='Konfigurationen' accessRole={['admin']} endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
           <View label='Import' accessRole={['admin']} path='/import' component={Import} />
           <View label='Wortvektoren' accessRole={['user', 'admin']} path='/wordvectors' component={WordVectors} />
-          <View label='Wordhäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
+          <View label='Worthäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
           <View label='Statistiken' accessRole={['user', 'admin']} path='/stats' component={Statistics} />
           <View label='Impressum' accessRole={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
         </Router>
