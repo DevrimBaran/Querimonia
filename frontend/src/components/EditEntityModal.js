@@ -79,8 +79,8 @@ class EditEntityModal extends Component {
         </div>
         <Input label='Label' type='select' values={Object.keys(extractorList)} name='label' onChange={this.onChange} />
         <Input label='Text' type='text' readOnly className='entitytextbox' name='note' value={start !== end ? text.substring(start, end) : 'Bitte markieren sie den gewünschten Abschnitt!'} />
-        <Input label='Start' type='number' name='start' value={start} onChange={this.onChange} />
-        <Input label='Ende' type='number' name='end' value={end} onChange={this.onChange} />
+        <Input label='Start' type='number' name='start' value={start} min={0} max={end} onChange={this.onChange} />
+        <Input label='Ende' type='number' name='end' value={end} min={start} onChange={this.onChange} />
         <Button disabled={start === end} style={{ padding: '2px', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-save' onClick={this.addEntity}>Speichern</Button>
       </Modal>
     );

@@ -99,15 +99,18 @@ class Tag extends Component {
                   padding: '4px' })
             } key={i}>
               <i>{label.label}</i>
-              <br />
+              <br style={{ marginBottom: '2px' }} />
               <b>{label.value}</b>
-              <br />
-              {/* eslint-disable-next-line */}
-      <i id='editEntity' className={'far fa-clone'} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
-              {/* eslint-disable-next-line */}
-      <i id='editEntity' className={'far fa-edit'} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
-              {/* eslint-disable-next-line */}
-      <i className={'far fa-trash-alt'} onClick={this.remove(label.id)} style={{ cursor: 'pointer', margin: 'auto', padding: '5px' }} />
+              <br style={{ marginBottom: '2px' }} />
+              <span className='action-button'>
+                <i title='Kopieren' id='editEntity' className={'far fa-clone'} />
+              </span>
+              <span className='action-button'>
+                <i title='Bearbeiten' id='editEntity' className={'far fa-edit'} />
+              </span>
+              <span className='action-button'>
+                <i title='Löschen' className={'far fa-trash-alt'} onClick={this.remove(label.id)} />
+              </span>
             </div>
           ))}
         </div>)

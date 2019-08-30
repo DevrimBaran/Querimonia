@@ -48,6 +48,54 @@ function init () {
 class App extends Component {
   componentDidMount = () => {
     this.props.dispatch(init());
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+  handleKeyDown = (e) => {
+    if (e.ctrlKey) {
+      let preventDefault = true;
+      switch (e.keyCode) {
+        // B-Button-Event
+        case 66 :
+          window.location.href = '/complaints';
+          break;
+        // R-Button-Event
+        case 82 :
+          window.location.href = '/components';
+          break;
+        // K-Button-Event
+        case 75 :
+          window.location.href = '/config';
+          break;
+        // I-Button-Event
+        case 73 :
+          window.location.href = '/import';
+          break;
+        // V-Button-Event
+        case 86 :
+          window.location.href = '/wordvectors';
+          break;
+        // H-Button-Event
+        case 72 :
+          window.location.href = '/tagcloud';
+          break;
+        // S-Button-Event
+        case 83 :
+          window.location.href = '/stats';
+          break;
+        // ?-Button-Event
+        case 63 :
+          window.location.href = '/impressum';
+          break;
+        default:
+          preventDefault = false;
+      }
+      if (preventDefault) {
+        e.preventDefault();
+      }
+    }
+  }
+  componentWillUnmount = () => {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
   render () {
     let basepath;
@@ -73,7 +121,7 @@ class App extends Component {
           <View label='Konfigurationen' accessRole={['admin']} endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
           <View label='Import' accessRole={['admin']} path='/import' component={Import} />
           <View label='Wortvektoren' accessRole={['user', 'admin']} path='/wordvectors' component={WordVectors} />
-          <View label='Wordhäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
+          <View label='Worthäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
           <View label='Statistiken' accessRole={['user', 'admin']} path='/stats' component={Statistics} />
           <View label='Impressum' accessRole={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
         </Router>

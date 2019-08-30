@@ -36,6 +36,18 @@ class Modal extends Component {
     if (element) {
       element.classList.add('hasModal');
       element.addEventListener('click', this.onClick);
+      document.addEventListener('keydown', this.handleKeyDown);
+    }
+  }
+
+  handleKeyDown = (e) => {
+    // Esc-Button-Event
+    if (e.keyCode === 27) {
+      this.hideModals();
+      // +-Button-Event
+    } else if (e.ctrlKey && e.keyCode === 107) {
+      this.onClick();
+      e.preventDefault();
     }
   }
   componentWillUnmount = () => {
@@ -43,6 +55,7 @@ class Modal extends Component {
     if (element) {
       element.classList.remove('hasModal');
       element.removeEventListener('click', this.onClick);
+      document.removeEventListener('keydown', this.handleKeyDown);
     }
   }
   render () {

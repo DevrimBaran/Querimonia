@@ -4,6 +4,7 @@
 @import 'font-awesome/fontawesome';
 @import "font-awesome/solid";
 @import "_style";
+@import "_images";
 
 * {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -203,5 +204,3 @@ textarea:focus {
     -ms-transform: translateX(-50%);
     transform: translateX(-50%);
 }
-
-@import "home";
