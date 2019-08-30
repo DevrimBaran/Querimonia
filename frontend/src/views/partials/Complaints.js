@@ -23,6 +23,7 @@ import TextBuilder from '../../components/TextBuilder';
 import Table from '../../components/Table';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
+import Debug from '../../components/Debug';
 
 /**
  * extracts the key with the maximal value
@@ -140,6 +141,12 @@ function Single (active, dispatch, helpers) {
                     </div>
                   </div>
                 ))}
+              </div>
+              <div label='active'>
+                <Debug data={active} />
+              </div>
+              <div label='stuff'>
+                <Debug data={helpers.props.complaintStuff} />
               </div>
             </Tabbed>
           </Content>
