@@ -50,8 +50,8 @@ nav  {
                 width: 0;
                 height: 5px;
                 background: linear-gradient(-90deg,$primaryAccentColorDimed, $primaryAccentColorActive, $primaryAccentColorDimed);
-                transition: all 0.3s ease-out;
-                transition-delay: 0.15s;
+                transition: all 0.2s ease-out;
+                transition-delay: 0.05s;
                 border-radius: 2px;
             }
             &:hover {
@@ -188,6 +188,17 @@ nav  {
     bottom: 10px;
     right: 30px;
     border-radius:50%;
+}
+.action-button {
+    cursor: pointer;
+    padding: 5px;
+}
+.action-button-disabled {
+    padding: 5px;
+    color: rgb(150, 150, 150);
+}
+.action-button:hover {
+    color: rgb(196, 100, 22);
 }
 :hover > .plus-item {
     opacity: 1;

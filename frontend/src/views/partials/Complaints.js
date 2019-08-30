@@ -22,7 +22,6 @@ import Tabbed from '../../components/Tabbed';
 import TextBuilder from '../../components/TextBuilder';
 import Table from '../../components/Table';
 import Input from '../../components/Input';
-import Button from '../../components/Button';
 
 /**
  * extracts the key with the maximal value
@@ -87,7 +86,9 @@ function List (data, dispatch, helpers) {
         <Row>
           {data.id}
           <div>
-            <Button disabled={data.state === 'CLOSED' || data.state === 'ANALYSING'} icon='fas fa-sync' onClick={refresh}>Erneut auswerten</Button>
+            <span className={(data.state === 'ERROR' || data.state === 'ANALYSING') ? 'action-button-disabled' : 'action-button'}>
+              <i title='Erneut auswerten' className={(data.state === 'ERROR') ? 'fas fa-sync  fa-spin' : 'fas fa-sync'} onClick={refresh} style={(data.state === 'CLOSED' || data.state === 'ANALYSING') ? { cursor: 'default' } : null} />
+            </span>
             {helpers && helpers.remove(data.id)}
           </div>
         </Row>

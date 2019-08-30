@@ -48,6 +48,54 @@ function init () {
 class App extends Component {
   componentDidMount = () => {
     this.props.dispatch(init());
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+  handleKeyDown = (e) => {
+    if (e.ctrlKey) {
+      let preventDefault = true;
+      switch (e.keyCode) {
+        // B-Button-Event
+        case 66 :
+          window.location.href = '/complaints';
+          break;
+        // R-Button-Event
+        case 82 :
+          window.location.href = '/components';
+          break;
+        // K-Button-Event
+        case 75 :
+          window.location.href = '/config';
+          break;
+        // I-Button-Event
+        case 73 :
+          window.location.href = '/import';
+          break;
+        // V-Button-Event
+        case 86 :
+          window.location.href = '/wordvectors';
+          break;
+        // H-Button-Event
+        case 72 :
+          window.location.href = '/tagcloud';
+          break;
+        // S-Button-Event
+        case 83 :
+          window.location.href = '/stats';
+          break;
+        // ?-Button-Event
+        case 63 :
+          window.location.href = '/impressum';
+          break;
+        default:
+          preventDefault = false;
+      }
+      if (preventDefault) {
+        e.preventDefault();
+      }
+    }
+  }
+  componentWillUnmount = () => {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
   render () {
     let basepath;
