@@ -135,7 +135,7 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
     let query = entity;
     query.preferred = !entity.preferred;
     dispatch((dispatch) => {
-      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), { query })
+      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), query)
         .then(data => {
           if (data.status && data.status === 500) {
             // alert(data.message);
@@ -147,7 +147,7 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
           if (entityOld) {
             let query2 = entityOld;
             query2.preferred = false;
-            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), { query2 })
+            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), query2)
               .then(data => {
                 if (data.status && data.status === 500) {
                   // alert(data.message);
@@ -182,17 +182,17 @@ export function deleteEntity (complaintId, id = 0) {
 export function addEntity (complaintId, query, originalLabelID) {
   return function (dispatch, getState) {
     dispatch((dispatch) => {
-      originalLabelID
+      (originalLabelID
         ? Api.put('/api/complaints/' + complaintId + '/entities/' + originalLabelID, query)
-        : Api.post('/api/complaints/' + complaintId + '/entities', query).then(data => {
-          if (data.status && data.status === 500) {
-            // alert(data.message);
-          }
-          dispatch({
-            type: 'MODIFY_ENTITY',
-            data: data
-          });
+        : Api.post('/api/complaints/' + complaintId + '/entities', query)).then(data => {
+        if (data.status && data.status === 500) {
+          // alert(data.message);
+        }
+        dispatch({
+          type: 'MODIFY_ENTITY',
+          data: data
         });
+      });
     });
   };
 }

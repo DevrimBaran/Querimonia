@@ -86,8 +86,8 @@ function List (data, dispatch, helpers) {
         <Row>
           {data.id}
           <div>
-            <span className={(data.state === 'ERROR' || data.state === 'ANALYSING') ? 'action-button-disabled' : 'action-button'}>
-              <i title='Erneut auswerten' className={(data.state === 'ERROR') ? 'fas fa-sync  fa-spin' : 'fas fa-sync'} onClick={refresh} style={(data.state === 'CLOSED' || data.state === 'ANALYSING') ? { cursor: 'default' } : null} />
+            <span className={(data.state === 'CLOSED' || data.state === 'ANALYSING') ? 'action-button-disabled' : 'action-button'}>
+              <i title='Erneut auswerten' className={(data.state === 'ANALYSING') ? 'fas fa-sync  fa-spin' : 'fas fa-sync'} onClick={refresh} />
             </span>
             {helpers && helpers.remove(data.id)}
           </div>

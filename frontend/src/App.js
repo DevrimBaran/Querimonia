@@ -52,39 +52,41 @@ class App extends Component {
   }
   handleKeyDown = (e) => {
     if (e.ctrlKey) {
+      console.log('location.hostname');
+      console.log(window.location);
       let preventDefault = true;
       switch (e.keyCode) {
         // B-Button-Event
         case 66 :
-          window.location.href = '/complaints';
+          window.location.replace('/complaints');
           break;
         // R-Button-Event
         case 82 :
-          window.location.href = '/components';
+          window.location.replace('/components');
           break;
         // K-Button-Event
         case 75 :
-          window.location.href = '/config';
+          window.location.replace('/config');
           break;
         // I-Button-Event
         case 73 :
-          window.location.href = '/import';
+          window.location.replace('/import');
           break;
         // V-Button-Event
         case 86 :
-          window.location.href = '/wordvectors';
+          window.location.replace('/wordvectors');
           break;
         // H-Button-Event
         case 72 :
-          window.location.href = '/tagcloud';
+          window.location.replace('/tagcloud');
           break;
         // S-Button-Event
         case 83 :
-          window.location.href = '/stats';
+          window.location.replace('/stats');
           break;
         // ?-Button-Event
         case 63 :
-          window.location.href = '/impressum';
+          window.location.replace('/impressum');
           break;
         default:
           preventDefault = false;
