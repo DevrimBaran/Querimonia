@@ -13,8 +13,8 @@ class Button extends Component {
     return false;
   }
   render () {
-    const { icon, onClick, disabled, children, value, className = '', ...passThrough } = { ...this.props };
-    if (value) {
+    const { icon, onClick, disabled, children, className = '', ...passThrough } = { ...this.props };
+    if (children) {
       return (
         <button disabled={disabled} onClick={disabled ? this.stopPropagation : onClick} className={className + ' action-button'} {...passThrough}>
           {icon && <i className={icon} />}{icon && 'nbsp;'}{children}}

@@ -49,10 +49,11 @@ class Tag extends Component {
         backgroundImage: gradient.background
       }
     };
+    const tooltip = Tooltip.create();
     return (
-      <span onMouseEnter={Tooltip.show} onMouseLeave={Tooltip.hide} id={'tag_' + ids.join('_')} {...inject} {...passThrough}>
+      <span {...tooltip.events} id={'tag_' + ids.join('_')} {...inject} {...passThrough}>
         {text}
-        <Tooltip htmlFor={'#tag_' + ids.join('_')} className='tag-tooltip'>
+        <Tooltip {...tooltip.register} className='tag-tooltip'>
           {relevantEntities.map((entity, i) => (
             <div
               key={i}

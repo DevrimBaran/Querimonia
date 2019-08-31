@@ -19,9 +19,7 @@ const renderBarchart = (target, data, d3) => {
     .domain([0, d3.max(data, d => d.width)])
     .range([0, width]);
 
-  console.log(x);
-
-  var chart = d3.select('.chart')
+  var chart = d3.select(target).select('.chart')
     .attr('width', width)
     .attr('height', barHeight * data.length);
 
