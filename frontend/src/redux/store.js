@@ -5,7 +5,8 @@ import thunk from 'redux-thunk';
 import rootReducer from './reducers/index';
 // import templates from './templates/index';
 
-const middleware = applyMiddleware(thunk, logger);
+// const middleware = applyMiddleware(thunk, logger);
+const middleware = applyMiddleware(thunk);
 
 const initialState = {
   login: {
@@ -177,6 +178,7 @@ const initialState = {
     log: [],
     combinations: [],
     text: null,
+    config: null,
     counter: 0,
     id: 0,
     done: false

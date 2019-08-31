@@ -135,7 +135,7 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
     let query = entity;
     query.preferred = !entity.preferred;
     dispatch((dispatch) => {
-      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), { query })
+      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), query)
         .then(data => {
           if (data.status && data.status === 500) {
             // alert(data.message);
@@ -147,7 +147,7 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
           if (entityOld) {
             let query2 = entityOld;
             query2.preferred = false;
-            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), { query2 })
+            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), query2)
               .then(data => {
                 if (data.status && data.status === 500) {
                   // alert(data.message);
@@ -248,7 +248,8 @@ export function fetchCurrentConfig () {
   };
 }
 export function fetchStuff (id) {
-  return function (dispatch) {
+  return function (dispatch, getState) {
+    const { configuration } = getState().complaints.data.byId[id];
     dispatch({
       type: 'FETCH_SINGLE_COMPLAINT_START',
       id: id
@@ -259,7 +260,8 @@ export function fetchStuff (id) {
         Api.get('/api/complaints/' + id + '/response', {}),
         Api.get('/api/combinations/' + id, {}),
         Api.get('/api/complaints/' + id + '/log', {}),
-        Api.get('/api/complaints/' + id + '/text', {})
+        Api.get('/api/complaints/' + id + '/text', {}),
+        Api.get('/api/config/' + configuration.id, {})
       ]).then(data => {
         dispatch({
           type: 'FETCH_SINGLE_COMPLAINT_END',
@@ -268,7 +270,8 @@ export function fetchStuff (id) {
           actions: data[1].actions,
           combinations: data[2],
           log: data[3],
-          text: data[4].text
+          text: data[4].text,
+          config: data[5]
         });
       });
     });

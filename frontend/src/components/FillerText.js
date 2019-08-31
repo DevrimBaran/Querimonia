@@ -13,10 +13,11 @@ import Input from './Input';
 class FillerText extends Component {
   constructor (props) {
     super(props);
-    this.text = [];
+    this.splitTexts();
+    this.values = {};
     this.reference = React.createRef();
     this.state = {
-      text: ''
+      values: {}
     };
   }
   getLuminance = (color) => {
@@ -47,75 +48,78 @@ class FillerText extends Component {
     };
   };
   onChange = (e) => {
-    console.log(e);
-    const name = e.target.getAttribute('index');
-    this.text[parseInt(name)] = e.value;
-    this.props.onChange && this.props.onChange({
-      target: this.reference.current,
-      name: name,
-      value: this.text.join('')
-    });
-  }
-  parseText = () => {
-    const text = this.props.texts[this.props.selected % this.props.texts.length];
-    const entities = this.props.entities;
-    const parse = text.split(/\$\{(\w+)\}/);
-    const labels = parse.filter((str, i) => i % 2 === 1).reduce((obj, label) => { obj[label] = []; return obj; }, {});
-    entities.ids.map(id => (entities.byId[id])).forEach(entity => labels[entity.label] && labels[entity.label].push(entity));
-    this.text = parse;
-    return parse.map((str, i) => {
-      if (i % 2 === 0) {
-        return <span key={i}>{str}</span>;
-      }
-      return labels[str] && (
-        <Input
-          style={this.getColorStyles(labels[str])}
-          label={str}
-          inline
-          onChange={this.onChange}
-          index={i}
-          key={i}
-          type='select'
-          required
-          defaultValue={(labels[str].length === 1)
-            ? labels[str][0].value
-            : (
-              (labels[str].find(e => e.preferred) ||
-                { value: str }).value
-            )}
-          values={labels[str].map(e => ({
-            label: e.value,
-            value: e.value,
-            style: {
-              backgroundColor: e.color || '#cccccc',
-              color: Math.abs(this.getLuminance('#202124') - this.getLuminance(e.color || '#cccccc')) > 0.2
-                ? '#202124'
-                : '#ffffff'
-            }
-          }))
-          }
-        />
-      );
-    });
-  };
-  componentDidUpdate (prevProps) {
-    if (prevProps.selected !== this.props.selected) {
-      // eslint-disable-next-line
-      this.setState({ text: this.parseText() });
+    if (e) {
+      this.setState({ [e.name]: e.value });
     }
-  }
-  componentDidMount = () => {
-    this.setState({ text: this.parseText() });
     this.props.onChange && this.props.onChange({
       target: this.reference.current,
       name: '',
-      value: this.text.join('')
+      value: this.texts[this.props.selected % this.texts.length].map((t, i) => i % 2 === 0 ? t : this.values[t]).join('')
     });
+  }
+  entitiesWithLabel = (label) => {
+    return this.props.entities.ids.map(id => this.props.entities.byId[id]).filter(entity => entity.label === label);
+  }
+  getInput = (label) => {
+    const entities = this.entitiesWithLabel(label.split(':')[0]);
+    if (!this.state[label]) {
+      switch (entities.length) {
+        case 0: {
+          this.values[label] = 'Erstellen Sie eine Entität';
+          break;
+        }
+        case 1: {
+          this.values[label] = entities[0].value;
+          break;
+        }
+        default: {
+          const preferred = entities.find(e => e.preferred);
+          this.values[label] = preferred ? preferred.value : entities[0].value;
+        }
+      }
+    } else {
+      this.values[label] = this.state[label];
+    }
+    return <Input
+      style={this.getColorStyles(entities)}
+      label={label}
+      inline
+      onChange={this.onChange}
+      name={label}
+      key={label}
+      type='select'
+      required
+      value={this.values[label]}
+      values={entities.map(e => ({
+        label: e.value,
+        value: e.value,
+        style: {
+          backgroundColor: e.color || '#cccccc',
+          color: Math.abs(this.getLuminance('#202124') - this.getLuminance(e.color || '#cccccc')) > 0.2
+            ? '#202124'
+            : '#ffffff'
+        }
+      }))
+      }
+    />;
+  }
+  splitTexts = () => {
+    this.texts = this.props.texts.map(t => t.split(/\$\{(\w+)\}/));
+  }
+  componentDidMount = () => {
+    this.onChange();
   }
   render () {
     const { texts, selected, entities, dispatch, onChange, ...passThrough } = { ...this.props };
+    const render = this.texts[selected % this.texts.length].map((t, i) => {
+      return (i % 2 === 0) ? (
+        <span key={i}>{t}</span>
+      ) : (
+        this.getInput(t)
+      );
+    });
     return (
-      <span ref={this.reference} className='fillerText' {...passThrough}>{this.state.text}</span>
+      <span ref={this.reference} className='fillerText' {...passThrough}>{render}</span>
     );
   }
 }

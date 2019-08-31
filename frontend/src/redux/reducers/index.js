@@ -185,6 +185,7 @@ function complaintStuff (state = {}, action) {
         combinations: [],
         log: [],
         text: null,
+        config: null,
         id: action.id,
         counter: 0,
         done: false
@@ -203,6 +204,7 @@ function complaintStuff (state = {}, action) {
         combinations: action.combinations,
         log: action.log,
         text: action.text,
+        config: action.config,
         counter: 0,
         done: true
       };

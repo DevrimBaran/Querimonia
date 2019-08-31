@@ -51,7 +51,7 @@ class TextBuilder extends Component {
             <div label='Antworten' disabled={disableResponses}>
               {
                 this.props.components.filter(c => !this.state.used[c.id]).map((component, i) => (
-                  <Response key={component.id} component={component.component} onSelect={(e) => { this.onSelect(e.value, component.id); }} />
+                  <Response key={i} component={component.component} onSelect={(e) => { this.onSelect(e.value, component.id); }} />
                 ))
               }
             </div>

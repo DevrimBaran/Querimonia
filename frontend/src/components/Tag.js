@@ -30,23 +30,30 @@ class Tag extends Component {
     }
   };
   averageLuminance = (avg, entity, array) => {
-    const color = '#cccccc';
+    const color = this.getColor(entity);
     // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
     //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return avg + (this.getLuminance(color) / array.length);
   }
   minLuminance = (min, entity, array) => {
-    const color = '#cccccc';
+    const color = this.getColor(entity);
     // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
     //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return Math.min(min, this.getLuminance(color));
   }
   getGradient = (entity, i, entities) => {
     const pers = 100 / entities.length;
-    const color = '#cccccc';
+    const color = this.getColor(entity);
     // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
     //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
     return `${color} ${pers * i}%, ${color} ${pers * (i + 1)}%`;
+  }
+  getColor = (entity) => {
+    try {
+      return this.props.config.extractors.find(extractor => extractor.name === entity.extractor).color;
+    } catch (e) {
+      return '#cccccc';
+    }
   }
   getColorStyles = (entities) => {
     let gradient = entities.map(this.getGradient, '').join(', ');
@@ -77,43 +84,31 @@ class Tag extends Component {
   }
   createTooltip = (entities, b) => {
     return (
-      b ? (<div ref={this.tooltip} className='tooltip'>
+      <div ref={this.tooltip} className='tooltip'>
         {entities.map((label, i) => (
-          <div key={i}>
-            <span className='dot' style={{ marginRight: '0.4em', backgroundColor: label.color }} />
-            {label.label}
+          <div style={{
+            marginLeft: (i !== 0) ? '0.4em' : '0',
+            border: '2px solid ' + label.color,
+            textAlign: 'center',
+            float: 'left',
+            padding: '4px'
+          }} key={i}>
+            <i>{label.label}</i>
+            <br style={{ marginBottom: '2px' }} />
+            <b>{label.value}</b>
+            <br style={{ marginBottom: '2px' }} />
+            <span className='action-button'>
+              <i title='Kopieren' id='editEntity' className={'far fa-clone'} />
+            </span>
+            <span className='action-button'>
+              <i title='Bearbeiten' id='editEntity' className={'far fa-edit'} />
+            </span>
+            <span className='action-button'>
+              <i title='Löschen' className={'far fa-trash-alt'} onClick={this.remove(label.id)} />
+            </span>
           </div>
         ))}
-      </div>)
-        : (<div ref={this.tooltip2} className='tooltip'>
-          {entities.map((label, i) => (
-            <div style={
-              (i !== 0 ? { marginLeft: '0.4em',
-                border: '2px solid ' + label.color,
-                textAlign: 'center',
-                float: 'left',
-                padding: '4px' }
-                : { border: '2px solid ' + label.color,
-                  textAlign: 'center',
-                  float: 'left',
-                  padding: '4px' })
-            } key={i}>
-              <i>{label.label}</i>
-              <br style={{ marginBottom: '2px' }} />
-              <b>{label.value}</b>
-              <br style={{ marginBottom: '2px' }} />
-              <span className='action-button'>
-                <i title='Kopieren' id='editEntity' className={'far fa-clone'} />
-              </span>
-              <span className='action-button'>
-                <i title='Bearbeiten' id='editEntity' className={'far fa-edit'} />
-              </span>
-              <span className='action-button'>
-                <i title='Löschen' className={'far fa-trash-alt'} onClick={this.remove(label.id)} />
-              </span>
-            </div>
-          ))}
-        </div>)
+      </div>
     );
   }
   onMouseEnter = (e) => {
@@ -181,9 +176,7 @@ class Tag extends Component {
   }
   render () {
     const { text, ids, entities, dispatch, complaintId, ...passThrough } = { ...this.props };
-    const relevantEntities = ids.map(id => entities.byId[id] || {
-      color: '#cccccc'
-    });
+    const relevantEntities = ids.map(id => entities.byId[id]);
     const styles = this.getColorStyles(relevantEntities);
     const tooltip = this.createTooltip(relevantEntities, true);
     const tooltip2 = this.createTooltip(relevantEntities, false);
@@ -207,29 +200,10 @@ class Tag extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  let colors = null;
-  /* eslint-disable-next-line */
-  state.currentConfig.extractors.reduce((obj, extractor) => {
-    let labels = {};
-    if (extractor.colors) {
-      /* eslint-disable-next-line */
-      extractor.colors.map((color) => {
-        labels[color.label] = color.color;
-      });
-    };
-    obj[extractor.name] = labels;
-    colors = obj;
-    return obj;
-  }, {});
-  if (props.entities) {
-    return {
-      colors: colors
-    };
-  }
   return {
     entities: state.complaintStuff.entities,
     complaintId: state.complaintStuff.id,
-    config: state.complaints.data.active.configuration
+    config: state.complaintStuff.config
   };
 };
 
