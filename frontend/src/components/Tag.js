@@ -11,6 +11,7 @@ import { changeEntity, deleteEntity } from '../redux/actions/';
 
 import { getColor, getGradient } from '../utility/colors';
 import Tooltip from './Tooltip';
+import Button from './Button';
 
 class Tag extends Component {
   constructor (props) {
@@ -22,21 +23,19 @@ class Tag extends Component {
     this.tooltip = React.createRef();
     this.entity = React.createRef();
   }
-  modifyEntity = (data) => {
-    console.log('MODIFY', data);
+  modifyEntity = (id) => (data) => {
     this.props.dispatch(changeEntity(this.props.complaintId, data.id || 0, data));
   }
-  edit = (e) => {
+  copy = (id) => (e) => {
+
+  }
+  edit = (id) => (e) => {
 
   }
   remove = (id) => (e) => {
     if (window.confirm('Wollen sie die Entität wirklich löschen?')) {
       this.props.dispatch(deleteEntity(this.props.complaintId, id));
     }
-  }
-  preferr = (id) => (e) => {
-    const entity = this.props.entities.byId[id] || {};
-    this.modifyEntity({ id: id, preferred: !entity.preferred });
   }
   render () {
     const { text, ids, entities, dispatch, complaintId, ...passThrough } = { ...this.props };
@@ -51,11 +50,16 @@ class Tag extends Component {
     };
     const tooltip = Tooltip.create();
     return (
-      <span {...tooltip.events} id={'tag_' + ids.join('_')} {...inject} {...passThrough}>
+      <span {...tooltip.events} {...inject} {...passThrough}>
         {text}
         <Tooltip {...tooltip.register} className='tag-tooltip'>
-          {relevantEntities.map((entity, i) => (
-            <div
+          {relevantEntities.map((entity, i) => {
+            let entitiyData = {
+              'data-start': entity.start,
+              'data-end': entity.end,
+              'data-label': entity.label
+            };
+            return <div
               key={i}
               style={{
                 borderColor: getColor(entity, this.props.config).background
@@ -63,17 +67,11 @@ class Tag extends Component {
             >
               <i>{entity.label}</i>
               <b>{entity.value}</b>
-              <span className='action-button'>
-                <i title='Kopieren' id='editEntity' className={'far fa-clone'} />
-              </span>
-              <span className='action-button'>
-                <i title='Bearbeiten' id='editEntity' className={'far fa-edit'} />
-              </span>
-              <span className='action-button'>
-                <i title='Löschen' className={'far fa-trash-alt'} onClick={this.remove(entity.id)} />
-              </span>
-            </div>
-          ))}
+              <Button title='Kopieren' icon='far fa-clone' modal='editEntityModal' {...entitiyData} />
+              <Button title='Bearbeiten' icon='far fa-edit' modal='editEntityModal' {...entitiyData} data-id={entity.id} />
+              <Button title='Löschen' icon='far fa-trash-alt' onClick={this.remove(entity.id)} />
+            </div>;
+          })}
         </Tooltip>
       </span>
     );

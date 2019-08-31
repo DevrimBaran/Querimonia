@@ -116,7 +116,6 @@ export function refreshComplaint (id) {
 export function changeEntity (complaintId, id = 0, changes) {
   return function (dispatch, getState) {
     const data = getState().complaintStuff.entities.byId[id];
-    console.log('WTF', id);
     dispatch((dispatch) => {
       Api[id === 0 ? 'post' : 'put']('/api/complaints/' + complaintId + '/entities/' + (id === 0 ? '' : id), { ...data, ...changes })
         .then(data => {

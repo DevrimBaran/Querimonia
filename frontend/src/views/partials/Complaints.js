@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { changeEntityPreference, refreshComplaint } from '../../redux/actions/';
+import { changeEntity, refreshComplaint } from '../../redux/actions/';
 
 import localize from '../../utility/date';
 
@@ -23,43 +23,36 @@ import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 import TaggedText from '../../components/TaggedText';
 import Tabbed from '../../components/Tabbed';
 import TextBuilder from '../../components/TextBuilder';
-import Table from '../../components/Table';
+// import Table from '../../components/Table';
+import Liste from '../../components/List';
 // import Input from '../../components/Input';
 import Debug from '../../components/Debug';
 import Button from '../../components/Button';
 
-/**
- * extracts the key with the maximal value
- * @param {*} data Map (Key-Value)
- */
-// eslint-disable-next-line
-function getMaxKey (data) {
-  let keys = Object.keys(data);
-  if (keys.length === 0) {
-    return ('---');
-  }
-  let maxVal = data[keys[0]];
-  let maxIndex = 0;
-  for (let i = 1; i < keys.length; i++) {
-    if (data[keys[i]] > maxVal) {
-      maxVal = data[keys[i]];
-      maxIndex = i;
+const sortedEntities = (data, complaintId, dispatch) => {
+  const entities = data.ids.map(id => data.byId[id]).sort((a, b) => {
+    console.log(a, b, a.label === b.label, a.start === b.start, a.label < b.label, a.start < b.start);
+    if (a.label === b.label) {
+      if (a.start === b.start) {
+        return (a.end < b.end ? -1 : 1);
+      }
+      return a.start < b.start ? -1 : 1;
     }
-  }
-  return (keys[maxIndex]);
-}
-
-/**
- * Changes the preference of an entity.
- * Other entities with the same label are set to false
- * @param {*} entity Entity where the preference is to be changed
- */
-function changePreference (active, entities, dispatch, entity) {
-  let entityOld = entities.flat().find((e) => {
-    return e.label === entity.label && e.preferred === true;
+    return a.label < b.label ? -1 : 1;
   });
-  dispatch(changeEntityPreference(active.id, entity, entityOld));
-}
+
+  return entities.map(entity => (
+    [
+      entity.label,
+      <Tag text={entity.value} ids={[entity.id]} />,
+      <i
+        onClick={() => dispatch(changeEntity(complaintId, entity.id, { preferred: !entity.preferred }))}
+        style={{ cursor: 'pointer', padding: '3px', color: (entity.preferred ? 'orange' : 'lightgray') }}
+        className={'fas fa-crown'}
+      />
+    ]
+  ));
+};
 
 function Header () {
   return (
@@ -153,110 +146,55 @@ function Single (active, dispatch, helpers) {
           </Content>
           <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
           <Collapsible label='Details' />
-          <div>
-            <Table className='details-table'>
-              <tbody>
-                <tr>
-                  <td>Konfiguration</td>
-                  <td><Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link></td>
-                </tr>
-                <tr>
-                  <td>Eingangsdatum</td>
-                  <td>{localize(active.receiveDate)}</td>
-                </tr>
-                <tr>
-                  <td>Eingangszeit</td>
-                  <td>{active.receiveTime}</td>
-                </tr>
-                <tr>
-                  <td>Status</td>
-                  <td>{active.state}</td>
-                </tr>
-                <tr>
-                  <td>ID</td>
-                  <td>{active.id}</td>
-                </tr>
-                {
-                  // TODO tooltip with propabilities
-                  active.properties &&
-                  active.properties.map((property, i) => (
-                    <tr key={'properties_' + i}>
-                      <td>{property.name}</td>
-                      <td>{property.value}</td>
-                    </tr>
-                  ))
-                }
-                <tr>
-                  <td>Sentiment</td>
-                  <td><Sentiment fixed={2} tendency={active.sentiment ? active.sentiment.tendency : null} /></td>
-                </tr>
-                <tr>
-                  <td>Emotion</td>
-                  <td>{active.sentiment ? active.sentiment.emotion.value : 0}</td>
-                </tr>
-              </tbody>
-            </Table>
-          </div>
+          <Liste styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
+            ['Konfiguration', (<Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
+            ['Eingangsdatum', (localize(active.receiveDate))],
+            ['Eingangszeit', (active.receiveTime)],
+            ['Status', (active.state)],
+            ['ID', (active.id)],
+            { map: (cb) => (active.properties.map((property, i) => (
+              [property.name, property.value].map(cb)
+            ))) },
+            ['Sentiment', (<Sentiment fixed={2} tendency={active.sentiment ? active.sentiment.tendency : null} />)],
+            ['Emotion', (active.sentiment ? active.sentiment.emotion.value : 0)]
+          ]} />
           <Collapsible label='Entitäten'
             disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
             collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
           />
           <Content>
-            <Table className='details-table'>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Wert</th>
-                  <th>Bevorzugt</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(() => {
-                  if (!(helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids)) {
-                    return <tr><td><i className='fa-spinner fa-spin fa fa-5x primary' /></td></tr>;
-                  }
-                  const entities = helpers.props.complaintStuff.entities.ids.reduce((entities, id) => {
-                    const entity = helpers.props.complaintStuff.entities.byId[id];
-                    entities[entity.label] || (entities[entity.label] = []);
-                    entities[entity.label].push(entity);
-                    return entities;
-                  }, {});
-                  const labels = Object.keys(entities).sort();
-                  return labels.map(label => entities[label])
-                    .map(entities => entities.sort((a, b) => a.start < b.start).map((entity, i) => (
-                      <tr key={'' + entity.label + i}>
-                        <td>{entity.label}</td>
-                        <td><Tag text={entity.value} ids={[entity.id]} /></td>
-                        <td><i key={i} onClick={() => changePreference(active, entities, dispatch, entity)} style={{ cursor: 'pointer', padding: '3px', color: (entity.preferred ? 'orange' : 'lightgray') }} className={'fas fa-crown'} /></td>
-                      </tr>
-                    )));
-                })()}
-              </tbody>
-            </Table>
+            <Liste data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch)}
+              styles={[{
+                fontWeight: 'bold'
+              }, {
+                padding: '0 1em'
+              }]}
+            />
           </Content>
           <Collapsible label='Kombinationen'
-            disabled={helpers.props.complaintStuff.combinations && helpers.props.complaintStuff.combinations.length === 0}
-            collapse={helpers.props.complaintStuff.combinations && helpers.props.complaintStuff.combinations.length === 0}
+            disabled={
+              !(helpers.props.complaintStuff.combinations &&
+              helpers.props.complaintStuff.combinations.map &&
+              helpers.props.complaintStuff.combinations.length !== 0)
+            }
+            collapse={
+              !(helpers.props.complaintStuff.combinations &&
+              helpers.props.complaintStuff.combinations.map &&
+              helpers.props.complaintStuff.combinations.length !== 0)
+            }
           />
           <Content>
-            <Table>
-              <thead>
-                <tr>
-                  <th>Linie</th>
-                  <th>Haltestelle</th>
-                  <th>Ort</th>
-                </tr>
-              </thead>
-              <tbody>
-                {helpers.props.complaintStuff.combinations && helpers.props.complaintStuff.combinations.map && helpers.props.complaintStuff.combinations.map((combination, index) => (
-                  <tr key={index}>
-                    <td>{combination.line}</td>
-                    <td>{combination.stop}</td>
-                    <td>{combination.place}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
+            <Liste data={
+              helpers.props.complaintStuff.combinations &&
+              helpers.props.complaintStuff.combinations.map &&
+              helpers.props.complaintStuff.combinations.map((combination) => (
+                [
+                  combination.line,
+                  combination.stop,
+                  combination.place
+                ]
+              ))
+            } />
           </Content>
         </Row>
       </Block>

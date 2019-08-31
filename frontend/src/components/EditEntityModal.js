@@ -22,7 +22,8 @@ class EditEntityModal extends Component {
     }, {});
     this.state = {
       extractorList,
-      label: null,
+      id: '',
+      label: '',
       start: 0,
       end: 0
     };
@@ -39,7 +40,7 @@ class EditEntityModal extends Component {
       label: extractorList[label].name,
       extractor: extractorList[label].type,
       color: extractorList[label].color
-    }, null));
+    }, this.state.id ? this.state.id : null));
   };
   mouseUp = (e) => {
     let selection = window.getSelection();
@@ -58,14 +59,14 @@ class EditEntityModal extends Component {
     });
   }
   onOpen = (e) => {
-    console.log(e);
+    console.log(e.target.dataset);
+    this.setState(e.target.dataset);
   }
   render () {
     const { text } = { ...this.props };
-    const { start, end, extractorList } = { ...this.state };
-    const id = 'editEntity';
+    const { start, end, label, extractorList } = { ...this.state };
     return (
-      <Modal title={'Entitäten hinzufügen'} id={'_modal'} key={id + '_modal'} htmlFor={id} onOpen={this.onOpen}>
+      <Modal title={'Entitäten hinzufügen'} htmlFor='[modal=editEntityModal]' onOpen={this.onOpen}>
         <div className='scrollableText'>
           <div>
             <span>{text.substring(0, start)}</span>
@@ -76,7 +77,7 @@ class EditEntityModal extends Component {
             {text}
           </div>
         </div>
-        <Input label='Label' type='select' values={Object.keys(extractorList)} name='label' onChange={this.onChange} />
+        <Input label='Label' type='select' value={label} values={Object.keys(extractorList)} name='label' onChange={this.onChange} />
         <Input label='Text' type='text' readOnly className='entitytextbox' name='note' value={start !== end ? text.substring(start, end) : 'Bitte markieren sie den gewünschten Abschnitt!'} />
         <Input label='Start' type='number' name='start' value={start} min={0} max={end} onChange={this.onChange} />
         <Input label='Ende' type='number' name='end' value={end} min={start} onChange={this.onChange} />
