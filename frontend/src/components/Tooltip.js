@@ -16,6 +16,17 @@ class Tooltip extends Component {
       htmlFor: props.htmlFor
     };
   }
+
+  static show = (e) => {
+    e.persist();
+    console.log('show', e);
+  };
+
+  static hide = (e) => {
+    e.persist();
+    console.log('hide', e);
+  };
+
   onMouseEnter = (e) => {
     const element = e.target;
     const rect = element.getBoundingClientRect();
@@ -44,23 +55,23 @@ class Tooltip extends Component {
     const elements = document.querySelectorAll(this.state.htmlFor);
     elements.forEach((element) => {
       element.classList.add('hasTooltip');
-      element.addEventListener('mouseenter', this.onMouseEnter);
-      element.addEventListener('mouseleave', this.onMouseLeave);
+      element.addEventListener('mouseEnter', this.onMouseEnter);
+      element.addEventListener('mouseLeave', this.onMouseLeave);
     });
   }
   componentWillUnmount = () => {
     const elements = document.querySelectorAll(this.state.htmlFor);
     elements.forEach((element) => {
       element.classList.remove('hasTooltip');
-      element.removeEventListener('mouseenter', this.onMouseEnter);
-      element.removeEventListener('mouseleave', this.onMouseLeave);
+      element.removeEventListener('mouseEnter', this.onMouseEnter);
+      element.removeEventListener('mouseLeave', this.onMouseLeave);
     });
   }
   render () {
-    const { htmlFor } = { ...this.props };
+    const { htmlFor, className = '' } = { ...this.props };
     return (
       ReactDOM.createPortal(
-        (<div ref={this.tooltip} className='tooltip' htmlFor={htmlFor} >
+        (<div ref={this.tooltip} className={className + ' tooltip'} htmlFor={htmlFor} >
           {this.props.children}
         </div>),
         document.body

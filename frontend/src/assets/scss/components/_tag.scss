@@ -1,0 +1,19 @@
+.tag-tooltip {
+  & > div {
+    margin-left: 0.4em;
+    border: 2px solid black;
+    text-align: center;
+    float: left;
+    padding: 4px;
+    &:first-child {
+      margin-left: 0;
+    }
+    i, b {
+      display: block;
+      margin-bottom: 2px;
+    }
+    span i {
+      display: inline;
+    }
+  }
+}

@@ -8,6 +8,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import { getColor, getGradient } from '../utility/colors';
+
 import Input from './Input';
 
 class FillerText extends Component {
@@ -20,33 +22,6 @@ class FillerText extends Component {
       values: {}
     };
   }
-  getLuminance = (color) => {
-    const rgb = color && color.match(/#(..)(..)(..)/);
-    if (rgb) {
-      return (0.299 * parseInt(rgb[1], 16) + 0.587 * parseInt(rgb[2], 16) + 0.114 * parseInt(rgb[3], 16)) / 255;
-    } else {
-      return 0;
-    }
-  };
-  minLuminance = (min, entity) => {
-    return Math.min(min, this.getLuminance(entity.color));
-  }
-  getGradient = (entity, i, entities) => {
-    const pers = 100 / entities.length;
-    const color = entity.color || '#cccccc';
-    return `${color} ${pers * i}%, ${color} ${pers * (i + 1)}%`;
-  }
-  getColorStyles = (entities) => {
-    let gradient = entities.map(this.getGradient, '').join(', ');
-    let luminance = entities.reduce(this.minLuminance, 256);
-    let textColor = Math.abs(this.getLuminance('#202124') - luminance) > 0.2
-      ? '#202124'
-      : '#ffffff';
-    return {
-      color: textColor,
-      backgroundImage: `linear-gradient(${gradient})`
-    };
-  };
   onChange = (e) => {
     if (e) {
       this.setState({ [e.name]: e.value });
@@ -81,8 +56,12 @@ class FillerText extends Component {
     } else {
       this.values[label] = this.state[label];
     }
+    const gradient = getGradient(entities, this.props.config);
     return <Input
-      style={this.getColorStyles(entities)}
+      style={{
+        color: gradient.color,
+        backgroundImage: gradient.background
+      }}
       label={label}
       inline
       onChange={this.onChange}
@@ -91,16 +70,17 @@ class FillerText extends Component {
       type='select'
       required
       value={this.values[label]}
-      values={entities.map(e => ({
-        label: e.value,
-        value: e.value,
-        style: {
-          backgroundColor: e.color || '#cccccc',
-          color: Math.abs(this.getLuminance('#202124') - this.getLuminance(e.color || '#cccccc')) > 0.2
-            ? '#202124'
-            : '#ffffff'
-        }
-      }))
+      values={entities.map(e => {
+        const color = getColor(e, this.props.config);
+        return {
+          label: e.value,
+          value: e.value,
+          style: {
+            backgroundColor: color.background,
+            color: color.color
+          }
+        };
+      })
       }
     />;
   }
@@ -127,7 +107,8 @@ class FillerText extends Component {
 
 const mapStateToProps = (state, props) => {
   return {
-    entities: state.complaintStuff.entities
+    entities: state.complaintStuff.entities,
+    config: state.complaintStuff.config
   };
 };
 

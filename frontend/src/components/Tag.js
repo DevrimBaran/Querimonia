@@ -7,8 +7,10 @@
 
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
 import { changeEntity, deleteEntity } from '../redux/actions/';
+
+import { getColor, getGradient } from '../utility/colors';
+import Tooltip from './Tooltip';
 
 class Tag extends Component {
   constructor (props) {
@@ -18,54 +20,8 @@ class Tag extends Component {
       editActive: false
     };
     this.tooltip = React.createRef();
-    this.tooltip2 = React.createRef();
     this.entity = React.createRef();
   }
-  getLuminance = (color) => {
-    const rgb = color && color.match(/#(..)(..)(..)/);
-    if (rgb) {
-      return (0.299 * parseInt(rgb[1], 16) + 0.587 * parseInt(rgb[2], 16) + 0.114 * parseInt(rgb[3], 16)) / 255;
-    } else {
-      return 0;
-    }
-  };
-  averageLuminance = (avg, entity, array) => {
-    const color = this.getColor(entity);
-    // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
-    //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
-    return avg + (this.getLuminance(color) / array.length);
-  }
-  minLuminance = (min, entity, array) => {
-    const color = this.getColor(entity);
-    // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
-    //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
-    return Math.min(min, this.getLuminance(color));
-  }
-  getGradient = (entity, i, entities) => {
-    const pers = 100 / entities.length;
-    const color = this.getColor(entity);
-    // (entity.extractor && this.props.colors[entity.extractor] && this.props.colors[entity.extractor][entity.label]
-    //   ? this.props.colors[entity.extractor][entity.label] : entity.color) || '#cccccc';
-    return `${color} ${pers * i}%, ${color} ${pers * (i + 1)}%`;
-  }
-  getColor = (entity) => {
-    try {
-      return this.props.config.extractors.find(extractor => extractor.name === entity.extractor).color;
-    } catch (e) {
-      return '#cccccc';
-    }
-  }
-  getColorStyles = (entities) => {
-    let gradient = entities.map(this.getGradient, '').join(', ');
-    let luminance = entities.reduce(this.minLuminance, 256);
-    let textColor = Math.abs(this.getLuminance('#202124') - luminance) > 0.2
-      ? '#202124'
-      : '#ffffff';
-    return {
-      color: textColor,
-      backgroundImage: `linear-gradient(${gradient})`
-    };
-  };
   modifyEntity = (data) => {
     console.log('MODIFY', data);
     this.props.dispatch(changeEntity(this.props.complaintId, data.id || 0, data));
@@ -82,118 +38,42 @@ class Tag extends Component {
     const entity = this.props.entities.byId[id] || {};
     this.modifyEntity({ id: id, preferred: !entity.preferred });
   }
-  createTooltip = (entities, b) => {
-    return (
-      <div ref={this.tooltip} className='tooltip'>
-        {entities.map((label, i) => (
-          <div style={{
-            marginLeft: (i !== 0) ? '0.4em' : '0',
-            border: '2px solid ' + label.color,
-            textAlign: 'center',
-            float: 'left',
-            padding: '4px'
-          }} key={i}>
-            <i>{label.label}</i>
-            <br style={{ marginBottom: '2px' }} />
-            <b>{label.value}</b>
-            <br style={{ marginBottom: '2px' }} />
-            <span className='action-button'>
-              <i title='Kopieren' id='editEntity' className={'far fa-clone'} />
-            </span>
-            <span className='action-button'>
-              <i title='Bearbeiten' id='editEntity' className={'far fa-edit'} />
-            </span>
-            <span className='action-button'>
-              <i title='Löschen' className={'far fa-trash-alt'} onClick={this.remove(label.id)} />
-            </span>
-          </div>
-        ))}
-      </div>
-    );
-  }
-  onMouseEnter = (e) => {
-    const element = e.target;
-    const rect = element.getBoundingClientRect();
-    const tooltip = this.tooltip.current;
-    if (tooltip) {
-      tooltip.classList.add('show');
-      tooltip.style.left = (rect.x + rect.width * 0.5) + 'px';
-      if (rect.y >= tooltip.offsetHeight) {
-        tooltip.classList.remove('bottom');
-        tooltip.classList.add('top');
-        tooltip.style.top = (rect.y) + 'px';
-      } else {
-        tooltip.classList.remove('top');
-        tooltip.classList.add('bottom');
-        tooltip.style.top = (rect.y + rect.height) + 'px';
-      }
-      /*
-      if (rect.x >= tooltip.offsetWidth) {
-        tooltip.classList.remove('bottom');
-        tooltip.classList.add('top');
-        tooltip.style.top = (rect.y) + 'px';
-      } else {
-        tooltip.classList.remove('top');
-        tooltip.classList.add('bottom');
-        tooltip.style.top = (rect.y + rect.height) + 'px';
-      }
-      */
-    }
-  }
-  onMouseLeave = (e) => {
-    this.setState({
-      style: ''
-    });
-    const tooltip = this.tooltip.current;
-    if (tooltip) {
-      tooltip.classList.remove('show');
-    }
-
-    const tooltip2 = this.tooltip2.current;
-    if (tooltip2) {
-      tooltip2.classList.remove('show');
-    }
-  }
-  onMouseClick = (e) => {
-    this.onMouseLeave(e);
-
-    const element = e.target;
-    const rect = element.getBoundingClientRect();
-    const tooltip = this.tooltip2.current;
-    if (tooltip) {
-      tooltip.classList.add('show');
-      tooltip.style.left = (rect.x + rect.width * 0.5) + 'px';
-      if (rect.y >= tooltip.offsetHeight) {
-        tooltip.classList.remove('bottom');
-        tooltip.classList.add('top');
-        tooltip.style.top = (rect.y) + 'px';
-      } else {
-        tooltip.classList.remove('top');
-        tooltip.classList.add('bottom');
-        tooltip.style.top = (rect.y + rect.height) + 'px';
-      }
-    }
-  }
   render () {
     const { text, ids, entities, dispatch, complaintId, ...passThrough } = { ...this.props };
     const relevantEntities = ids.map(id => entities.byId[id]);
-    const styles = this.getColorStyles(relevantEntities);
-    const tooltip = this.createTooltip(relevantEntities, true);
-    const tooltip2 = this.createTooltip(relevantEntities, false);
+    const gradient = getGradient(relevantEntities, this.props.config);
     const inject = {
       className: 'entity',
-      ref: this.entity,
-      style: styles,
-      onMouseEnter: this.onMouseEnter,
-      onMouseLeave: this.onMouseLeave,
-      onClick: this.onMouseClick
+      style: {
+        color: gradient.color,
+        backgroundImage: gradient.background
+      }
     };
     return (
-      <span data-tag-id={ids.join(',')} {...inject} {...passThrough}>
-        <style>{this.state.style}</style>
+      <span onMouseEnter={Tooltip.show} onMouseLeave={Tooltip.hide} id={'tag_' + ids.join('_')} {...inject} {...passThrough}>
         {text}
-        {ReactDOM.createPortal(tooltip, document.body)}
-        {ReactDOM.createPortal(tooltip2, document.body)}
+        <Tooltip htmlFor={'#tag_' + ids.join('_')} className='tag-tooltip'>
+          {relevantEntities.map((entity, i) => (
+            <div
+              key={i}
+              style={{
+                borderColor: getColor(entity, this.props.config).background
+              }}
+            >
+              <i>{entity.label}</i>
+              <b>{entity.value}</b>
+              <span className='action-button'>
+                <i title='Kopieren' id='editEntity' className={'far fa-clone'} />
+              </span>
+              <span className='action-button'>
+                <i title='Bearbeiten' id='editEntity' className={'far fa-edit'} />
+              </span>
+              <span className='action-button'>
+                <i title='Löschen' className={'far fa-trash-alt'} onClick={this.remove(entity.id)} />
+              </span>
+            </div>
+          ))}
+        </Tooltip>
       </span>
     );
   }

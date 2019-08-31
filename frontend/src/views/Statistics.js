@@ -11,34 +11,40 @@ import Content from '../components/Content';
 import Row from '../components/Row';
 import D3 from '../components/D3';
 
-// nur demo, styles sollten in scss datei
-const barStyle = {
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'no-wrap',
-  alignItems: 'flex-end',
-  alignSelf: 'flex-start',
-  padding: 0,
-  height: '100px',
-  border: '1px solid black',
-  margin: '0 10px'
-};
-
 const renderBarchart = (target, data, d3) => {
-  d3.select(target)
-    .selectAll('div')
+  var width = 420;
+  var barHeight = 20;
+
+  var x = d3.scaleLinear()
+    .domain([0, d3.max(data, d => d.width)])
+    .range([0, width]);
+
+  console.log(x);
+
+  var chart = d3.select('.chart')
+    .attr('width', width)
+    .attr('height', barHeight * data.length);
+
+  var bar = chart.selectAll('g')
     .data(data)
-    .enter().append('div')
-    .style('background-color', 'black')
-    .style('border', '1px solid white')
-    .style('width', '20px')
-    .style('height', d => (d.height * 10) + 'px');
+    .enter().append('g')
+    .attr('transform', function (d, i) { return 'translate(0,' + i * barHeight + ')'; });
+
+  bar.append('rect')
+    .attr('width', d => x(d.width))
+    .attr('height', barHeight - 1);
+
+  bar.append('text')
+    .attr('x', function (d) { return x(d.width) - 3; })
+    .attr('y', barHeight / 2)
+    .attr('dy', '.35em')
+    .text(function (d) { return d.label; });
 };
 
 const fakeData = (count = 5) => {
   let data = [];
   for (var i = count; i > 0; i--) {
-    data.push({ height: ~~(Math.random() * 10) });
+    data.push({ width: ~~(Math.random() * 10), label: i });
   }
   return data;
 };
@@ -51,9 +57,15 @@ function Statistics () {
           <h6 className='center'>Statistiken</h6>
           <Content>
             <Row>
-              <D3 data={fakeData()} render={renderBarchart} style={barStyle} />
-              <D3 data={fakeData()} render={renderBarchart} style={barStyle} />
-              <D3 data={fakeData()} render={renderBarchart} style={barStyle} />
+              <D3 data={fakeData()} render={renderBarchart}>
+                <svg className='chart' />
+              </D3>
+              <D3 data={fakeData()} render={renderBarchart}>
+                <svg className='chart' />
+              </D3>
+              <D3 data={fakeData()} render={renderBarchart}>
+                <svg className='chart' />
+              </D3>
             </Row>
           </Content>
         </Row>

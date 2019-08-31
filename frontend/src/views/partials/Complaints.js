@@ -24,7 +24,7 @@ import TaggedText from '../../components/TaggedText';
 import Tabbed from '../../components/Tabbed';
 import TextBuilder from '../../components/TextBuilder';
 import Table from '../../components/Table';
-import Input from '../../components/Input';
+// import Input from '../../components/Input';
 import Debug from '../../components/Debug';
 import Button from '../../components/Button';
 
@@ -113,8 +113,6 @@ function Single (active, dispatch, helpers) {
   } else {
     console.log(active);
   }
-  const editActive = true;
-  const editFormActive = true;
   return (
     <React.Fragment>
       <Block>
@@ -154,20 +152,6 @@ function Single (active, dispatch, helpers) {
             </Tabbed>
           </Content>
           <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
-          <div style={{ display: 'none' }}>
-            <div style={{ display: 'block', paddingTop: '10px', margin: 'auto', textAlign: 'center', borderTop: '1px solid lightGrey', width: '90%', marginTop: '10px' }}>
-              <i style={editActive ? { color: 'rgb(36,191,64)', cursor: 'pointer' } : { color: 'rgb(158,72,59)', cursor: 'pointer' }}
-                className='fas fa-plus-circle fa-2x'
-                onClick={this.startEdit} />
-              {editActive ? <i style={{ display: 'block', fontSize: '0.8em', marginTop: '3px' }}>Bitte gewünschten Abschnitt markieren</i> : null}
-              {editFormActive ? <div style={{ marginTop: '5px' }}> <div>newEntityString</div>
-                <b> Entität: </b>
-                <Input type='select' id='chooseExtractor' />
-                <br />
-                <i style={{ color: 'green', cursor: 'pointer', padding: '5px' }} onClick={this.addEntity} className='far fa-check-circle fa-2x' />
-                <i style={{ color: 'red', cursor: 'pointer', padding: '5px' }} onClick={this.abortEdit} className='far fa-times-circle fa-2x' /> </div> : null}
-            </div>;
-          </div>
           <Collapsible label='Details' />
           <div>
             <Table className='details-table'>
