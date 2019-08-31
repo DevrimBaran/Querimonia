@@ -50,9 +50,9 @@ class TextBuilder extends Component {
           <Tabbed>
             <div label='Antworten' disabled={disableResponses}>
               {
-                this.props.components.filter(c => !this.state.used[c.id]).map((component, i) => (
-                  <Response key={i} component={component.component} onSelect={(e) => { this.onSelect(e.value, component.id); }} />
-                ))
+                this.props.components.filter(c => !this.state.used[c.component.id]).map((c, i) => {
+                  return (<Response key={c.component.id} component={c.component} onSelect={(e) => { this.onSelect(e.value, c.component.id); }} />);
+                })
               }
             </div>
             <div label='Aktionen' disabled={disableActions}>
