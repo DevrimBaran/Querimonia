@@ -52,39 +52,45 @@ class App extends Component {
   }
   handleKeyDown = (e) => {
     if (e.ctrlKey) {
+      let prefix = '';
+      if (window.location.pathname.startsWith('/dev')) {
+        prefix = '/dev';
+      } else if (window.location.pathname.startsWith('/mock')) {
+        prefix = '/mock';
+      }
       let preventDefault = true;
       switch (e.keyCode) {
         // B-Button-Event
         case 66 :
-          window.location.href = '/complaints';
+          window.location.replace(prefix + '/complaints');
           break;
         // R-Button-Event
         case 82 :
-          window.location.href = '/components';
+          window.location.replace(prefix + '/components');
           break;
         // K-Button-Event
         case 75 :
-          window.location.href = '/config';
+          window.location.replace(prefix + '/config');
           break;
         // I-Button-Event
         case 73 :
-          window.location.href = '/import';
+          window.location.replace(prefix + '/import');
           break;
         // V-Button-Event
         case 86 :
-          window.location.href = '/wordvectors';
+          window.location.replace(prefix + '/wordvectors');
           break;
         // H-Button-Event
         case 72 :
-          window.location.href = '/tagcloud';
+          window.location.replace(prefix + '/tagcloud');
           break;
         // S-Button-Event
         case 83 :
-          window.location.href = '/stats';
+          window.location.replace(prefix + '/stats');
           break;
         // ?-Button-Event
         case 63 :
-          window.location.href = '/impressum';
+          window.location.replace(prefix + '/impressum');
           break;
         default:
           preventDefault = false;
