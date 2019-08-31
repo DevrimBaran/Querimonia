@@ -65,6 +65,7 @@ class FillerText extends Component {
     if (!this.state[label]) {
       switch (entities.length) {
         case 0: {
+          // TODO add to values / modify Input to include value in values?
           this.values[label] = 'Erstellen Sie eine Entität';
           break;
         }

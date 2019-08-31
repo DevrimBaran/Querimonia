@@ -8,6 +8,9 @@
 import React from 'react';
 
 import { changeEntityPreference, refreshComplaint } from '../../redux/actions/';
+
+import localize from '../../utility/date';
+
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
@@ -23,6 +26,7 @@ import TextBuilder from '../../components/TextBuilder';
 import Table from '../../components/Table';
 import Input from '../../components/Input';
 import Debug from '../../components/Debug';
+import Button from '../../components/Button';
 
 /**
  * extracts the key with the maximal value
@@ -87,9 +91,7 @@ function List (data, dispatch, helpers) {
         <Row>
           {data.id}
           <div>
-            <span className={(data.state === 'ERROR' || data.state === 'ANALYSING') ? 'action-button-disabled' : 'action-button'}>
-              <i title='Erneut auswerten' className={(data.state === 'ERROR') ? 'fas fa-sync  fa-spin' : 'fas fa-sync'} onClick={refresh} style={(data.state === 'CLOSED' || data.state === 'ANALYSING') ? { cursor: 'default' } : null} />
-            </span>
+            <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'} icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
             {helpers && helpers.remove(data.id)}
           </div>
         </Row>
@@ -99,7 +101,7 @@ function List (data, dispatch, helpers) {
       <td>{data.sentiment.emotion.value}</td>
       <td><Sentiment fixed={null} tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
-      <td>{data.receiveDate} {data.receiveTime}</td>
+      <td>{localize(data.receiveDate)} {data.receiveTime}</td>
     </tr>
   );
 }
@@ -176,7 +178,11 @@ function Single (active, dispatch, helpers) {
                 </tr>
                 <tr>
                   <td>Eingangsdatum</td>
-                  <td>{active.receiveDate}</td>
+                  <td>{localize(active.receiveDate)}</td>
+                </tr>
+                <tr>
+                  <td>Eingangszeit</td>
+                  <td>{active.receiveTime}</td>
                 </tr>
                 <tr>
                   <td>Status</td>

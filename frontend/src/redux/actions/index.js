@@ -1,4 +1,5 @@
 import Api from '../../utility/Api';
+import localize from '../../utility/date';
 
 export function setActive (endpoint, id) {
   return function (dispatch, getState) {
@@ -249,7 +250,7 @@ export function fetchCurrentConfig () {
 }
 export function fetchStuff (id) {
   return function (dispatch, getState) {
-    const { configuration } = getState().complaints.data.byId[id];
+    const { configuration, receiveDate, receiveTime } = getState().complaints.data.byId[id];
     dispatch({
       type: 'FETCH_SINGLE_COMPLAINT_START',
       id: id
@@ -263,6 +264,34 @@ export function fetchStuff (id) {
         Api.get('/api/complaints/' + id + '/text', {}),
         Api.get('/api/config/' + configuration.id, {})
       ]).then(data => {
+        const dateExtractor = data[5].extractors.find(extractor => extractor.label === 'Eingangsdatum');
+        const timeExtractor = data[5].extractors.find(extractor => extractor.label === 'Eingangszeit');
+        if (dateExtractor) {
+          data[0].push({
+            id: 'Eingangsdatum',
+            label: 'Eingangsdatum',
+            start: 0,
+            end: 0,
+            value: localize(receiveDate),
+            setByUser: false,
+            preferred: false,
+            extractor: dateExtractor.name,
+            color: dateExtractor.color
+          });
+        }
+        if (timeExtractor) {
+          data[0].push({
+            id: 'Eingangszeit',
+            label: 'Eingangszeit',
+            start: 0,
+            end: 0,
+            value: receiveTime,
+            setByUser: false,
+            preferred: false,
+            extractor: timeExtractor.name,
+            color: timeExtractor.color
+          });
+        }
         dispatch({
           type: 'FETCH_SINGLE_COMPLAINT_END',
           entities: data[0],
