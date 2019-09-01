@@ -13,7 +13,7 @@ import spotlight from './../assets/img/spotlight.svg';
 import iaoPartner from './../assets/img/iao.png';
 import iatPartner from './../assets/img/iat.png';
 // import screen1 from './../assets/img/screen1.jpg';
-import screen2 from './../assets/img/screen2.jpg';
+// import screen2 from './../assets/img/screen2.jpg';
 // import screen3 from './../assets/img/screen3.jpg';
 import '../assets/scss/_images.scss';
 import '../assets/scss/toSort/_entity.scss';
