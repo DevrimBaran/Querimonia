@@ -14,11 +14,6 @@ import Pagination from './Pagination';
 
 export default (endpoint, partial, stateToProps) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
-    // return connect((state, props) => ({ ...state[endpoint].data }))(class extends Component {
-    constructor (props) {
-      super(props);
-      console.log('CONSTRUCTOR');
-    };
     edit = (id) => {
       return (
         <Link to={'/' + endpoint + '/' + id}>

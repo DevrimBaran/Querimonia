@@ -1,24 +1,31 @@
-import { showErrorPopup } from './../components/ErrorPopup';
+import ErrorModal from './../components/ErrorModal';
 
 const fetchJson = function (action, options) {
   const processResponse = (response) => {
-    const responseJsonPromise = response.json();
-    if (!response.ok) showErrorPopup(responseJsonPromise);
-    return responseJsonPromise;
+    const json = response.json();
+    if (!response.ok) {
+      return json.then(json => {
+        throw new ErrorModal.QuerimoniaError(json);
+      });
+    }
+    return json;
   };
   if ((process.env.NODE_ENV === 'development')) {
     const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
     if (useMockInDev) {
       console.log('Application is using mock backend!');
       return fetch('https://querimonia.iao.fraunhofer.de/mock' + action, options)
-        .then((response) => processResponse(response));
+        .then((response) => processResponse(response))
+        .catch(ErrorModal.catch);
     } else {
       return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
-        .then((response) => processResponse(response));
+        .then((response) => processResponse(response))
+        .catch(ErrorModal.catch);
     }
   } else {
     return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
-      .then((response) => processResponse(response));
+      .then((response) => processResponse(response))
+      .catch(ErrorModal.catch);
   }
 };
 const options = function (method, data, additional = {}) {

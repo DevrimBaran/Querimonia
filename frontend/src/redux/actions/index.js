@@ -79,14 +79,25 @@ export function remove (endpoint, id) {
     });
   };
 }
+export function finishComplaint (id) {
+  return function (dispatch, getState) {
+    dispatch((dispatch) => {
+      Api.patch('/api/complaints/' + id + '/close', { })
+        .then(response => {
+          dispatch({
+            type: 'UPDATE_SINGLE',
+            data: response,
+            endpoint: 'complaints'
+          });
+        });
+    });
+  };
+}
 export function refreshComplaint (id) {
   return function (dispatch, getState) {
     dispatch((dispatch) => {
       Api.patch('/api/complaints/' + id + '/refresh', { keepUserInformation: true })
         .then(response => {
-          if (response.status && response.status === 500) {
-            // alert(data.message);
-          }
           dispatch({
             type: 'UPDATE_SINGLE',
             data: response,

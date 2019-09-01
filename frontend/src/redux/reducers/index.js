@@ -133,7 +133,10 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       return {
         ...state,
         fetching: false,
-        active: false,
+        active: state.active && {
+          ...state.active,
+          state: action.data.state
+        },
         byId: {
           ...state.byId,
           [action.data.id]: action.data

@@ -1,32 +1,11 @@
-@import '../variables';
-
 #errorPopup {
-  z-index: 99999;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  .background {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    opacity: 0.4;
-    background-color: black;
-  }
-  .content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border: 1px solid $primaryTextColor;
-    padding: 10px 20px;
-    transform: translate3d(-50%, -50%, 0);
-    background-color: $primaryBackgroundColor;
-  }
-  display: none;
-  &.show {
-    display: block;
-  }
+    .code {
+        display: block;
+        margin-bottom: 1em;
+        font-size: 0.6;
+    }
+    .message {
+        display: block;
+        
+    }
 }

@@ -29,9 +29,8 @@ import Liste from '../../components/List';
 import Debug from '../../components/Debug';
 import Button from '../../components/Button';
 
-const sortedEntities = (data, complaintId, dispatch) => {
+const sortedEntities = (data, complaintId, dispatch, disabled) => {
   const entities = data.ids.map(id => data.byId[id]).sort((a, b) => {
-    console.log(a, b, a.label === b.label, a.start === b.start, a.label < b.label, a.start < b.start);
     if (a.label === b.label) {
       if (a.start === b.start) {
         return (a.end < b.end ? -1 : 1);
@@ -44,11 +43,12 @@ const sortedEntities = (data, complaintId, dispatch) => {
   return entities.map(entity => (
     [
       entity.label,
-      <Tag text={entity.value} ids={[entity.id]} />,
-      <i
+      <Tag text={entity.value} ids={[entity.id]} disabled={disabled} />,
+      <Button
+        disabled={disabled}
         onClick={() => dispatch(changeEntity(complaintId, entity.id, { preferred: !entity.preferred }))}
-        style={{ cursor: 'pointer', padding: '3px', color: (entity.preferred ? 'orange' : 'lightgray') }}
-        className={'fas fa-crown'}
+        style={{ color: (entity.preferred ? 'orange' : 'lightgray') }}
+        icon={'fas fa-crown'}
       />
     ]
   ));
@@ -106,12 +106,16 @@ function Single (active, dispatch, helpers) {
   } else {
     console.log(active);
   }
+  const disabled =
+    active.state === 'CLOSED' ||
+    active.state === 'ANALYSING' ||
+    active.state === 'ERROR';
   return (
     <React.Fragment>
       <Block>
         <Row vertical>
           <h6 className='center'>Anwort</h6>
-          <TextBuilder />
+          <TextBuilder disabled={disabled} />
         </Row>
       </Block>
       <Block>
@@ -120,7 +124,7 @@ function Single (active, dispatch, helpers) {
           <Content>
             <Tabbed vertical>
               <div label='Überarbeitet'>
-                <TaggedText active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
+                <TaggedText disabled={disabled} active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
               </div>
               <div label='Original'>
                 {helpers.props.complaintStuff.text}
@@ -163,7 +167,7 @@ function Single (active, dispatch, helpers) {
             collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
           />
           <Content>
-            <Liste data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch)}
+            <Liste data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
               styles={[{
                 fontWeight: 'bold'
               }, {

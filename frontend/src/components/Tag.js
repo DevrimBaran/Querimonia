@@ -38,7 +38,7 @@ class Tag extends Component {
     }
   }
   render () {
-    const { text, ids, entities, dispatch, complaintId, ...passThrough } = { ...this.props };
+    const { text, ids, entities, dispatch, complaintId, disabled, ...passThrough } = { ...this.props };
     const relevantEntities = ids.map(id => entities.byId[id]);
     const gradient = getGradient(relevantEntities, this.props.config);
     const inject = {
@@ -67,9 +67,11 @@ class Tag extends Component {
             >
               <i>{entity.label}</i>
               <b>{entity.value}</b>
-              <Button title='Kopieren' icon='far fa-clone' modal='editEntityModal' {...entitiyData} />
-              <Button title='Bearbeiten' icon='far fa-edit' modal='editEntityModal' {...entitiyData} data-id={entity.id} />
-              <Button title='Löschen' icon='far fa-trash-alt' onClick={this.remove(entity.id)} />
+              {disabled || <React.Fragment>
+                <Button title='Kopieren' icon='far fa-clone' modal='editEntityModal' {...entitiyData} />
+                <Button title='Bearbeiten' icon='far fa-edit' modal='editEntityModal' {...entitiyData} data-id={entity.id} />
+                <Button title='Löschen' icon='far fa-trash-alt' onClick={this.remove(entity.id)} />
+              </React.Fragment>}
             </div>;
           })}
         </Tooltip>

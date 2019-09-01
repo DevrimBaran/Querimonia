@@ -22,7 +22,7 @@ import Config from './views/partials/Config';
 
 // import OpenApi from './components/OpenApi';
 import Api from './utility/Api';
-import { ErrorPopupComponent } from './components/ErrorPopup';
+import ErrorModal from './components/ErrorModal';
 
 import logo from './assets/img/StuproLogo2.svg';
 
@@ -103,6 +103,9 @@ class App extends Component {
   componentWillUnmount = () => {
     document.removeEventListener('keydown', this.handleKeyDown);
   }
+  componentDidCatch = (errorString, errorInfo) => {
+    this.error = { title: errorString, message: errorInfo, status: '0' };
+  }
   render () {
     let basepath;
     try {
@@ -120,7 +123,7 @@ class App extends Component {
             <ul id='mainMenu' />
             <Login />
           </nav>
-          <ErrorPopupComponent />
+          <ErrorModal error={this.error} />
           <View accessRole={['guest', 'user', 'admin']} exact path='/' component={Home} />
           <View label='Beschwerden' accessRole={['user', 'admin']} endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
           <View label='Regeln' accessRole={['admin']} endpoint='components' path='/components/:id?' component={Components} />

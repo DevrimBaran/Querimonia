@@ -38,7 +38,7 @@ class TaggedText extends Component {
         // String before next entity
         !text.substring(cpos, entity.start) || html.push(<span key={key++} data-key={html.length}>{text.substring(cpos, entity.start)}</span>);
         // String that is entity
-        html.push(<Tag key={key++} data-key={html.length} text={text.substring(entity.start, entity.end)} ids={entity.ids} />);
+        html.push(<Tag key={key++} disabled={this.props.disabled} data-key={html.length} text={text.substring(entity.start, entity.end)} ids={entity.ids} />);
         cpos = entity.end;
       }
     }
@@ -48,15 +48,17 @@ class TaggedText extends Component {
   };
 
   render () {
-    const { text, entities } = { ...this.props };
+    const { text, entities, disabled, dispatch, ...passThrough } = { ...this.props };
     return (
-      <div>
+      <div {...passThrough}>
         <p>
           <span>{this.parseText(text, entities.calculated)}</span>
         </p>
-        <div className='plus-item'>
-          <i modal='editEntityModal' className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
-        </div>
+        {disabled ||
+          <div className='plus-item'>
+            <i modal='editEntityModal' className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
+          </div>
+        }
       </div>
     );
   }
