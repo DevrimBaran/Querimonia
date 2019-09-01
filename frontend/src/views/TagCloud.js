@@ -37,12 +37,24 @@ class TagCloud extends Component {
   renderCloud = (target, data, d3) => {
     const padding = [20, 20];
     const hsl = new Color(data.color).hsl();
-    if (hsl[2] === 1) {
-      hsl[1] = '100%';
-      hsl[2] = '40%';
-    } else {
-      hsl[1] = ~~(hsl[1] * 100) + '%';
-      hsl[2] = ~~(hsl[2] * 100) + '%';
+    if (hsl.l === 1) { // white
+      hsl.l = 0.5;
+      hsl.s = 0.7;
+      hsl.random = () => {
+        hsl.h = Math.random();
+        return hsl.css();
+      };
+    } else if (hsl.l === 0) { // black
+      hsl.random = () => {
+        hsl.l = Math.random() * 0.6 + 0.3;
+        return hsl.css();
+      };
+    } else { // color
+      hsl.random = () => {
+        hsl.l = Math.random() * 0.6 + 0.3;
+        hsl.s = Math.random() * 0.6 + 0.3;
+        return hsl.css();
+      };
     }
     let draw = (words) => {
       let text = d3.select(target).append('svg')
@@ -55,12 +67,13 @@ class TagCloud extends Component {
         .enter().append('text');
 
       text
+        .style('font-family', 'Impact')
+        .style('font-weight', 'normal')
         .style('font-size', function (d) {
           return d.size + 'px';
         })
-        .style('fill', d => {
-          hsl[0] = ~~(360 * Math.random());
-          return 'hsl(' + hsl.join(',') + ')';
+        .attr('fill', d => {
+          return hsl.random();
         })
         .attr('text-anchor', 'middle')
         .attr('transform', function (d) {
@@ -72,17 +85,19 @@ class TagCloud extends Component {
 
       text
         .append('title')
-        .text(d => 'Vorkommen: ' + d.value);
+        .text(d => d.text + ' - ' + d.value + 'mal');
     };
 
     let layout = cloud()
       .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1] + 2) * 2])
       .words(data.words)
       .spiral('rectangular')
-      .padding(5)
+      .padding(1)
       .rotate(function () {
         return 0;
       })
+      .font('Impact')
+      .fontWeight('normal')
       .fontSize(function (d) {
         return d.size;
       })
@@ -157,7 +172,7 @@ class TagCloud extends Component {
       const tmax = this.state.maxOccurrence; // Höchste Anzahl
       const tmin = this.state.minOccurrence; // mindest Anzahl an Wörter
       const fmax = 130; // maximale Schriftgröße
-      const fmin = 10; // minimale Schriftgröße
+      const fmin = 20; // minimale Schriftgröße
       return Math.max(fmax * ((size - tmin) / (tmax - tmin)), fmin);
     };
 

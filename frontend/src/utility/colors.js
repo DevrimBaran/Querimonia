@@ -15,6 +15,7 @@ export class Color {
         this.b = parseInt(color.substr(5, 2), 16);
       }
     }
+    this.obj = {};
   }
   css = () => {
     return '#' + this.r.toString(16) + this.g.toString(16) + this.b.toString(16);
@@ -23,36 +24,12 @@ export class Color {
     return (0.299 * this.r + 0.587 * this.g + 0.114 * this.b) / 255.0;
   }
   rbg = () => {
-    return [this.r, this.g, this.b];
-  }
-  hsv = () => {
-    let r = this.r / 255;
-    let g = this.g / 255;
-    let b = this.b / 255;
-
-    let max = Math.max(r, g, b);
-    let min = Math.min(r, g, b);
-
-    let h;
-    let s;
-    let v = max;
-
-    let d = max - min;
-    s = max === 0 ? 0 : d / max;
-
-    if (max === min) {
-      h = 0; // achromatic
-    } else {
-      switch (max) {
-        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
-        case g: h = (b - r) / d + 2; break;
-        case b: h = (r - g) / d + 4; break;
-        default:
-      }
-
-      h /= 6;
-    }
-    return [h, s, v];
+    this.obj = { r: this.r, g: this.g, b: this.b };
+    this.obj.array = () => [this.r, this.g, this.b];
+    this.obj.css = () => {
+      return '#' + this.obj.r.toString(16) + this.obj.g.toString(16) + this.obj.b.toString(16);
+    };
+    return this.obj;
   }
   hsl = () => {
     let r = this.r / 255;
@@ -81,7 +58,12 @@ export class Color {
 
       h /= 6;
     }
-    return [h, s, l];
+    this.obj = { h: h, s: s, l: l };
+    this.obj.array = () => [h, s, l];
+    this.obj.css = () => {
+      return 'hsl(' + ~~(this.obj.h * 360) + ', ' + ~~(this.obj.s * 100) + '%, ' + ~~(this.obj.l * 100) + '%' + ')';
+    };
+    return this.obj;
   }
 }
 
