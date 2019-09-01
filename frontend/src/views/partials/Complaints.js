@@ -26,7 +26,7 @@ import TextBuilder from '../../components/TextBuilder';
 // import Table from '../../components/Table';
 import Liste from '../../components/List';
 // import Input from '../../components/Input';
-import Debug from '../../components/Debug';
+// import Debug from '../../components/Debug';
 import Button from '../../components/Button';
 
 const sortedEntities = (data, complaintId, dispatch, disabled) => {
@@ -140,12 +140,12 @@ function Single (active, dispatch, helpers) {
                   </div>
                 ))}
               </div>
-              <div label='active'>
+              {/* <div label='active'>
                 <Debug data={active} />
               </div>
               <div label='stuff'>
                 <Debug data={helpers.props.complaintStuff} />
-              </div>
+              </div> */}
             </Tabbed>
           </Content>
           <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />

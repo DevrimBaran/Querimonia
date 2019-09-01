@@ -3,19 +3,20 @@ import { connect } from 'react-redux';
 
 import { setActive, saveActive } from '../redux/actions/';
 
+import Button from './Button';
+
 export default (endpoint, partial, stateToProps) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
     save = () => {
       return (
-        <button
-          type='button'
+        <Button
           className='important'
           disabled={this.props.active.saving}
           onClick={(e) => {
             console.log('save', this.props.active);
             this.props.dispatch(saveActive(endpoint));
           }}
-        >Speichern</button>
+        >Speichern</Button>
       );
     }
     componentDidMount = () => {

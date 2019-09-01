@@ -14,10 +14,6 @@ import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
 import DeepObject from '../../components/DeepObject';
-import Debug from '../../components/Debug';
-
-// eslint-disable-next-line
-import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
 function Header () {
   return (
@@ -77,7 +73,6 @@ function Single (active, dispatch, helpers) {
           <h6 className='center'>Konfiguration</h6>
           <Content className='margin'>
             <DeepObject data={active} template={template(helpers.props.allExtractors['KIKUKO_TOOL'])} save={modifyActive} />
-            <Debug data={active} />
           </Content>
           <div className='center margin'>
             {helpers.save()}

@@ -67,8 +67,8 @@ function Impressum () {
               Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: DE 129515865
               </p>
               <br />
+              <h3>Registergericht<br /></h3>
               <p>
-                <h3>Registergericht<br /></h3>
                 Amtsgericht München<br />
                 Eingetragener Verein<br />
                 Register-Nr. VR 4461<br />
@@ -82,8 +82,8 @@ function Impressum () {
               Dipl.-Kfm. Andreas Meuer, Controlling und Digitale Geschäftsprozesse<br />
               </p>
               <br />
+              <h3>Nutzungsrechte<br /></h3>
               <p>
-                <h3>Nutzungsrechte<br /></h3>
                 Copyright © by Fraunhofer-Gesellschaft
               </p>
               <br />
