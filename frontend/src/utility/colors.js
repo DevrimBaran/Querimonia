@@ -2,7 +2,90 @@ const black = '#202124';
 const grey = '#cccccc';
 const white = '#ffffff';
 
-const color = (entity, config) => {
+export class Color {
+  constructor (color) {
+    if (color.substr(0, 1) === '#') {
+      if (color.length === 4) {
+        this.r = parseInt(color.substr(1, 1), 16) * 17;
+        this.g = parseInt(color.substr(2, 1), 16) * 17;
+        this.b = parseInt(color.substr(3, 1), 16) * 17;
+      } else {
+        this.r = parseInt(color.substr(1, 2), 16);
+        this.g = parseInt(color.substr(3, 2), 16);
+        this.b = parseInt(color.substr(5, 2), 16);
+      }
+    }
+  }
+  css = () => {
+    return '#' + this.r.toString(16) + this.g.toString(16) + this.b.toString(16);
+  }
+  luminance = () => {
+    return (0.299 * this.r + 0.587 * this.g + 0.114 * this.b) / 255.0;
+  }
+  rbg = () => {
+    return [this.r, this.g, this.b];
+  }
+  hsv = () => {
+    let r = this.r / 255;
+    let g = this.g / 255;
+    let b = this.b / 255;
+
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+
+    let h;
+    let s;
+    let v = max;
+
+    let d = max - min;
+    s = max === 0 ? 0 : d / max;
+
+    if (max === min) {
+      h = 0; // achromatic
+    } else {
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+        default:
+      }
+
+      h /= 6;
+    }
+    return [h, s, v];
+  }
+  hsl = () => {
+    let r = this.r / 255;
+    let g = this.g / 255;
+    let b = this.b / 255;
+
+    let max = Math.max(r, g, b);
+    let min = Math.min(r, g, b);
+
+    let h;
+    let s;
+    let l = (max + min) / 2;
+
+    if (max === min) {
+      h = s = 0; // achromatic
+    } else {
+      var d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+      switch (max) {
+        case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+        case g: h = (b - r) / d + 2; break;
+        case b: h = (r - g) / d + 4; break;
+        default:
+      }
+
+      h /= 6;
+    }
+    return [h, s, l];
+  }
+}
+
+const extractColor = (entity, config) => {
   const extractor = config && config.extractors.find(extractor => extractor.name === entity.extractor);
   let color = grey;
   if (extractor) {
@@ -14,12 +97,7 @@ const color = (entity, config) => {
 };
 
 const luminance = (color) => {
-  const rgb = color && color.match(/#(..)(..)(..)/);
-  if (rgb) {
-    return (0.299 * parseInt(rgb[1], 16) + 0.587 * parseInt(rgb[2], 16) + 0.114 * parseInt(rgb[3], 16)) / 255;
-  } else {
-    return 0;
-  }
+  return new Color(color).luminance();
 };
 
 const darkest = (colors) => {
@@ -35,7 +113,7 @@ const blackLuminance = luminance(black);
 const whiteLuminance = luminance(white);
 
 export const getGradient = (entities, config) => {
-  const backgrounds = entities.map(entity => color(entity, config));
+  const backgrounds = entities.map(entity => extractColor(entity, config));
   const luminance = darkest(backgrounds);
   return {
     color: Math.abs(blackLuminance - luminance) >= Math.abs(whiteLuminance - luminance)
@@ -46,7 +124,7 @@ export const getGradient = (entities, config) => {
 };
 
 export const getColor = (entity, config) => {
-  const background = color(entity, config);
+  const background = extractColor(entity, config);
   const lum = luminance(background);
   return {
     color: Math.abs(blackLuminance - lum) >= Math.abs(whiteLuminance - lum)

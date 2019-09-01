@@ -19,7 +19,8 @@ const renderBarchart = (target, data, d3) => {
     .domain([0, d3.max(data, d => d.width)])
     .range([0, width]);
 
-  var chart = d3.select(target).select('.chart')
+  var chart = d3.select(target).append('svg')
+    .attr('class', 'chart')
     .attr('width', width)
     .attr('height', barHeight * data.length);
 
@@ -55,15 +56,9 @@ function Statistics () {
           <h6 className='center'>Statistiken</h6>
           <Content>
             <Row>
-              <D3 data={fakeData()} render={renderBarchart}>
-                <svg className='chart' />
-              </D3>
-              <D3 data={fakeData()} render={renderBarchart}>
-                <svg className='chart' />
-              </D3>
-              <D3 data={fakeData()} render={renderBarchart}>
-                <svg className='chart' />
-              </D3>
+              <D3 data={fakeData()} render={renderBarchart} />
+              <D3 data={fakeData()} render={renderBarchart} />
+              <D3 data={fakeData()} render={renderBarchart} />
             </Row>
           </Content>
         </Row>

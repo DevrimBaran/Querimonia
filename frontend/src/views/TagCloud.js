@@ -14,65 +14,93 @@ import Api from './../utility/Api';
 import D3 from './../components/D3';
 import Input from './../components/Input';
 
+import { Color } from '../utility/colors';
+
 var cloud = require('../assets/js/d3.layout.cloud');
-const renderCloud = (target, data, d3) => {
-  let draw = (words) => {
-    d3.select(target).select('svg')
-      .attr('width', layout.size()[0])
-      .attr('height', layout.size()[1])
-      .append('g')
-      .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
-      .selectAll('text')
-      .data(words)
-      .enter().append('text')
-      .style('font-size', function (d) {
-        return d.size + 'px';
-      })
-      .attr('text-anchor', 'middle')
-      .attr('transform', function (d) {
-        return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
-      })
-      .text(function (d) {
-        return d.text;
-      });
-  };
-
-  let layout = cloud()
-    .size([target.clientWidth, target.clientHeight])
-    .words(data)
-    .padding(5)
-    .rotate(function () {
-      return 0;
-    })
-    .fontSize(function (d) {
-      return d.size;
-    })
-    .on('end', draw);
-
-  layout.start();
-};
-const renderList = (target, data, d3) => {
-  let row = d3.select(target).select('table')
-    .selectAll('tr')
-    .data(data)
-    .enter()
-    .append('tr');
-  row.append('td')
-    .text(d => d.text);
-  row.append('td')
-    .text(d => d.value);
-};
-
 class TagCloud extends Component {
   constructor (props) {
     super(props);
+    this.minDate = React.createRef();
+    this.maxDate = React.createRef();
+    this.count = React.createRef();
+    this.onlyWords = React.createRef();
+    this.activeMode = React.createRef();
+    this.color = React.createRef();
     this.state = {
       words: {},
+      minOccurrence: 0,
       maxOccurrence: 0,
-      cloudActive: true
+      cloudActive: true,
+      color: '#ffffff'
     };
   }
+  renderCloud = (target, data, d3) => {
+    const padding = [20, 20];
+    const hsl = new Color(data.color).hsl();
+    if (hsl[2] === 1) {
+      hsl[1] = '100%';
+      hsl[2] = '40%';
+    } else {
+      hsl[1] = ~~(hsl[1] * 100) + '%';
+      hsl[2] = ~~(hsl[2] * 100) + '%';
+    }
+    let draw = (words) => {
+      let text = d3.select(target).append('svg')
+        .attr('width', layout.size()[0])
+        .attr('height', layout.size()[1])
+        .append('g')
+        .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
+        .selectAll('text')
+        .data(words)
+        .enter().append('text');
 
+      text
+        .style('font-size', function (d) {
+          return d.size + 'px';
+        })
+        .style('fill', d => {
+          hsl[0] = ~~(360 * Math.random());
+          return 'hsl(' + hsl.join(',') + ')';
+        })
+        .attr('text-anchor', 'middle')
+        .attr('transform', function (d) {
+          return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
+        })
+        .text(function (d) {
+          return d.text;
+        });
+
+      text
+        .append('title')
+        .text(d => 'Vorkommen: ' + d.value);
+    };
+
+    let layout = cloud()
+      .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1] + 2) * 2])
+      .words(data.words)
+      .spiral('rectangular')
+      .padding(5)
+      .rotate(function () {
+        return 0;
+      })
+      .fontSize(function (d) {
+        return d.size;
+      })
+      .on('end', draw);
+
+    layout.start();
+  };
+  renderList = (target, data, d3) => {
+    let row = d3.select(target).append('table')
+      .selectAll('tr')
+      .data(data.words)
+      .enter()
+      .append('tr');
+    row.append('td')
+      .text(d => d.text);
+    row.append('td')
+      .text(d => d.value);
+  };
     toggleChange = () => {
       this.setState({
         cloudActive: !this.state.cloudActive
@@ -118,8 +146,8 @@ class TagCloud extends Component {
       Object.keys(wordsObject).forEach((element) => {
         wordArray.push({
           text: element,
-          value: this.calculateSize(wordsObject[element]),
-          size: wordsObject[element]
+          value: wordsObject[element],
+          size: this.calculateSize(wordsObject[element])
         });
       });
       return wordArray;
@@ -127,30 +155,19 @@ class TagCloud extends Component {
 
     calculateSize = (size) => {
       const tmax = this.state.maxOccurrence; // Höchste Anzahl
-      const tmin = 1; // mindest Anzahl an Wörter
+      const tmin = this.state.minOccurrence; // mindest Anzahl an Wörter
       const fmax = 130; // maximale Schriftgröße
       const fmin = 10; // minimale Schriftgröße
-      const t = size; // value
-      if (t > tmin) {
-        return ((fmax * (t - tmin)) / (tmax - tmin));
-        // (130 * (size / this.state.maxOccurrence));
-        // ((fmax*(t - tmin))/(tmax-tmin));
-      } else {
-        return fmin;
-        // fmin;
-      }
-      // (130 * (size / this.state.maxOccurrence));
-      // ((fmax - fmin)*((size-tmin)/(this.state.maxOccurrence-tmin))+ fmin);
-      // TODO: caclitlate size
+      return Math.max(fmax * ((size - tmin) / (tmax - tmin)), fmin);
     };
 
     fetchData = () => {
       let query = {};
-      this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
-      this.refs.maxDate.value && (query.date_max = this.refs.maxDate.value);
-      this.refs.onlyWords.checked && (query.words_only = this.refs.onlyWords.checked);
-      this.refs.activeMode.checked && (this.setState({ cloudActive: this.refs.activeMode.checked }));
-      this.refs.count.value && this.refs.count.value > 0 && (query.count = this.refs.count.value);
+      this.minDate.current.value && (query.date_min = this.minDate.current.value);
+      this.maxDate.current.value && (query.date_max = this.maxDate.current.value);
+      this.onlyWords.current.checked && (query.words_only = this.onlyWords.current.checked);
+      this.activeMode.current.checked && (this.setState({ cloudActive: this.activeMode.current.checked }));
+      this.count.current.value && this.count.current.value > 0 && (query.count = this.count.current.value);
       Api.get('/api/stats/tagcloud', query)
         .then(data => {
           return data;
@@ -160,8 +177,9 @@ class TagCloud extends Component {
 
     setData = (data) => {
       const max = Math.max(...Object.values(data));
+      const min = Math.min(...Object.values(data));
       // TODO: Calculate other constants
-      this.setState({ words: data, maxOccurrence: max });
+      this.setState({ words: data, maxOccurrence: max, minOccurence: min });
     };
 
     onResize = () => {
@@ -177,65 +195,41 @@ class TagCloud extends Component {
       window.removeEventListener('resize', this.onResize);
     }
 
+    changeColor = (e) => {
+      this.setState({ color: e.value });
+    }
+
     render () {
       return (
         <React.Fragment>
           <Block>
-            <h1 className='center'>Worthäufigkeiten</h1>
             <Row vertical>
-              <br />
+              <h1 className='center'>Worthäufigkeiten</h1>
               <div>
                 <Row vertical={false} style={{ justifyContent: 'space-around' }}>
-                  <div>
-                    <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref='minDate' />
-                  </div>
-                  <div>
-                    <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref='maxDate' />
-                  </div>
-                  <div>
-                    <Input type='number' label='Wortanzahl:' id='count' ref='count' defaultValue='70'
-                      min='0' />
-                  </div>
-                  <div>
-                    <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:'
-                      id='onlyWords' ref='onlyWords' defaultChecked />
-                  </div>
-                  <div>
-                    <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
-                      id='activeMode' ref='activeMode' checked={!this.state.cloudActive}
-                      onChange={this.toggleChange} />
-                  </div>
-                  <div>
-                    {this.state.cloudActive
-                      ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
-                        style={{ cursor: 'pointer' }}
-                        onClick={this.exportSvg} />)
-                      : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
-                        onClick={this.exportCsv} />)}
-                  </div>
+                  <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
+                  <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
+                  <Input type='number' label='Wortanzahl:' id='count' ref={this.count} defaultValue='70' min='0' />
+                  <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' id='onlyWords' ref={this.onlyWords} defaultChecked />
+                  <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
+                    id='activeMode' ref={this.activeMode} checked={!this.state.cloudActive}
+                    onChange={this.toggleChange} />
+                  <Input type='color' label='Farbton' onChange={this.changeColor} value={this.state.color} />
+                  {this.state.cloudActive
+                    ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
+                      style={{ cursor: 'pointer' }}
+                      onClick={this.exportSvg} />)
+                    : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
+                      onClick={this.exportCsv} />)}
                 </Row>
               </div>
-              <div className='center'>
-                <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
-              </div>
-              <br />
-              <Content>
+              <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
+              <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
                 <D3
-                  render={this.state.cloudActive ? renderCloud : renderList}
-                  data={this.createWordArray(this.state.words)}
-                  style={{ width: '100%', height: '100%' }}
-                >
-                  {this.state.cloudActive ? <svg /> : <table />}
-                </D3>
-                {/* <WordCloud
-                data={this.createWordArray(this.state.words)}
-                width={window.innerWidth / 100 * 80}
-                // 190 = Filterbar + Downloadbar
-                height={window.innerHeight - 190}
-                padding={0.5}
-                font={'Impact'}
-                //    onWordClick = {()=>{console.log()}}
-              /> */}
+                  render={this.state.cloudActive ? this.renderCloud : this.renderList}
+                  data={{ color: this.state.color, words: this.createWordArray(this.state.words) }}
+                  style={{ height: '100%' }}
+                />
               </Content>
             </Row>
           </Block>

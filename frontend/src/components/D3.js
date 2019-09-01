@@ -12,19 +12,21 @@ class D3 extends Component {
   constructor (props) {
     super(props);
     this.container = React.createRef();
+    this.state = {
+      children: this.props.children
+    };
   }
   componentDidMount = () => {
     this.props.render && this.props.render(this.container.current, this.props.data, d3);
   }
   componentDidUpdate = () => {
+    this.container.current.innerText = '';
     this.componentDidMount();
   }
   render () {
     const { type, data, render, ...passThrough } = { ...this.props };
     return (
-      <div className='d3' ref={this.container} {...passThrough}>
-        {this.props.children}
-      </div>
+      <div className='d3' ref={this.container} {...passThrough} />
     );
   }
 }
