@@ -24,7 +24,7 @@ import Config from './views/partials/Config';
 import Api from './utility/Api';
 import { ErrorPopupComponent } from './components/ErrorPopup';
 
-import logo from './assets/img/StuproLogo2.svg';
+import logo from './assets/img/StuproLogo.svg';
 
 function init () {
   return (dispatch, getState) => {
