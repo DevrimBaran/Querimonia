@@ -29,35 +29,19 @@ function Home () {
             <center>
               <div className='header'>
                 <img src={spotlight} className='spotlight' alt='logo' />
-                <br />
               </div>
-              <div className='boxWithMargin'>
-                <br />
-                <br />
-                <center>
-                  <h2>
-                Querimonia ist eine webbasierte Plattform für die Erprobung und Anwendung <br />
-                von Verfahren zur Analyse und Aufbereitung von Texten am Beispiel des Beschwerdemanagements.
-                  </h2>
-                </center>
-                <br />
-              </div>
-              <br />
               <h1> Was kann Querimonia?</h1>
+              <br />
               <div className='boxWithMargin'>
                 <div className='fiftyFifty'>
                   <div className='leftBox'>
-                    <h6>Erkennen von Entitäten</h6>
+                    <h2>Erkennen von Entitäten</h2>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
-                      et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                      Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-                      consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                      sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                      takimata sanctus est Lorem ipsum dolor sit amet.
+                        et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
                     </p>
                   </div>
                   <div className='rightBox' id='entityBox'>
-                    <h6>Beschwerdenachricht</h6>
                     <p>
                     Die Buslinie <mark className='entity_buslinie'>637</mark> ist am <mark className='entity_datum'>01.03.2019</mark> an der
                       <mark className='entity_haltestelle'>Gartenheimstr.</mark> in Langenberg(Schule!) um 13.46 Uhr
@@ -72,38 +56,28 @@ function Home () {
                 </div>
                 <div className='fiftyFifty'>
                   <div className='leftBox'>
-                    <h6>Erkennung der Stimmung</h6>
+                    <h2>Erkennung der Stimmung</h2>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
                         et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-                        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                        takimata sanctus est Lorem ipsum dolor sit amet.
+                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
                     </p>
                   </div>
                   <div className='rightBox'>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
                         et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-                        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                        takimata sanctus est Lorem ipsum dolor sit amet.
+                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
                     </p>
                   </div>
                 </div>
                 <div className='fiftyFifty'>
                   <div className='leftBox'>
-                    <h6>Antwort generieren</h6>
+                    <h2>Antwort generieren</h2>
                     <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
                         et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,
-                        consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-                        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea
-                        takimata sanctus est Lorem ipsum dolor sit amet.
+                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
                     </p>
                   </div>
                   <div className='rightBox' id='antwortGenerierung'>
-                    <h6>Automatisch generierte Antwort</h6>
                     <p>
                         Sehr geehrte <mark className='entity_name'>Frau Seifert</mark>,
                         wir bedauern sehr die Ihnen
