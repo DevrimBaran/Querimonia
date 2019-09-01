@@ -10,7 +10,7 @@ import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
 import team from './../assets/img/Gruppenfoto.jpg';
-import spotlight from './../assets/img/spotlight.svg';
+import spotlightOT from './../assets/img/spotlight_ohneText.svg';
 import '../assets/scss/_images.scss';
 import '../assets/scss/toSort/_boxWithMargin.scss';
 
@@ -21,7 +21,7 @@ function Impressum () {
         <Row vertical>
           <Content>
             <div className='header'>
-              <img src={spotlight} className='spotlight' alt='logo' />
+              <img src={spotlightOT} className='spotlight' alt='logo' />
               <br />
             </div>
             <div className='boxWithMargin' >
