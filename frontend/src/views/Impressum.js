@@ -12,7 +12,7 @@ import Content from './../components/Content';
 import team from './../assets/img/Gruppenfoto.jpg';
 import logo from './../assets/img/StuproLogo2.svg';
 import '../assets/scss/_images.scss';
-import '../assets/scss/components/_boxWithMargin.scss';
+import '../assets/scss/toSort/_boxWithMargin.scss';
 
 function Impressum () {
   return (
