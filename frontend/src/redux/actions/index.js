@@ -1,4 +1,5 @@
 import Api from '../../utility/Api';
+import localize from '../../utility/date';
 
 export function setActive (endpoint, id) {
   return function (dispatch, getState) {
@@ -115,7 +116,6 @@ export function refreshComplaint (id) {
 export function changeEntity (complaintId, id = 0, changes) {
   return function (dispatch, getState) {
     const data = getState().complaintStuff.entities.byId[id];
-    console.log('WTF', id);
     dispatch((dispatch) => {
       Api[id === 0 ? 'post' : 'put']('/api/complaints/' + complaintId + '/entities/' + (id === 0 ? '' : id), { ...data, ...changes })
         .then(data => {
@@ -135,7 +135,7 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
     let query = entity;
     query.preferred = !entity.preferred;
     dispatch((dispatch) => {
-      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), { query })
+      Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), query)
         .then(data => {
           if (data.status && data.status === 500) {
             // alert(data.message);
@@ -147,7 +147,7 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
           if (entityOld) {
             let query2 = entityOld;
             query2.preferred = false;
-            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), { query2 })
+            Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), query2)
               .then(data => {
                 if (data.status && data.status === 500) {
                   // alert(data.message);
@@ -182,17 +182,17 @@ export function deleteEntity (complaintId, id = 0) {
 export function addEntity (complaintId, query, originalLabelID) {
   return function (dispatch, getState) {
     dispatch((dispatch) => {
-      originalLabelID
+      (originalLabelID
         ? Api.put('/api/complaints/' + complaintId + '/entities/' + originalLabelID, query)
-        : Api.post('/api/complaints/' + complaintId + '/entities', query).then(data => {
-          if (data.status && data.status === 500) {
-            // alert(data.message);
-          }
-          dispatch({
-            type: 'MODIFY_ENTITY',
-            data: data
-          });
+        : Api.post('/api/complaints/' + complaintId + '/entities', query)).then(data => {
+        if (data.status && data.status === 500) {
+          // alert(data.message);
+        }
+        dispatch({
+          type: 'MODIFY_ENTITY',
+          data: data
         });
+      });
     });
   };
 }
@@ -248,7 +248,8 @@ export function fetchCurrentConfig () {
   };
 }
 export function fetchStuff (id) {
-  return function (dispatch) {
+  return function (dispatch, getState) {
+    const { configuration, receiveDate, receiveTime } = getState().complaints.data.byId[id];
     dispatch({
       type: 'FETCH_SINGLE_COMPLAINT_START',
       id: id
@@ -259,8 +260,37 @@ export function fetchStuff (id) {
         Api.get('/api/complaints/' + id + '/response', {}),
         Api.get('/api/combinations/' + id, {}),
         Api.get('/api/complaints/' + id + '/log', {}),
-        Api.get('/api/complaints/' + id + '/text', {})
+        Api.get('/api/complaints/' + id + '/text', {}),
+        Api.get('/api/config/' + configuration.id, {})
       ]).then(data => {
+        const dateExtractor = data[5].extractors.find(extractor => extractor.label === 'Eingangsdatum');
+        const timeExtractor = data[5].extractors.find(extractor => extractor.label === 'Eingangszeit');
+        if (dateExtractor) {
+          data[0].push({
+            id: 'Eingangsdatum',
+            label: 'Eingangsdatum',
+            start: 0,
+            end: 0,
+            value: localize(receiveDate),
+            setByUser: false,
+            preferred: false,
+            extractor: dateExtractor.name,
+            color: dateExtractor.color
+          });
+        }
+        if (timeExtractor) {
+          data[0].push({
+            id: 'Eingangszeit',
+            label: 'Eingangszeit',
+            start: 0,
+            end: 0,
+            value: receiveTime,
+            setByUser: false,
+            preferred: false,
+            extractor: timeExtractor.name,
+            color: timeExtractor.color
+          });
+        }
         dispatch({
           type: 'FETCH_SINGLE_COMPLAINT_END',
           entities: data[0],
@@ -268,7 +298,8 @@ export function fetchStuff (id) {
           actions: data[1].actions,
           combinations: data[2],
           log: data[3],
-          text: data[4].text
+          text: data[4].text,
+          config: data[5]
         });
       });
     });

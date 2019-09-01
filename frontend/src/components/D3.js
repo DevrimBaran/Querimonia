@@ -6,6 +6,7 @@
  */
 
 import React, { Component } from 'react';
+import * as d3 from 'd3';
 
 class D3 extends Component {
   constructor (props) {
@@ -13,7 +14,7 @@ class D3 extends Component {
     this.container = React.createRef();
   }
   componentDidMount = () => {
-    this.props.render && this.props.render(this.container.current, this.props.data, window.d3);
+    this.props.render && this.props.render(this.container.current, this.props.data, d3);
   }
   componentDidUpdate = () => {
     this.componentDidMount();

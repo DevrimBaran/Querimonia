@@ -9,7 +9,7 @@ import React from 'react';
 import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
-import logo from './../assets/img/StuproLogo2.svg';
+import spotlight from './../assets/img/spotlight.svg';
 import iaoPartner from './../assets/img/iao.png';
 import iatPartner from './../assets/img/iat.png';
 // import screen1 from './../assets/img/screen1.jpg';
@@ -28,7 +28,7 @@ function Home () {
           <Content>
             <center>
               <div className='header'>
-                <img src={logo} className='logo' alt='logo' />
+                <img src={spotlight} className='spotlight' alt='logo' />
                 <br />
               </div>
               <div className='boxWithMargin'>

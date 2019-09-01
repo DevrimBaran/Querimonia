@@ -7,12 +7,14 @@
 @import 'lists';
 @import 'inputs';
 @import 'helpers';
+@import 'd3';
 @import 'components/select';
 @import 'components/templates';
 @import 'components/collapsible';
 @import 'components/filter';
 @import 'components/pagination';
 @import 'components/tabbed';
+@import 'components/tag';
 @import 'components/autocomplete';
 @import 'components/modal';
 @import 'components/_errorPopup.scss';
@@ -23,63 +25,79 @@
 #root {
     display: flex;
     overflow: hidden;
+    background: $lightgrey;
 }
 
-nav  {
+nav {
     position: relative;
-    width: 11em;
-    border-right: 1px solid $grey;
+    width: 12em;
+    padding: 3px;
+    border-radius: 10px;
+    margin: 20px 20px 20px 0;
+    box-shadow: 10px 20px 40px rgba(0, 0, 0, 0.3);
+    background: $white;
+
     #logo {
-        padding: 10px 0 20px;
+        padding: 10px 10px 20px 10px;
+        margin-bottom: 2%;
+
+
     }
+
     > ul {
+
         list-style: none;
+        margin: 7% 4% 7% 4%;
+        padding: 20px 0 15px 0;
+        box-shadow: 0 10px 20px -20px black, 0 -10px 20px -20px ;
 
         li > a {
             position: relative;
             display: block;
-            padding: 5px 20px;
-            margin-bottom: 1%;
-            &::before,
-            &::after {
-                position: absolute;
-                left:50%;
-                transform: translateX(-50%);
-                z-index: -1;
-                content: "";
-                width: 0;
-                height: 5px;
-                background: linear-gradient(-90deg,$primaryAccentColorDimed, $primaryAccentColorActive, $primaryAccentColorDimed);
-                transition: all 0.3s ease-out;
-                transition-delay: 0.15s;
-                border-radius: 2px;
-            }
+            padding: 10px 60px 10px 30px;
+            margin-bottom: 5%;
+            color: black;
+            background: rgba($dimgray, 0.2);
+            border-radius: 5px;
+            transition: all 0.8s;
+            -webkit-transition: all 0.8s;
+            -moz-transition: all 0.8s;
+
             &:hover {
-                &::before,
-                &::after {
-                    background: linear-gradient(-90deg,$primaryAccentColorDimed, $primaryAccentColorActive, $primaryAccentColorDimed);
-                    color: $white;
-                    width: 95%;
-                    height: 21px;
-                }
+
+                border-radius: 5px;
+                background: rgba($primaryAccentColorActive, 0.6);
+                box-shadow: 0 4px $primaryAccentColor;
+                transition: all .4s;
+                -webkit-transition: all .4s;
+                -moz-transition: all .4s;
             }
 
+
+            &:active, &:focus {
+                color: $white;
+                background-color: $primaryAccentColor;
+                transform: scale(1.1, 1.1);
+                box-shadow: 0 3px $dimgray;
+            }
         }
     }
 }
-.logo {
-    margin: auto;
-    display: block;
-}
+
 .Block {
     overflow: auto;
     width: 100%;
-    padding: 10px 20px;
     border-right: 1px solid $grey;
+    margin: 20px;
+    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: $white;
+
     &:last-of-type {
         border-right: none;
     }
 }
+
 .content {
     overflow: auto;
     flex-grow: 1;
@@ -90,13 +108,19 @@ nav  {
     height: 100%;
     width: 100%;
     overflow: auto;
+
     &.flex-column {
         overflow-x: hidden;
     }
+
     &.flex-row {
         overflow-y: hidden;
     }
-    & > * {
+    &.content{
+        padding: 0;
+    }
+
+    & > *:not(.content) {
         padding: 10px 0;
     }
 }
@@ -104,20 +128,23 @@ nav  {
 .input-symbol-euro {
     position: relative;
 }
+
 .input-symbol-euro:after {
     position: absolute;
     top: 0;
-    content:"€";
+    content: "€";
     right: 18px;
 }
 
 .complaintSummary {
     background-color: var(--primaryBackgroundColor);
-    padding:  0.5em 30px 1em 30px;
+    padding: 0.5em 30px 1em 30px;
     color: $black;
+
     &:hover {
         background-color: $lightgrey;
     }
+
     p {
         height: 2.3em;
         overflow: hidden;
@@ -125,19 +152,23 @@ nav  {
         padding-top: 0;
         text-align: justify;
     }
-    .title{
+
+    .title {
         margin: 0em;
         width: 80%;
         float: left;
     }
+
     h3 {
         margin: 0px;
     }
+
     .date {
         float: left;
         width: 20%;
         margin: 0em;
     }
+
     .date p {
         height: 1em;
         text-align: right;
@@ -153,6 +184,7 @@ nav  {
 
 .dynamic-textarea {
     position: relative;
+
     textarea {
         resize: none;
         position: relative;
@@ -160,6 +192,7 @@ nav  {
         width: 100%;
         padding: 10px 5px;
     }
+
     textarea.dummy {
         position: absolute;
         visibility: hidden;
@@ -168,11 +201,13 @@ nav  {
         top: 0;
         left: 0;
     }
+
     textarea.dummy[rows] {
         height: auto;
         overflow: hidden;
     }
 }
+
 .dot {
     height: 10px;
     width: 10px;
@@ -180,6 +215,7 @@ nav  {
     display: inline-block;
     margin-left: 5px;
 }
+
 .plus-item {
     position: absolute;
     opacity: 0.15;
@@ -187,12 +223,29 @@ nav  {
     cursor: pointer;
     bottom: 10px;
     right: 30px;
-    border-radius:50%;
+    border-radius: 50%;
 }
+
+.action-button {
+    cursor: pointer;
+    padding: 5px;
+}
+
+.action-button-disabled {
+    cursor: default;
+    padding: 5px;
+    color: rgb(150, 150, 150);
+}
+
+.action-button:hover {
+    color: rgb(196, 100, 22);
+}
+
 :hover > .plus-item {
     opacity: 1;
     background: white;
 }
+
 .responsive-table {
     width: calc(100%);
     height: 100%;
@@ -208,10 +261,12 @@ nav  {
 
 
     }
-    thead{
-        box-shadow: 0 5px 5px 0 rgba(0,0,0,0.75);
+
+    thead {
+        box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.75);
         padding-bottom: 2px;
     }
+
     thead th {
         background: $primary;
         color: $white;
@@ -226,6 +281,7 @@ nav  {
             z-index: 2;
         }
     }
+
     tbody th {
         position: sticky;
         padding: 5px 0;
@@ -237,56 +293,71 @@ nav  {
             justify-content: space-evenly;
         }
     }
+
     tbody td {
         max-width: 600px;
         padding: 15px 10px;
         text-align: left;
 
     }
-    tbody tr{
-        box-shadow:0 10px 20px -20px black;
+
+    tbody tr {
+        box-shadow: 0 10px 20px -20px black;
     }
+
     tbody tr:nth-of-type(even) {
         background: rgba($black, 0.25);
     }
+
     tbody tr:nth-of-type(odd):hover {
         background: rgba($primaryAccentColor, 0.2);
     }
+
     tbody tr:nth-of-type(even):hover {
         background: rgba($primaryAccentColor, 0.4);
     }
 }
+
 .deep-array {
     display: flex;
     align-items: center;
     background-color: $lightgrey;
+
     & + .deep-array {
         margin-top: 5px;
     }
+
     &:hover {
         background-color: $grey;
     }
+
     & > div, & > input {
         width: 100%;
     }
+
     & > i {
         cursor: pointer;
     }
 }
+
 .deep-object {
     display: inline-flex;
     flex-direction: column;
     align-items: stretch;
+
     & + .deep-object {
         margin-top: 5px;
     }
+
     & > div, & > input {
         width: 100%;
     }
+
     & > strong {
         padding: 0 5px;
         text-align: center;
     }
+
     & > i {
         cursor: pointer;
         width: 30px;
@@ -296,23 +367,28 @@ nav  {
         margin: 5px auto 0;
         text-align: center;
         background-color: rgba($primary, 0.8);
+
         &:hover {
             background-color: rgba($primary, 1);
         }
     }
 }
+
 .object > .object {
     display: flex;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
+
     & > h3 {
         width: 100%;
     }
 }
+
 .padding {
     padding: 0 30px;
 }
+
 #editor {
     width: 100%;
     height: 100%;
@@ -330,11 +406,14 @@ nav  {
 
 .log {
     padding: 5px;
+
     .category {
         font-weight: bold;
     }
+
     .datetime {
     }
+
     .message {
         padding: 0 20px;
         word-break: break-all;

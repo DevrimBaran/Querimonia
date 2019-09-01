@@ -24,7 +24,7 @@ import Config from './views/partials/Config';
 import Api from './utility/Api';
 import { ErrorPopupComponent } from './components/ErrorPopup';
 
-import logo from './assets/img/StuproLogo2.svg';
+import logo from './assets/img/StuproLogo.svg';
 
 function init () {
   return (dispatch, getState) => {
@@ -48,6 +48,60 @@ function init () {
 class App extends Component {
   componentDidMount = () => {
     this.props.dispatch(init());
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+  handleKeyDown = (e) => {
+    if (e.ctrlKey) {
+      let prefix = '';
+      if (window.location.pathname.startsWith('/dev')) {
+        prefix = '/dev';
+      } else if (window.location.pathname.startsWith('/mock')) {
+        prefix = '/mock';
+      }
+      let preventDefault = true;
+      switch (e.keyCode) {
+        // B-Button-Event
+        case 66 :
+          window.location.replace(prefix + '/complaints');
+          break;
+        // R-Button-Event
+        case 82 :
+          window.location.replace(prefix + '/components');
+          break;
+        // K-Button-Event
+        case 75 :
+          window.location.replace(prefix + '/config');
+          break;
+        // I-Button-Event
+        case 73 :
+          window.location.replace(prefix + '/import');
+          break;
+        // V-Button-Event
+        case 86 :
+          window.location.replace(prefix + '/wordvectors');
+          break;
+        // H-Button-Event
+        case 72 :
+          window.location.replace(prefix + '/tagcloud');
+          break;
+        // S-Button-Event
+        case 83 :
+          window.location.replace(prefix + '/stats');
+          break;
+        // ?-Button-Event
+        case 63 :
+          window.location.replace(prefix + '/impressum');
+          break;
+        default:
+          preventDefault = false;
+      }
+      if (preventDefault) {
+        e.preventDefault();
+      }
+    }
+  }
+  componentWillUnmount = () => {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
   render () {
     let basepath;

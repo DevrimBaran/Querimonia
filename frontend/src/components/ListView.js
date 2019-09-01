@@ -11,7 +11,6 @@ import Input from './Input';
 import Table from './Table';
 import Filter from './Filter';
 import Pagination from './Pagination';
-import Button from './Button';
 
 export default (endpoint, partial, stateToProps) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
@@ -23,7 +22,9 @@ export default (endpoint, partial, stateToProps) => {
     edit = (id) => {
       return (
         <Link to={'/' + endpoint + '/' + id}>
-          <Button icon='far fa-edit'>Bearbeiten</Button>
+          <span className='action-button'>
+            <i title='Bearbeiten' className={'far fa-edit'} />
+          </span>
         </Link>
       );
     }
@@ -42,14 +43,18 @@ export default (endpoint, partial, stateToProps) => {
       };
       return (
         <Link to={'/' + endpoint + '/0'}>
-          <Button icon='far fa-copy' onClick={dispatchCopy}>Kopieren</Button>
+          <span className='action-button'>
+            <i title='Kopieren' className='far fa-copy' onClick={dispatchCopy} />
+          </span>
         </Link>
       );
     }
     remove = (id) => {
       return (
         <Link to={'/' + endpoint}>
-          <Button icon='far fa-trash-alt' onClick={() => this.props.dispatch(remove(endpoint, id))}>Löschen</Button>
+          <span className='action-button'>
+            <i title='Löschen' className='fa fa-trash-alt' onClick={() => window.confirm('Wollen sie das Element wirklich löschen?') ? this.props.dispatch(remove(endpoint, id)) : null} />
+          </span>
         </Link>
       );
     }

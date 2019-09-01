@@ -55,7 +55,7 @@ class TaggedText extends Component {
           <span>{this.parseText(text, entities.calculated)}</span>
         </p>
         <div className='plus-item'>
-          <i id='editEntity' className={'fas fa-plus-circle fa-2x'} />
+          <i modal='editEntityModal' className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
         </div>
       </div>
     );

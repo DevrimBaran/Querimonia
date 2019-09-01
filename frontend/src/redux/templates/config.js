@@ -20,7 +20,20 @@ export default (extractors) => ({
         },
         type: {
           label: 'Typ',
-          type: 'text'
+          type: 'select',
+          attributes: {
+            required: true,
+            values: [
+              {
+                label: 'Keine',
+                value: 'NONE'
+              },
+              {
+                label: 'Querimonia',
+                value: 'QUERIMONIA_SENTIMENT'
+              }
+            ]
+          }
         }
       }
     },
@@ -34,7 +47,20 @@ export default (extractors) => ({
         },
         type: {
           label: 'Typ',
-          type: 'text'
+          type: 'select',
+          attributes: {
+            required: true,
+            values: [
+              {
+                label: 'Keine',
+                value: 'NONE'
+              },
+              {
+                label: 'Querimonia',
+                value: 'QUERIMONIA_EMOTION'
+              }
+            ]
+          }
         }
       }
     },
@@ -52,7 +78,7 @@ export default (extractors) => ({
         children: {
           name: {
             type: 'select',
-            label: 'Typ',
+            label: 'Name',
             attributes: {
               values: extractors
             }
@@ -62,7 +88,7 @@ export default (extractors) => ({
           },
           label: {
             type: 'text',
-            label: 'Name'
+            label: 'Label'
           },
           color: {
             type: 'color',

@@ -31,19 +31,31 @@ class Modal extends Component {
       modal.classList.remove('show');
     }
   }
-  componentDidMount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
-      element.classList.add('hasModal');
-      element.addEventListener('click', this.onClick);
+  handleKeyDown = (e) => {
+    // Esc-Button-Event
+    if (e.keyCode === 27) {
+      this.hideModals();
+      // +-Button-Event
+    } else if (e.ctrlKey && e.keyCode === 107) {
+      this.onClick();
+      e.preventDefault();
     }
   }
+  componentDidMount = () => {
+    const elements = document.querySelectorAll(this.state.htmlFor);
+    elements.forEach((element) => {
+      element.classList.add('hasModal');
+      element.addEventListener('click', this.onClick);
+      document.addEventListener('keydown', this.handleKeyDown);
+    });
+  }
   componentWillUnmount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
+    const elements = document.querySelectorAll(this.state.htmlFor);
+    elements.forEach((element) => {
       element.classList.remove('hasModal');
       element.removeEventListener('click', this.onClick);
-    }
+      document.removeEventListener('keydown', this.handleKeyDown);
+    });
   }
   render () {
     const { title, htmlFor } = { ...this.props };

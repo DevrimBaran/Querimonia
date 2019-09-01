@@ -20,7 +20,6 @@ class Response extends Component {
   }
   cycle = () => {
     this.setState(state => ({ selected: state.selected + 1 }));
-    console.error(this.state.selected);
   }
   onChange = (e) => {
     this.setState({ value: e.value });
