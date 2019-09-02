@@ -9,8 +9,9 @@ import React, { Component } from 'react';
 
 import Input from './Input';
 import Modal from './Modal';
-import Button from '../components/Button';
+import Button from './Button';
 import { addEntity } from '../redux/actions/';
+import { Color } from '../utility/colors';
 
 class EditEntityModal extends Component {
   constructor (props) {
@@ -27,6 +28,7 @@ class EditEntityModal extends Component {
       start: 0,
       end: 0
     };
+    EditEntityModal.ref = this;
   }
 
   addEntity = () => {
@@ -37,14 +39,13 @@ class EditEntityModal extends Component {
       value: this.props.text.substring(start, end),
       setByUser: true,
       preferred: false,
-      label: extractorList[label].name,
-      extractor: extractorList[label].type,
+      label: label,
+      extractor: extractorList[label].name,
       color: extractorList[label].color
     }, this.state.id ? this.state.id : null));
   };
   mouseUp = (e) => {
     let selection = window.getSelection();
-    console.log(selection);
     if (selection.anchorOffset === selection.focusOffset) {
       return;
     }
@@ -59,18 +60,23 @@ class EditEntityModal extends Component {
     });
   }
   onOpen = (e) => {
-    console.log(e.target.dataset);
     this.setState(e.target.dataset);
+  }
+  register = (show) => {
+    EditEntityModal.open = (e) => {
+      show(e);
+    };
   }
   render () {
     const { text } = { ...this.props };
     const { start, end, label, extractorList } = { ...this.state };
+    const color = new Color(extractorList[label] ? extractorList[label].color : '#cccccc');
     return (
-      <Modal title={'Entitäten hinzufügen'} htmlFor='[modal=editEntityModal]' onOpen={this.onOpen}>
+      <Modal title={'Entitäten hinzufügen'} register={this.register} onOpen={this.onOpen}>
         <div className='scrollableText'>
-          <div>
+          <div style={{ color: 'transparent' }}>
             <span>{text.substring(0, start)}</span>
-            <mark>{text.substring(start, end)}</mark>
+            <span style={{ margin: '-3px', padding: '1px', border: '2px solid ' + color.background() }}>{text.substring(start, end)}</span>
             <span>{text.substring(end)}</span>
           </div>
           <div onMouseUp={this.mouseUp}>

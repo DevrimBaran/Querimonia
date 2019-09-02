@@ -127,9 +127,6 @@ export function changeEntity (complaintId, id = 0, changes) {
     dispatch((dispatch) => {
       Api[id === 0 ? 'post' : 'put']('/api/complaints/' + complaintId + '/entities/' + (id === 0 ? '' : id), { ...data, ...changes })
         .then(data => {
-          if (data.status && data.status === 500) {
-            // alert(data.message);
-          }
           dispatch({
             type: 'MODIFY_ENTITY',
             data: data
@@ -145,9 +142,6 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
     dispatch((dispatch) => {
       Api.put('/api/complaints/' + complaintId + '/entities/' + (entity.id === 0 ? '' : entity.id), query)
         .then(data => {
-          if (data.status && data.status === 500) {
-            // alert(data.message);
-          }
           dispatch({
             type: 'MODIFY_ENTITY',
             data: data
@@ -157,9 +151,6 @@ export function changeEntityPreference (complaintId, entity, entityOld) {
             query2.preferred = false;
             Api.put('/api/complaints/' + complaintId + '/entities/' + (entityOld.id === 0 ? '' : entityOld.id), query2)
               .then(data => {
-                if (data.status && data.status === 500) {
-                  // alert(data.message);
-                }
                 dispatch({
                   type: 'MODIFY_ENTITY',
                   data: data
@@ -175,9 +166,6 @@ export function deleteEntity (complaintId, id = 0) {
     dispatch((dispatch) => {
       Api.delete('/api/complaints/' + complaintId + '/entities/' + id, {})
         .then(data => {
-          if (data.status && data.status === 500) {
-            // alert(data.message);
-          }
           dispatch({
             type: 'MODIFY_ENTITY',
             data: data
@@ -193,9 +181,6 @@ export function addEntity (complaintId, query, originalLabelID) {
       (originalLabelID
         ? Api.put('/api/complaints/' + complaintId + '/entities/' + originalLabelID, query)
         : Api.post('/api/complaints/' + complaintId + '/entities', query)).then(data => {
-        if (data.status && data.status === 500) {
-          // alert(data.message);
-        }
         dispatch({
           type: 'MODIFY_ENTITY',
           data: data

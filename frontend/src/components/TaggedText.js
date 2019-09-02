@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 
 import Tag from './Tag';
-
+import EditEntityModal from './EditEntityModal';
 class TaggedText extends Component {
   constructor (props) {
     super(props);
@@ -47,6 +47,10 @@ class TaggedText extends Component {
     return html;
   };
 
+  addEntity = (e) => {
+    EditEntityModal.open(e);
+  }
+
   render () {
     const { text, entities, disabled, dispatch, ...passThrough } = { ...this.props };
     return (
@@ -56,7 +60,7 @@ class TaggedText extends Component {
         </p>
         {disabled ||
           <div className='plus-item'>
-            <i modal='editEntityModal' className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
+            <i onClick={this.addEntity} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
           </div>
         }
       </div>
