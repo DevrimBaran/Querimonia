@@ -12,6 +12,7 @@ import { changeEntity, deleteEntity } from '../redux/actions/';
 import { getColor, getGradient } from '../utility/colors';
 import Tooltip from './Tooltip';
 import Button from './Button';
+import EditEntityModal from './EditEntityModal';
 
 class Tag extends Component {
   constructor (props) {
@@ -26,11 +27,8 @@ class Tag extends Component {
   modifyEntity = (id) => (data) => {
     this.props.dispatch(changeEntity(this.props.complaintId, data.id || 0, data));
   }
-  copy = (id) => (e) => {
-
-  }
-  edit = (id) => (e) => {
-
+  openModal = (e) => {
+    EditEntityModal.open(e);
   }
   remove = (id) => (e) => {
     if (window.confirm('Wollen sie die Entität wirklich löschen?')) {
@@ -55,6 +53,7 @@ class Tag extends Component {
         <Tooltip {...tooltip.register} className='tag-tooltip'>
           {relevantEntities.map((entity, i) => {
             let entitiyData = {
+              'data-id': entity.id,
               'data-start': entity.start,
               'data-end': entity.end,
               'data-label': entity.label
@@ -68,8 +67,8 @@ class Tag extends Component {
               <i>{entity.label}</i>
               <b>{entity.value}</b>
               {disabled || <React.Fragment>
-                <Button title='Kopieren' icon='far fa-clone' modal='editEntityModal' {...entitiyData} />
-                <Button title='Bearbeiten' icon='far fa-edit' modal='editEntityModal' {...entitiyData} data-id={entity.id} />
+                <Button title='Kopieren' icon='far fa-clone' onClick={this.openModal} data-label={entity.label} />
+                <Button title='Bearbeiten' icon='far fa-edit' onClick={this.openModal} {...entitiyData} />
                 <Button title='Löschen' icon='far fa-trash-alt' onClick={this.remove(entity.id)} />
               </React.Fragment>}
             </div>;
