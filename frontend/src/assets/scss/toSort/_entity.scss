@@ -4,22 +4,27 @@
     }
     &:hover{
         .entity_name{
+            transition: 2s;
             background-color: rgb(255, 128, 64);
         }
 
         .entity_buslinie{
+            transition: 2s;
             background-color: rgb(175, 244, 250);
         }
 
         .entity_datum{
+            transition: 2s;
             background-color: rgb(205, 192, 207);
         }
 
         .entity_haltestelle{
+            transition: 2s;
             background-color: rgb(204, 137, 245);
         }
 
         .entity_preis{
+            transition: 2s;
             background-color: rgb(245, 255, 138);
         }
     }
@@ -36,30 +41,36 @@
     }
     &:hover{
         .entity_name{
+            transition: 2s;
             color: black;
             background-color: rgb(255, 128, 64);
         }
 
         .entity_buslinie{
+            transition: 2s;
             color: black;
             background-color: rgb(175, 244, 250);
         }
 
         .entity_datum{
+            transition: 2s;
             color: black;
             background-color: rgb(205, 192, 207);
         }
 
         .entity_haltestelle{
+            transition: 2s;
             color: black;
             background-color: rgb(204, 137, 245);
         }
 
         .entity_preis{
+            transition: 2s;
             color: black;
             background-color: rgb(245, 255, 138);
         }
         .generierteAntwort{
+            transition: 2s;
             color: black;
         }
     }
