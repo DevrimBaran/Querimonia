@@ -33,10 +33,11 @@ class FillerText extends Component {
     });
   }
   entitiesWithLabel = (label) => {
+    console.log(label);
     return this.props.entities.ids.map(id => this.props.entities.byId[id]).filter(entity => entity.label === label);
   }
   getInput = (label) => {
-    const entities = this.entitiesWithLabel(label.split(':')[0]);
+    const entities = this.entitiesWithLabel(label.split('#')[0]);
     if (!this.state[label]) {
       switch (entities.length) {
         case 0: {
@@ -85,7 +86,7 @@ class FillerText extends Component {
     />;
   }
   splitTexts = () => {
-    this.texts = this.props.texts.map(t => t.split(/\$\{(\w+)\}/));
+    this.texts = this.props.texts.map(t => t.split(/\$\{(.+?)\}/));
   }
   componentDidMount = () => {
     this.onChange();

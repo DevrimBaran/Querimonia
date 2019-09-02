@@ -13,6 +13,7 @@ import Content from './../components/Content';
 import Api from './../utility/Api';
 import D3 from './../components/D3';
 import Input from './../components/Input';
+import Form from './../components/Form';
 
 import { Color } from '../utility/colors';
 
@@ -223,7 +224,7 @@ class TagCloud extends Component {
             <Row vertical>
               <h1 className='center'>Worthäufigkeiten</h1>
               <div>
-                <Row vertical={false} style={{ justifyContent: 'space-around' }}>
+                <Form>
                   <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
                   <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
                   <Input type='number' label='Wortanzahl:' id='count' ref={this.count} defaultValue='70' min='0' />
@@ -238,7 +239,7 @@ class TagCloud extends Component {
                       onClick={this.exportSvg} />)
                     : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
                       onClick={this.exportCsv} />)}
-                </Row>
+                </Form>
               </div>
               <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
