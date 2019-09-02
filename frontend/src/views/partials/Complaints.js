@@ -103,8 +103,6 @@ function Single (active, dispatch, helpers) {
     return (
       <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>
     );
-  } else {
-    console.log(active);
   }
   const disabled =
     active.state === 'CLOSED' ||

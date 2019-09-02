@@ -8,6 +8,7 @@
 import React, { Component } from 'react';
 
 import Textarea from './Textarea';
+import ColorPicker from './ColorPicker';
 import CodeMirror from './CodeMirror';
 class Input extends Component {
   constructor (props) {
@@ -32,7 +33,7 @@ class Input extends Component {
         });
         return;
       }
-      let value = e.target.value;
+      let value = e.value || e.target.value;
       if (e.target.multiple) {
         switch (e.target.type) {
           case 'text': {
@@ -121,6 +122,10 @@ class Input extends Component {
         }
         case 'textarea': {
           input = <Textarea value={value} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          break;
+        }
+        case 'colorpicker': {
+          input = <ColorPicker value={value} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
         case 'codemirror': {

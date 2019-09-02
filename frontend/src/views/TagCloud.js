@@ -13,6 +13,7 @@ import Content from './../components/Content';
 import Api from './../utility/Api';
 import D3 from './../components/D3';
 import Input from './../components/Input';
+import Form from './../components/Form';
 
 import { Color } from '../utility/colors';
 
@@ -35,14 +36,27 @@ class TagCloud extends Component {
     };
   }
   renderCloud = (target, data, d3) => {
-    const padding = [20, 20];
+    const padding = [0, 0];
     const hsl = new Color(data.color).hsl();
-    if (hsl[2] === 1) {
-      hsl[1] = '100%';
-      hsl[2] = '40%';
-    } else {
-      hsl[1] = ~~(hsl[1] * 100) + '%';
-      hsl[2] = ~~(hsl[2] * 100) + '%';
+    if (hsl.l === 100) { // white
+      hsl.l = 50;
+      hsl.s = 70;
+      hsl.random = () => {
+        hsl.h = Math.random() * 360;
+        return hsl.css();
+      };
+    } else if (hsl.s === 0) { // grey
+      hsl.random = () => {
+        hsl.l = Math.random() * 60 + 30;
+        return hsl.css();
+      };
+    } else { // color
+      hsl.l = 50;
+      hsl.random = () => {
+        // hsl.l = Math.random() * 0.6 + 0.3;
+        hsl.s = Math.random() * 80 + 20;
+        return hsl.css();
+      };
     }
     let draw = (words) => {
       let text = d3.select(target).append('svg')
@@ -55,12 +69,13 @@ class TagCloud extends Component {
         .enter().append('text');
 
       text
+        .style('font-family', 'Impact')
+        .style('font-weight', 'normal')
         .style('font-size', function (d) {
           return d.size + 'px';
         })
-        .style('fill', d => {
-          hsl[0] = ~~(360 * Math.random());
-          return 'hsl(' + hsl.join(',') + ')';
+        .attr('fill', d => {
+          return hsl.random();
         })
         .attr('text-anchor', 'middle')
         .attr('transform', function (d) {
@@ -72,17 +87,19 @@ class TagCloud extends Component {
 
       text
         .append('title')
-        .text(d => 'Vorkommen: ' + d.value);
+        .text(d => d.text + ' - ' + d.value + 'mal');
     };
 
     let layout = cloud()
-      .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1] + 2) * 2])
+      .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1]) * 2])
       .words(data.words)
       .spiral('rectangular')
-      .padding(5)
+      .padding(1)
       .rotate(function () {
         return 0;
       })
+      .font('Impact')
+      .fontWeight('normal')
       .fontSize(function (d) {
         return d.size;
       })
@@ -157,7 +174,7 @@ class TagCloud extends Component {
       const tmax = this.state.maxOccurrence; // Höchste Anzahl
       const tmin = this.state.minOccurrence; // mindest Anzahl an Wörter
       const fmax = 130; // maximale Schriftgröße
-      const fmin = 10; // minimale Schriftgröße
+      const fmin = 20; // minimale Schriftgröße
       return Math.max(fmax * ((size - tmin) / (tmax - tmin)), fmin);
     };
 
@@ -196,6 +213,7 @@ class TagCloud extends Component {
     }
 
     changeColor = (e) => {
+      console.log('changeColor', e);
       this.setState({ color: e.value });
     }
 
@@ -206,7 +224,7 @@ class TagCloud extends Component {
             <Row vertical>
               <h1 className='center'>Worthäufigkeiten</h1>
               <div>
-                <Row vertical={false} style={{ justifyContent: 'space-around' }}>
+                <Form>
                   <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
                   <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
                   <Input type='number' label='Wortanzahl:' id='count' ref={this.count} defaultValue='70' min='0' />
@@ -214,14 +232,14 @@ class TagCloud extends Component {
                   <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
                     id='activeMode' ref={this.activeMode} checked={!this.state.cloudActive}
                     onChange={this.toggleChange} />
-                  <Input type='color' label='Farbton' onChange={this.changeColor} value={this.state.color} />
+                  <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
                   {this.state.cloudActive
                     ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
                       style={{ cursor: 'pointer' }}
                       onClick={this.exportSvg} />)
                     : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
                       onClick={this.exportCsv} />)}
-                </Row>
+                </Form>
               </div>
               <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
