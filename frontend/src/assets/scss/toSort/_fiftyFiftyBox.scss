@@ -25,9 +25,34 @@
     }   
 }
 
+#arrow {
+    color: #179c7d;
+}
+
 .footer{
     
-    margin: 100px;
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-top: 10px;
+    margin-bottom: 5%;
+    padding: 2;
     display: block;
     width: 100%;
 }
+
+.tooltipStartseite {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltipStartseite .tooltiptext {
+    visibility: hidden;
+    width: 10%;
+    background-color: #179c7d;
+    position: absolute;
+    left: 100%;
+  }
+  
+  .tooltipStartseite:hover .tooltiptext {
+    visibility: visible;
+  }

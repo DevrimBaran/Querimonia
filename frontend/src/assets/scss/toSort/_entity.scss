@@ -26,23 +26,41 @@
 }
 
 #antwortGenerierung{
-    .entity_name{
-        background-color: rgb(255, 128, 64);
+        color: white;
+        .generierteAntwort{
+            color: white;
+        }
+    mark{
+        color: white;
+        background-color: inherit;
     }
+    &:hover{
+        .entity_name{
+            color: black;
+            background-color: rgb(255, 128, 64);
+        }
 
-    .entity_buslinie{
-        background-color: rgb(175, 244, 250);
-    }
+        .entity_buslinie{
+            color: black;
+            background-color: rgb(175, 244, 250);
+        }
 
-    .entity_datum{
-        background-color: rgb(205, 192, 207);
-    }
+        .entity_datum{
+            color: black;
+            background-color: rgb(205, 192, 207);
+        }
 
-    .entity_haltestelle{
-        background-color: rgb(204, 137, 245);
-    }
+        .entity_haltestelle{
+            color: black;
+            background-color: rgb(204, 137, 245);
+        }
 
-    .entity_preis{
-        background-color: rgb(245, 255, 138);
+        .entity_preis{
+            color: black;
+            background-color: rgb(245, 255, 138);
+        }
+        .generierteAntwort{
+            color: black;
+        }
     }
 }
