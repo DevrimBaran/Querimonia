@@ -99,13 +99,13 @@ class ImportBlock extends Component {
   render () {
     return (
       <Block>
-        <Row vertical className="centerColumn">
+        <Row vertical className='centerColumn'>
           <h1 className='center'>Import</h1>
-          <div className="input" id='Import' style={{ margin: '1em' }} onDrop={this.onDrop} onDragOver={this.onDragOver}>
-            {this.state.type !== 'file' && <textarea className="textarea" style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
+          <div className='input' id='Import' style={{ margin: '1em' }} onDrop={this.onDrop} onDragOver={this.onDragOver}>
+            {this.state.type !== 'file' && <textarea className='textarea' style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
             <div className='center'>
               {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref='fileInput' />}
-              <p className="paddingVertical" style={{textAlign: "justify"}} >Lorem ipsum dolor sit amet, consectetur adipisici elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+              <p className='paddingVertical' style={{ textAlign: 'justify' }} >Lorem ipsum dolor sit amet, consectetur adipisici elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
               <input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
             </div>
           </div>
