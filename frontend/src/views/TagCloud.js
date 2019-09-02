@@ -35,24 +35,25 @@ class TagCloud extends Component {
     };
   }
   renderCloud = (target, data, d3) => {
-    const padding = [20, 20];
+    const padding = [0, 0];
     const hsl = new Color(data.color).hsl();
-    if (hsl.l === 1) { // white
-      hsl.l = 0.5;
-      hsl.s = 0.7;
+    if (hsl.l === 100) { // white
+      hsl.l = 50;
+      hsl.s = 70;
       hsl.random = () => {
-        hsl.h = Math.random();
+        hsl.h = Math.random() * 360;
         return hsl.css();
       };
-    } else if (hsl.l === 0) { // black
+    } else if (hsl.s === 0) { // grey
       hsl.random = () => {
-        hsl.l = Math.random() * 0.6 + 0.3;
+        hsl.l = Math.random() * 60 + 30;
         return hsl.css();
       };
     } else { // color
+      hsl.l = 50;
       hsl.random = () => {
-        hsl.l = Math.random() * 0.6 + 0.3;
-        hsl.s = Math.random() * 0.6 + 0.3;
+        // hsl.l = Math.random() * 0.6 + 0.3;
+        hsl.s = Math.random() * 80 + 20;
         return hsl.css();
       };
     }
@@ -89,7 +90,7 @@ class TagCloud extends Component {
     };
 
     let layout = cloud()
-      .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1] + 2) * 2])
+      .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1]) * 2])
       .words(data.words)
       .spiral('rectangular')
       .padding(1)
@@ -211,6 +212,7 @@ class TagCloud extends Component {
     }
 
     changeColor = (e) => {
+      console.log('changeColor', e);
       this.setState({ color: e.value });
     }
 
@@ -229,7 +231,7 @@ class TagCloud extends Component {
                   <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
                     id='activeMode' ref={this.activeMode} checked={!this.state.cloudActive}
                     onChange={this.toggleChange} />
-                  <Input type='color' label='Farbton' onChange={this.changeColor} value={this.state.color} />
+                  <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
                   {this.state.cloudActive
                     ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
                       style={{ cursor: 'pointer' }}

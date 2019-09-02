@@ -106,6 +106,10 @@ class App extends Component {
   componentDidCatch = (errorString, errorInfo) => {
     this.error = { title: errorString, message: errorInfo, status: '0' };
   }
+  static getDerivedStateFromError = (error) => {
+    console.log(error);
+    return { title: '', message: '', status: '0' };
+  }
   render () {
     let basepath;
     try {
