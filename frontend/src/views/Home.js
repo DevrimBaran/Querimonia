@@ -37,6 +37,7 @@ function Home () {
                     <p>
                     Durch KI-Verfahren extrahiert unser intelligentes System wichtige Elemente eines Textes automatisch.
                     Dem Nutzer werden die Entitäten mit unterschliedlicher Farbe angezeigt.
+                      <br />
                     Zum Testen:
                     </p>
                     <center>
@@ -63,6 +64,7 @@ function Home () {
                     <p>
                     Durch SoUndSo-Verfahren und DiesUndDas erkennt Querimonia die Stimmung (Emotion und Sentiment) einer
                     Beschwerde und wandelt diese in passende Emojis um.
+                      <br />
                     Zum Testen:
                     </p>
                     <center>
@@ -72,11 +74,16 @@ function Home () {
                   <div className='rightBox'>
                     <div className='tooltipStartseite'>
                       <p>
-                        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore
-                        et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-                        Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+                        Ich bin total sauer! Es ist eine absolute Frechheit, wie sich ihre Mitarbeiter verhalten.
+                        Es darf nicht sein, dass der Busfahrer mich als zahlenden Kunden beleidigt. Sowas geht gar nicht
+                        und ich möchte eine Entschuldigung!
+                        Seit 10 Jahren fahre ich jeden Tag mit dem Bus zur Arbeit, seit 10 Jahren bin ich Kunde bei Ihnen.
+                        Wenn ihnen ihre Kunden wichtig sind, dann reden sie bitte mit ihren Mitarbeitern und geben Sie jedem
+                        erstmal einen Kurs in Freundlichkeit und anständiges Benehmen.
                       </p>
-                      <i className='tooltiptext'>Tooltip text</i>
+                      <i className='tooltiptext'>
+                        <i className='far fa-angry fa-4x' />
+                      </i>
                     </div>
                   </div>
                 </div>
@@ -88,6 +95,7 @@ function Home () {
                       Die oben genannten Funktionen ermöglichen dem Nutzer eine automatisch generierte Antwort
                       zu einer eingegangenen Beschwerde zu erstellen. Abhängig von den erkannten Entitäten und
                       der erkannten Stimmung wird eine Antwort vorgeschlagen, die bearbeitet werden kann.
+                      <br />
                       Zum Testen:
                     </p>
                     <center>
@@ -119,12 +127,15 @@ function Home () {
                         Ihr Schokorobo</p>
                   </div>
                 </div>
-                <div className='footer'>
-                  <br />
-                  <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank' ><img src={iaoPartner} className=' center margin' alt='logo' width='20%' /></a>
-                  <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank' ><img src={iatPartner} className=' center margin' alt='logo' width='20%' /></a>
-                  &copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart
-                </div>
+                <center>
+                  <div className='footer'>
+                    <br />
+                    <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank' ><img src={iaoPartner} className=' center margin' alt='logo' width='20%' /></a>
+                    <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank' ><img src={iatPartner} className=' center margin' alt='logo' width='20%' /></a>
+                    <br />
+                    &copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart
+                  </div>
+                </center>
               </div>
             </center>
           </Content>
