@@ -97,7 +97,7 @@ class FillerText extends Component {
         }).sort((a, b) => a.value <= b.value ? -1 : 1);
       }
     }
-    const gradient = getGradient(entities, this.props.config);;
+    const gradient = getGradient(entities, this.props.config); ;
     return <Input
       style={{
         color: gradient.color,

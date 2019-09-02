@@ -60,7 +60,7 @@ class TaggedText extends Component {
         </p>
         {disabled ||
           <div className='plus-item'>
-            <i onClick={this.addEntity} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
+            <i onClick={this.addEntity} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' data-mode='add' />
           </div>
         }
       </div>
