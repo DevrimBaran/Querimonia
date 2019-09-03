@@ -89,8 +89,8 @@ class ImportBlock extends Component {
   render () {
     return (
       <Block>
+        <h1 className='center'>Import</h1>
         <Row vertical className='centerColumn'>
-          <h1 className='center'>Import</h1>
           <div className='input' id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}>
             {this.state.type !== 'file' && <textarea className='textarea' style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref={this.textInput} placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
             <div className='center'>

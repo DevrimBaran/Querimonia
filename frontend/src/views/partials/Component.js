@@ -24,7 +24,6 @@ function Header () {
         <th>Name</th>
         <th>Priorität</th>
         <th>Varianten</th>
-        <th>Aktionen</th>
       </tr>
     </thead>
   );
@@ -46,7 +45,6 @@ function List (data, dispatch, helpers) {
       <td style={{ textAlign: 'left' }}>{data.name}</td>
       <td>{data.priority}</td>
       <td>{data.texts.length}</td>
-      <td>{data.actions.map((action) => action.name).join(', ')}</td>
     </tr>
   );
 }
