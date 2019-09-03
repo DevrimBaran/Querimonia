@@ -67,6 +67,8 @@ import java.util.Map;
     "configuration",
     "receiveDate",
     "receiveTime",
+    "closeDate",
+    "closeTime",
     "sentiment",
     "properties",
     "entities"
@@ -170,6 +172,10 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   private LocalTime receiveTime = LocalTime.now();
 
+  private LocalDate closeDate;
+
+  private LocalTime closeTime;
+
   /**
    * The configuration which was used to analyze the complaint.
    */
@@ -201,6 +207,8 @@ public class Complaint implements Identifiable<Long> {
       @NonNull Map<String, Integer> wordList,
       @NonNull LocalDate receiveDate,
       @NonNull LocalTime receiveTime,
+      @NonNull LocalDate closeDate,
+      @NonNull LocalTime closeTime,
       @NonNull Configuration configuration,
       @NonNull List<LogEntry> log) {
 
@@ -218,6 +226,8 @@ public class Complaint implements Identifiable<Long> {
     this.wordList = wordList;
     this.receiveDate = receiveDate;
     this.receiveTime = receiveTime;
+    this.closeDate = closeDate;
+    this.closeTime = closeTime;
     this.configuration = configuration;
     this.log = log;
   }
@@ -294,6 +304,26 @@ public class Complaint implements Identifiable<Long> {
   @NonNull
   public LocalTime getReceiveTime() {
     return receiveTime;
+  }
+
+  /**
+   * Returns the date when the complaint was imported into querimonia.
+   *
+   * @return the date when the complaint was imported into querimonia.
+   */
+  @NonNull
+  public LocalDate getCloseDate() {
+    return closeDate;
+  }
+
+  /**
+   * Returns the time when the complaint was imported into querimonia.
+   *
+   * @return the time when the complaint was imported into querimonia.
+   */
+  @NonNull
+  public LocalTime getCloseTime() {
+    return closeTime;
   }
 
   /**

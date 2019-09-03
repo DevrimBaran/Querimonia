@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 
 /**
@@ -11,17 +12,20 @@ import java.util.LinkedHashMap;
  */
 @JsonPropertyOrder(value = {
     "count",
-    "status"
+    "status",
+    "processingDuration"
 })
 public class MonthStats {
 
   private long count;
   private LinkedHashMap<String, Double> status;
+  private double processingDuration;
 
   @JsonCreator
-  public MonthStats(long count, LinkedHashMap<String, Double> status) {
+  public MonthStats(long count, LinkedHashMap<String, Double> status, double processingDuration) {
     this.count = count;
     this.status = status;
+    this.processingDuration = processingDuration;
   }
 
   @SuppressWarnings("unused")
@@ -33,7 +37,7 @@ public class MonthStats {
     return count;
   }
 
-  public void setCount(int count) {
+  public void setCount(long count) {
     this.count = count;
   }
 
@@ -45,6 +49,13 @@ public class MonthStats {
     this.status = status;
   }
 
+  public double getProcessingDuration() {
+    return processingDuration;
+  }
+
+  public void setProcessingDuration(double processingDuration) {
+    this.processingDuration = processingDuration;
+  }
 
   @Override
   public String toString() {

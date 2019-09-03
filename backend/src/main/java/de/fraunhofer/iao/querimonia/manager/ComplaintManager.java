@@ -32,6 +32,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -368,7 +371,9 @@ public class ComplaintManager {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ANALYSING, CLOSED);
-    builder.setState(CLOSED);
+    builder.setState(CLOSED)
+        .setCloseDate(LocalDate.now(ZoneId.of("Europe/Berlin")))
+        .setCloseTime(LocalTime.now(ZoneId.of("Europe/Berlin")));
 
     // execute actions of the complaint
     complaint
@@ -627,7 +632,15 @@ public class ComplaintManager {
     return textList.stream()
         // only import count amount of texts
         .limit(count.orElse(DEFAULT_TEXTS_DEFAULT_COUNT))
-        .map(textInput -> uploadText(textInput, configId))
+        .map(textInput -> {
+          var complaint = uploadText(textInput, configId);
+          try {
+            Thread.sleep(7000);
+          } catch (InterruptedException e) {
+            logger.error("Safety pause between default complaints interrupted");
+          }
+          return complaint;
+        })
         .collect(Collectors.toList());
   }
 

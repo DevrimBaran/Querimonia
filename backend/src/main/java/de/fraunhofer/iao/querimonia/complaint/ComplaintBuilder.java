@@ -53,6 +53,10 @@ public class ComplaintBuilder {
   private LocalDate receiveDate = LocalDate.now();
   @NonNull
   private LocalTime receiveTime = LocalTime.now();
+
+  private LocalDate closeDate = LocalDate.now();
+
+  private LocalTime closeTime = LocalTime.now();
   @NonNull
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
   @NonNull
@@ -88,6 +92,8 @@ public class ComplaintBuilder {
     this.receiveTime = complaint.getReceiveTime();
     this.configuration = complaint.getConfiguration();
     this.log = new ArrayList<>(complaint.getLog());
+    this.closeDate = complaint.getCloseDate();
+    this.closeTime = complaint.getCloseTime();
   }
 
   /**
@@ -248,6 +254,31 @@ public class ComplaintBuilder {
   }
 
   /**
+   * Sets the close date of the complaint.
+   *
+   * @param closeDate the date when the complaint was added to the database.
+   *
+   * @return this complaint builder.
+   */
+  public ComplaintBuilder setCloseDate(@NonNull LocalDate closeDate) {
+    this.closeDate = closeDate;
+    return this;
+  }
+
+  /**
+   * Sets the receive time of the complaint. The default value is the system time when creating
+   * the complaint builder.
+   *
+   * @param closeTime the time when the complaint was added to the database.
+   *
+   * @return this complaint builder.
+   */
+  public ComplaintBuilder setCloseTime(@NonNull LocalTime closeTime) {
+    this.closeTime = closeTime;
+    return this;
+  }
+
+  /**
    * Sets the {@link Complaint#getConfiguration() configuration} of the complaint. The default
    * value is {@link Configuration#FALLBACK_CONFIGURATION}.
    *
@@ -309,7 +340,8 @@ public class ComplaintBuilder {
     return new Complaint(id, text, Objects.requireNonNull(preview), state,
         Objects.requireNonNull(properties), Objects.requireNonNull(sentiment),
         Objects.requireNonNull(entities), Objects.requireNonNull(responseSuggestion),
-        Objects.requireNonNull(wordList), receiveDate, receiveTime, configuration, log);
+        Objects.requireNonNull(wordList), receiveDate, receiveTime, closeDate, closeTime,
+        configuration, log);
   }
 
   /**

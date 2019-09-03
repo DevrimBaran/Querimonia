@@ -18,8 +18,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -288,10 +292,7 @@ public class StatsController {
           .map(Complaint::getResponseSuggestion).map(ResponseSuggestion::getResponseComponents)
           .reduce(new ArrayList<>(), StatsController::combineLists)
           .stream().map(CompletedResponseComponent::getComponent).map(ResponseComponent::getId)
-          .forEach(id -> {
-            int value = result.getOrDefault(id, 0) + 1;
-            result.put(id, value);
-          });
+          .forEach(id -> result.merge(id, 1, Integer::sum));
       if (maxComplaintCount != Integer.MAX_VALUE) {
         LinkedHashMap<Long, Integer> resultFixSize = new LinkedHashMap<>();
         result.entrySet().stream().sorted(Map.Entry.<Long, Integer>comparingByValue().reversed())
@@ -332,7 +333,7 @@ public class StatsController {
             .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
             .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
             .min(ComplaintFilter.createComplaintComparator(Optional.of(sortBy)));
-      if (!comp.isPresent()) {
+      if (comp.isEmpty()) {
         return result;
       }
       LocalDate firstDate = comp.get().getReceiveDate().withDayOfMonth(1);
@@ -342,6 +343,8 @@ public class StatsController {
       }
       for (LocalDate date = firstDate; date.isBefore(endday); date = date.plusMonths(1)) {
         LinkedHashMap<String, Double> resultComplaintsStatus = new LinkedHashMap<>();
+        Optional<Long> processingHours = Optional.empty();
+        double  avgProcessing = 0d;
         final LocalDate minDate = date;
         final LocalDate maxDate = date.withDayOfMonth(date.lengthOfMonth());
         long countComplaints =  StreamSupport.stream(complaintRepository.findAll().spliterator(),
@@ -352,7 +355,7 @@ public class StatsController {
           // create stream of all complaints
           String[] stateArray = {state.toString()};
 
-          long countStateCom = StreamSupport.stream(complaintRepository
+          final long countStateCom = StreamSupport.stream(complaintRepository
                     .findAll().spliterator(), false)
                 // filter complaints
                 .filter(compl -> ComplaintFilter.filterByDate(
@@ -360,11 +363,28 @@ public class StatsController {
                 // get their word lists
                 .filter(complaint -> ComplaintFilter.filterByState(
                     complaint, Optional.of(stateArray))).count();
-          countComplaints += countStateCom;
           resultComplaintsStatus.put(state.toString(), (double)countStateCom / countComplaints);
+
+          if (state == ComplaintState.CLOSED) {
+            processingHours = StreamSupport.stream(complaintRepository
+                .findAll().spliterator(), false)
+                // filter complaints
+                .filter(compl -> ComplaintFilter.filterByDate(
+                    compl, Optional.of(minDate.toString()), Optional.of(maxDate.toString())))
+                // get their word lists
+                .filter(complaint -> ComplaintFilter.filterByState(
+                    complaint, Optional.of(stateArray)))
+                .map(complaint -> complaint.getCloseDate().atTime(complaint.getCloseTime())
+                    .until(complaint.getCloseDate().atTime(complaint.getCloseTime()),
+                        ChronoUnit.HOURS))
+                .reduce(Long::sum);
+          }
+          avgProcessing =
+          processingHours.map(hours -> hours / ((double) countStateCom)).orElse(-1d);
         }
 
-        MonthStats monthStats = new MonthStats(countComplaints, resultComplaintsStatus);
+        MonthStats monthStats = new MonthStats(countComplaints, resultComplaintsStatus,
+            avgProcessing);
 
         result.put(YearMonth.from(date), monthStats);
       }

@@ -2796,6 +2796,10 @@ components:
             "NEW": 0.3
             "IN_PROGRESS": 0.1
             "CLOSED": 0.4
+        processingDuration:
+          description: Durchschnittliche Bearbeitungszeit in Stunden von den CLOSED Beschwerden
+          type: double
+          example: 10
 
 
     QuerimoniaException:
