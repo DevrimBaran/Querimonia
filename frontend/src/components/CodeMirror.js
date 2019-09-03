@@ -167,7 +167,7 @@ class CodeMirror extends Component {
       this.props.onChange && this.props.onChange(pd.xmlmin(value));
     }
     render () {
-      const { onChange, value, ...passThroughProps } = this.props;
+      const { onChange, value, id, ...passThroughProps } = this.props;
 
       return (
         <React.Fragment>

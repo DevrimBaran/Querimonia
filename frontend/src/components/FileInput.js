@@ -6,7 +6,6 @@
  */
 
 import React, { Component } from 'react';
-import { file } from '@babel/types';
 
 class FileInput extends Component {
   constructor (props) {
