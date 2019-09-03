@@ -130,9 +130,6 @@ function Home () {
                 <center>
                   <div className='footer'>
                     <br />
-                    <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank' ><img src={iaoPartner} className=' center margin' alt='logo' width='20%' /></a>
-                    <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank' ><img src={iatPartner} className=' center margin' alt='logo' width='20%' /></a>
-                    <br />
                     &copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart
                   </div>
                 </center>
