@@ -5,7 +5,13 @@ export function setActive (endpoint, id) {
   return function (dispatch, getState) {
     const { byId, fetching } = getState()[endpoint].data;
     if (fetching) console.log('setActive while fetching...');
-    if (byId[id]) {
+    if (id === 0) {
+      dispatch({
+        type: 'SET_ACTIVE',
+        endpoint: endpoint,
+        id: id
+      });
+    } else if (byId[id]) {
       dispatch({
         type: 'SET_ACTIVE',
         endpoint: endpoint,
@@ -18,7 +24,6 @@ export function setActive (endpoint, id) {
       dispatch((dispatch) => {
         Api.get('/api/' + endpoint + '/' + id, {})
           .then(data => {
-            console.log(data);
             dispatch({
               type: 'UPDATE_SINGLE',
               endpoint: endpoint,

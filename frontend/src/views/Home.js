@@ -10,8 +10,6 @@ import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
 import spotlight from './../assets/img/spotlight.svg';
-import iaoPartner from './../assets/img/iao.png';
-import iatPartner from './../assets/img/iat.png';
 import '../assets/scss/_images.scss';
 import '../assets/scss/toSort/_entity.scss';
 import '../assets/scss/toSort/_boxWithMargin.scss';
@@ -37,12 +35,8 @@ function Home () {
                     <p>
                     Durch KI-Verfahren extrahiert unser intelligentes System wichtige Elemente eines Textes automatisch.
                     Dem Nutzer werden die Entitäten mit unterschliedlicher Farbe angezeigt.
-                      <br />
-                    Zum Testen, die Maus in die Box bewegen:
                     </p>
-                    <center>
-                      <i className='fas fa-arrow-right fa-3x' id='arrow' />
-                    </center>
+                    <i className='fas fa-arrow-right fa-3x' id='arrow' />
                   </div>
                   <div className='rightBox' id='entityBox'>
                     <p>
@@ -62,14 +56,11 @@ function Home () {
                     <h2>Erkennung der Stimmung</h2>
                     <br />
                     <p>
-                    Durch SoUndSo-Verfahren und DiesUndDas erkennt Querimonia die Stimmung (Emotion und Sentiment) einer
-                    Beschwerde und wandelt diese in passende Emojis um.
-                      <br />
-                    Zum Testen, die Maus in die Box bewegen:
+                      Querimonia liefert einen regelbasierten Ansatz zur Erkennung und Interpretation der Stimmung und Emotionen aus ihrem Dokument.
+                      Mittels unserem intelligenten Algorithmus, können bis zu 7 verschiedene Emotionen erkannt werden. Die Stimmung wird durch eine intern entworfene Zahlenskala anschaulich represäntiert.
+                      Diese zwei Analyseverfahren bieten Ihnen neue Erkentnisse und Aussagen über das zu analysierende Dokument.
                     </p>
-                    <center>
-                      <i className='fas fa-arrow-right fa-3x' id='arrow' />
-                    </center>
+                    <i className='fas fa-arrow-right fa-3x' id='arrow' />
                   </div>
                   <div className='rightBox'>
                     <div className='tooltipStartseite'>
@@ -95,12 +86,8 @@ function Home () {
                       Die oben genannten Funktionen ermöglichen dem Nutzer eine automatisch generierte Antwort
                       zu einer eingegangenen Beschwerde zu erstellen. Abhängig von den erkannten Entitäten und
                       der erkannten Stimmung wird eine Antwort vorgeschlagen, die bearbeitet werden kann.
-                      <br />
-                      Zum Testen, die Maus in die Box bewegen:
                     </p>
-                    <center>
-                      <i className='fas fa-arrow-right fa-3x' id='arrow' />
-                    </center>
+                    <i className='fas fa-arrow-right fa-3x' id='arrow' />
                   </div>
                   <div className='rightBox' id='antwortGenerierung'>
                     <p>Sehr geehrte</p>

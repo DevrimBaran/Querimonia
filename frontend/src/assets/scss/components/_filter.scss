@@ -23,7 +23,7 @@
         left: 50%;
         transform: translate(-50%, 100%);
     }
-    &:hover {
+    &:hover, &:focus-within {
         transform: translateY(0%);
         transition: transform 0.20s ease-out;
         &::before {
@@ -31,10 +31,12 @@
         }
     }
     @media only screen and (min-width: 1200px) {
-        transform: none;
-        position: relative;
-        &::before {
-            display: none;
+        &.responsive {
+            transform: none;
+            position: relative;
+            &::before {
+                display: none;
+            }
         }
     }
     .Block {
