@@ -38,7 +38,7 @@ function Home () {
                     Durch KI-Verfahren extrahiert unser intelligentes System wichtige Elemente eines Textes automatisch.
                     Dem Nutzer werden die Entitäten mit unterschliedlicher Farbe angezeigt.
                       <br />
-                    Zum Testen:
+                    Zum Testen, die Maus in die Box bewegen:
                     </p>
                     <center>
                       <i className='fas fa-arrow-right fa-3x' id='arrow' />
@@ -65,7 +65,7 @@ function Home () {
                     Durch SoUndSo-Verfahren und DiesUndDas erkennt Querimonia die Stimmung (Emotion und Sentiment) einer
                     Beschwerde und wandelt diese in passende Emojis um.
                       <br />
-                    Zum Testen:
+                    Zum Testen, die Maus in die Box bewegen:
                     </p>
                     <center>
                       <i className='fas fa-arrow-right fa-3x' id='arrow' />
@@ -96,7 +96,7 @@ function Home () {
                       zu einer eingegangenen Beschwerde zu erstellen. Abhängig von den erkannten Entitäten und
                       der erkannten Stimmung wird eine Antwort vorgeschlagen, die bearbeitet werden kann.
                       <br />
-                      Zum Testen:
+                      Zum Testen, die Maus in die Box bewegen:
                     </p>
                     <center>
                       <i className='fas fa-arrow-right fa-3x' id='arrow' />
