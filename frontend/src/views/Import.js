@@ -101,7 +101,7 @@ class ImportBlock extends Component {
       <Block>
         <Row vertical className="centerColumn">
           <h1 className='center'>Import</h1>
-          <div className="input" id='Import' style={{ margin: '1em' }} onDrop={this.onDrop} onDragOver={this.onDragOver}>
+          <div className="input" id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}>
             {this.state.type !== 'file' && <textarea className="textarea" style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
             <div className='center'>
               {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref='fileInput' />}
