@@ -5,12 +5,10 @@
  */
 
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 import api from './../utility/Api';
 
-import Complaint from './partials/Complaints';
-
-import Table from './../components/Table';
 import Block from './../components/Block';
 import Content from './../components/Content';
 import Row from './../components/Row';
@@ -20,8 +18,10 @@ import Sentiment from './../components/Sentiment';
 class ImportBlock extends Component {
   constructor (props) {
     super(props);
+    this.textInput = React.createRef();
+    this.fileInput = React.createRef();
     this.state = {
-      response: null,
+      response: [],
       loading: false,
       type: null
     };
@@ -41,31 +41,21 @@ class ImportBlock extends Component {
   }
 
   parseResponse = (response) => {
-    let complaints = (
-      <Content>
-        <Table>
-          {Complaint.Header()}
-          <tbody>
-            {Array.isArray(response) ? this.state.issues.map(this.renderResponse) : this.renderResponse(response) }
-          </tbody>
-        </Table>
-      </Content>
-    );
-    this.setState({ loading: false, type: null, response: complaints });
-    this.refs.textInput.value = '';
-    this.refs.fileInput.files = null;
+    this.setState({ loading: false, type: null, response: Array.isArray(response) ? response : [response] });
+    this.textInput.current.value = '';
+    this.fileInput.current.files = null;
   }
 
   onClick = (e) => {
     let response;
     switch (this.state.type) {
       case 'textarea':
-        response = api.post('/api/complaints/import', { text: this.refs.textInput.value });
+        response = api.post('/api/complaints/import', { text: this.textInput.current.value });
         break;
       case 'file':
         // eslint-disable-next-line
         const formData = new FormData();
-        formData.append('file', this.refs.fileInput.files[0]);
+        formData.append('file', this.fileInput.current.files[0]);
         response = api.post('/api/complaints/import', formData);
         break;
       default:
@@ -87,7 +77,7 @@ class ImportBlock extends Component {
     e.preventDefault();
     if (this.state.type !== 'text') {
       this.setState({ type: 'file' });
-      this.refs.fileInput.files = e.dataTransfer.files;
+      this.fileInput.current.files = e.dataTransfer.files;
     }
   }
 
@@ -101,17 +91,30 @@ class ImportBlock extends Component {
       <Block>
         <Row vertical className='centerColumn'>
           <h1 className='center'>Import</h1>
-          <div className="input" id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}>
-            {this.state.type !== 'file' && <textarea className="textarea" style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref='textInput' placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
+          <div className='input' id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}>
+            {this.state.type !== 'file' && <textarea className='textarea' style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref={this.textInput} placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
             <div className='center'>
-              {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref='fileInput' />}
+              {this.state.type !== 'textarea' && <input type='file' onChange={this.onChange} name='file' ref={this.fileInput} />}
               <p className='paddingVertical' style={{ textAlign: 'justify' }} >Lorem ipsum dolor sit amet, consectetur adipisici elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
               <input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
             </div>
           </div>
           <Content>
             <div style={{ height: '100%' }} id='response'>
-              {this.state.loading ? (<div className='center'><i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' /></div>) : (this.state.response)}
+              {this.state.loading ? (
+                <div className='center'>
+                  <i style={{ color: 'var(--primaryAccentColor)' }} className='fa-spinner fa-spin fa fa-5x' />
+                </div>
+              ) : (
+                this.state.response.map(complaint => (
+                  <div className='complaint' key={complaint.id}>
+                    <Link to={'/complaints/' + complaint.id}>
+                      <h3>Anliegen #{complaint.id}</h3>
+                      <p>{complaint.preview}</p>
+                    </Link>
+                  </div>
+                ))
+              )}
             </div>
           </Content>
         </Row>
