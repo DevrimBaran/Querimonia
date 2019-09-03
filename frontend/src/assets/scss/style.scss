@@ -42,9 +42,22 @@ nav {
     #logo {
         padding: 10px 10px 20px 10px;
         margin-bottom: 2%;
-
-
     }
+  #bottomMenu{
+    position: relative;
+    top: 17%;
+
+        a{
+            margin-top: 7%;
+        }
+        .input{
+            padding: 0;
+            margin: 0 auto 7% auto;
+            display: table;
+        }
+    }
+
+
 
     > ul {
 
@@ -52,6 +65,8 @@ nav {
         margin: 7% 4% 7% 4%;
         padding: 20px 0 15px 0;
         box-shadow: 0 10px 20px -20px black, 0 -10px 20px -20px ;
+
+
 
         li > a {
             position: relative;
@@ -61,6 +76,7 @@ nav {
             color: black;
             background: rgba($dimgray, 0.2);
             border-radius: 5px;
+
             transition: all 0.15s ease-out;
 
             &:hover {
