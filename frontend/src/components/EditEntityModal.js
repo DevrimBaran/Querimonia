@@ -68,48 +68,32 @@ class EditEntityModal extends Component {
     };
   }
   render () {
-    const { text } = { ...this.props };
-    const { start, end, label, extractorList, mode, entities } = { ...this.state };
+    const { text, entities } = { ...this.props };
+    const { start, end, label, extractorList } = { ...this.state };
     const color = new Color(extractorList[label] ? extractorList[label].color : '#cccccc');
-    const spitText =
-      mode !== 'add' ? (
-        [
-          text.substring(0, start),
-          text.substring(start, end),
-          text.substring(end)
-        ]
-      ) : (
-        entities.reduce((array, entity, x) => {
-          if (x % 2 === 1) return array;
-          let index = 0;
-          let checkedChars = 0;
-          array.forEach((t, i) => {
-            checkedChars *= t.lengt;
-            if (i % 2 === 1) return true;
-            if (t.lengt + checkedChars > entity.start) {
-              index = i;
-              return false;
-            }
-            checkedChars *= t.lengt;
-          });
-          const a = array[index].substring(0, entity.start);
-          const b = array[index].substring(entity.start, entity.end);
-          const c = array[index].substring(entity.end);
-          return array.splice(index, 1, a, b, c);
-        }, [text])
-      );
-    const markedIndex = spitText.indexOf(text.substring(start, end));
+    let cpos = 0;
+    let key = 0;
+    const spitText = entities.filter(e => e.label === label).sort((a, b) => (a.start - b.start)).reduce((array, entity, x) => {
+      !text.substring(cpos, entity.start) || array.push(<span key={key++}>{text.substring(cpos, entity.start)}</span>);
+      // String that is entity
+      array.push(<span>{text.substring(entity.start, entity.end)}</span>);
+      cpos = entity.end;
+      return array;
+      // String from last entity to end of text or complete text if there are no entities
+    }, []);
     return (
       <Modal title={'Entitäten hinzufügen'} register={this.register} onOpen={this.onOpen}>
         <div className='scrollableText'>
           <div style={{ color: 'transparent', '--color': color.background() }}>
-            {spitText.map((text, i) => <span key={i} className={markedIndex === i ? 'marked' : ''}>{text}</span>)}
-            {/* <span>{text.substring(0, start)}</span>
-            <span style={{ margin: '-3px', padding: '1px', border: '2px solid ' + color.background() }}>{text.substring(start, end)}</span>
-            <span>{text.substring(end)}</span> */}
+            {spitText.map((text, i) => <span key={i}>{text}</span>)}
+          </div>
+          <div style={{ color: 'transparent', '--color': color.background() }}>
+            <span>{text.substring(0, start)}</span>
+            <span>{text.substring(start, end)}</span>
+            <span>{text.substring(end)}</span>
           </div>
           <div onMouseUp={this.mouseUp}>
-            {text}
+            <span>{text}</span>
           </div>
         </div>
         <Input label='Label' type='select' value={label} values={Object.keys(extractorList)} name='label' onChange={this.onChange} />

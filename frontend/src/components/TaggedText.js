@@ -17,6 +17,7 @@ class TaggedText extends Component {
     for (let i = 0; i < config.extractors.length; i++) {
       extractorList[config.extractors[i].label] = { name: config.extractors[i].name, type: config.extractors[i].type, color: config.extractors[i].color };
     }
+    this.addEntityRef = React.createRef();
     this.state = {
       editActive: false,
       newEntityQuery: null,
@@ -60,7 +61,7 @@ class TaggedText extends Component {
         </p>
         {disabled ||
           <div className='plus-item'>
-            <i onClick={this.addEntity} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' data-mode='add' />
+            <i onClick={this.addEntity} ref={this.addEntityRef} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' data-mode='add' />
           </div>
         }
       </div>

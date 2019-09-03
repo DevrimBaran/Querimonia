@@ -52,6 +52,13 @@ class Tag extends Component {
         {text}
         <Tooltip {...tooltip.register} className='tag-tooltip'>
           {relevantEntities.map((entity, i) => {
+            let emptyData = {
+              'data-start': '',
+              'data-end': '',
+              'data-label': '',
+              'data-id': '',
+              'data-mode': ''
+            };
             let entitiyData = {
               'data-id': entity.id,
               'data-start': entity.start,
@@ -67,8 +74,8 @@ class Tag extends Component {
               <i>{entity.label}</i>
               <b>{entity.value}</b>
               {disabled || <React.Fragment>
-                <Button title='Kopieren' icon='far fa-clone' onClick={this.openModal} data-label={entity.label} />
-                <Button title='Bearbeiten' icon='far fa-edit' onClick={this.openModal} {...entitiyData} />
+                <Button title='Kopieren' icon='far fa-clone' onClick={this.openModal} {...{ ...emptyData, 'data-label': entity.label }} />
+                <Button title='Bearbeiten' icon='far fa-edit' onClick={this.openModal} {...{ ...emptyData, ...entitiyData }} />
                 <Button title='Löschen' icon='far fa-trash-alt' onClick={this.remove(entity.id)} />
               </React.Fragment>}
             </div>;
