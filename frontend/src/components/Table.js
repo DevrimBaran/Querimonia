@@ -13,7 +13,7 @@ class Table extends Component {
     const { className, ...passThroughProps } = this.props;
 
     let injectedProp = {
-      className: className ? className + ' ' + classes : classes
+      className: classes
     };
 
     return (

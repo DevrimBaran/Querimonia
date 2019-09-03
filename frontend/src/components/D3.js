@@ -24,9 +24,9 @@ class D3 extends Component {
     this.componentDidMount();
   }
   render () {
-    const { type, data, render, ...passThrough } = { ...this.props };
+    const { type, id, data, render, ...passThrough } = { ...this.props };
     return (
-      <div className='d3' ref={this.container} {...passThrough} />
+      <div className='d3' id={id} ref={this.container} {...passThrough} />
     );
   }
 }
