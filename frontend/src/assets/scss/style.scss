@@ -267,8 +267,9 @@ nav {
 }
 
 .responsive-table {
-    width: calc(100%);
+    width: 90%;
     height: 100%;
+    margin: 0 auto;
     overflow: auto;
     border-radius: 10px;
     clear: both;
@@ -304,7 +305,7 @@ nav {
 
     tbody th {
         position: sticky;
-        padding: 5px 0;
+        padding: 10px 0 10px 10px;
         left: 0;
         z-index: 1;
 
@@ -316,7 +317,7 @@ nav {
 
     tbody td {
         max-width: 600px;
-        padding: 15px 10px;
+        padding: 15px 20px;
         text-align: left;
 
     }
