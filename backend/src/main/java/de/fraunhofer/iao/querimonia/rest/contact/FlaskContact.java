@@ -3,6 +3,7 @@ package de.fraunhofer.iao.querimonia.rest.contact;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -35,8 +36,12 @@ public class FlaskContact {
 
     HttpEntity<String> request = new HttpEntity<>(body.toString(), header);
     String response;
+
+    RestTemplate template = new RestTemplateBuilder()
+        .basicAuthentication("admin", "QuerimoniaPass2019")
+        .build();
     try {
-      response = new RestTemplate()
+      response = template
           .exchange(URL + path, HttpMethod.POST, request, String.class).getBody();
     } catch (RestClientException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Flask-Server konnte nicht"
