@@ -25,8 +25,8 @@ import Api from './utility/Api';
 import ErrorModal from './components/ErrorModal';
 
 import logo from './assets/img/StuproLogo.svg';
-// import iaoPartner from './assets/img/iao.png';
-// import uniLogo from './assets/img/Uni_stuttgart_logo.svg';
+import iaoPartner from './assets/img/iao.png';
+import uniLogo from './assets/img/Uni_stuttgart_logo.svg';
 
 function init () {
   return (dispatch, getState) => {
@@ -131,7 +131,7 @@ class App extends Component {
               <li>
                 <Login />
               </li>
-              {/* <li>
+              <li>
                 <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank'>
                   <img src={iaoPartner} alt='logo' />
                 </a>
@@ -140,7 +140,7 @@ class App extends Component {
                 <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank'>
                   <img src={uniLogo} alt='logo' />
                 </a>
-              </li> */}
+              </li>
             </ul>
           </nav>
           <ErrorModal error={this.error} />
