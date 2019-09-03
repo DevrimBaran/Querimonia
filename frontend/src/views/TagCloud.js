@@ -222,6 +222,7 @@ class TagCloud extends Component {
         <React.Fragment>
           <Block>
             <Row vertical>
+              <h1 className='center'>Worthäufigkeiten</h1>
               <Form>
                 <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
                 <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
@@ -238,7 +239,6 @@ class TagCloud extends Component {
                   : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
                     onClick={this.exportCsv} />)}
               </Form>
-              <h1 className='center'>Worthäufigkeiten</h1>
               <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
                 <D3
