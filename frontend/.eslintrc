@@ -8,7 +8,9 @@
 		"fetch": false,
 		"Blob": false,
 		"Response": false,
-		"FormData": false
+		"FormData": false,
+		"d3": false,
+		"btoa": false
 	},
 	"rules": {
 		"semi": [
@@ -32,6 +34,9 @@
 		],
 		"no-fallthrough": [
 			1
+		],
+		"no-return-assign": [
+			0
 		]
 	}
 }
