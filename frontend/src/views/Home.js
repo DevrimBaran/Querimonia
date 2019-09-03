@@ -33,8 +33,10 @@ function Home () {
                     <h2>Erkennen von Entitäten</h2>
                     <br />
                     <p>
-                    Durch KI-Verfahren extrahiert unser intelligentes System wichtige Elemente eines Textes automatisch.
-                    Dem Nutzer werden die Entitäten mit unterschliedlicher Farbe angezeigt.
+                    Unser intelligentes System extrahiert durch KI-Verfahren wichtige Elemente eines Textes.
+                    Das Erkennen von Entitäten läuft automatisiert ab und liefert Ihnen die wichtigsten Elemente,
+                    die in unterschiedlichen Farben gekennzeichnet werden. Die extrahierten Entitäten können an Ihre Wünsche
+                    angepasst werden.
                     </p>
                     <i className='fas fa-arrow-right fa-3x' id='arrow' />
                   </div>
@@ -56,8 +58,8 @@ function Home () {
                     <h2>Erkennung der Stimmung</h2>
                     <br />
                     <p>
-                      Querimonia liefert einen regelbasierten Ansatz zur Erkennung und Interpretation der Stimmung und Emotionen aus ihrem Dokument.
-                      Mittels unserem intelligenten Algorithmus, können bis zu 7 verschiedene Emotionen erkannt werden. Die Stimmung wird durch eine intern entworfene Zahlenskala anschaulich represäntiert.
+                      Querimonia liefert einen regelbasierten Ansatz zur Erkennung und Interpretation der Stimmung und Emotionen aus Ihrem Dokument.
+                      Mittels unserem intelligenten Algorithmus, können bis zu 7 verschiedene Emotionen erkannt werden. Die Stimmung wird durch eine intern entworfene Zahlenskala anschaulich repräsentiert.
                       Diese zwei Analyseverfahren bieten Ihnen neue Erkentnisse und Aussagen über das zu analysierende Dokument.
                     </p>
                     <i className='fas fa-arrow-right fa-3x' id='arrow' />
@@ -83,9 +85,9 @@ function Home () {
                     <h2>Antwort generieren</h2>
                     <br />
                     <p>
-                      Die oben genannten Funktionen ermöglichen dem Nutzer eine automatisch generierte Antwort
-                      zu einer eingegangenen Beschwerde zu erstellen. Abhängig von den erkannten Entitäten und
-                      der erkannten Stimmung wird eine Antwort vorgeschlagen, die bearbeitet werden kann.
+                      Mit Querimonia können Sie eine automatisch generierte Antwort zu einet Beschwerde erstellen.
+                      Durch das Erkennen der Entitäten und das Erkennen der Stimmung werden Ihnen passende Antwortbausteine
+                      vorgeschlagen, aus denen Sie eine Antwort zusammenfügen können.
                     </p>
                     <i className='fas fa-arrow-right fa-3x' id='arrow' />
                   </div>
@@ -114,14 +116,13 @@ function Home () {
                         Ihr Schokorobo</p>
                   </div>
                 </div>
-                <center>
-                  <div className='footer'>
-                    <br />
-                    &copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart
-                  </div>
-                </center>
               </div>
             </center>
+            <div className='footer'>
+              <center>
+                <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
+              </center>
+            </div>
           </Content>
         </Row>
       </Block>

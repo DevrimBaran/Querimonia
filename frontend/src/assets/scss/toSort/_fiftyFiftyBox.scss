@@ -28,7 +28,11 @@
 }
 
 .footer{
-    margin-top: 20px;
+   float: left;
+   margin-left: 40%;
+   margin-right: 40%;
+   margin-bottom: 5%;
+   margin-top: 10%;
 }
 
 .tooltipStartseite {
@@ -38,13 +42,12 @@
 
   .tooltipStartseite .tooltiptext {
     visibility: hidden;
-    width: 20%;
-    height: 35%;
-    background-color: white;
+    width: 65px;
+    height: 65px;
+    background-color: red;
     position: absolute;
     top: 35px;
     left: 105%;
-    border: solid 4px rgb(66, 194, 164);
   }
 
   .tooltipStartseite:hover .tooltiptext {
