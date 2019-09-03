@@ -222,25 +222,23 @@ class TagCloud extends Component {
         <React.Fragment>
           <Block>
             <Row vertical>
+              <Form>
+                <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
+                <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
+                <Input type='number' label='Wortanzahl:' id='count' ref={this.count} defaultValue='70' min='0' />
+                <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' id='onlyWords' ref={this.onlyWords} defaultChecked />
+                <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
+                  id='activeMode' ref={this.activeMode} checked={!this.state.cloudActive}
+                  onChange={this.toggleChange} />
+                <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
+                {this.state.cloudActive
+                  ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
+                    style={{ cursor: 'pointer' }}
+                    onClick={this.exportSvg} />)
+                  : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
+                    onClick={this.exportCsv} />)}
+              </Form>
               <h1 className='center'>Worthäufigkeiten</h1>
-              <div>
-                <Form>
-                  <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
-                  <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
-                  <Input type='number' label='Wortanzahl:' id='count' ref={this.count} defaultValue='70' min='0' />
-                  <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' id='onlyWords' ref={this.onlyWords} defaultChecked />
-                  <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
-                    id='activeMode' ref={this.activeMode} checked={!this.state.cloudActive}
-                    onChange={this.toggleChange} />
-                  <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
-                  {this.state.cloudActive
-                    ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
-                      style={{ cursor: 'pointer' }}
-                      onClick={this.exportSvg} />)
-                    : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
-                      onClick={this.exportCsv} />)}
-                </Form>
-              </div>
               <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
                 <D3

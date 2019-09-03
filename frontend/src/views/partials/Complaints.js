@@ -146,7 +146,7 @@ function Single (active, dispatch, helpers) {
               </div> */}
             </Tabbed>
           </Content>
-          <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
+          <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
           <Collapsible label='Details' />
           <Liste styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
             ['Konfiguration', (<Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],

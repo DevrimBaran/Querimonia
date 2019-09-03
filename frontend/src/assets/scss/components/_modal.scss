@@ -17,8 +17,21 @@
         position: absolute;
         left: 5px;
         top: 5px;
-        &:first-of-type {
+        &:first-child {
             user-select: none;
+            span:nth-child(even) {
+                margin-bottom: -3px;
+                padding-bottom: 1px;
+                border-bottom: 2px solid var(--color);
+            }
+        }
+        &:nth-child(2) {
+            user-select: none;
+            span:nth-child(even) {
+                margin: -3px;
+                padding: 1px;
+                border: 2px solid var(--color);
+            }
         }
     }
 }

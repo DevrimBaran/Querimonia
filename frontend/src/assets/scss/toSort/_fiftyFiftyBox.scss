@@ -2,13 +2,13 @@
     z-index: 1;
     width: 100%;
     height: 100%;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     padding: 10px;
 
     .rightBox{
         float: left;
         width: 40%;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         height: 100%;
         border: solid 4px rgb(66, 194, 164);
         box-shadow: 10px 10px 15px silver;
@@ -20,14 +20,35 @@
         float: left;
         width: 49%;
         margin-right: 5%;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         height: 100%;
     }   
 }
 
-.footer{
-    
-    margin: 100px;
-    display: block;
-    width: 100%;
+#arrow {
+    color: #179c7d;
 }
+
+.footer{
+    margin-top: 20px;
+}
+
+.tooltipStartseite {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .tooltipStartseite .tooltiptext {
+    visibility: hidden;
+    width: 20%;
+    height: 35%;
+    background-color: white;
+    position: absolute;
+    top: 35px;
+    left: 105%;
+    border: solid 4px rgb(66, 194, 164);
+  }
+  
+  .tooltipStartseite:hover .tooltiptext {
+    visibility: visible;
+  }

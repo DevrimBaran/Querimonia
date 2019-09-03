@@ -37,11 +37,11 @@ class FillerText extends Component {
     return this.props.entities.ids.map(id => this.props.entities.byId[id]).filter(entity => entity.label === label);
   }
   getInput = (label) => {
-    const entities = this.entitiesWithLabel(label.split('#')[0]);
+    let entities = this.entitiesWithLabel(label.split('#')[0]);
+    let values = null;
     if (!this.state[label]) {
       switch (entities.length) {
         case 0: {
-          // TODO add to values / modify Input to include value in values?
           this.values[label] = 'Erstellen Sie eine Entität';
           break;
         }
@@ -57,7 +57,47 @@ class FillerText extends Component {
     } else {
       this.values[label] = this.state[label];
     }
-    const gradient = getGradient(entities, this.props.config);
+    switch (entities.length) {
+      case 0: {
+        this.values[label] = 'Erstellen Sie eine Entität';
+        values = ['Erstellen Sie eine Entität'];
+        break;
+      }
+      case 1: {
+        const color = getColor(entities[0], this.props.config);
+        this.values[label] = entities[0].value;
+        values = [{
+          label: entities[0].value,
+          value: entities[0].value,
+          style: {
+            backgroundColor: color.background,
+            color: color.color
+          }
+        }];
+        break;
+      }
+      default: {
+        const preferred = entities.find(e => e.preferred);
+        const labels = {};
+        this.values[label] = preferred ? preferred.value : entities[0].value;
+        values = entities.map(e => {
+          const color = getColor(e, this.props.config);
+          return {
+            label: e.value,
+            value: e.value,
+            style: {
+              backgroundColor: color.background,
+              color: color.color
+            }
+          };
+        }).filter(v => {
+          if (labels[v.value]) return false;
+          labels[v.value] = true;
+          return true;
+        }).sort((a, b) => a.value <= b.value ? -1 : 1);
+      }
+    }
+    const gradient = getGradient(entities, this.props.config); ;
     return <Input
       style={{
         color: gradient.color,
@@ -71,18 +111,7 @@ class FillerText extends Component {
       type='select'
       required
       value={this.values[label]}
-      values={entities.map(e => {
-        const color = getColor(e, this.props.config);
-        return {
-          label: e.value,
-          value: e.value,
-          style: {
-            backgroundColor: color.background,
-            color: color.color
-          }
-        };
-      })
-      }
+      values={values}
     />;
   }
   splitTexts = () => {

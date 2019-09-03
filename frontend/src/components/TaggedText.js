@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 
 import Tag from './Tag';
-
+import EditEntityModal from './EditEntityModal';
 class TaggedText extends Component {
   constructor (props) {
     super(props);
@@ -17,6 +17,7 @@ class TaggedText extends Component {
     for (let i = 0; i < config.extractors.length; i++) {
       extractorList[config.extractors[i].label] = { name: config.extractors[i].name, type: config.extractors[i].type, color: config.extractors[i].color };
     }
+    this.addEntityRef = React.createRef();
     this.state = {
       editActive: false,
       newEntityQuery: null,
@@ -47,6 +48,10 @@ class TaggedText extends Component {
     return html;
   };
 
+  addEntity = (e) => {
+    EditEntityModal.open(e);
+  }
+
   render () {
     const { text, entities, disabled, dispatch, ...passThrough } = { ...this.props };
     return (
@@ -56,7 +61,7 @@ class TaggedText extends Component {
         </p>
         {disabled ||
           <div className='plus-item'>
-            <i modal='editEntityModal' className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' />
+            <i onClick={this.addEntity} ref={this.addEntityRef} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' data-mode='add' />
           </div>
         }
       </div>
