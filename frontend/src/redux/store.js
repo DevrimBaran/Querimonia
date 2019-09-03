@@ -35,7 +35,9 @@ const initialState = {
         values: [
           { label: 'Neu', value: 'NEW' },
           { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
-          { label: 'Geschlossen', value: 'CLOSED' }
+          { label: 'Geschlossen', value: 'CLOSED' },
+          { label: 'In Analyse', value: 'ANALYSING' },
+          { label: 'Fehler', value: 'ERROR' }
         ]
       },
       {

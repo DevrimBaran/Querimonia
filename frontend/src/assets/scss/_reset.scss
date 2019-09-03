@@ -14,6 +14,10 @@ html, body, #root {
     margin: 0;
 }
 
+:focus {
+    outline: none;
+}
+
 ul {
     padding: inherit;
 }

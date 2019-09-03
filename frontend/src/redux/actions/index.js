@@ -64,9 +64,6 @@ export function remove (endpoint, id) {
     dispatch((dispatch) => {
       Api.delete('/api/' + endpoint + '/' + id, {})
         .then(response => {
-          if (response.status && response.status === 500) {
-            // alert(data.message);
-          }
           dispatch({
             type: 'FETCH_END',
             data: response,

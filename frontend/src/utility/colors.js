@@ -9,6 +9,9 @@ export class Color {
     this.obj = {};
   }
   set = (color) => {
+    this.r = 127;
+    this.g = 127;
+    this.b = 127;
     if (color.substr(0, 1) === '#') {
       if (color.length === 4) {
         this.r = parseInt(color.substr(1, 1), 16) * 17;
@@ -21,11 +24,13 @@ export class Color {
       }
     } else if (color.substr(0, 3) === 'rgb') {
       const rgb = color && color.match(/rgb\(\s*(\d*)\s*,\s*(\d*)\s*,\s*(\d*)\s*\)/);
+      if (!rgb || rgb.lenght < 4) return;
       this.r = parseInt(rgb[1]);
       this.g = parseInt(rgb[2]);
       this.b = parseInt(rgb[3]);
     } else if (color.substr(0, 3) === 'hsl') {
       const hsl = color && color.match(/hsl\(\s*(\d*\.?\d*)\s*,\s*(\d*\.?\d*)%\s*,\s*(\d*\.?\d*)%\s*\)/);
+      if (!hsl || hsl.lenght < 4) return;
 
       const h = hsl[1] / 360;
       const s = hsl[2] / 100;

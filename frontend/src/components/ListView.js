@@ -7,7 +7,6 @@ import { fetchData, remove } from '../redux/actions/';
 import Block from './Block';
 import Row from './Row';
 import Content from './Content';
-import Input from './Input';
 import Table from './Table';
 import Filter from './Filter';
 import Pagination from './Pagination';
@@ -48,7 +47,14 @@ export default (endpoint, partial, stateToProps) => {
       return (
         <Link to={'/' + endpoint}>
           <span className='action-button'>
-            <i title='Löschen' className='fa fa-trash-alt' onClick={() => window.confirm('Wollen sie das Element wirklich löschen?') ? this.props.dispatch(remove(endpoint, id)) : null} />
+            <i title='Löschen' className='fa fa-trash-alt' onClick={(e) => {
+              e.stopPropagation();
+              if (window.confirm('Wollen sie das Element wirklich löschen?')) {
+                this.props.dispatch(remove(endpoint, id));
+              } else {
+                e.preventDefault();
+              }
+            }} />
           </span>
         </Link>
       );
@@ -61,9 +67,8 @@ export default (endpoint, partial, stateToProps) => {
         <Block>
           <Row vertical>
             <Filter endpoint={endpoint} />
-            <div className='row flex-row height' >
-              <Link to={endpoint + '/0'}><Input type='button' value='Neue Konfiguration' /></Link>
-            </div>
+            <br />
+            <br />
             <Content className='padding'>
               {!this.props.fetching
                 ? (
@@ -85,6 +90,13 @@ export default (endpoint, partial, stateToProps) => {
                   </Table>
                 )
                 : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
+              }
+              {endpoint !== 'complaints' &&
+                <div className='plus-item'>
+                  <Link to={endpoint + '/0'}>
+                    <i className={'fas fa-plus-circle fa-2x'} />
+                  </Link>
+                </div>
               }
             </Content>
             <Pagination endpoint={endpoint} />

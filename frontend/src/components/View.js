@@ -19,10 +19,10 @@ class View extends Component {
     this.li = document.createElement('li');
   }
   componentDidMount = () => {
-    document.getElementById('mainMenu').appendChild(this.li);
+    document.getElementById(this.props.menu || 'mainMenu').appendChild(this.li);
   }
   render () {
-    const { path, component, endpoint, stateToProps, label, ...injected } = { ...this.props };
+    const { path, component, endpoint, stateToProps, label, menu, ...injected } = { ...this.props };
     if (this.props.accessRole && !this.props.accessRole.includes(this.props.login.role)) {
       // return <Redirect to='/' from={path} />;
       return <React.Fragment />;

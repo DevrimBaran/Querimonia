@@ -3,7 +3,47 @@
 
 .Filter {
     min-height: fit-content;
-
+    position: absolute;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+    padding: 2px;
+    border-radius: 5px;
+    z-index: 99999;
+    left: 0;
+    right: 0;
+    top: 0;
+    transform: translateY(-100%);
+    border: solid 1px rgba(0,0,0,0.1);
+    &::before {
+        content: 'Filter';
+        box-shadow: 0 6px rgba(0, 0, 0, 0.22);
+        font-size: 1em;
+        position: absolute;
+        z-index: 9999;
+        background-color: #179c7d;
+        color: white;
+        border-radius: 0 0 10px 10px;
+        padding: 2px 50px 5px;
+        vertical-align: inherit;
+        bottom: 0;
+        left: 50%;
+        transform: translate(-50%, 100%);
+    }
+    &:hover {
+        transform: translateY(0%);
+        transition: transform 0.20s ease-out;
+        &::before {
+            bottom: 0;
+        }
+    }
+    @media only screen and (min-width: 1200px) {
+        transform: none;
+        position: relative;
+        &::before {
+            display: none;
+        }
+    }
     .Block {
         position: relative;
         display: flex;

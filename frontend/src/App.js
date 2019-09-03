@@ -125,7 +125,9 @@ class App extends Component {
               <img src={logo} id='logo' alt='logo' width='100%' />
             </a>
             <ul id='mainMenu' />
-            <Login />
+            <ul id='bottomMenu'>
+              <li><Login /></li>
+            </ul>
           </nav>
           <ErrorModal error={this.error} />
           <View accessRole={['guest', 'user', 'admin']} exact path='/' component={Home} />
@@ -136,7 +138,7 @@ class App extends Component {
           <View label='Wortvektoren' accessRole={['user', 'admin']} path='/wordvectors' component={WordVectors} />
           <View label='Worthäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
           <View label='Statistiken' accessRole={['user', 'admin']} path='/stats' component={Statistics} />
-          <View label='Impressum' accessRole={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
+          <View menu='bottomMenu' label='Impressum' accessRole={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
         </Router>
       </React.Fragment>
     );
