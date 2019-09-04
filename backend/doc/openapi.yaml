@@ -2725,9 +2725,9 @@ components:
             type: integer
             format: int64
           example:
-            "Freude": 17
-            "Trauer": 11
-            "Ueberraschung": 4
+            "Freude": 0.5
+            "Trauer": 0.2
+            "Ueberraschung": 0.3
         status:
           description: Stati mit ihren Häufigkeiten.
           type: object
