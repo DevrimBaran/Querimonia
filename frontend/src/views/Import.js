@@ -95,7 +95,7 @@ class ImportBlock extends Component {
             {this.state.type !== 'file' && <textarea className='textarea' style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref={this.textInput} placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
             <div className='center'>
               {this.state.type !== 'textarea' && <Input label='File' type='file' onChange={this.onChange} name='file' ref={this.fileInput} />}
-              <p className='paddingVertical' style={{ textAlign: 'justify' }} >Lorem ipsum dolor sit amet, consectetur adipisici elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.</p>
+              <p className='paddingVertical' style={{ textAlign: 'justify' }} >Beschwerden können in den Formaten pdf, doc, docx und txt hochgeladen werden.</p>
               <Input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
             </div>
           </div>
