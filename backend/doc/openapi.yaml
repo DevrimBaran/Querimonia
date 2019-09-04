@@ -2798,7 +2798,7 @@ components:
             "CLOSED": 0.4
         processingDuration:
           description: Durchschnittliche Bearbeitungszeit in Stunden von den CLOSED Beschwerden
-          type: double
+          type: object
           example: 10
 
 
