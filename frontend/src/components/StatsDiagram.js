@@ -12,9 +12,9 @@ class StatsDiagram extends Component {
   constructor (props) {
     super(props);
     this.container = React.createRef();
-    this.setState({
+    this.stats = {
       data: null
-    });
+    };
   }
 
   render () {

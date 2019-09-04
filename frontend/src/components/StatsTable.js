@@ -6,7 +6,7 @@
  */
 
 import React, { Component } from 'react';
-import Table from '../components/Table';
+import Table from './Table';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
@@ -14,9 +14,9 @@ class StatsTable extends Component {
   constructor (props) {
     super(props);
     this.container = React.createRef();
-    this.setState({
+    this.state = {
       data: null
-    });
+    };
   }
 
   renderTable1 = (data) => {
@@ -24,12 +24,12 @@ class StatsTable extends Component {
       <Table>
         <thead>
           <tr>
-            {data.header.map((h, i) => <th>{h}</th>)}
+            {data.header.map((h, i) => <th key={i}>{h}</th>)}
           </tr>
         </thead>
         <tbody>
-          {data.key.map((d, i) => <tr>
-            {data.header[0] === 'ID' ? <td><Link to={'/components/' + d}>{d}</Link></td> : <td>{d}</td>}
+          {data.key.map((d, i) => <tr key={i}>
+            {data.header[0] === 'ID' ? <td><Link to={'/rules/' + d}>{d}</Link></td> : <td>{d}</td>}
             <td>{parseFloat(Number(data.value[i]).toFixed(2))}</td>
           </tr>)}
         </tbody>
@@ -45,14 +45,14 @@ class StatsTable extends Component {
         <thead>
           <tr>
             <th>%</th>
-            {s.map((d, i) => <th>{d}</th>)}
+            {s.map((d, i) => <th key={i}>{d}</th>)}
           </tr>
         </thead>
         <tbody>
-          {stati.map((d, i) => <tr>
+          {stati.map((d, i) => <tr key={i}>
             <th>{d}</th>
             {s.map((l, j) =>
-              <td>{parseFloat(Number((data.value.filter(v => v[3] === d).find((v, k) => v[4] === l) ? data.value.filter(v => v[3] === d).find((v, k) => v[4] === l)[0] : 0).toFixed(2)))}</td>
+              <td key={j}>{parseFloat(Number((data.value.filter(v => v[3] === d).find((v, k) => v[4] === l) ? data.value.filter(v => v[3] === d).find((v, k) => v[4] === l)[0] : 0).toFixed(2)))}</td>
             )}
           </tr>)}
         </tbody>

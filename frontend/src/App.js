@@ -61,37 +61,37 @@ class App extends Component {
         prefix = '/mock';
       }
       let preventDefault = true;
-      switch (e.keyCode) {
+      switch (e.code) {
         // B-Button-Event
-        case 66 :
+        case 'KeyB' :
           window.location.replace(prefix + '/complaints');
           break;
         // R-Button-Event
-        case 82 :
-          window.location.replace(prefix + '/components');
+        case 'KeyR' :
+          window.location.replace(prefix + '/rules');
           break;
         // K-Button-Event
-        case 75 :
-          window.location.replace(prefix + '/config');
+        case 'KeyK' :
+          window.location.replace(prefix + '/configuration');
           break;
         // I-Button-Event
-        case 73 :
+        case 'KeyI' :
           window.location.replace(prefix + '/import');
           break;
         // V-Button-Event
-        case 86 :
+        case 'KeyV' :
           window.location.replace(prefix + '/wordvectors');
           break;
         // H-Button-Event
-        case 72 :
-          window.location.replace(prefix + '/tagcloud');
+        case 'KeyH' :
+          window.location.replace(prefix + '/word_frequency');
           break;
         // S-Button-Event
-        case 83 :
-          window.location.replace(prefix + '/stats');
+        case 'KeyS' :
+          window.location.replace(prefix + '/statistics');
           break;
         // ?-Button-Event
-        case 63 :
+        case 'Minus' :
           window.location.replace(prefix + '/impressum');
           break;
         default:
@@ -119,6 +119,7 @@ class App extends Component {
     } catch (e) {
       basepath = '/';
     }
+    const { login } = { ...this.props };
     return (
       <React.Fragment>
         <Router basename={basepath}>
@@ -131,12 +132,12 @@ class App extends Component {
               <li>
                 <Login />
               </li>
-              <li>
+              <li className='image'>
                 <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank'>
                   <img src={iaoPartner} alt='logo' />
                 </a>
               </li>
-              <li>
+              <li className='image'>
                 <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank'>
                   <img src={uniLogo} alt='logo' />
                 </a>
@@ -144,19 +145,35 @@ class App extends Component {
             </ul>
           </nav>
           <ErrorModal error={this.error} />
-          <View accessRole={['guest', 'user', 'admin']} exact path='/' component={Home} />
-          <View label='Beschwerden' accessRole={['user', 'admin']} endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-          <View label='Regeln' accessRole={['admin']} endpoint='components' path='/components/:id?' component={Components} />
-          <View label='Konfigurationen' accessRole={['admin']} endpoint='config' path='/config/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
-          <View label='Import' accessRole={['admin']} path='/import' component={Import} />
-          <View label='Wortvektoren' accessRole={['user', 'admin']} path='/wordvectors' component={WordVectors} />
-          <View label='Worthäufigkeit' accessRole={['user', 'admin']} path='/tagcloud' component={TagCloud} />
-          <View label='Statistiken' accessRole={['user', 'admin']} path='/stats' component={Statistics} />
-          <View menu='bottomMenu' label='Impressum' accessRole={['guest', 'user', 'admin']} path='/impressum' component={Impressum} />
+          {login.access >= -1 && (
+            <React.Fragment>
+              <View exact path='/' component={Home} />
+              <View menu='bottomMenu' label='Impressum' path='/impressum' component={Impressum} />
+            </React.Fragment>
+          )}
+          {login.access >= 0 && (
+            <React.Fragment>
+              <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
+              <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />
+              <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />
+              <View label='Statistiken' path='/statistics' component={Statistics} />
+            </React.Fragment>
+          )}
+          {login.access >= 1 && (
+            <React.Fragment>
+              <View label='Import' path='/import' component={Import} />
+              <View label='Regeln' endpoint='components' path='/rules/:id?' component={Components} />
+              <View label='Konfigurationen' endpoint='config' path='/configuration/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
+            </React.Fragment>
+          )}
         </Router>
       </React.Fragment>
     );
   }
 }
 
-export default connect()(App);
+const mapSateToProps = (state, props) => {
+  return { login: state.login };
+};
+
+export default connect(mapSateToProps)(App);

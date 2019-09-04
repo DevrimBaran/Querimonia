@@ -50,8 +50,6 @@ class Input extends Component {
             break;
           }
         }
-      } else {
-        console.log('not multiple');
       }
       this.props.onChange && this.props.onChange({
         target: e.target,
@@ -60,11 +58,12 @@ class Input extends Component {
       });
     }
     componentDidMount = () => {
-      if (this.props.defaultValue) {
-        this.props.onChange && this.props.onChange({
+      // TODO
+      if (this.target.current.nodeName === 'SELECT') {
+        this.onChange({
           target: this.target.current,
           name: this.props.name,
-          value: this.props.defaultValue
+          value: null
         });
       }
     }
@@ -138,7 +137,7 @@ class Input extends Component {
           break;
         }
         default: {
-          input = <input value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <input value={value} checked={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
       }

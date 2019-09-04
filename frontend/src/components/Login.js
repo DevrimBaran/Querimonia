@@ -16,7 +16,7 @@ class Login extends Component {
       type: 'LOGIN',
       name: e.value,
       password: '',
-      role: e.value
+      access: ['user', 'admin'].indexOf(e.value)
     });
   }
   render () {

@@ -15,10 +15,10 @@
 
     .predictions {
         @extend %inputs;
-        display: flex;
         flex-direction: column;
         border-top: none;
         width: 100%;
+        display: none;
         & > input {
             margin: 0;
             border: none;
@@ -31,5 +31,8 @@
             }
 
         }
+    }
+    input:focus + .predictions {
+        display: flex;
     }
 }

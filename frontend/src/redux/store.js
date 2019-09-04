@@ -12,7 +12,7 @@ const initialState = {
   login: {
     name: null,
     password: null,
-    role: 'guest'
+    access: -1
   },
   complaints: {
     data: {

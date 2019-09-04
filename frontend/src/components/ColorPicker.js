@@ -9,7 +9,7 @@ class ColorPicker extends Component {
   constructor (props) {
     super(props);
     this.input = React.createRef();
-    this.canvas = React.createRef();
+    this.colorpicker = React.createRef();
     this.svg = React.createRef();
     const hsl = new Color(this.props.value).hsl();
     this.state = {
@@ -82,7 +82,7 @@ class ColorPicker extends Component {
 
   clickPercentage = (e, scale) => {
     const offset = this.totalOffset(e.currentTarget);
-    return (e.pageY - offset.y) / e.currentTarget.clientHeight;
+    return (e.pageY - offset.y + this.colorpicker.current.clientHeight * 0.5) / e.currentTarget.clientHeight;
   }
 
   hueClick = (e) => {
@@ -136,7 +136,7 @@ class ColorPicker extends Component {
       <React.Fragment>
         <input ref={this.input} style={{ color: color.font(), backgroundColor: color.background(), ...style }} readOnly type='colorpicker' value={value || this.state.value} onClick={this.show} onChange={this.onChange} {...passThrough} />
         {ReactDOM.createPortal((
-          <div className='colorpicker' style={{ display: this.state.show ? 'flex' : 'none' }}>
+          <div className='colorpicker' ref={this.colorpicker} style={{ display: this.state.show ? 'flex' : 'none' }}>
             <div className='input' style={{ width: Math.ceil(Math.sqrt(Color.predefinedColors.length)) * 42 + 'px' }}>
               {Color.predefinedColors.map(c => {
                 const color = new Color(c);

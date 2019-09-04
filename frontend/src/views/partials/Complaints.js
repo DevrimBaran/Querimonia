@@ -149,7 +149,7 @@ function Single (active, dispatch, helpers) {
           <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
           <Collapsible label='Details' />
           <Liste styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
-            ['Konfiguration', (<Link to={'/config/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
+            ['Konfiguration', (<Link to={'/configuration/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
             ['Eingangsdatum', (localize(active.receiveDate))],
             ['Eingangszeit', (active.receiveTime)],
             ['Status', (active.state)],

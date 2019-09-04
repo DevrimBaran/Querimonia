@@ -28,7 +28,8 @@ class Autocomplete extends Component {
         mode: 'cors',
         signal: signal,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
         },
         body: JSON.stringify({
           query: word,

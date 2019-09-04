@@ -21,21 +21,24 @@ var cloud = require('../assets/js/d3.layout.cloud');
 class TagCloud extends Component {
   constructor (props) {
     super(props);
-    this.minDate = React.createRef();
-    this.maxDate = React.createRef();
-    this.count = React.createRef();
-    this.onlyWords = React.createRef();
-    this.activeMode = React.createRef();
-    this.color = React.createRef();
     this.state = {
+      redraw: 0,
       words: {},
       minOccurrence: 0,
       maxOccurrence: 0,
+      color: '#ffffff',
       cloudActive: true,
-      color: '#ffffff'
+      query: {
+        date_min: undefined,
+        date_max: undefined,
+        count: 0,
+        emotion: undefined,
+        subject: undefined,
+        words_only: true
+      }
     };
   }
-  renderCloud = (target, data, d3) => {
+  renderCloud = (target, data, d3, loaded) => {
     const padding = [0, 0];
     const hsl = new Color(data.color).hsl();
     if (hsl.l === 100) { // white
@@ -59,9 +62,12 @@ class TagCloud extends Component {
       };
     }
     let draw = (words) => {
+      loaded();
       let text = d3.select(target).append('svg')
         .attr('width', layout.size()[0])
         .attr('height', layout.size()[1])
+        .style('margin', 'auto')
+        .style('display', 'block')
         .append('g')
         .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
         .selectAll('text')
@@ -91,7 +97,7 @@ class TagCloud extends Component {
     };
 
     let layout = cloud()
-      .size([target.clientWidth - padding[0] * 2, target.clientHeight - (padding[1]) * 2])
+      .size([target.clientWidth - padding[0] * 2, (target.clientHeight || 1) - (padding[1]) * 2])
       .words(data.words)
       .spiral('rectangular')
       .padding(1)
@@ -105,7 +111,10 @@ class TagCloud extends Component {
       })
       .on('end', draw);
 
+    layout.timeInterval(10);
     layout.start();
+
+    return true;
   };
   renderList = (target, data, d3) => {
     let row = d3.select(target).append('table')
@@ -118,10 +127,9 @@ class TagCloud extends Component {
     row.append('td')
       .text(d => d.value);
   };
-    toggleChange = () => {
-      this.setState({
-        cloudActive: !this.state.cloudActive
-      });
+
+    onChange = (e) => {
+      this.setState(state => ({ query: { ...state.query, [e.name]: e.value } }));
     }
 
     exportSvg = () => {
@@ -179,24 +187,18 @@ class TagCloud extends Component {
     };
 
     fetchData = () => {
-      let query = {};
-      this.minDate.current.value && (query.date_min = this.minDate.current.value);
-      this.maxDate.current.value && (query.date_max = this.maxDate.current.value);
-      this.onlyWords.current.checked && (query.words_only = this.onlyWords.current.checked);
-      this.activeMode.current.checked && (this.setState({ cloudActive: this.activeMode.current.checked }));
-      this.count.current.value && this.count.current.value > 0 && (query.count = this.count.current.value);
-      Api.get('/api/stats/tagcloud', query)
-        .then(data => {
-          return data;
-        })
+      this.setState(state => ({ redraw: state.redraw + 1 }));
+      Api.get('/api/stats/tagcloud', this.state.query)
         .then(this.setData);
     };
 
     setData = (data) => {
-      const max = Math.max(...Object.values(data));
-      const min = Math.min(...Object.values(data));
-      // TODO: Calculate other constants
-      this.setState({ words: data, maxOccurrence: max, minOccurence: min });
+      if (data) {
+        const max = Math.max(...Object.values(data));
+        const min = Math.min(...Object.values(data));
+        // TODO: Calculate other constants
+        this.setState({ words: data, maxOccurrence: max, minOccurence: min });
+      }
     };
 
     onResize = () => {
@@ -205,15 +207,14 @@ class TagCloud extends Component {
 
     componentDidMount () {
       this.fetchData();
-      window.addEventListener('resize', this.onResize);
+      // window.addEventListener('resize', this.onResize);
     }
 
     componentWillUnmount () {
-      window.removeEventListener('resize', this.onResize);
+      // window.removeEventListener('resize', this.onResize);
     }
 
     changeColor = (e) => {
-      console.log('changeColor', e);
       this.setState({ color: e.value });
     }
 
@@ -224,14 +225,14 @@ class TagCloud extends Component {
             <Row vertical>
               <h1 className='center'>Worthäufigkeiten</h1>
               <Form>
-                <Input type='date' label='Eingangsdatum (von): ' id='minDate' ref={this.minDate} />
-                <Input type='date' label='Eingangsdatum (bis): ' id='maxDate' ref={this.maxDate} />
-                <Input type='number' label='Wortanzahl:' id='count' ref={this.count} defaultValue='70' min='0' />
-                <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' id='onlyWords' ref={this.onlyWords} defaultChecked />
-                <Input type='checkbox' className='listenCheckbox' label='Listenansicht'
-                  id='activeMode' ref={this.activeMode} checked={!this.state.cloudActive}
-                  onChange={this.toggleChange} />
+                <Input type='date' label='Eingangsdatum (von)' name='date_min' onChange={this.onChange} value={this.state.query.date_min} />
+                <Input type='date' label='Eingangsdatum (bis)' name='date_max' onChange={this.onChange} value={this.state.query.date_max} />
+                <Input type='number' label='Wortanzahl' name='count' onChange={this.onChange} value={this.state.query.count} />
+                <Input type='select' label='Emotion' multiple name='emotion' onChange={this.onChange} value={this.state.query.emotion} />
+                <Input type='select' label='Kategorie' multiple name='subject' onChange={this.onChange} value={this.state.query.subject} />
+                <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' name='words_only' onChange={this.onChange} value={this.state.query.words_only} />
                 <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
+                <Input type='checkbox' className='listenCheckbox' label='Listenansicht' name='cloudActive' onChange={this.onChange} value={this.state.cloudActive} />
                 {this.state.cloudActive
                   ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
                     style={{ cursor: 'pointer' }}
@@ -243,7 +244,7 @@ class TagCloud extends Component {
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
                 <D3
                   render={this.state.cloudActive ? this.renderCloud : this.renderList}
-                  data={{ color: this.state.color, words: this.createWordArray(this.state.words) }}
+                  data={{ color: this.state.color, words: this.createWordArray(this.state.words), redraw: this.state.redraw }}
                   style={{ height: '100%' }}
                 />
               </Content>

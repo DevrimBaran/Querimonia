@@ -6,27 +6,35 @@
  */
 
 import React, { Component } from 'react';
+
 import * as d3 from 'd3';
 
 class D3 extends Component {
   constructor (props) {
     super(props);
     this.container = React.createRef();
-    this.state = {
-      children: this.props.children
-    };
   }
   componentDidMount = () => {
-    this.props.render && this.props.render(this.container.current, this.props.data, d3);
+    this.container.current.innerText = '';
+    const addSpinner = this.props.render(this.container.current, JSON.parse(JSON.stringify(this.props.data)), d3, () => {
+      this.container.current.classList.remove('loading');
+    });
+    if (addSpinner) {
+      this.container.current.classList.add('loading');
+    }
   }
   componentDidUpdate = () => {
-    this.container.current.innerText = '';
     this.componentDidMount();
   }
+  shouldComponentUpdate = (nextProps) => {
+    const b = JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data);
+    console.log(this.props.data.redraw, nextProps.data.redraw);
+    return b;
+  }
   render () {
-    const { type, id, data, render, ...passThrough } = { ...this.props };
+    const { data, render, ...passThrough } = { ...this.props };
     return (
-      <div className='d3' id={id} ref={this.container} {...passThrough} />
+      <div ref={this.container} className='d3' {...passThrough} />
     );
   }
 }

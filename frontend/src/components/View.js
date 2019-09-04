@@ -23,10 +23,6 @@ class View extends Component {
   }
   render () {
     const { path, component, endpoint, stateToProps, label, menu, ...injected } = { ...this.props };
-    if (this.props.accessRole && !this.props.accessRole.includes(this.props.login.role)) {
-      // return <Redirect to='/' from={path} />;
-      return <React.Fragment />;
-    }
     if (endpoint) {
       return (
         <React.Fragment>
@@ -45,9 +41,4 @@ class View extends Component {
     }
   }
 }
-
-const mapSateToProps = (state, props) => {
-  return { login: state.login };
-};
-
-export default connect(mapSateToProps)(View);
+export default connect()(View);

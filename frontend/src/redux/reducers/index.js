@@ -243,14 +243,14 @@ function login (state, action) {
       return {
         name: action.name,
         password: action.password,
-        role: action.role
+        access: action.access
       };
     }
     case 'LOGOUT': {
       return {
         name: null,
         password: null,
-        role: 'guest'
+        access: -1
       };
     }
     default: {

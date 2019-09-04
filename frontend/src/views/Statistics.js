@@ -19,9 +19,9 @@ class Statistics extends Component {
   constructor (props) {
     super(props);
     this.container = React.createRef();
-    this.setState({
+    this.state = {
       data: null
-    });
+    };
   }
   activateComplaint = () => {
     let requests = [];
@@ -219,15 +219,15 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' label='Option' values={catArray} onChange={(e) => showMe(e, catArray, 1)} /></td>
+                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Option' values={catArray} onChange={(e) => showMe(e, catArray, 1)} /></td>
                           <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='number' min={0} id='countCategories' label='Anzahl' onChange={(e) => this.editCountCategories()} /></td>
                         </tr>
                         <tr>
                           <td>
-                            {categoriesData.map((k, i) => <StatsTable id={catArray[i] + '1_t'} style={{ display: 'none' }} data={k} />)}
+                            {categoriesData.map((k, i) => <StatsTable key={i} id={catArray[i] + '1_t'} style={{ display: 'none' }} data={k} />)}
                           </td>
                           <td>
-                            {categoriesData.map((k, i) => <StatsDiagram id={catArray[i] + '1_d'} style={{ display: 'none' }} data={k} />)}
+                            {categoriesData.map((k, i) => <StatsDiagram key={i} id={catArray[i] + '1_d'} style={{ display: 'none' }} data={k} />)}
                           </td>
                         </tr>
                       </tbody>
@@ -237,15 +237,15 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' label='Label' values={entArray} onChange={(e) => showMe(e, entArray, 2)} /></td>
+                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Label' values={entArray} onChange={(e) => showMe(e, entArray, 2)} /></td>
                           <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='number' min={0} id='countEntities' label='Anzahl' onChange={(e) => this.editCountEntities()} /></td>
                         </tr>
                         <tr>
                           <td>
-                            {Object.keys(this.state.data[1]).map((k, i) => <StatsTable id={entArray[i] + '2_t'} style={{ display: 'none' }} data={entitiesData[i]} />)}
+                            {Object.keys(this.state.data[1]).map((k, i) => <StatsTable key={i} id={entArray[i] + '2_t'} style={{ display: 'none' }} data={entitiesData[i]} />)}
                           </td>
                           <td>
-                            {Object.keys(this.state.data[1]).map((k, i) => <StatsDiagram id={entArray[i] + '2_d'} style={{ display: 'none' }} data={entitiesData[i]} />)}
+                            {Object.keys(this.state.data[1]).map((k, i) => <StatsDiagram key={i} id={entArray[i] + '2_d'} style={{ display: 'none' }} data={entitiesData[i]} />)}
                           </td>
                         </tr>
                       </tbody>
@@ -255,15 +255,15 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' label='Option' values={rulArray} onChange={(e) => showMe(e, rulArray, 3)} /></td>
+                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Option' values={rulArray} onChange={(e) => showMe(e, rulArray, 3)} /></td>
                           <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='number' min={0} id='countRules' label='Anzahl' onChange={(e) => this.editCountRules()} /></td>
                         </tr>
                         <tr>
                           <td>
-                            {rulesData.map((k, i) => <StatsTable id={rulArray[i] + '3_t'} style={{ display: 'none' }} data={k} />)}
+                            {rulesData.map((k, i) => <StatsTable key={i} id={rulArray[i] + '3_t'} style={{ display: 'none' }} data={k} />)}
                           </td>
                           <td>
-                            {rulesData.map((k, i) => <StatsDiagram id={rulArray[i] + '3_d'} style={{ display: 'none' }} data={k} />)}
+                            {rulesData.map((k, i) => <StatsDiagram key={i} id={rulArray[i] + '3_d'} style={{ display: 'none' }} data={k} />)}
                           </td>
                         </tr>
                       </tbody>
@@ -273,15 +273,15 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' label='Option' values={monArray} onChange={(e) => showMe(e, monArray, 4)} /></td>
+                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Option' values={monArray} onChange={(e) => showMe(e, monArray, 4)} /></td>
                           <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='date' id='startDateMonths' label='Start-Datum' onChange={(e) => this.editDateMonths()} /><Input type='date' id='endDateMonths' label='End-Datum' onChange={(e) => this.editDateMonths()} /></td>
                         </tr>
                         <tr>
                           <td>
-                            {monthsData.map((k, i) => <StatsTable id={monArray[i] + '4_t'} style={{ display: 'none' }} data={k} />)}
+                            {monthsData.map((k, i) => <StatsTable key={i} id={monArray[i] + '4_t'} style={{ display: 'none' }} data={k} />)}
                           </td>
                           <td>
-                            {monthsData.map((k, i) => <StatsDiagram id={monArray[i] + '4_d'} style={{ display: 'none' }} data={k} />)}
+                            {monthsData.map((k, i) => <StatsDiagram key={i} id={monArray[i] + '4_d'} style={{ display: 'none' }} data={k} />)}
                           </td>
                         </tr>
                       </tbody>
