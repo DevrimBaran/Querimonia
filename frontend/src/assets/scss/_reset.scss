@@ -5,12 +5,17 @@ html, body, #root {
     bottom: 0;
     right: 0;
     color: $black;
+    overflow: hidden;
 }
 
 * {
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+}
+
+:focus {
+    outline: none;
 }
 
 ul {
@@ -20,15 +25,4 @@ ul {
 a {
     text-decoration: none;
     color: $secondary;
-}
-
-nav > ul {
-    list-style: none;
-    li > a {
-        display: block;
-        color: $black;
-        &:hover {
-            background-color: $lightgrey;
-        }
-    }
 }

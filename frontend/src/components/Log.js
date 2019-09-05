@@ -19,12 +19,11 @@ class Log extends Component {
   };
 
   printLog = (log) => {
-    return log.map((key) => {
-      return <div>
+    return log.map((key, i) => {
+      return <div key={i}>
         <div>{`Kategorie: ${key.category}`}</div>
         <div>{`Nachricht: ${key.message}`}</div>
-        <div>{`Datum: ${key.date}`}</div>
-        <div>{`Zeit: ${key.date}`}</div>
+        <div>{`Datum: ${key.date} ${key.time}`}</div>
         -----------------
       </div>;
     });

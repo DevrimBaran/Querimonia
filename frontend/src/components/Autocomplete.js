@@ -28,7 +28,8 @@ class Autocomplete extends Component {
         mode: 'cors',
         signal: signal,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
         },
         body: JSON.stringify({
           query: word,
@@ -102,8 +103,8 @@ class Autocomplete extends Component {
       <div {...injectedProp}>
         {model ? (
           <React.Fragment>
-            {label && (<label htmlFor={id}>{label}</label>)}
             <div className='input'>
+              {label && (<label htmlFor={id}>{label}</label>)}
               <input value={this.state.value} onKeyUp={this.onKeyUp} id={id} autoComplete='off' type='text' onChange={this.onChange} {...passThroughProps} />
               {this.state.words.length > 0 && (
                 <div className='predictions'>

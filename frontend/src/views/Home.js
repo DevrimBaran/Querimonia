@@ -9,13 +9,11 @@ import React from 'react';
 import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
-import logo from './../assets/img/StuproLogo2.svg';
-import iaoPartner from './../assets/img/iao.png';
-import iatPartner from './../assets/img/iat.png';
-import screen1 from './../assets/img/screen1.jpg';
-import screen2 from './../assets/img/screen2.jpg';
-import screen3 from './../assets/img/screen3.jpg';
-import './Home.scss';
+import spotlight from './../assets/img/spotlight.svg';
+import '../assets/scss/_images.scss';
+import '../assets/scss/toSort/_entity.scss';
+import '../assets/scss/toSort/_boxWithMargin.scss';
+import '../assets/scss/toSort/_fiftyFiftyBox.scss';
 
 function Home () {
   return (
@@ -25,102 +23,106 @@ function Home () {
           <Content>
             <center>
               <div className='header'>
-                <img src={logo} className='logo' alt='logo' width='40%' />
-                <br />
+                <img src={spotlight} className='spotlight' alt='logo' />
               </div>
-              <div className='margin'>
-                <br />
-                <br />
-                <p>
-                Im Rahmen des Studienprojektes der Universität Stuttgart im Sommersemester 2019
-                wurde am IAT der Universität Stuttgart und dem Fraunhofer IAO die webbasierte
-                Plattform Querimonia für die Erprobung und Anwendung von Verfahren zur Analyse
-                und Aufbereitung von Texten am Beispiel des Beschwerdemanagements entwickelt.
-                </p>
-                <br />
-                <p>
-                Ein typisches Anwendungsbeispiel ist die automatische Generierung einer Antwort
-                auf eine Beschwerdenachricht mit Hilfe von Mensch-Maschine-Kollaboration mit
-                selbstlernenden Textminingverfahren.
-                </p>
-              </div>
+              <h1> Was kann Querimonia?</h1>
               <br />
-              <h2>Beispiel:</h2>
-              <div className='example'>
-                <br />
-                <h6>Beschwerdenachricht</h6>
-                <p>
-                Die Buslinie <mark className='entity_buslinie'>637</mark> ist am <mark className='entity_datum'>01.03.2019</mark> an der
-                  <mark className='entity_haltestelle'>Gartenheimstr.</mark> in Langenberg(Schule!) um 13.46 Uhr
-                nicht gekommen. Meine Tochter Anita hat eine
-                halbe Stunde warten müssen, bis ich ihr dann ein
-                Taxi habe schicken müssen. Die Fahrt hat <mark className='entity_preis'>14,60 Euro</mark>
-                gekostet. Warum kaufe ich ein Schokoticket? Ich
-                bitte um Erstattung meiner zusätzlichen Kosten.
-                Viele Grüße <mark className='entity_name'>Maria Seifert</mark>
-                </p>
-                <br />
-                <h6>Automatisch generierte Antwort</h6>
-                <p>
-                Sehr geehrte <mark className='entity_name'>Frau Seifert</mark>,
-                wir bedauern sehr die Ihnen
-                entstandenen
-                Unannehmlichkeiten.
-                Ihren Antrag auf Erstattung von
-                Taxikosten in Höhe von <mark className='entity_preis'>14,60 Euro</mark>
-                haben wir erhalten.
-                Demnach konnten Sie am <mark className='entity_datum'>01.03.2019</mark>,
-                einen Bus der <mark className='entity_buslinie'>637</mark>, ab der
-                Haltestelle <mark className='entity_haltestelle'>„Gartenheimstraße“</mark>
-                nicht nehmen.
-                Der Grund hierfür war ein
-                krankheitsbedingter Ausfall.
-                Damit der Betrag zeitnah Ihrem
-                Konto gutgeschrieben werden
-                kann, senden Sie uns bitte Ihre
-                Bankverbindung zu.
-                Freundliche Grüße
-                Ihr Schokorobo
-                </p>
-              </div>
-              <br />
-              <h1> Wie funktioniert Querimonia?</h1>
-              <div className='introduction_box'>
-                <h6>Hinzufügen einer Beschwerde</h6>
-                <p>Zum hinzufügen einer Beschwerde hat der Nutzer die Möglichkeit,
-                  durch den Upload einer Datei (bisher unterstützte Dateiformate: PDF, WORD, TXT)
-                  eine Beschwerde zu importieren oder manuell eine einzugeben.
-                </p>
-                <img src={screen1} />
-              </div>
-              <div className='introduction_box'>
-                <h6>Beschwerde ansehen</h6>
-                <p>Der Nutzer hat eine Übersicht von allen importierten Beschwerden. Es gibt verschiedene Filtermöglichkeiten
-                  und die Beschwerden sind in einer Tabelle (Anliegen, Vorschau, Emotion, Sentiment, Kategorie, Datum)
-                  eingeordnet.
-                </p>
-                <img src={screen2} />
-              </div>
-              <div className='introduction_box'>
-                <h6>Antwort generieren</h6>
-                <p>Wenn der Nutzer auf eine Beschwerde klickt, hat er die Möglichkeit
-                  eine Antwort zu generieren. Auf der linken Seite ist ein Textfeld,
-                  um die Antwort zu bearbeiten und automatisch generierte Antwortbausteine,
-                  um eine Antwort zusammenzuklicken. Auf der rechten Seite sieht der Nutzer
-                  den Originaltext und die entdeckten Entitäten.
-                </p>
-                <img src={screen3} />
+              <div className='boxWithMargin'>
+                <div className='fiftyFifty'>
+                  <div className='leftBox'>
+                    <h2>Erkennen von Entitäten</h2>
+                    <br />
+                    <p>
+                    Unser intelligentes System extrahiert durch KI-Verfahren wichtige Elemente eines Textes.
+                    Das Erkennen von Entitäten läuft automatisiert ab und liefert Ihnen die wichtigsten Elemente,
+                    die in unterschiedlichen Farben gekennzeichnet werden. Die extrahierten Entitäten können an Ihre Wünsche
+                    angepasst werden.
+                    </p>
+                    <i className='fas fa-arrow-right fa-3x' id='arrow' />
+                  </div>
+                  <div className='rightBox' id='entityBox'>
+                    <p>
+                    Die Buslinie <mark className='entity_buslinie'>637</mark> ist am <mark className='entity_datum'>01.03.2019</mark> an der
+                      <mark className='entity_haltestelle'>Gartenheimstr.</mark> in Langenberg(Schule!) um 13.46 Uhr
+                    nicht gekommen. Meine Tochter Anita hat eine
+                    halbe Stunde warten müssen, bis ich ihr dann ein
+                    Taxi habe schicken müssen. Die Fahrt hat <mark className='entity_preis'>14,60 Euro</mark>
+                    gekostet. Warum kaufe ich ein Schokoticket? Ich
+                    bitte um Erstattung meiner zusätzlichen Kosten.
+                    Viele Grüße <mark className='entity_name'>Maria Seifert</mark>
+                    </p>
+                  </div>
+                </div>
+                <div className='fiftyFifty'>
+                  <div className='leftBox'>
+                    <h2>Erkennung der Stimmung</h2>
+                    <br />
+                    <p>
+                      Querimonia liefert einen regelbasierten Ansatz zur Erkennung und Interpretation der Stimmung und Emotionen aus Ihrem Dokument.
+                      Mittels unserem intelligenten Algorithmus, können bis zu 7 verschiedene Emotionen erkannt werden. Die Stimmung wird durch eine intern entworfene Zahlenskala anschaulich repräsentiert.
+                      Diese zwei Analyseverfahren bieten Ihnen neue Erkentnisse und Aussagen über das zu analysierende Dokument.
+                    </p>
+                    <i className='fas fa-arrow-right fa-3x' id='arrow' />
+                  </div>
+                  <div className='rightBox'>
+                    <div className='tooltipStartseite'>
+                      <p>
+                        Ich bin total sauer! Es ist eine absolute Frechheit, wie sich ihre Mitarbeiter verhalten.
+                        Es darf nicht sein, dass der Busfahrer mich als zahlenden Kunden beleidigt. Sowas geht gar nicht
+                        und ich möchte eine Entschuldigung!
+                        Seit 10 Jahren fahre ich jeden Tag mit dem Bus zur Arbeit, seit 10 Jahren bin ich Kunde bei Ihnen.
+                        Wenn ihnen ihre Kunden wichtig sind, dann reden sie bitte mit ihren Mitarbeitern und geben Sie jedem
+                        erstmal einen Kurs in Freundlichkeit und anständiges Benehmen.
+                      </p>
+                      <i className='tooltiptext'>
+                        <i className='far fa-angry fa-4x' />
+                      </i>
+                    </div>
+                  </div>
+                </div>
+                <div className='fiftyFifty'>
+                  <div className='leftBox'>
+                    <h2>Antwort generieren</h2>
+                    <br />
+                    <p>
+                      Mit Querimonia können Sie eine automatisch generierte Antwort zu einet Beschwerde erstellen.
+                      Durch das Erkennen der Entitäten und das Erkennen der Stimmung werden Ihnen passende Antwortbausteine
+                      vorgeschlagen, aus denen Sie eine Antwort zusammenfügen können.
+                    </p>
+                    <i className='fas fa-arrow-right fa-3x' id='arrow' />
+                  </div>
+                  <div className='rightBox' id='antwortGenerierung'>
+                    <p>Sehr geehrte</p>
+                    <p className='generierteAntwort'>
+                      <mark className='entity_name'>Frau Seifert</mark>,
+                        wir bedauern sehr die Ihnen
+                        entstandenen
+                        Unannehmlichkeiten.
+                        Ihren Antrag auf Erstattung von
+                        Taxikosten in Höhe von <mark className='entity_preis'>14,60 Euro</mark>
+                        haben wir erhalten.
+                        Demnach konnten Sie am <mark className='entity_datum'>01.03.2019</mark>,
+                        einen Bus der <mark className='entity_buslinie'>637</mark>, ab der
+                        Haltestelle <mark className='entity_haltestelle'>„Gartenheimstraße“</mark>
+                        nicht nehmen.
+                        Der Grund hierfür war ein
+                        krankheitsbedingter Ausfall.
+                        Damit der Betrag zeitnah Ihrem
+                        Konto gutgeschrieben werden
+                        kann, senden Sie uns bitte Ihre
+                        Bankverbindung zu.
+                    </p>
+                    <p>Freundliche Grüße
+                        Ihr Schokorobo</p>
+                  </div>
+                </div>
               </div>
             </center>
-            <center>
-              <div className=''>
-                <br />
+            <div className='footer'>
+              <center>
                 <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
-                <br />
-                <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank' ><img src={iaoPartner} className=' center margin' alt='logo' width='20%' /></a>
-                <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank' ><img src={iatPartner} className=' center margin' alt='logo' width='20%' /></a>
-              </div>
-            </center>
+              </center>
+            </div>
           </Content>
         </Row>
       </Block>

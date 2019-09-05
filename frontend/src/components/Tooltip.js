@@ -1,6 +1,11 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Tooltips Component
+ *
+ * usage:
+ * let tooltip = Tooltip.create();
+ *
+ * <any {...tooltip.events} />          // adds onMouseEnter & onMouseLeave events
+ * <Tooltip {...tooltip.register} />    // registers this tooltip as target
  *
  * @version <0.1>
  */
@@ -11,15 +16,31 @@ import ReactDOM from 'react-dom';
 class Tooltip extends Component {
   constructor (props) {
     super(props);
-    this.tooltip = React.createRef();
     this.state = {
       htmlFor: props.htmlFor
     };
   }
-  onMouseEnter = (e) => {
+
+  static create = () => {
+    var tooltip = {
+      ref: null
+    };
+    tooltip.register = {
+      tooltipRef: ref => {
+        tooltip.ref = ref; return ref;
+      }
+    };
+    tooltip.events = {
+      onMouseEnter: Tooltip.onMouseEnter.bind(tooltip),
+      onMouseLeave: Tooltip.onMouseLeave.bind(tooltip)
+    };
+    return tooltip;
+  }
+
+  static onMouseEnter = function (e) {
     const element = e.target;
     const rect = element.getBoundingClientRect();
-    const tooltip = this.tooltip.current;
+    const tooltip = this.ref;
     if (tooltip) {
       tooltip.classList.add('show');
       tooltip.style.left = (rect.x + rect.width * 0.5) + 'px';
@@ -34,33 +55,17 @@ class Tooltip extends Component {
       }
     }
   }
-  onMouseLeave = (e) => {
-    const tooltip = this.tooltip.current;
+  static onMouseLeave = function (e) {
+    const tooltip = this.ref;
     if (tooltip) {
       tooltip.classList.remove('show');
     }
   }
-  componentDidMount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
-      element.classList.add('hasTooltip');
-      element.addEventListener('mouseenter', this.onMouseEnter);
-      element.addEventListener('mouseleave', this.onMouseLeave);
-    }
-  }
-  componentWillUnmount = () => {
-    const element = document.getElementById(this.state.htmlFor);
-    if (element) {
-      element.classList.remove('hasTooltip');
-      element.removeEventListener('mouseenter', this.onMouseEnter);
-      element.removeEventListener('mouseleave', this.onMouseLeave);
-    }
-  }
   render () {
-    const { htmlFor } = { ...this.props };
+    const { className = '', tooltipRef } = { ...this.props };
     return (
       ReactDOM.createPortal(
-        (<div ref={this.tooltip} className='tooltip' htmlFor={htmlFor} >
+        (<div ref={tooltipRef} className={className + ' tooltip'} >
           {this.props.children}
         </div>),
         document.body

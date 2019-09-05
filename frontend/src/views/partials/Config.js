@@ -7,7 +7,7 @@
 
 import React from 'react';
 
-import { setCurrentConfig } from '../../redux/actions';
+import { setCurrentConfig } from '../../redux/actions/';
 import template from '../../redux/templates/config';
 
 import Block from '../../components/Block';
@@ -15,14 +15,10 @@ import Row from '../../components/Row';
 import Content from '../../components/Content';
 import DeepObject from '../../components/DeepObject';
 
-// eslint-disable-next-line
-import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
-
 function Header () {
   return (
     <thead>
-      <tr style={{ filter: 'brightness(100%)' }}>
-        <th> </th>
+      <tr>
         <th>ID</th>
         <th>Aktiv</th>
         <th>Name</th>
@@ -37,12 +33,16 @@ function Header () {
 function List (data, dispatch, helpers) {
   return (
     <tr key={data.id}>
-      <td>
-        {helpers.edit(data.id)}
-        {helpers.copy(data.id)}
-        {helpers.remove(data.id)}
-      </td>
-      <td><h3>{data.id}</h3></td>
+      <th>
+        <Row>
+          {data.id}
+          <div>
+            {helpers.edit(data.id)}
+            {helpers.copy(data.id)}
+            {helpers.remove(data.id)}
+          </div>
+        </Row>
+      </th>
       <td>
         {
           data.active
@@ -66,16 +66,25 @@ function Single (active, dispatch, helpers) {
       data: data
     });
   };
+  const fix = () => {
+    modifyActive({
+      extractors: active.extractors.map(e => ({
+        ...e,
+        type: e.type === 'KIKUKO_TOOL' ? 'KIKUKO_PIPELINE' : e.type
+      }))
+    });
+  };
   return (
     <React.Fragment>
       <Block>
         <Row vertical>
           <h6 className='center'>Konfiguration</h6>
           <Content className='margin'>
-            <DeepObject data={active} template={template(helpers.props.allExtractors)} save={modifyActive} />
+            <DeepObject data={active} template={template(helpers.props.allExtractors['KIKUKO_PIPELINE'])} save={modifyActive} />
           </Content>
           <div className='center margin'>
             {helpers.save()}
+            <button onClick={fix}>Fix KIKUKO_TOOL</button>
           </div>
         </Row>
       </Block>

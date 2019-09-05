@@ -10,77 +10,6 @@ export default (extractors) => ({
       type: 'text',
       label: 'Name'
     },
-    extractors: {
-      type: 'array',
-      label: 'Extraktoren',
-      children: {
-        type: 'object',
-        label: '#$i',
-        children: {
-          type: {
-            type: 'conditional',
-            label: 'Typ',
-            attributes: {
-              name2: 'name',
-              label2: 'Name',
-              values: extractors
-            }
-          },
-          colors: {
-            type: 'array',
-            label: 'Entitäten',
-            children: {
-              type: 'object',
-              label: '#$i',
-              children: {
-                label: {
-                  type: 'text',
-                  label: 'Name'
-                },
-                color: {
-                  type: 'color',
-                  label: 'Farbe'
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    classifiers: {
-      type: 'array',
-      label: 'Klassifikatoren',
-      children: {
-        type: 'object',
-        label: '#$i',
-        children: {
-          name: {
-            type: 'text',
-            label: 'Name'
-          },
-          propertyName: {
-            type: 'text',
-            label: 'Eigenschaft'
-          },
-          type: {
-            type: 'select',
-            label: 'Typ',
-            attributes: {
-              values: [{ label: 'NONE', value: 'NONE' }, { label: 'KIKUKO_CLASSIFIER', value: 'KIKUKO_CLASSIFIER' }]
-            }
-            /*
-            type: 'conditional',
-            label: 'Typ',
-            attributes: {
-              name2: 'name',
-              label2: 'Name',
-              values: extractors
-            }
-            */
-          }
-        }
-      }
-    },
     sentimentAnalyzer: {
       type: 'object',
       label: 'Sentiment',
@@ -91,7 +20,20 @@ export default (extractors) => ({
         },
         type: {
           label: 'Typ',
-          type: 'text'
+          type: 'select',
+          attributes: {
+            required: true,
+            values: [
+              {
+                label: 'Keine',
+                value: 'NONE'
+              },
+              {
+                label: 'Querimonia',
+                value: 'QUERIMONIA_SENTIMENT'
+              }
+            ]
+          }
         }
       }
     },
@@ -105,7 +47,20 @@ export default (extractors) => ({
         },
         type: {
           label: 'Typ',
-          type: 'text'
+          type: 'select',
+          attributes: {
+            required: true,
+            values: [
+              {
+                label: 'Keine',
+                value: 'NONE'
+              },
+              {
+                label: 'Querimonia',
+                value: 'QUERIMONIA_EMOTION'
+              }
+            ]
+          }
         }
       }
     },
@@ -113,6 +68,58 @@ export default (extractors) => ({
       type: 'checkbox',
       label: 'Aktiv',
       attributes: { readOnly: true }
+    },
+    extractors: {
+      type: 'array',
+      label: 'Extraktoren',
+      children: {
+        type: 'object',
+        label: '#$i',
+        children: {
+          name: {
+            type: 'select',
+            label: 'Name',
+            attributes: {
+              values: extractors
+            }
+          },
+          type: {
+            type: 'hidden'
+          },
+          label: {
+            type: 'text',
+            label: 'Label'
+          },
+          color: {
+            type: 'color',
+            label: 'Farbe'
+          }
+        }
+      }
+    },
+    classifiers: {
+      type: 'array',
+      label: 'Klassifikatoren',
+      children: {
+        type: 'object',
+        label: '#$i',
+        children: {
+          name: {
+            type: 'select',
+            label: 'Typ',
+            attributes: {
+              values: extractors
+            }
+          },
+          propertyName: {
+            type: 'text',
+            label: 'Eigenschaft'
+          },
+          type: {
+            type: 'hidden'
+          }
+        }
+      }
     }
   }
 });

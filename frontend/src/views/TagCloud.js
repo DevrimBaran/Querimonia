@@ -11,197 +11,248 @@ import Block from './../components/Block';
 import Row from './../components/Row';
 import Content from './../components/Content';
 import Api from './../utility/Api';
-import WordCloud from 'react-d3-cloud';
-import Table from './../components/Table';
+import D3 from './../components/D3';
+import Input from './../components/Input';
+import Form from './../components/Form';
 
+import { Color } from '../utility/colors';
+
+var cloud = require('../assets/js/d3.layout.cloud');
 class TagCloud extends Component {
   constructor (props) {
     super(props);
     this.state = {
+      redraw: 0,
       words: {},
+      minOccurrence: 0,
       maxOccurrence: 0,
-      cloudActive: true
+      color: '#ffffff',
+      cloudActive: true,
+      query: {
+        date_min: undefined,
+        date_max: undefined,
+        count: 0,
+        emotion: undefined,
+        subject: undefined,
+        words_only: true
+      }
     };
   }
-  toggleChange = () => {
-    this.setState({
-      cloudActive: !this.state.cloudActive
-    });
-  }
+  renderCloud = (target, data, d3, loaded) => {
+    const padding = [0, 0];
+    const hsl = new Color(data.color).hsl();
+    if (hsl.l === 100) { // white
+      hsl.l = 50;
+      hsl.s = 70;
+      hsl.random = () => {
+        hsl.h = Math.random() * 360;
+        return hsl.css();
+      };
+    } else if (hsl.s === 0) { // grey
+      hsl.random = () => {
+        hsl.l = Math.random() * 60 + 30;
+        return hsl.css();
+      };
+    } else { // color
+      hsl.l = 50;
+      hsl.random = () => {
+        // hsl.l = Math.random() * 0.6 + 0.3;
+        hsl.s = Math.random() * 80 + 20;
+        return hsl.css();
+      };
+    }
+    let draw = (words) => {
+      loaded();
+      let text = d3.select(target).append('svg')
+        .attr('width', layout.size()[0])
+        .attr('height', layout.size()[1])
+        .style('margin', 'auto')
+        .style('display', 'block')
+        .append('g')
+        .attr('transform', 'translate(' + layout.size()[0] / 2 + ',' + layout.size()[1] / 2 + ')')
+        .selectAll('text')
+        .data(words)
+        .enter().append('text');
 
-  exportSvg = () => {
-    let svgElement = document.getElementById('TagCloud').firstChild.firstChild;
-    svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-    const svg = svgElement.outerHTML;
+      text
+        .style('font-family', 'Impact')
+        .style('font-weight', 'normal')
+        .style('font-size', function (d) {
+          return d.size + 'px';
+        })
+        .attr('fill', d => {
+          return hsl.random();
+        })
+        .attr('text-anchor', 'middle')
+        .attr('transform', function (d) {
+          return 'translate(' + [d.x, d.y] + ')rotate(' + d.rotate + ')';
+        })
+        .text(function (d) {
+          return d.text;
+        });
 
-    this.createDownload(svg, 'image/svg+xml; charset=utf-8', 'tagcloudSVG.svg');
+      text
+        .append('title')
+        .text(d => d.text + ' - ' + d.value + 'mal');
+    };
+
+    let layout = cloud()
+      .size([target.clientWidth - padding[0] * 2, (target.clientHeight || 1) - (padding[1]) * 2])
+      .words(data.words)
+      .spiral('rectangular')
+      .padding(1)
+      .rotate(function () {
+        return 0;
+      })
+      .font('Impact')
+      .fontWeight('normal')
+      .fontSize(function (d) {
+        return d.size;
+      })
+      .on('end', draw);
+
+    layout.timeInterval(10);
+    layout.start();
+
+    return true;
+  };
+  renderList = (target, data, d3) => {
+    let row = d3.select(target).append('table')
+      .selectAll('tr')
+      .data(data.words)
+      .enter()
+      .append('tr');
+    row.append('td')
+      .text(d => d.text);
+    row.append('td')
+      .text(d => d.value);
   };
 
-  exportCsv = () => {
-    let csv = 'Token;Anzahl\r\n';
-    Object.keys(this.state.words)
-      .sort((a, b) => {
-        return this.state.words[b] - this.state.words[a];
-      })
-      .forEach((word) => {
-        csv += `${word};${this.state.words[word]}\r\n`;
+    onChange = (e) => {
+      this.setState(state => ({ query: { ...state.query, [e.name]: e.value } }));
+    }
+
+    exportSvg = () => {
+      let svgElement = document.getElementById('TagCloud').firstChild.firstChild;
+      svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      const svg = svgElement.outerHTML;
+
+      this.createDownload(svg, 'image/svg+xml; charset=utf-8', 'tagcloudSVG.svg');
+    };
+
+    exportCsv = () => {
+      let csv = 'Token;Anzahl\r\n';
+      Object.keys(this.state.words)
+        .sort((a, b) => {
+          return this.state.words[b] - this.state.words[a];
+        })
+        .forEach((word) => {
+          csv += `${word};${this.state.words[word]}\r\n`;
+        });
+
+      this.createDownload(csv, 'text/csv;charset=utf-8;', 'tagCloudCSV.csv');
+    };
+
+    createDownload = (file, type, name) => {
+      let link = document.createElement('a');
+      if (link.download !== undefined) {
+        let url = URL.createObjectURL(new Blob([file], { type: type }));
+        link.setAttribute('href', url);
+        link.setAttribute('download', name);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+    };
+
+    createWordArray = (wordsObject) => {
+      let wordArray = [];
+      Object.keys(wordsObject).forEach((element) => {
+        wordArray.push({
+          text: element,
+          value: wordsObject[element],
+          size: this.calculateSize(wordsObject[element])
+        });
       });
+      return wordArray;
+    };
 
-    this.createDownload(csv, 'text/csv;charset=utf-8;', 'tagCloudCSV.csv');
-  };
+    calculateSize = (size) => {
+      const tmax = this.state.maxOccurrence; // Höchste Anzahl
+      const tmin = this.state.minOccurrence; // mindest Anzahl an Wörter
+      const fmax = 130; // maximale Schriftgröße
+      const fmin = 20; // minimale Schriftgröße
+      return Math.max(fmax * ((size - tmin) / (tmax - tmin)), fmin);
+    };
 
-  createDownload = (file, type, name) => {
-    let link = document.createElement('a');
-    if (link.download !== undefined) {
-      let url = URL.createObjectURL(new Blob([file], { type: type }));
-      link.setAttribute('href', url);
-      link.setAttribute('download', name);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    fetchData = () => {
+      this.setState(state => ({ redraw: state.redraw + 1 }));
+      Api.get('/api/stats/tagcloud', this.state.query)
+        .then(this.setData);
+    };
+
+    setData = (data) => {
+      if (data) {
+        const max = Math.max(...Object.values(data));
+        const min = Math.min(...Object.values(data));
+        // TODO: Calculate other constants
+        this.setState({ words: data, maxOccurrence: max, minOccurence: min });
+      }
+    };
+
+    onResize = () => {
+      this.setState(this.state);
+    };
+
+    componentDidMount () {
+      this.fetchData();
+      // window.addEventListener('resize', this.onResize);
     }
-  };
 
-  createWordArray = (wordsObject) => {
-    let wordArray = [];
-    Object.keys(wordsObject).forEach((element) => {
-      wordArray.push({ text: element, value: this.calculateSize(wordsObject[element]), size: wordsObject[element] });
-    });
-    return wordArray;
-  };
-
-  calculateSize = (size) => {
-    const tmax = this.state.maxOccurrence; // Höchste Anzahl
-    const tmin = 1; // mindest Anzahl an Wörter
-    const fmax = 130; // maximale Schriftgröße
-    const fmin = 10; // minimale Schriftgröße
-    const t = size; // value
-    if (t > tmin) {
-      return ((fmax * (t - tmin)) / (tmax - tmin));
-    // (130 * (size / this.state.maxOccurrence));
-    // ((fmax*(t - tmin))/(tmax-tmin));
-    } else {
-      return fmin;
-      // fmin;
+    componentWillUnmount () {
+      // window.removeEventListener('resize', this.onResize);
     }
-    // (130 * (size / this.state.maxOccurrence));
-    // ((fmax - fmin)*((size-tmin)/(this.state.maxOccurrence-tmin))+ fmin);
-    // TODO: caclitlate size
-  };
 
-  fetchData = () => {
-    let query = {};
-    this.refs.minDate.value && (query.date_min = this.refs.minDate.value);
-    this.refs.maxDate.value && (query.date_max = this.refs.maxDate.value);
-    this.refs.onlyWords.checked && (query.words_only = this.refs.onlyWords.checked);
-    this.refs.activeMode.checked && (this.setState({ cloudActive: this.refs.activeMode.checked }));
-    this.refs.count.value && this.refs.count.value > 0 && (query.count = this.refs.count.value);
-    Api.get('/api/stats/tagcloud', query)
-      .then(data => {
-        return data;
-      })
-      .then(this.setData);
-  };
+    changeColor = (e) => {
+      this.setState({ color: e.value });
+    }
 
-  setData = (data) => {
-    const max = Math.max(...Object.values(data));
-    // TODO: Calculate other constants
-    this.setState({ words: data, maxOccurrence: max });
-  };
-
-  onResize = () => {
-    this.setState(this.state);
-  };
-
-  componentDidMount () {
-    this.fetchData();
-    window.addEventListener('resize', this.onResize);
-  }
-
-  componentWillUnmount () {
-    window.removeEventListener('resize', this.onResize);
-  }
-
-  render () {
-    return (
-      <React.Fragment>
-        <Block>
-          <Row vertical>
-            <h1 className='center'>Worthäufigkeiten</h1>
-            <br />
-            <div>
-              <Row vertical={false} style={{ justifyContent: 'space-around' }}>
-                <div>
-                  <label htmlFor='minDate'>Von:</label><br />
-                  <input type='date' id='minDate' ref='minDate' />
-                </div>
-                <div>
-                  <label htmlFor='maxDate'>Bis:</label><br />
-                  <input type='date' id='maxDate' ref='maxDate' />
-                </div>
-                <div>
-                  <label htmlFor='cloudActive'>Nur Wörter anzeigen:</label><br />
-                  <input type='checkbox' id='onlyWords' ref='onlyWords' defaultChecked />
-                </div>
-                <div>
-                  <label htmlFor='count'>Wortanzahl:</label><br />
-                  <input type='number' id='count' ref='count' defaultValue='70' min='0' />
-                </div>
-                <div>
-                  <label htmlFor='cloudActive'>Listenansicht</label><br />
-                  <input type='checkbox' id='activeMode' ref='activeMode' checked={!this.state.cloudActive} onChange={this.toggleChange} />
-                </div>
-              </Row>
-            </div>
-            <div className='center'>
-              <input type='button' onClick={this.fetchData} value='Aktualisieren' />
-            </div>
-            <br />
-            {this.state.cloudActive
-              ? (<Content className='center' id='TagCloud'>
-                <WordCloud
-                  data={this.createWordArray(this.state.words)}
-                  width={window.innerWidth / 100 * 80}
-                  // 190 = Filterbar + Downloadbar
-                  height={window.innerHeight - 190}
-                  padding={0.5}
-                  font={'Impact'}
-                  //    onWordClick = {()=>{console.log()}}
+    render () {
+      return (
+        <React.Fragment>
+          <Block>
+            <Row vertical>
+              <h1 className='center'>Worthäufigkeiten</h1>
+              <Form>
+                <Input type='date' label='Eingangsdatum (von)' name='date_min' onChange={this.onChange} value={this.state.query.date_min} />
+                <Input type='date' label='Eingangsdatum (bis)' name='date_max' onChange={this.onChange} value={this.state.query.date_max} />
+                <Input type='number' label='Wortanzahl' name='count' onChange={this.onChange} value={this.state.query.count} />
+                <Input type='select' label='Emotion' multiple name='emotion' onChange={this.onChange} value={this.state.query.emotion} />
+                <Input type='select' label='Kategorie' multiple name='subject' onChange={this.onChange} value={this.state.query.subject} />
+                <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' name='words_only' onChange={this.onChange} value={this.state.query.words_only} />
+                <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
+                <Input type='checkbox' className='listenCheckbox' label='Listenansicht' name='cloudActive' onChange={this.onChange} value={this.state.cloudActive} />
+                {this.state.cloudActive
+                  ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
+                    style={{ cursor: 'pointer' }}
+                    onClick={this.exportSvg} />)
+                  : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
+                    onClick={this.exportCsv} />)}
+              </Form>
+              <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
+              <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
+                <D3
+                  render={this.state.cloudActive ? this.renderCloud : this.renderList}
+                  data={{ color: this.state.color, words: this.createWordArray(this.state.words), redraw: this.state.redraw }}
+                  style={{ height: '100%' }}
                 />
-              </Content>)
-              : (<Content className='center' id='OccurrenceList'>
-                <Table className='table'>
-                  <thead>
-                    <tr>
-                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Wort</th>
-                      <th style={{ borderStyle: 'solid', borderWidth: '2px' }}>Anzahl</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {this.createWordArray(this.state.words).map((element) => {
-                      return (
-                        <tr><td style={{ borderStyle: 'solid' }}>{element['text']}</td>
-                          <td style={{ borderStyle: 'solid' }}>{element['size']}</td>
-                        </tr>);
-                    })}
-                  </tbody>
-                </Table>
-
-              </Content>)}
-          </Row>
-          {this.state.cloudActive
-            ? (<Content className='center' id='TagCloud'>
-              <i className='fas fa-file-image fa-3x export-button' style={{ cursor: 'pointer' }}
-                onClick={this.exportSvg} /></Content>)
-            : (<Content className='center' id='TagCloud'>
-              <i className='fa fa-file-csv fa-3x export-button' style={{ cursor: 'pointer' }}
-                onClick={this.exportCsv} /> </Content>)}
-
-        </Block>
-      </React.Fragment>
-    );
-  }
+              </Content>
+            </Row>
+          </Block>
+        </React.Fragment>
+      );
+    }
 }
 
 export default TagCloud;

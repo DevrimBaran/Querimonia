@@ -1,5 +1,5 @@
 %font {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-family: Helvetica,Arial,sans-serif;
     color: $primaryTextColor;
 }
 
@@ -8,7 +8,7 @@ html {
 }
 h1, .h1 {
     @extend %font;
-    font-size: 2em;
+    font-size: 2.5em;
     font-weight: bold;
 }
 h2, .h2 {
@@ -46,7 +46,19 @@ p, .p {
 a, .a {
     @extend p;
     color: $primaryTextColor;
+    font-size: 1em;
 }
 label, .label {
     @extend %font;
+    letter-spacing: 1px;
+}
+input[type=submit], input[type=button]{
+    @extend %font;
+
+    font-size: 1em;
+    font-weight: 700;
+}
+th{
+    font-size: 1.5em;
+    letter-spacing: 1px;
 }

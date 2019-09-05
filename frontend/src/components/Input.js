@@ -8,10 +8,13 @@
 import React, { Component } from 'react';
 
 import Textarea from './Textarea';
+import FileInput from './FileInput';
+import ColorPicker from './ColorPicker';
 import CodeMirror from './CodeMirror';
 class Input extends Component {
   constructor (props) {
     super(props);
+    this.target = React.createRef();
     this.state = { conditional: null };
   }
     conditionalChange = (e) => {
@@ -31,7 +34,7 @@ class Input extends Component {
         });
         return;
       }
-      let value = e.target.value;
+      let value = e.value || e.target.value;
       if (e.target.multiple) {
         switch (e.target.type) {
           case 'text': {
@@ -47,8 +50,6 @@ class Input extends Component {
             break;
           }
         }
-      } else {
-        console.log('not multiple');
       }
       this.props.onChange && this.props.onChange({
         target: e.target,
@@ -56,9 +57,19 @@ class Input extends Component {
         value: value
       });
     }
+    componentDidMount = () => {
+      // TODO
+      if (this.target.current.nodeName === 'SELECT') {
+        this.onChange({
+          target: this.target.current,
+          name: this.props.name,
+          value: null
+        });
+      }
+    }
     render () {
       const classes = '';
-      const { className, onChange, type, label, values, value, name, ...passThroughProps } = this.props;
+      const { className, onChange, type, label, values, value, name, inline, id = this.props.name, ...passThroughProps } = this.props;
 
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,
@@ -68,12 +79,13 @@ class Input extends Component {
       let input;
       switch (this.props.type) {
         case 'select': {
-          input = (<select value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps}>
+          input = (<select value={value} name={name} onChange={this.onChange} ref={this.target} {...injectedProp} {...passThroughProps}>
             {this.props.required || <option key='null' value=''>-</option>}
             {
-              values && values.map((value) => {
+              values && values.map((data, i) => {
+                const { value, label, ...passThrough } = (typeof data === 'object') ? { ...data } : { value: data, label: data };
                 return (
-                  <option key={value.value} value={value.value}>{value.label}</option>
+                  <option key={i} value={value} {...passThrough}>{label}</option>
                 );
               })
             }
@@ -83,7 +95,7 @@ class Input extends Component {
         case 'conditional': {
           input = (
             <React.Fragment>
-              <select value={value} name={name} onChange={this.conditionalChange} {...injectedProp} {...passThroughProps}>
+              <select value={value} id={id} name={name} onChange={this.conditionalChange} {...injectedProp} {...passThroughProps}>
                 {this.props.required || <option key='null' value=''>-</option>}
                 {
                   values && Object.keys(values).map((key) => {
@@ -109,23 +121,31 @@ class Input extends Component {
           break;
         }
         case 'textarea': {
-          input = <Textarea value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <Textarea value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          break;
+        }
+        case 'colorpicker': {
+          input = <ColorPicker value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
         case 'codemirror': {
-          input = <CodeMirror value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <CodeMirror value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          break;
+        }
+        case 'file': {
+          input = <FileInput value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
         default: {
-          input = <input value={value} name={name} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          input = <input value={value} checked={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
       }
       return (
-        <React.Fragment>
-          { label && (<label htmlFor={this.props.name}>{label}</label>) }
+        <div className={inline ? 'input inline' : 'input'} style={type === 'hidden' ? { display: 'none' } : {}}>
+          { label && (<label htmlFor={id}>{label}</label>) }
           { input }
-        </React.Fragment>
+        </div>
       );
     }
 }

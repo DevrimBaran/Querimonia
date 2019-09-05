@@ -3,7 +3,12 @@
     justify-content: center;
     margin: 0px auto;
 }
-
+.pointer {
+    cursor: pointer;
+}
+.nowrap {
+    white-space: nowrap;
+}
 .padding {
     padding: $standardpadding;
 }
@@ -15,6 +20,29 @@
 
 .smallmargin {
     margin: $smallmargin;
+}
+
+@keyframes fa-spin-center {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.loading::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    color: $primary;
+    content: "\f110";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 90px;
+    transform: translate(-50%, -50%);
+    animation: fa-spin-center 1s infinite steps(8);
 }
 
 .margin {

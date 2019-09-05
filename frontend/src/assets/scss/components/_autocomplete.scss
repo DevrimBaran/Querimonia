@@ -1,6 +1,10 @@
 @import '../variables';
 
 .autocomplete {
+    position: relative;
+    display: inline-block;
+    flex-grow: 1;
+    
     .input {
         display: inline-flex;
         flex-direction: column;
@@ -8,12 +12,13 @@
             width: 100%;
         }
     }
+
     .predictions {
         @extend %inputs;
-        display: flex;
         flex-direction: column;
         border-top: none;
         width: 100%;
+        display: none;
         & > input {
             margin: 0;
             border: none;
@@ -24,6 +29,10 @@
             &.active {
                 color: $primary;
             }
+
         }
+    }
+    input:focus + .predictions {
+        display: flex;
     }
 }

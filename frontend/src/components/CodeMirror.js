@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import { pd } from 'pretty-data';
 
 class CodeMirror extends Component {
-    componentDidMount = () => {
+    inject = () => {
       window.CodeMirrorCallback = this.callback;
       this.script = document.createElement('script');
       this.script.type = 'text/javascript';
@@ -149,15 +149,25 @@ class CodeMirror extends Component {
             `;
       document.body.appendChild(this.script);
     }
-    componentWillUnmount = () => {
+    remove = () => {
       delete window.CodeMirrorCallback;
       this.script.remove();
+    }
+    componentDidUpdate = (prevProps, prevState, prevContext) => {
+      // this.remove();
+      // this.inject();
+    }
+    componentDidMount = () => {
+      this.inject();
+    }
+    componentWillUnmount = () => {
+      this.remove();
     }
     callback = (value) => {
       this.props.onChange && this.props.onChange(pd.xmlmin(value));
     }
     render () {
-      const { onChange, value, ...passThroughProps } = this.props;
+      const { onChange, value, id, ...passThroughProps } = this.props;
 
       return (
         <React.Fragment>

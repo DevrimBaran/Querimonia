@@ -1,13 +1,19 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import logger from 'redux-logger';
+// import logger from 'redux-logger';
 import thunk from 'redux-thunk';
 
 import rootReducer from './reducers/index';
 // import templates from './templates/index';
 
-const middleware = applyMiddleware(thunk, logger);
+// const middleware = applyMiddleware(thunk, logger);
+const middleware = applyMiddleware(thunk);
 
 const initialState = {
+  login: {
+    name: null,
+    password: null,
+    access: -1
+  },
   complaints: {
     data: {
       byId: {},
@@ -17,10 +23,28 @@ const initialState = {
     },
     filter: [
       {
-        label: 'Stimmung',
+        label: 'Stichwort',
+        name: 'keywords',
+        multiple: true,
+        type: 'text'
+      },
+      {
+        label: 'Status',
+        name: 'status',
+        type: 'select',
+        values: [
+          { label: 'Neu', value: 'NEW' },
+          { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
+          { label: 'Geschlossen', value: 'CLOSED' },
+          { label: 'In Analyse', value: 'ANALYSING' },
+          { label: 'Fehler', value: 'ERROR' }
+        ]
+      },
+      {
+        label: 'Emotionen',
         name: 'sentiment',
         type: 'select',
-        multiple: true,
+
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },
@@ -35,29 +59,12 @@ const initialState = {
         label: 'Kategorie',
         name: 'subject',
         type: 'select',
-        multiple: true,
         values: [
           { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
           { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
           { label: 'Sonstiges', value: 'Sonstiges' }
+
         ]
-      },
-      {
-        label: 'Status',
-        name: 'status',
-        type: 'select',
-        multiple: true,
-        values: [
-          { label: 'Neu', value: 'NEW' },
-          { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
-          { label: 'Geschlossen', value: 'CLOSED' }
-        ]
-      },
-      {
-        label: 'Stichwort',
-        name: 'keywords',
-        multiple: true,
-        type: 'text'
       },
       {
         label: 'Eingangsdatum (von)',
@@ -106,7 +113,6 @@ const initialState = {
       {
         label: 'Aktion',
         name: 'action_code',
-        multiple: true,
         type: 'select',
         values: [
           { label: 'E-Mail', value: 'SEND_MAIL' },
@@ -161,6 +167,23 @@ const initialState = {
   },
   currentConfig: {
     extractors: []
+  },
+  allExtractors: {},
+  complaintStuff: {
+    entities: {
+      byId: { },
+      ids: [],
+      calculated: []
+    },
+    components: [],
+    actions: [],
+    log: [],
+    combinations: [],
+    text: null,
+    config: null,
+    counter: 0,
+    id: 0,
+    done: false
   }
 };
 

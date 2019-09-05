@@ -1,7 +1,75 @@
 @import '../variables';
 
 .hasModal {
-    cursor: pointer;
+    cursor: pointer !important;
+}
+
+.scrollableText {
+    position: relative;
+    height: 60%;
+    font-size: 16px;
+    font-family: Arial;
+    padding: 5px;
+    overflow: scroll;
+    letter-spacing: 0.5px;
+    line-height: 22px;
+    div {
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        &:first-child {
+            user-select: none;
+            span:nth-child(even) {
+                margin-bottom: -3px;
+                padding-bottom: 1px;
+                border-bottom: 2px solid var(--color);
+            }
+        }
+        &:nth-child(2) {
+            user-select: none;
+            span:nth-child(even) {
+                margin: -3px;
+                padding: 1px;
+                border: 2px solid var(--color);
+            }
+        }
+    }
+}
+.entitytextbox {
+    resize: none;
+    width: 50%;
+    height: 25px;
+    font-size: 16px;
+    padding: 2px;
+    margin-right: 5px;
+    font-family: Arial;
+    border: 1px solid $grey;
+}
+
+.addEntity-table {
+    margin: 10px;
+    width: calc(100%);
+    overflow: auto;
+    table {
+        // margin: 0px auto;
+        position: relative;
+        width: 100%;
+        border-spacing: 0px;
+    }
+    th {
+        font-size: large;
+        padding: 1px;
+        text-align: left;
+        padding-left:10px;
+        padding-right:10px;
+    }
+    td {
+        font-size: 'medium';
+        padding: 1px;
+        text-align: left;
+        padding-left:10px;
+        padding-right:10px;
+    }
 }
 
 .modal {
@@ -17,7 +85,7 @@
         right: 0;
         top: 0;
         bottom: 0;
-        opacity: 0.8;
+        opacity: 0.4;
         background-color: black;
     }
     .content {
@@ -25,9 +93,17 @@
         top: 50%;
         left: 50%;
         border: 1px solid $primaryTextColor;
-        padding: 10px 20px;
+        padding: 30px;
         transform: translate3d(-50%, -50%, 0);
         background-color: $primaryBackgroundColor;
+        width: 80%;
+        height: 80%;
+        
+    }
+    .action-button {
+        position: absolute;
+        top: 0;
+        right: 0;
     }
     display: none;
     &.show {

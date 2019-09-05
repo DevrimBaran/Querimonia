@@ -1,0 +1,54 @@
+.fiftyFifty{
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+
+    .rightBox{
+        float: left;
+        width: 40%;
+        margin-bottom: 20px;
+        height: 100%;
+        border: solid 4px rgb(66, 194, 164);
+        box-shadow: 10px 10px 15px silver;
+        border-radius: 20px;
+        padding: 2%;
+    }
+
+    .leftBox{
+        float: left;
+        width: 49%;
+        margin-right: 5%;
+        margin-bottom: 20px;
+        height: 100%;
+    }
+}
+
+#arrow {
+    color: #179c7d;
+}
+
+.footer{
+   float: left;
+   margin-left: 40%;
+   margin-bottom: 5%;
+   margin-top: 10%;
+}
+
+.tooltipStartseite {
+    position: relative;
+    display: inline-block;
+  }
+
+  .tooltipStartseite .tooltiptext {
+    visibility: hidden;
+    width: 65px;
+    height: 65px;
+    background-color: red;
+    position: absolute;
+    top: 35px;
+    left: 105%;
+  }
+
+  .tooltipStartseite:hover .tooltiptext {
+    visibility: visible;
+  }

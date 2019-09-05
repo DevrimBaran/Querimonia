@@ -1,0 +1,2715 @@
+{
+    "color": "#ffffff",
+    "words": [
+        {
+            "text": "uhr",
+            "value": 24,
+            "size": 130
+        },
+        {
+            "text": "bus",
+            "value": 21,
+            "size": 113.75
+        },
+        {
+            "text": "nachricht",
+            "value": 19,
+            "size": 102.91666666666666
+        },
+        {
+            "text": "dass",
+            "value": 19,
+            "size": 102.91666666666666
+        },
+        {
+            "text": "linie",
+            "value": 16,
+            "size": 86.66666666666666
+        },
+        {
+            "text": "fahren",
+            "value": 11,
+            "size": 59.58333333333333
+        },
+        {
+            "text": "kommen",
+            "value": 10,
+            "size": 54.16666666666667
+        },
+        {
+            "text": "dank",
+            "value": 10,
+            "size": 54.16666666666667
+        },
+        {
+            "text": "vielen",
+            "value": 10,
+            "size": 54.16666666666667
+        },
+        {
+            "text": "bearbeiten",
+            "value": 9,
+            "size": 48.75
+        },
+        {
+            "text": "aufgenommen",
+            "value": 9,
+            "size": 48.75
+        },
+        {
+            "text": "schnellstmöglich",
+            "value": 9,
+            "size": 48.75
+        },
+        {
+            "text": "richtung",
+            "value": 7,
+            "size": 37.91666666666667
+        },
+        {
+            "text": "fahrer",
+            "value": 7,
+            "size": 37.91666666666667
+        },
+        {
+            "text": "beschwerdetext",
+            "value": 7,
+            "size": 37.91666666666667
+        },
+        {
+            "text": "beispielantwort",
+            "value": 7,
+            "size": 37.91666666666667
+        },
+        {
+            "text": "busfahrer",
+            "value": 7,
+            "size": 37.91666666666667
+        },
+        {
+            "text": "müssen",
+            "value": 6,
+            "size": 32.5
+        },
+        {
+            "text": "dame",
+            "value": 6,
+            "size": 32.5
+        },
+        {
+            "text": "ausfall",
+            "value": 6,
+            "size": 32.5
+        },
+        {
+            "text": "ab",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "warten",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "leider",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "ce62",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "haltestelle",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "schreiben",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "geben",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "fahrgast",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "kind",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "verspätung",
+            "value": 5,
+            "size": 27.083333333333336
+        },
+        {
+            "text": "häufig",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "wsw",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "schon",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "geehrt",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "ignoriert",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "nutzen",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "gerne",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "minute",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "hattingen",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "klasse",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "wuppertal",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "junge",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "abfahrt",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "verstehen",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "herr",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "nehmen",
+            "value": 4,
+            "size": 21.666666666666664
+        },
+        {
+            "text": "sollen",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "bekommen",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "ce",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "stehen",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "test",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "nächst",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "wirklich",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "mal",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "stand",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "planmäßig",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "beschwerde",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "bitte",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "zumindest",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "taxi",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "heute",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "gefahren",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "dadurch",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "fallen",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "bahnhof",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "auskunft",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "vielleicht",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "verärgert",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "ausgefallen",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "wegen",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "tag",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "fahrt",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "erst",
+            "value": 3,
+            "size": 20
+        },
+        {
+            "text": "woche",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "öffnen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "weiterfahren",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "wünschen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "ankommen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "direkt",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "weit",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "wiederum",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "stunde",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "jung",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "s-bahn",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "selten",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "deutlich",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "verkehrsmitteln",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "zwei",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "benutzen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "wuppertaler",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "jahr",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "weiß",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "freundlich",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "manch",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "legen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "kälte",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "bogestra",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "hoffen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "warum",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "klein",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "straße",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "oft",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "berichten",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "sowas",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "neviges",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "all",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "bereits",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "nennen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "kunde",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "erreicht",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "einfach",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "wohl",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "anspruch",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "mitarbeiter",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "monat",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "erneut",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "unterwegs",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "umsonst",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "ausfallen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "später",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "tür",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "velbert",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "hbf",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "fahrtkosten",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "erhalten",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "darauf",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "vorne",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "geld",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "stück",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "mögen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "beziehen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "spät",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "weiterhin",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "höhe",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "vereinzelt",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "fall",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "ce-linien",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "unmittelbar",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "ca.",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "ronsdorf",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "arbeit",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "früher",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "gesellschaft",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "tatsächlich",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "öffentlich",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "vorstellen",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "schnell",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "immer",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "bussteig",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "planmäßige",
+            "value": 2,
+            "size": 20
+        },
+        {
+            "text": "vermutlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "antwort",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gelaufen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "weilen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "passagier",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "handy",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "elberfeld",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gesagt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rad",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verkehrsbetriebe",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "inzwischen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ganz",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verkehrsmittel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gelassen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "entsprechend",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "barmen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lassen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "finden",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "irgendwo",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "u.a.",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beabsichtigt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "laufen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "solingen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anreise",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "jungs/männer",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beschreiben",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "tasche",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "funkuhr",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ignorieren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hiermit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "prüfung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "teilweise",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sohn",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "tgl",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausrede",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "weitergeleitet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "egal",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "freundliche",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "akut",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bestmöglich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bezeichnen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ständig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "autofahrer",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "auffällig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sogar",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "schule",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "personaldecke",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "x",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "krankheitsbedingt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "information",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "chronisch",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kritik",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "offensichtlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "monatsticket",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "früh",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vielmehr",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "informiert",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "heranzuführen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kontodaten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "handeln",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "er/ich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausweichen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aprather",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "freuen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "mitfahrende",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gehen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beschrieben",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beid",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "pünktl",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "einsparung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "geduldig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zurück",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anbieten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "angeklopft",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "eher",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bezüglich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fahrplangemäß",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "möglichkeit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "meike",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fangen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "abschneiden",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "schwebebahn",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kontakt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "grüßen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hätte",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sonstig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "busverbindung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "angetroffen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erscheinen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vorbildfunktion",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rückmeldung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "daher",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "taxifahrer",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "durchsage",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "morianstraße",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beschissenen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "abkürzen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lautstark",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ticket",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "entstanden",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "geschenkt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "dünn",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hinterher",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "buslinien",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bedingung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "weshalb",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "uni",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hilfsbereit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "form",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "somit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "service",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "traurig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "mitte",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausgeharrt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wuppertal-elberfeld",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kurz",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gruß",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hauptbahnhof",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "insbesondere",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ankunft",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kuchen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rückfahrt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "feststellen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sicher",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "darstellen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zweit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "elberfeld-cronenberg",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "termin",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stets",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "obwohl",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "folge",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "unverschuldet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wunderschön",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "steele",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "entgegen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "überstunde",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verpasst",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "berichtet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "heutig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aufwärmen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gut",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fahrplan",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "abfahren/wenn",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zugemacht",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stoßzeiten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "studierender",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausgleichen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verkürzen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ergeben",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kundencenter",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "melanie",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "donnerstag",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausgeglichen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "frage",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "richtig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "enttäuscht",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "markt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gehabt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "elternteil",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hoffnung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kalt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stellen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nebenlinien",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "steigen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hoffen.bitte",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "entscheidung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "busfahrers",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "einzeln",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sowie",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "oben",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "getröstet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gewartet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gefreut",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "infos.wir",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ehrlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "krankheit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "pünklich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gerichtet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nachdem",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "geachtet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "alt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "herbeiführen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bahn",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zeit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "eigentlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "°c",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "dorthin",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beschweren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "scheibe",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "schlimm",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "spürbar",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "grund",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nahe",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wartend",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "einkehren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nachmittagsveranstaltung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hochdahl",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "voll",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vergeudet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nachmittags",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "paar",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erwarten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wahrscheinlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lang",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "meist",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ihrerseits",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "personalmangels",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "harter",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "einzelfall",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fuß",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "öpnv",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gehäuft",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aufgefallen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sehen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "spontan",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "unerklärbaren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verschieben",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "karlsplatz",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erfahrung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anfahren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bochum",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "morgen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kniprodestraße",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verspäteteten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "weiterkommen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "unlust",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "statt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vorfall",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beispiel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nett",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hierzu",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erkundigt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "arbeitgeber",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "konzipiert",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "web-seite",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verlieren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "genau",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "letzte",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "maßnahme",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hören",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bezahlt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "mann",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "eckbusch",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vergangen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vorgang",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aushalten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "uhrdie",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aprath",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "leidwesen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "angeboten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "krankheitbedingter",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "entscheiden",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "jed",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "reaktion",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nachmittag",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ce64",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zustand",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "leicht",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "jungs",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rosenhügel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "arbeitsstelle",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "bayer-kinderlabor",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wuppertal-ronsdorf",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rein",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "heiter",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nachfolgend",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hallo",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nicht.was",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ce61",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "auffallend",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "war.dabei",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "dingen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erkrath-hochdahl",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "glück",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aussprechen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wenig",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "klausur",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "seit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "busausfall",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "daraufhin",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausstellen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "4-fahrtentickets",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "mußte",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rückfrage",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "schön",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stark",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "dienstleistungen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "pünktlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gezielt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "märz/april",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rückfahrzeit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "schulkind",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verhalten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "cronenberg",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ce64/ce65",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "einzelne",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gelegentlich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ferner",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "begleichen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "sicher.wenn",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausgestiegen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "türe",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lichtblick",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verknüpft",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "rundherum",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "aufgearbeitet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ebenso",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "telefoniert",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "geldmangel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "barmen.heute",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "eltern",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wieviel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "geplant",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "auszudünnen.der",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "menge",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "politik",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ablaufen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erworben",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "buslinie",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "übereinstimmend",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "grundschule",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stimmen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "freitag",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "unannehmlichkeit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stellung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "öfters",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "nehmen.die",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "umweltschutzgründen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "busbahnhof",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "verloren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lob",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fahrtantritt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gebracht",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "schönebecker",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "betreffen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vergeblich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fahrtrichtung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "kleinstkind",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "darf",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stress",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "entschädigung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "wer",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "irgendwie",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "jahresurlaub",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "passiert",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "fahrgastet",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "stadtbahnhof",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "help",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "beifall",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "freude",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "hinweis",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "abfahrtstelle",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erschienen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "januar",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zugrunde",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "vorkommt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ausrechen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "deshalb",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "uhres",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "oberbarmen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "ce61/ce62",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "etwa",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zweimal",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "busausfälle",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "lauten",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "weiterzufahren.leider",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "quittung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gehört",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gefunden",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "langenberg",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "unverschämtheit",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anliegen",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "person",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anzeigentafel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gleichberechtigung",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zahlend",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "zuletzt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "viele",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erfolgreich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gepperth",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "getan",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anschlussbus",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "anschaulich",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "akzeptabel",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "gewusst",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "abgefahren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "heusner",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "erklärt",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "busfahren",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "alte",
+            "value": 1,
+            "size": 20
+        },
+        {
+            "text": "weggefahren",
+            "value": 1,
+            "size": 20
+        }
+    ]
+}

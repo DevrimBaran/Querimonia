@@ -8,14 +8,7 @@ body {
     padding: 0;
 }
 
-h1 {
-    font-size: 3rem;
-    letter-spacing: 1px;
-    margin: 0;
-    padding: 0;
-    text-align: center;
-    opacity: 0.5;
-}
+
 
 .app-outer {
     align-items: center;
@@ -89,17 +82,4 @@ h1 {
     transform: translateX(-50%);
     text-align: center;
 }
-.preferEntityCheckbox {
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    margin-left: 25px;
-    vertical-align: middle;
-}
-.export-button {
-    color: #2295f3;
-    text-align: center;
-}
-.export-button:hover {
-    box-shadow: 0 2px 6px rgba(0,0,0,.5);
-}
+

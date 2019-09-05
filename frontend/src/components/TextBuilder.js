@@ -6,162 +6,81 @@
  */
 
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import Api from '../utility/Api';
+import { finishComplaint } from '../redux/actions/';
 
-import Debug from './../components/Debug';
-import Collapsible from './../components/Collapsible';
 import Content from './../components/Content';
+import Response from './../components/Response';
 import Input from './../components/Input';
-import ChangeableEntityText from './ChangeableEntityText';
+import Collapsible from './Collapsible';
+// import Debug from './Debug';
+import Tabbed from './Tabbed';
+import Button from './Button';
 
 class TextBuilder extends Component {
-  // Die Antworten kommen über api/response und die muss die ID der Beschwerde übergeben werden
   constructor (props) {
     super(props);
-
     this.state = {
-      text: '',
-      components: [],
-      actions: []
+      response: '',
+      used: {}
     };
   }
-
-  add = (componentId) => {
-    const component = this.state.components.find((component) => {
-      return component.component.id === componentId;
-    });
-    this.setState({
-      text: this.state.text + this.insertEntities(component.component.texts[0], componentId) + '\r\n',
-      components: this.state.components.filter(component => component.component.id !== componentId)
-    }
-    );
-  };
-  onChange = () => {
-    this.setState({ text: this.refs.responseText.value });
+  changeText = (e) => {
+    this.setState((state) => ({
+      response: e.value
+    }));
   }
-  cycle = (componentId) => {
-    this.setState({
-      components: this.state.components.map((component) => {
-        if (component.component.id === componentId) component.activeTextIndex = ((component.activeTextIndex + 1) % component.component.texts.length);
-        return component;
-      })
-    }
-    );
-  };
-
-  finish = (mailto) => {
-    document.location.href = mailto;
-    // document.location.href = document.location.origin + '/complaints';
+  onSelect = (value, id) => {
+    this.setState((state) => ({
+      response: state.response + value,
+      used: { ...state.used, [id]: true }
+    }));
   }
-
-  insertEntities = (text, componentId) => {
-    const component = this.state.components.find((component) => {
-      return component.component.id === componentId;
-    });
-    const variableRegex = /\${[a-zA-U0-9]*}/g;
-    const variables = text.match(variableRegex) || [];
-    variables.forEach(variable => {
-      const preferredEntity = component.entities.find(entity => entity.preferred && `\${${entity.label}}` === variable);
-      const firstSuitableEntity = component.entities.find(entity => `\${${entity.label}}` === variable);
-      const componentEntityLabel = component.activeEntityLabel || (preferredEntity ? preferredEntity.value : false) || (firstSuitableEntity ? firstSuitableEntity.value : false) || null;
-      const entity = component.entities.find(entity => entity.value === componentEntityLabel);
-      text = text.replace(variable, componentEntityLabel);
-      entity.start = text.indexOf(componentEntityLabel);
-      entity.end = text.indexOf(componentEntityLabel) + componentEntityLabel.length;
-    });
-    return text;
+  finish = () => {
+    this.props.dispatch(finishComplaint(this.props.complaintId));
   };
-
-  setActiveEntity = (componentId, activeEntityLabel) => {
-    this.setState({
-      components: this.state.components.map((component) => {
-        if (component.component.id === componentId) component.activeEntityLabel = activeEntityLabel;
-        return component;
-      })
-    });
-  };
-
-  setData = (data) => {
-    console.log(data);
-    const components = data.components;
-    const actions = data.actions;
-    components.forEach((component) => {
-      component.activeTextIndex = 0;
-    });
-    this.setState({
-      components: components,
-      actions: actions });
-    console.log({ components, actions });
-  };
-
-  fetch = () => {
-    Api.get('/api/responses/' + this.props.complaintId, '')
-      .catch(() => {
-        return { status: 404 };
-      })
-      .then(Debug.log)
-      .then((response) => this.setData(response));
-  };
-
-  componentDidMount () {
-    this.fetch();
-  }
   render () {
-    const mail = 'querimonia@g-laber.de';
-    const subject = 'Querimonia Beschwerdeabschluss ' + this.props.complaintId;
-    const message = `Die Beschwerde mit der ID: ${this.props.complaintId} wurde mit folgender Nachricht abgeschlossen:
-
-    ${this.state.text}
-
-    `;
-    const link = 'Link: https://querimonia.iao.fraunhofer.de/complaints/' + this.props.complaintId;
-    const mailto = 'mailto:' + encodeURIComponent(mail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(message) + link;
+    const { disabled, components = [], actions = [] } = { ...this.props };
+    const disableResponses = components.filter(c => !this.state.used[c.id]).length === 0;
+    const disableActions = actions.length === 0;
     return (
       <React.Fragment>
+        <Input type='textarea' readOnly={disabled} min='5' value={this.state.response} onChange={this.changeText} />
+        {disabled || <Button onClick={this.finish}>Abschließen</Button>}
+        <Collapsible label='Antworten / Aktionen'
+          disabled={disabled || (disableResponses && disableActions)}
+          collapse={disabled || (disableResponses && disableActions)}
+        />
         <Content>
-          <textarea className='margin' id='responseText' ref='responseText' value={this.state.text} placeholder='Klicken Sie Ihre Antwort zusammen :)'
-            onChange={this.onChange} />
-        </Content>
-        <div>
-          <Input type='button' value='Abschließen' onClick={() => this.finish(mailto)} />
-        </div>
-        <Collapsible className='Content' label='Aktionen' collapse={false} id='actions' />
-        <Content>
-          {
-            this.state.actions.map((action, i) => {
-              const id = action.id;
-              return (
-                <Input key={i} type='checkbox' label={action.name} onClick={() => this.addAction(id)} />
-              );
-            })
-          }
-        </Content>
-        <Collapsible className='Content' label='Antworten' collapse={false} id='responses' />
-        <Content>
-          {
-            this.state.components.map((component) => {
-              const id = component.component.id;
-              return (
-                <div className='response' key={id}>
-                  <span className='content'>
-                    <ChangeableEntityText taggedText={{ text: this.insertEntities(component.component.texts[component.activeTextIndex], id), entities: component.entities }}
-                      possibleEntities={component.entities}
-                      setActiveEntity={this.setActiveEntity}
-                      activeEntity={component.activeEntityLabel || null}
-                      complaintId={id} />
-                    <div className='part'>{component.component.name}</div>
-                  </span>
-                  <i className='fa fa-check add' onClick={() => { this.add(id); }} />
-                  <i className='fa fa-sync remove' onClick={() => this.cycle(id)} />
-                </div>
-              );
-            })
-          }
+          <Tabbed>
+            <div label='Antworten' disabled={disableResponses}>
+              {
+                components.filter(c => !this.state.used[c.component.id]).map((c, i) => {
+                  return (<Response key={c.component.id} component={c.component} onSelect={(e) => { this.onSelect(e.value, c.component.id); }} />);
+                })
+              }
+            </div>
+            <div label='Aktionen' disabled={disableActions}>
+              {actions.map((action, index) => (
+                <Input type='checkbox' label={action.name} key={index} />
+              ))}
+            </div>
+          </Tabbed>
         </Content>
       </React.Fragment>
     );
   }
 }
 
-export default TextBuilder;
+const mapStateToProps = (state, props) => {
+  return {
+    entities: state.complaintStuff.entities,
+    complaintId: state.complaintStuff.id,
+    components: state.complaintStuff.components,
+    actions: state.complaintStuff.actions,
+    counter: state.complaintStuff.counter
+  };
+};
+
+export default connect(mapStateToProps)(TextBuilder);

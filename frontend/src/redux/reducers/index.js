@@ -1,3 +1,5 @@
+import calculateEntities from '../../utility/calculateEntities';
+
 const defaults = {
   components: {
     id: 0,
@@ -127,6 +129,20 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
         ids: action.data.map(item => item.id)
       };
     }
+    case 'UPDATE_SINGLE': {
+      return {
+        ...state,
+        fetching: false,
+        active: state.active && {
+          ...state.active,
+          state: action.data.state
+        },
+        byId: {
+          ...state.byId,
+          [action.data.id]: action.data
+        }
+      };
+    }
     default:
       return state;
   }
@@ -158,6 +174,60 @@ function allExtractors (state = {}, action) {
     }
   }
 }
+function complaintStuff (state = {}, action) {
+  switch (action.type) {
+    case 'FETCH_SINGLE_COMPLAINT_START': {
+      return {
+        entities: {
+          byId: {},
+          ids: [],
+          calculated: []
+        },
+        components: [],
+        actions: [],
+        combinations: [],
+        log: [],
+        text: null,
+        config: null,
+        id: action.id,
+        counter: 0,
+        done: false
+      };
+    }
+    case 'FETCH_SINGLE_COMPLAINT_END': {
+      return {
+        ...state,
+        entities: {
+          byId: action.entities.reduce ? action.entities.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}) : {},
+          ids: action.entities.map ? action.entities.map(item => item.id) : [],
+          calculated: action.entities.map ? calculateEntities(action.entities) : []
+        },
+        components: action.components,
+        actions: action.actions,
+        combinations: action.combinations,
+        log: action.log,
+        text: action.text,
+        config: action.config,
+        counter: 0,
+        done: true
+      };
+    }
+    case 'MODIFY_ENTITY': {
+      return {
+        ...state,
+        entities: {
+          byId: action.data.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
+          ids: action.data.map(item => item.id),
+          calculated: calculateEntities(action.data)
+        },
+        counter: state.counter + 1
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
 
 function fetchable (state = { data: {}, filter: [], pagination: {} }, action, endpoint) {
   return {
@@ -167,14 +237,37 @@ function fetchable (state = { data: {}, filter: [], pagination: {} }, action, en
   };
 }
 
+function login (state, action) {
+  switch (action.type) {
+    case 'LOGIN': {
+      return {
+        name: action.name,
+        password: action.password,
+        access: action.access
+      };
+    }
+    case 'LOGOUT': {
+      return {
+        name: null,
+        password: null,
+        access: -1
+      };
+    }
+    default: {
+      return state;
+    }
+  }
+}
+
 const rootReducer = function (state, action) {
   return {
+    login: login(state.login, action),
     complaints: fetchable(state.complaints, action, 'complaints'),
-    actions: fetchable(state.actions, action, 'actions'),
     config: fetchable(state.config, action, 'config'),
     components: fetchable(state.components, action, 'components'),
     currentConfig: currentConfig(state.currentConfig, action),
-    allExtractors: allExtractors(state.allExtractors, action)
+    allExtractors: allExtractors(state.allExtractors, action),
+    complaintStuff: complaintStuff(state.complaintStuff, action)
   };
 };
 

@@ -2,9 +2,10 @@
 **/
 $black: #202124;
 $white: #fff;
-$lightgrey: rgba(0, 0, 0, 0.04);
-$grey: rgba(0,0,0,.12);
+$lightgrey: rgba(30, 30, 30, 0.04);
+$grey: rgba(0,0,0,.22);
 $primary: #179c7d;
+$dimgray: dimgray;
 $secondary: rgb(31, 130, 191);
 
 /*Benutzt diese Farben!
@@ -15,6 +16,7 @@ $inverseTextColor: white;
 /* Die Primaere Akzentfarbe ist das Fraunhofer-Gruen */
 $primaryAccentColor: #179c7d;
 $primaryAccentColorActive: rgb(66, 194, 164);
+$primaryAccentColorDimed: rgba(66, 194, 164, 0.1);
 /* Die Sekundaere Akzentfarbe stammt von der Fraunhofer-Website, ein gedecktes Blau */
 $secondaryAccentColor: rgb(31, 130, 191);
 $secondaryAccentColorActive: rgb(9, 101, 158);
@@ -47,6 +49,7 @@ $standardmarginleft: $standardmargin;
 .white {
     color: $white;
 }
+
 .lightgrey {
     color: $lightgrey;
 }
