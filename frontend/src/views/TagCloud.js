@@ -26,7 +26,7 @@ class TagCloud extends Component {
       words: {},
       minOccurrence: 0,
       maxOccurrence: 0,
-      color: '#ffffff',
+      color: '#000000',
       cloudActive: true,
       query: {
         date_min: undefined,

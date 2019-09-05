@@ -66,14 +66,6 @@ function Single (active, dispatch, helpers) {
       data: data
     });
   };
-  const fix = () => {
-    modifyActive({
-      extractors: active.extractors.map(e => ({
-        ...e,
-        type: e.type === 'KIKUKO_TOOL' ? 'KIKUKO_PIPELINE' : e.type
-      }))
-    });
-  };
   return (
     <React.Fragment>
       <Block>
@@ -84,7 +76,6 @@ function Single (active, dispatch, helpers) {
           </Content>
           <div className='center margin'>
             {helpers.save()}
-            <button onClick={fix}>Fix KIKUKO_TOOL</button>
           </div>
         </Row>
       </Block>

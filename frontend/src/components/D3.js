@@ -15,21 +15,19 @@ class D3 extends Component {
     this.container = React.createRef();
   }
   componentDidMount = () => {
-    this.container.current.innerText = '';
+    this.container.current && (this.container.current.innerText = '');
     const addSpinner = this.props.render(this.container.current, JSON.parse(JSON.stringify(this.props.data)), d3, () => {
-      this.container.current.classList.remove('loading');
+      this.container.current && this.container.current.classList.remove('loading');
     });
     if (addSpinner) {
-      this.container.current.classList.add('loading');
+      this.container.current && this.container.current.classList.add('loading');
     }
   }
   componentDidUpdate = () => {
     this.componentDidMount();
   }
   shouldComponentUpdate = (nextProps) => {
-    const b = JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data);
-    console.log(this.props.data.redraw, nextProps.data.redraw);
-    return b;
+    return JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data);
   }
   render () {
     const { data, render, ...passThrough } = { ...this.props };
