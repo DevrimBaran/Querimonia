@@ -24,7 +24,7 @@ public class ComplaintUtility {
     Optional<Map.Entry<String, Double>> result = probabilityMap.entrySet().stream()
         // find entry with highest probability
         .max(Comparator.comparingDouble(Map.Entry::getValue));
-    if(result.isPresent() && result.map(Map.Entry::getValue).get() == 0){
+    if (result.isPresent() && result.map(Map.Entry::getValue).get() == 0) {
       return (Optional.of("Sonstiges"));
     }
     return result.map(Map.Entry::getKey);

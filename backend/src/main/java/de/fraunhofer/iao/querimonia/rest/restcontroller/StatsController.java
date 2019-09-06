@@ -374,13 +374,13 @@ public class StatsController {
                 // get their word lists
                 .filter(complaint -> ComplaintFilter.filterByState(
                     complaint, Optional.of(stateArray)))
-                .map(complaint -> complaint.getCloseDate().atTime(complaint.getCloseTime())
+                .map(complaint -> complaint.getReceiveDate().atTime(complaint.getReceiveTime())
                     .until(complaint.getCloseDate().atTime(complaint.getCloseTime()),
                         ChronoUnit.HOURS))
                 .reduce(Long::sum);
           }
           avgProcessing =
-          processingHours.map(hours -> hours / ((double) countStateCom)).orElse(-1d);
+          processingHours.map(hours -> hours / ((double) countStateCom)).orElse(0d);
         }
 
         MonthStats monthStats = new MonthStats(countComplaints, resultComplaintsStatus,
