@@ -1,3 +1,3 @@
-*.wav
-Pipfile.lock
-marytts/*
+telegram_bot/*.wav
+telegram_bot/Pipfile.lock
+telegram_bot/marytts/*
