@@ -15,6 +15,7 @@ gensim = "*"
 black = "*"
 sqlalchemy = "*"
 pymysql = "*"
+spacy = "*"
 
 [requires]
 python_version = "3.7"

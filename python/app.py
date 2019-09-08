@@ -4,6 +4,7 @@ import numpy as np
 import sentiment_analyse
 import emotion_analyse
 import wordvector
+import lemmatize
 
 app = Flask(__name__)
 # TODO change base url
@@ -144,6 +145,23 @@ class Analogy(Resource):
         result = wordvector.Calc.analogy(word1, word2, word3, model_name)
         return jsonify(result)
 
+
+@api.route('/python/lemmatize')
+@api.doc(
+    params={
+        'text': 'Text, der mit lemmatize bearbeitet werden soll',
+    },
+    responses={
+        200: 'Success'
+    }
+)
+class Lemmatize(Resource):
+    def post(self):
+        '''Gibt für jedes Wort den entsprechenden lemma zurück'''
+        content = request.get_json()
+        text = content["text"]
+        result = lemmatize.lemmatize(text)
+        return jsonify(result)
 
 if __name__ == "__main__":
     app.run(debug=False)
