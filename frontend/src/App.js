@@ -127,22 +127,24 @@ class App extends Component {
             <a href={basepath}>
               <img src={logo} id='logo' alt='logo' width='100%' />
             </a>
-            <ul id='mainMenu' />
-            <ul id='bottomMenu'>
-              <li>
-                <Login />
-              </li>
-              <li className='image'>
-                <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank'>
-                  <img src={iaoPartner} alt='logo' />
-                </a>
-              </li>
-              <li className='image'>
-                <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank'>
-                  <img src={uniLogo} alt='logo' />
-                </a>
-              </li>
-            </ul>
+            <div className='scrollable'>
+              <ul id='mainMenu' />
+              <ul id='bottomMenu'>
+                <li>
+                  <Login />
+                </li>
+                <li className='image'>
+                  <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank'>
+                    <img src={iaoPartner} alt='logo' />
+                  </a>
+                </li>
+                <li className='image'>
+                  <a href='https://www.iat.uni-stuttgart.de/' rel='noopener noreferrer' target='_blank'>
+                    <img src={uniLogo} alt='logo' />
+                  </a>
+                </li>
+              </ul>
+            </div>
           </nav>
           <ErrorModal error={this.error} />
           {login.access >= -1 && (
@@ -151,20 +153,23 @@ class App extends Component {
               <View menu='bottomMenu' label='Impressum' path='/impressum' component={Impressum} />
             </React.Fragment>
           )}
-          {login.access >= 0 && (
+          {login.access === 0 && (
             <React.Fragment>
+              <View label='Import' path='/import' component={Import} />
               <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-              <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />
-              <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />
               <View label='Statistiken' path='/statistics' component={Statistics} />
             </React.Fragment>
           )}
-          {login.access >= 1 && (
+          {login.access === 1 && (
             <React.Fragment>
-              <View label='Import' path='/import' component={Import} />
-              <View label='Regeln' endpoint='components' path='/rules/:id?' component={Components} />
-              <View label='Konfigurationen' endpoint='config' path='/configuration/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
-            </React.Fragment>
+            <View label='Import' path='/import' component={Import} />
+            <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
+            <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />
+            <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />
+            <View label='Statistiken' path='/statistics' component={Statistics} />
+            <View label='Regeln' endpoint='components' path='/rules/:id?' component={Components} />
+            <View label='Konfigurationen' endpoint='config' path='/configuration/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
+          </React.Fragment>
           )}
         </Router>
       </React.Fragment>

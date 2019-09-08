@@ -1,0 +1,86 @@
+nav {
+    position: relative;
+    width: 12em;
+    border-radius: 0px 10px 10px 0px;
+    margin: 20px 20px 20px 0;
+    box-shadow: 10px 20px 40px rgba(0, 0, 0, 0.3);
+    background: $white;
+    overflow-y: hidden;
+    display:flex;
+    flex-direction: column;
+
+    #logo {
+        padding: 10px 10px 20px 10px;
+    }
+
+    .scrollable{
+        overflow-y: scroll;
+        box-shadow: 0 10px 20px -20px black, 0 -10px 20px -20px;
+        background: $white;
+        height: 100%;
+
+    #bottomMenu{
+    //width: 100%;
+
+        a{
+            margin-top: 7%;
+        }
+        .input{
+            padding: 0;
+            margin: 0 auto 7% auto;
+            //display: table;
+        }
+    }
+
+    > ul {
+
+        //list-style: none;
+        margin: 0px;
+        padding: 20px 4% 15px 4%;
+        //box-shadow: 0 10px 20px -20px black, 0 -10px 20px -20px ;
+
+        li > a {
+            display: block;
+            padding: 10px 0px 10px 10%;
+            margin-bottom: 5%;
+            color: black;
+            background: rgba($dimgray, 0.2);
+            border-radius: 5px;
+            overflow-x: hidden;
+
+            transition: all 0.15s ease-out;
+
+            &:hover {
+                border-radius: 5px;
+                background: rgba($primaryAccentColorActive, 0.6);
+                box-shadow: 0 4px $primaryAccentColor;
+            }
+
+
+            &:active, &.active, &:focus {
+                color: $white;
+                background-color: $primaryAccentColor;
+                transform: scale(1.1, 1.1);
+                box-shadow: 0 3px $dimgray;
+            }
+        }
+
+        li img{
+            width: 90%;
+        }
+
+        li.image{
+            width: 100%;
+
+            > a{
+                background: #fff;
+                padding-left: 2%;
+                padding-bottom: 2%;
+                > img {
+                    width: 10%;
+                }
+            }
+        }
+    }
+}
+}
