@@ -163,5 +163,6 @@ class Lemmatize(Resource):
         result = lemmatize.lemmatize(text)
         return jsonify(result)
 
+
 if __name__ == "__main__":
     app.run(debug=False)
