@@ -74,7 +74,7 @@ def complaint_sender():
 
 
 def start_flask():
-    app.run(debug=False, port=5001)
+    app.run(debug=False, port=59127)
 
 
 ##### flask server #####
