@@ -26,8 +26,12 @@ class TagCloud extends Component {
       words: {},
       minOccurrence: 0,
       maxOccurrence: 0,
+      lemmatizedWords: {},
+      lemmatizedMinOccurrence: 0,
+      lemmatizedMaxOccurrence: 0,
       color: '#000000',
       cloudActive: true,
+      lemmatize: true,
       query: {
         date_min: undefined,
         date_max: undefined,
@@ -129,6 +133,11 @@ class TagCloud extends Component {
   };
 
     onChange = (e) => {
+      console.log(e.name, e.value);
+      this.setState({ [e.name]: e.value });
+    }
+
+    changeQuery = (e) => {
       this.setState(state => ({ query: { ...state.query, [e.name]: e.value } }));
     }
 
@@ -166,7 +175,8 @@ class TagCloud extends Component {
       }
     };
 
-    createWordArray = (wordsObject) => {
+    createWordArray = () => {
+      const wordsObject = this.state.lemmatize ? this.state.lemmatizedWords : this.state.words;
       let wordArray = [];
       Object.keys(wordsObject).forEach((element) => {
         wordArray.push({
@@ -179,8 +189,8 @@ class TagCloud extends Component {
     };
 
     calculateSize = (size) => {
-      const tmax = this.state.maxOccurrence; // Höchste Anzahl
-      const tmin = this.state.minOccurrence; // mindest Anzahl an Wörter
+      const tmax = this.state.lemmatize ? this.state.lemmatizedMaxOccurrence : this.state.maxOccurrence; // Höchste Anzahl
+      const tmin = this.state.lemmatize ? this.state.lemmatizedMinOccurrence : this.state.minOccurrence; // mindest Anzahl an Wörter
       const fmax = 130; // maximale Schriftgröße
       const fmin = 20; // minimale Schriftgröße
       return Math.max(fmax * ((size - tmin) / (tmax - tmin)), fmin);
@@ -189,16 +199,42 @@ class TagCloud extends Component {
     fetchData = () => {
       this.setState(state => ({ redraw: state.redraw + 1 }));
       Api.get('/api/stats/tagcloud', this.state.query)
-        .then(this.setData);
+        .then(this.lemmatizeData);
     };
 
-    setData = (data) => {
+    lemmatizeData = (data) => {
+      if (data) {
+        fetch('https://querimonia.iao.fraunhofer.de/python/lemmatize', {
+          method: 'post',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
+          },
+          body: JSON.stringify({ text: Object.keys(data).join(' ') })
+        })
+          .then(response => response.json())
+          .then((lemma) => this.setData(data, lemma));
+      }
+    }
+
+    setData = (data, lemma) => {
       if (data) {
         const max = Math.max(...Object.values(data));
         const min = Math.min(...Object.values(data));
         // TODO: Calculate other constants
         this.setState({ words: data, maxOccurrence: max, minOccurence: min });
-      }
+      };
+      if (lemma) {
+        const lemmatizedWords = {};
+        for (let word in lemma) {
+          lemmatizedWords[lemma[word]] || (lemmatizedWords[lemma[word]] = 0);
+          lemmatizedWords[lemma[word]] += data[word];
+        }
+        const max = Math.max(...Object.values(lemmatizedWords));
+        const min = Math.min(...Object.values(lemmatizedWords));
+        this.setState({ lemmatizedWords: lemmatizedWords, lemmatizedMaxOccurrence: max, lemmatizedMinOccurence: min });
+      };
     };
 
     onResize = () => {
@@ -225,12 +261,13 @@ class TagCloud extends Component {
             <Row vertical>
               <h1 className='center'>Worthäufigkeiten</h1>
               <Form>
-                <Input type='date' label='Eingangsdatum (von)' name='date_min' onChange={this.onChange} value={this.state.query.date_min} />
-                <Input type='date' label='Eingangsdatum (bis)' name='date_max' onChange={this.onChange} value={this.state.query.date_max} />
-                <Input type='number' label='Wortanzahl' name='count' onChange={this.onChange} value={this.state.query.count} />
-                <Input type='select' label='Emotion' multiple name='emotion' onChange={this.onChange} value={this.state.query.emotion} />
-                <Input type='select' label='Kategorie' multiple name='subject' onChange={this.onChange} value={this.state.query.subject} />
-                <Input type='checkbox' className='nurWörterCheckbox' label='Nur Wörter anzeigen:' name='words_only' onChange={this.onChange} value={this.state.query.words_only} />
+                <Input type='date' label='Eingangsdatum (von)' name='date_min' onChange={this.changeQuery} value={this.state.query.date_min} />
+                <Input type='date' label='Eingangsdatum (bis)' name='date_max' onChange={this.changeQuery} value={this.state.query.date_max} />
+                <Input type='number' label='Wortanzahl' name='count' onChange={this.changeQuery} value={this.state.query.count} />
+                <Input type='select' label='Emotion' multiple name='emotion' onChange={this.changeQuery} value={this.state.query.emotion} />
+                <Input type='select' label='Kategorie' multiple name='subject' onChange={this.changeQuery} value={this.state.query.subject} />
+                <Input type='checkbox' label='Nur Wörter' name='words_only' onChange={this.changeQuery} value={this.state.query.words_only} />
+                <Input type='checkbox' label='Lemmatize' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
                 <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
                 <Input type='checkbox' className='listenCheckbox' label='Listenansicht' name='cloudActive' onChange={this.onChange} value={this.state.cloudActive} />
                 {this.state.cloudActive
@@ -244,7 +281,7 @@ class TagCloud extends Component {
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
                 <D3
                   render={this.state.cloudActive ? this.renderCloud : this.renderList}
-                  data={{ color: this.state.color, words: this.createWordArray(this.state.words), redraw: this.state.redraw }}
+                  data={{ color: this.state.color, words: this.createWordArray(), redraw: this.state.redraw }}
                   style={{ height: '100%' }}
                 />
               </Content>

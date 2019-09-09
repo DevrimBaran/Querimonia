@@ -51,6 +51,9 @@ class Input extends Component {
           }
         }
       }
+      if (e.target.type === 'checkbox') {
+        value = e.target.checked;
+      }
       this.props.onChange && this.props.onChange({
         target: e.target,
         name: e.target.name,
@@ -69,7 +72,7 @@ class Input extends Component {
     }
     render () {
       const classes = '';
-      const { className, onChange, type, label, values, value, name, inline, id = this.props.name, ...passThroughProps } = this.props;
+      const { className, onChange, type, label, values, value, checked, name, inline, id = this.props.name, ...passThroughProps } = this.props;
 
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,
@@ -136,8 +139,12 @@ class Input extends Component {
           input = <FileInput value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
-        default: {
+        case 'checkbox': {
           input = <input value={value} checked={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
+          break;
+        }
+        default: {
+          input = <input value={value} id={id} name={name} ref={this.target} onChange={this.onChange} {...injectedProp} {...passThroughProps} />;
           break;
         }
       }

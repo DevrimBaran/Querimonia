@@ -36,7 +36,7 @@ const options = function (method, data, additional = {}) {
     mode: 'cors',
     // credentials: 'include',
     headers: {
-      'Authorization': 'Basic ' + btoa('admin:QuerimoniaPass2019'),
+      'Authorization': 'Basic ' + btoa('user:QuerimoniaPass2019'),
       // 'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5',
       'Content-Type': 'application/json'
     },

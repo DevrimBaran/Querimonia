@@ -6,7 +6,7 @@ nav {
     box-shadow: 10px 20px 40px rgba(0, 0, 0, 0.3);
     background: $white;
     overflow-y: hidden;
-    display: inline-flex;
+    display: flex;
     flex-shrink: 0;
     flex-direction: column;
 
