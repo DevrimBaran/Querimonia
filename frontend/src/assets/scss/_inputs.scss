@@ -127,6 +127,10 @@ $inputBorder: 2px solid;
     color: $primaryAccentColor;
 }
 
+[disabled], [disabled]:hover {
+    color: $grey;
+    cursor: not-allowed;
+}
 
 ///*
 //*   Buttons

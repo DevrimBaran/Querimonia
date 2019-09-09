@@ -91,7 +91,7 @@ function List (data, dispatch, helpers) {
           {data.id}
           <div>
             <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'} icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
-            <DownloadButton name={`Anliegen ${data.id}.xml`} disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code' onClick={xml} />
+            <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8' disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code' onClick={xml} />
             {helpers && helpers.remove(data.id)}
           </div>
         </Row>

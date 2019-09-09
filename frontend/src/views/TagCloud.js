@@ -14,6 +14,8 @@ import Api from './../utility/Api';
 import D3 from './../components/D3';
 import Input from './../components/Input';
 import Form from './../components/Form';
+import DownloadButton from './../components/DownloadButton';
+import Toggle from './../components/Toggle';
 
 import { Color } from '../utility/colors';
 
@@ -30,7 +32,7 @@ class TagCloud extends Component {
       lemmatizedMinOccurrence: 0,
       lemmatizedMaxOccurrence: 0,
       color: '#000000',
-      cloudActive: true,
+      listView: true,
       lemmatize: true,
       query: {
         date_min: undefined,
@@ -141,38 +143,21 @@ class TagCloud extends Component {
       this.setState(state => ({ query: { ...state.query, [e.name]: e.value } }));
     }
 
-    exportSvg = () => {
-      let svgElement = document.getElementById('TagCloud').firstChild.firstChild;
+    downloadSvg = () => {
+      let svgElement = document.getElementById('d3Container').firstChild;
       svgElement.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      const svg = svgElement.outerHTML;
-
-      this.createDownload(svg, 'image/svg+xml; charset=utf-8', 'tagcloudSVG.svg');
+      return svgElement.outerHTML;
     };
 
-    exportCsv = () => {
-      let csv = 'Token;Anzahl\r\n';
-      Object.keys(this.state.words)
+    downloadCsv = () => {
+      let csv = Object.keys(this.state.lemmatize ? this.state.lemmatizedWords : this.state.words)
+        .map(w => ({ word: w, count: this.state.lemmatize ? this.state.lemmatizedWords[w] : this.state.words[w] }))
         .sort((a, b) => {
-          return this.state.words[b] - this.state.words[a];
+          return b.count - a.count;
         })
-        .forEach((word) => {
-          csv += `${word};${this.state.words[word]}\r\n`;
-        });
-
-      this.createDownload(csv, 'text/csv;charset=utf-8;', 'tagCloudCSV.csv');
-    };
-
-    createDownload = (file, type, name) => {
-      let link = document.createElement('a');
-      if (link.download !== undefined) {
-        let url = URL.createObjectURL(new Blob([file], { type: type }));
-        link.setAttribute('href', url);
-        link.setAttribute('download', name);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-      }
+        .map(w => `${w.word};${w.count}`)
+        .join('\r\n');
+      return 'Token;Anzahl\r\n' + csv;
     };
 
     createWordArray = () => {
@@ -185,7 +170,7 @@ class TagCloud extends Component {
           size: this.calculateSize(wordsObject[element])
         });
       });
-      return wordArray;
+      return wordArray.sort((a, b) => a.value === b.value ? (a.text < b.text ? -1 : 1) : b.value - a.value);
     };
 
     calculateSize = (size) => {
@@ -237,21 +222,8 @@ class TagCloud extends Component {
       };
     };
 
-    onResize = () => {
-      this.setState(this.state);
-    };
-
     componentDidMount () {
       this.fetchData();
-      // window.addEventListener('resize', this.onResize);
-    }
-
-    componentWillUnmount () {
-      // window.removeEventListener('resize', this.onResize);
-    }
-
-    changeColor = (e) => {
-      this.setState({ color: e.value });
     }
 
     render () {
@@ -267,21 +239,28 @@ class TagCloud extends Component {
                 <Input type='select' label='Emotion' multiple name='emotion' onChange={this.changeQuery} value={this.state.query.emotion} />
                 <Input type='select' label='Kategorie' multiple name='subject' onChange={this.changeQuery} value={this.state.query.subject} />
                 <Input type='checkbox' label='Nur Wörter' name='words_only' onChange={this.changeQuery} value={this.state.query.words_only} />
-                <Input type='checkbox' label='Lemmatize' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
-                <Input type='colorpicker' label='Farbton' onChange={this.changeColor} value={this.state.color} />
-                <Input type='checkbox' className='listenCheckbox' label='Listenansicht' name='cloudActive' onChange={this.onChange} value={this.state.cloudActive} />
-                {this.state.cloudActive
-                  ? (<i className='fas fa-file-csv fa-3x export-button' title='Download CSV'
-                    style={{ cursor: 'pointer' }}
-                    onClick={this.exportSvg} />)
-                  : (<i className='fa fa-file-csv fa-2x export-button' style={{ cursor: 'pointer' }}
-                    onClick={this.exportCsv} />)}
+                <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               </Form>
-              <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
+              <div style={{ display: 'flex', 'justify-content': 'space-evenly', 'align-items': 'center' }}>
+                <span>
+                  <DownloadButton icon='fas fa-3x fa-file-csv' type='text/csv; charset=utf-8' name='Wortanzahl.csv' onClick={this.downloadCsv} />
+                  <DownloadButton disabled={this.state.listView} icon='fas fa-3x fa-file-image' type='image/svg+xml; charset=utf-8' name='Tagcloud.svg' onClick={this.downloadSvg} />
+                </span>
+                <span>
+                  <Toggle on='fas fa-cloud' off='fas fa-list' style={{ '--width': '90px', '--height': '35px' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
+                </span>
+                <span>
+                  <Input type='checkbox' label='Lemmatize' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
+                </span>
+                <span>
+                  <Input type='colorpicker' label='Farbton' name='color' onChange={this.onChange} value={this.state.color} />
+                </span>
+              </div>
               <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
                 <D3
-                  render={this.state.cloudActive ? this.renderCloud : this.renderList}
-                  data={{ color: this.state.color, words: this.createWordArray(), redraw: this.state.redraw }}
+                  id='d3Container'
+                  render={this.state.listView ? this.renderList : this.renderCloud}
+                  data={{ color: this.state.color, words: this.createWordArray(), list: this.state.listView }}
                   style={{ height: '100%' }}
                 />
               </Content>
