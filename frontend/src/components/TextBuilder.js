@@ -38,6 +38,18 @@ class TextBuilder extends Component {
     }));
   }
   finish = () => {
+    fetch('https://querimonia.iao.fraunhofer.de/tmp/done', {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
+      },
+      body: JSON.stringify({
+        id: this.props.complaintId,
+        message: this.state.response
+      })
+    });
     this.props.dispatch(finishComplaint(this.props.complaintId));
   };
   render () {
