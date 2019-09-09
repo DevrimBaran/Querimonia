@@ -175,7 +175,9 @@ public class ComplaintController {
 
   @GetMapping(value = "/api/complaints/{complaintId}/xml", produces = "application/xml")
   public ResponseEntity<?> getXml(@PathVariable long complaintId) {
-    return ControllerUtility.tryAndCatch(() -> complaintManager.getComplaint(complaintId));
+    return ControllerUtility.tryAndCatch(() ->
+        complaintManager.getXml(complaintId)
+    );
   }
 
   /**

@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 
 import javax.xml.bind.annotation.*;
@@ -16,8 +15,11 @@ public class ComplaintXml {
   private Input input;
   private Output output;
 
+  private ComplaintXml() {
+  }
+
   /**
-   * Creating a ComplaintXml out of a Complaint and mapping all relevant properties
+   * Creating a ComplaintXml out of a Complaint and mapping all relevant properties.
    * @param complaint Complaint to create an Xml of
    */
   public ComplaintXml(Complaint complaint) {
@@ -46,6 +48,7 @@ public class ComplaintXml {
       annotation.type = entity.getLabel();
       annotation.start = entity.getStartIndex();
       annotation.end = entity.getEndIndex();
+      annotation.page = 1;
       annotation.length = annotation.end - annotation.start;
       annotation.originalValue = entity.getValue();
 
@@ -85,13 +88,20 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Input {
+  private static class Input {
+    private Input() {
+
+    }
+
     public List<File> file;
     public Metadata metadata;
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class File {
+  private static class File {
+    private File() {
+    }
+
     @XmlValue
     public String value;
 
@@ -109,7 +119,11 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Metadata {
+  private static class Metadata {
+
+    private Metadata() {
+    }
+
     public String date;
     @XmlPath("date/@type")
     public String dateType;
@@ -128,7 +142,10 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class MetadataItem {
+  private static class MetadataItem {
+    private MetadataItem() {
+    }
+
     @XmlValue
     public String value;
     @XmlAttribute
@@ -136,16 +153,22 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Output {
-    @XmlElement(name = "analysis")
+  private static class Output {
+    private Output(){
+    }
+
+    @XmlPath("analysis[1]")
     public Extractor extractor;
 
-    @XmlElement(name = "analysis")
+    @XmlPath("analysis[2]")
     public Classifier classifier;
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Extractor {
+  private static class Extractor {
+    private Extractor(){
+    }
+
     @XmlAttribute
     public int step;
 
@@ -162,7 +185,10 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Annotation {
+  private static class Annotation {
+    private Annotation() {
+    }
+
     @XmlAttribute
     public String type;
 
@@ -184,11 +210,15 @@ public class ComplaintXml {
     public String originalValue;
 
     @XmlElementWrapper(name = "results")
+    @XmlElement(name = "result")
     public List<Result> result;
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Result {
+  private static class Result {
+    private Result() {
+    }
+
     @XmlValue
     public String result;
     @XmlAttribute
@@ -196,7 +226,10 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Classifier {
+  private static class Classifier {
+    private Classifier() {
+    }
+
     @XmlAttribute
     public int step;
 
@@ -214,7 +247,10 @@ public class ComplaintXml {
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
-  private class Classes {
+  private static class Classes {
+    private Classes() {
+    }
+
     @XmlAttribute
     public double confidence;
 

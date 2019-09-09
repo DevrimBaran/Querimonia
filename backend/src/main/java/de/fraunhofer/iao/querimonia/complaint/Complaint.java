@@ -529,9 +529,14 @@ public class Complaint implements Identifiable<Long> {
         .toString();
   }
 
+  /**
+   * crates the xml representation of this complaint.
+   * @return the xml representation of this complaint
+   * @throws JAXBException thrown on incorrect JAXB annotations
+   */
   public String toXml() throws JAXBException {
     // create JAXB context and instantiate marshaller
-    JAXBContext context = JAXBContextFactory.createContext(new Class[] {Complaint.class}, null);
+    JAXBContext context = JAXBContextFactory.createContext(new Class[] {ComplaintXml.class}, null);
     Marshaller m = context.createMarshaller();
     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     m.setProperty(Marshaller.JAXB_FRAGMENT, true);
@@ -540,7 +545,7 @@ public class Complaint implements Identifiable<Long> {
     // File xmlFile = new File(targetPath);
     StringWriter stringWriter = new StringWriter();
     stringWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    m.marshal(this, stringWriter);
+    m.marshal(new ComplaintXml(this), stringWriter);
     return stringWriter.toString();
   }
 }
