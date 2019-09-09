@@ -1,14 +1,14 @@
 import ErrorModal from './../components/ErrorModal';
 
-const fetchJson = function (action, options) {
+const fetchJson = function (action, options, responseFormat = 'json') {
   const processResponse = (response) => {
-    const json = response.json();
+    const data = response[responseFormat]();
     if (!response.ok) {
-      return json.then(json => {
-        throw new ErrorModal.QuerimoniaError(json);
+      return data.then(data => {
+        throw new ErrorModal.QuerimoniaError(data);
       });
     }
-    return json;
+    return data;
   };
   if ((process.env.NODE_ENV === 'development')) {
     const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
@@ -55,7 +55,7 @@ const options = function (method, data, additional = {}) {
 };
 
 export const api = {
-  get: function (endpoint, query) {
+  get: function (endpoint, query, responseFormat) {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {
       if (Array.isArray(query[name])) {
         return query[name].map(element => {
@@ -65,7 +65,7 @@ export const api = {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
     //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
-    return fetchJson(endpoint + (query ? '?' + query : ''), options('get'));
+    return fetchJson(endpoint + (query ? '?' + query : ''), options('get'), responseFormat);
   },
   delete: function (endpoint, query) {
     query = Object.keys(query).filter((name) => query[name] || query[name] === 0).map((name) => {

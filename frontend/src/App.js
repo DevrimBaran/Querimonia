@@ -184,14 +184,14 @@ class App extends Component {
           )}
           {login.access === 1 && (
             <React.Fragment>
-            <View label='Import' path='/import' component={Import} />
-            <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-            <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />
-            <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />
-            <View label='Statistiken' path='/statistics' component={Statistics} />
-            <View label='Regeln' endpoint='components' path='/rules/:id?' component={Components} />
-            <View label='Konfigurationen' endpoint='config' path='/configuration/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
-          </React.Fragment>
+              <View label='Import' path='/import' component={Import} />
+              <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
+              <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />
+              <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />
+              <View label='Statistiken' path='/statistics' component={Statistics} />
+              <View label='Regeln' endpoint='components' path='/rules/:id?' component={Components} />
+              <View label='Konfigurationen' endpoint='config' path='/configuration/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
+            </React.Fragment>
           )}
         </Router>
       </React.Fragment>

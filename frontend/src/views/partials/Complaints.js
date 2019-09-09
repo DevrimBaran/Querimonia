@@ -28,6 +28,8 @@ import Liste from '../../components/List';
 // import Input from '../../components/Input';
 // import Debug from '../../components/Debug';
 import Button from '../../components/Button';
+import DownloadButton from '../../components/DownloadButton';
+import api from '../../utility/Api';
 
 const sortedEntities = (data, complaintId, dispatch, disabled) => {
   const entities = data.ids.map(id => data.byId[id]).sort((a, b) => {
@@ -78,6 +80,10 @@ function List (data, dispatch, helpers) {
     }
     return false;
   };
+  const xml = (e) => {
+    e.stopPropagation();
+    return api.get(`/api/complaints/${data.id}/xml`, {}, 'blob');
+  };
   return (
     <tr className='pointer' key={data.id} onClick={helpers.edit}>
       <th>
@@ -85,6 +91,7 @@ function List (data, dispatch, helpers) {
           {data.id}
           <div>
             <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'} icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
+            <DownloadButton name={`Anliegen ${data.id}.xml`} disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code' onClick={xml} />
             {helpers && helpers.remove(data.id)}
           </div>
         </Row>
