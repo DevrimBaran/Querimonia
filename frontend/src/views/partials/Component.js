@@ -31,12 +31,11 @@ function Header () {
 
 function List (data, dispatch, helpers) {
   return (
-    <tr key={data.id}>
+    <tr key={data.id} className='pointer' onClick={helpers.edit}>
       <th>
         <Row>
           {data.id}
           <div>
-            {helpers.edit(data.id)}
             {helpers.copy(data.id)}
             {helpers.remove(data.id)}
           </div>

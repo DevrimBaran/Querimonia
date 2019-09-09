@@ -79,7 +79,7 @@ function List (data, dispatch, helpers) {
     return false;
   };
   return (
-    <tr className='pointer' key={data.id} onClick={helpers ? helpers.transitionTo('/complaints/' + data.id) : undefined}>
+    <tr className='pointer' key={data.id} onClick={helpers.edit}>
       <th>
         <Row>
           {data.id}
