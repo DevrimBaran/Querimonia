@@ -47,8 +47,30 @@ function init () {
   };
 }
 
+function login () {
+  return (dispatch) => {
+    fetch(process.env.REACT_APP_BACKEND_PATH + '/admin', {
+      method: 'post',
+      mode: 'cors',
+      headers: {
+        // 'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5',
+        'Content-Type': 'application/json'
+      }
+    }).then((response) => {
+      switch (response.status) {
+        case 401:
+          break;
+        case 404:
+          break;
+        default:
+      }
+    });
+  };
+}
+
 class App extends Component {
   componentDidMount = () => {
+    this.props.dispatch(login());
     this.props.dispatch(init());
     document.addEventListener('keydown', this.handleKeyDown);
   }

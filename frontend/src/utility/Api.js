@@ -34,9 +34,10 @@ const options = function (method, data, additional = {}) {
   let options = {
     method: method,
     mode: 'cors',
+    // credentials: 'include',
     headers: {
-      // 'Authorization': 'Basic ' + btoa('admin:QuerimoniaPass2019'),
-      'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5',
+      'Authorization': 'Basic ' + btoa('admin:QuerimoniaPass2019'),
+      // 'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5',
       'Content-Type': 'application/json'
     },
     ...additional
