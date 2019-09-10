@@ -31,6 +31,7 @@ class TagCloud extends Component {
       lemmatizedWords: {},
       lemmatizedMinOccurrence: 0,
       lemmatizedMaxOccurrence: 0,
+      lemmaOrigin: {},
       color: '#000000',
       listView: true,
       lemmatize: true,
@@ -128,6 +129,11 @@ class TagCloud extends Component {
       .data(data.words)
       .enter()
       .append('tr');
+
+    if (this.state.lemmatize) {
+      row.attr('title', d => this.state.lemmaOrigin[d.text].sort((a, b) => b.count - a.count).map(w => `${w.word}: ${w.count}`).join('\n'));
+    };
+
     row.append('td')
       .text(d => d.text);
     row.append('td')
@@ -214,13 +220,21 @@ class TagCloud extends Component {
       };
       if (lemma) {
         const lemmatizedWords = {};
+        const lemmaOrigin = {};
         for (let word in lemma) {
-          lemmatizedWords[lemma[word]] || (lemmatizedWords[lemma[word]] = 0);
+          if (!lemmatizedWords[lemma[word]]) {
+            lemmaOrigin[lemma[word]] = [];
+            lemmatizedWords[lemma[word]] = 0;
+          };
+          lemmaOrigin[lemma[word]].push({
+            word: word,
+            count: data[word]
+          });
           lemmatizedWords[lemma[word]] += data[word];
         }
         const max = Math.max(...Object.values(lemmatizedWords));
         const min = Math.min(...Object.values(lemmatizedWords));
-        this.setState({ lemmatizedWords: lemmatizedWords, lemmatizedMaxOccurrence: max, lemmatizedMinOccurence: min });
+        this.setState({ lemmaOrigin: lemmaOrigin, lemmatizedWords: lemmatizedWords, lemmatizedMaxOccurrence: max, lemmatizedMinOccurence: min });
       };
     };
 

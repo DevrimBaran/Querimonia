@@ -8,7 +8,6 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import View from './components/View';
-import Login from './components/Login';
 
 import Home from './views/Home';
 import Import from './views/Import';
@@ -49,21 +48,11 @@ function init () {
 
 function login () {
   return (dispatch) => {
-    fetch(process.env.REACT_APP_BACKEND_PATH + '/admin', {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        // 'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5',
-        'Content-Type': 'application/json'
-      }
-    }).then((response) => {
-      switch (response.status) {
-        case 401:
-          break;
-        case 404:
-          break;
-        default:
-      }
+    Api.fetch(process.env.REACT_APP_BACKEND_PATH + '/access', {}, 'post').then((response) => {
+      dispatch({
+        type: 'LOGIN',
+        access: response.headers.get('Access')
+      });
     });
   };
 }
@@ -152,9 +141,6 @@ class App extends Component {
             <div className='scrollable'>
               <ul id='mainMenu' />
               <ul id='bottomMenu'>
-                <li>
-                  <Login />
-                </li>
                 <li className='image'>
                   <a href='https://www.iao.fraunhofer.de/' rel='noopener noreferrer' target='_blank'>
                     <img src={iaoPartner} alt='logo' />
