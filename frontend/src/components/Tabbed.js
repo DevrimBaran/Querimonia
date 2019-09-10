@@ -34,7 +34,7 @@ class Tabbed extends Component {
             }
             return (
               [
-                <h5 key={'label' + i} className={className} onClick={tab.props.disabled ? undefined : () => this.handleClick(i)}>{tab.props.label}</h5>,
+                <h5 key={'label' + i} title={tab.props.titleHeader} className={className} onClick={tab.props.disabled ? undefined : () => this.handleClick(i)}>{tab.props.label}</h5>,
                 <Content key={'content' + i}>{tab}</Content>
               ]
             );

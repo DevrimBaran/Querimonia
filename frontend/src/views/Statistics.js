@@ -54,12 +54,12 @@ class Statistics extends Component {
     let statVar = 'count';
     let data = Object.values(data2).map((d, i) => { return d[statVar]; });
     let dataKeys = Object.keys(data2);
-    datas.push({ key: dataKeys, value: data, header: ['Kategorie', 'Anzahl'] });
+    datas.push({ data: this.sortData(data, dataKeys, true), header: ['Kategorie', 'Anzahl'] });
 
     statVar = 'tendency';
     data = Object.values(data2).map((d, i) => { return d[statVar]; });
     dataKeys = Object.keys(data2);
-    datas.push({ key: dataKeys, value: data, header: ['Kategorie', 'Sentiment'] });
+    datas.push({ data: this.sortData(data, dataKeys, true), header: ['Kategorie', 'Sentiment'] });
 
     let colors = { Ekel: 'brown', Freude: 'green', Furcht: 'black', Trauer: 'pink', Ueberraschung: 'steelblue', Verachtung: 'orange', Wut: 'red', Unbekannt: 'gray' };
     statVar = 'emotion';
@@ -67,14 +67,14 @@ class Statistics extends Component {
     data = [];
     dataKeys = [];
     Object.values(data2).forEach((d, i) => { sum = 0; Object.values(d[statVar]).forEach((e, j) => { e = e * 100; let key = Object.keys(data2)[i]; let key2 = Object.keys(d[statVar])[j]; dataKeys.push(key); sum += e; data.push([e, sum, colors[key2], key2, key]); }); });
-    datas.push({ key: dataKeys, value: data, colors: colors });
+    datas.push({ data: this.sortData(data, dataKeys, false), keys: [...new Set(dataKeys)], colors: colors });
 
     colors = { ERROR: 'red', ANALYSING: 'orange', NEW: 'green', IN_PROGRESS: 'steelblue', CLOSED: 'grey' };
     statVar = 'status';
     data = [];
     dataKeys = [];
     Object.values(data2).forEach((d, i) => { sum = 0; Object.values(d[statVar]).forEach((e, j) => { e = e * 100; let key = Object.keys(data2)[i]; let key2 = Object.keys(d[statVar])[j]; dataKeys.push(key); sum += e; data.push([e, sum, colors[key2], key2, key]); }); });
-    datas.push({ key: dataKeys, value: data, colors: colors });
+    datas.push({ data: this.sortData(data, dataKeys, false), keys: [...new Set(dataKeys)], colors: colors });
 
     return datas;
   };
@@ -85,7 +85,7 @@ class Statistics extends Component {
     Object.keys(data2).forEach((k, i) => {
       let data = Object.values(data2[k]);
       let dataKeys = Object.keys(data2[k]);
-      datas.push({ key: dataKeys, value: data, header: ['Wert', 'Anzahl'] });
+      datas.push({ data: this.sortData(data, dataKeys, true), header: ['Wert', 'Anzahl'] });
     });
     return datas;
   };
@@ -95,8 +95,7 @@ class Statistics extends Component {
 
     let data = Object.values(data2);
     let dataKeys = Object.keys(data2);
-    datas.push({ key: dataKeys, value: data, header: ['ID', 'Anzahl'] });
-
+    datas.push({ data: this.sortData(data, dataKeys, true), header: ['ID', 'Anzahl'] });
     return datas;
   };
 
@@ -106,7 +105,7 @@ class Statistics extends Component {
     let statVar = 'count';
     let data = Object.values(data2).map((d, i) => { return d[statVar]; });
     let dataKeys = Object.keys(data2);
-    datas.push({ key: dataKeys, value: data, header: ['Monat', 'Anzahl'] });
+    datas.push({ data: this.sortData(data, dataKeys, true), header: ['Monat', 'Anzahl'] });
 
     let colors = { ERROR: 'red', ANALYSING: 'orange', NEW: 'green', IN_PROGRESS: 'steelblue', CLOSED: 'grey' };
     statVar = 'status';
@@ -114,12 +113,12 @@ class Statistics extends Component {
     data = [];
     dataKeys = [];
     Object.values(data2).forEach((d, i) => { sum = 0; Object.values(d[statVar]).forEach((e, j) => { e = e * 100; let key = Object.keys(data2)[i]; let key2 = Object.keys(d[statVar])[j]; dataKeys.push(key); sum += e; data.push([e, sum, colors[key2], key2, key]); }); });
-    datas.push({ key: dataKeys, value: data, colors: colors });
+    datas.push({ data: this.sortData(data, dataKeys, false), keys: [...new Set(dataKeys)], colors: colors });
 
     statVar = 'processingDuration';
     data = Object.values(data2).map((d, i) => { return d[statVar]; });
     dataKeys = Object.keys(data2);
-    datas.push({ key: dataKeys, value: data, header: ['Monat', 'Bearbeitungszeit'] });
+    datas.push({ data: this.sortData(data, dataKeys, true), header: ['Monat', 'Bearbeitungszeit'] });
 
     return datas;
   };
@@ -178,6 +177,15 @@ class Statistics extends Component {
       });
   }
 
+  sortData = (value, key, opt) => {
+    console.log('start');
+    var list = [];
+    for (var j = 0; j < value.length; j++) { list.push({ 'value': value[j], 'key': key[j] }); }
+    opt ? list.sort((a, b) => { return b.value - a.value; }) : list.sort((a, b) => { return a.key === b.key ? a.value[0] - b.value[0] : 0; });
+    console.log(list);
+    return list;
+  }
+
   render () {
     if (!(this.state && this.state.data)) this.activateComplaint();
     if (this.state && this.state.data) {
@@ -215,7 +223,7 @@ class Statistics extends Component {
               <h1 className='center'>Statistiken</h1>
               <Content>
                 <Tabbed vertical>
-                  <div label='Kategorien'>
+                  <div titleHeader='Merkmale nach Kategorien aufgesplittet' label='Kategorien'>
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
@@ -233,7 +241,7 @@ class Statistics extends Component {
                       </tbody>
                     </Table>
                   </div>
-                  <div label='Entitäten'>
+                  <div titleHeader='Häufigsten erkannte Werte zu jedem Entitäts-Label' label='Entitäten'>
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
@@ -251,7 +259,7 @@ class Statistics extends Component {
                       </tbody>
                     </Table>
                   </div>
-                  <div label='Regeln'>
+                  <div titleHeader='Meist verwendeten Regeln mit ihrer Anzahl ' label='Regeln'>
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
@@ -269,7 +277,7 @@ class Statistics extends Component {
                       </tbody>
                     </Table>
                   </div>
-                  <div label='Monate'>
+                  <div titleHeader='Merkmale nach Monate aufgesplittet' label='Monate'>
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
