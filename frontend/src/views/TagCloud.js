@@ -131,7 +131,9 @@ class TagCloud extends Component {
     row.append('td')
       .text(d => d.text);
     row.append('td')
-      .text(d => d.value);
+      .text(d => d.value)
+      .style('text-align', 'right')
+      .style('padding-left', '20px');
   };
 
     onChange = (e) => {
@@ -241,7 +243,7 @@ class TagCloud extends Component {
                 <Input type='checkbox' label='Nur Wörter' name='words_only' onChange={this.changeQuery} value={this.state.query.words_only} />
                 <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               </Form>
-              <div style={{ display: 'flex', 'justify-content': 'space-evenly', 'align-items': 'center' }}>
+              <div style={{ display: 'flex', 'justifyContent': 'space-evenly', 'alignItems': 'center' }}>
                 <span>
                   <DownloadButton icon='fas fa-3x fa-file-csv' type='text/csv; charset=utf-8' name='Wortanzahl.csv' onClick={this.downloadCsv} />
                   <DownloadButton disabled={this.state.listView} icon='fas fa-3x fa-file-image' type='image/svg+xml; charset=utf-8' name='Tagcloud.svg' onClick={this.downloadSvg} />
@@ -250,7 +252,7 @@ class TagCloud extends Component {
                   <Toggle on='fas fa-cloud' off='fas fa-list' style={{ '--width': '90px', '--height': '35px' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
                 </span>
                 <span>
-                  <Input type='checkbox' label='Lemmatize' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
+                  <Input type='checkbox' label='Stammformen' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
                 </span>
                 <span>
                   <Input type='colorpicker' label='Farbton' name='color' onChange={this.onChange} value={this.state.color} />
@@ -261,8 +263,7 @@ class TagCloud extends Component {
                   id='d3Container'
                   render={this.state.listView ? this.renderList : this.renderCloud}
                   data={{ color: this.state.color, words: this.createWordArray(), list: this.state.listView }}
-                  style={{ height: '100%' }}
-                />
+                  style={{ height: '100%', display: 'flex', 'justifyContent': 'center' }} />
               </Content>
             </Row>
           </Block>

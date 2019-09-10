@@ -94,7 +94,9 @@ $inputBorder: 2px solid;
             user-select: none;
         }
     }
-
+    select[multiple]:focus {
+        height: auto;
+    }
     input[type=submit], input[type=button], button {
         max-width: 200px;
         background-color: $primaryAccentColor;
