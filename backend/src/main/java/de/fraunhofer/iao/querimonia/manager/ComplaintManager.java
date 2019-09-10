@@ -609,7 +609,7 @@ public class ComplaintManager {
     return combinations.stream()
         .filter(combination -> line == null || combination.getLine().equals(line))
         .filter(combination -> place == null || combination.getPlace().equals(place))
-        .noneMatch(combination -> stop == null || combination.getStop().equals(stop));
+        .noneMatch(combination -> stop == null || stop.equals(combination.getStop()));
   }
 
   /**
