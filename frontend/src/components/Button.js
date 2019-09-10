@@ -17,7 +17,7 @@ class Button extends Component {
     if (children) {
       return (
         <button disabled={disabled} onClick={disabled ? this.stopPropagation : onClick} className={className + ' action-button'} {...passThrough}>
-          {icon && <i className={icon} />}{icon && 'nbsp;'}{children}
+          {icon && <i className={icon} />} {children}
         </button>
       );
     } else {

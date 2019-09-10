@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Tables for the Statistic Page
  *
  * @version <0.1>
  */
@@ -28,9 +27,9 @@ class StatsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {data.key.map((d, i) => <tr key={i}>
-            {data.header[0] === 'ID' ? <td><Link to={'/rules/' + d}>{d}</Link></td> : <td>{d}</td>}
-            <td>{parseFloat(Number(data.value[i]).toFixed(2))}</td>
+          {data.data.map((d, i) => <tr key={i}>
+            {data.header[0] === 'ID' ? <td><Link to={'/rules/' + d.key}>{d.key}</Link></td> : <td>{d.key}</td>}
+            <td>{parseFloat(Number(d.value).toFixed(2))}</td>
           </tr>)}
         </tbody>
       </Table>
@@ -38,7 +37,7 @@ class StatsTable extends Component {
   }
 
   renderTable2 = (data) => {
-    let s = [...new Set(data.key)];
+    let s = data.keys;
     let stati = Object.keys(data.colors);
     return (
       <Table>
@@ -52,7 +51,7 @@ class StatsTable extends Component {
           {stati.map((d, i) => <tr key={i}>
             <th>{d}</th>
             {s.map((l, j) =>
-              <td key={j}>{parseFloat(Number((data.value.filter(v => v[3] === d).find((v, k) => v[4] === l) ? data.value.filter(v => v[3] === d).find((v, k) => v[4] === l)[0] : 0).toFixed(2)))}</td>
+              <td key={j}>{parseFloat(Number((data.data.filter(v => v.value[3] === d).find((v, k) => v.value[4] === l) ? data.data.filter(v => v.value[3] === d).find((v, k) => v.value[4] === l).value[0] : 0).toFixed(2)))}</td>
             )}
           </tr>)}
         </tbody>

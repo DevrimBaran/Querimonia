@@ -98,9 +98,19 @@
         background-color: $primaryBackgroundColor;
         width: 80%;
         height: 80%;
+    }
+    .editModal {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border: 1px solid $primaryTextColor;
+        padding: 30px;
+        transform: translate3d(-50%, -50%, 0);
+        background-color: $primaryBackgroundColor;
+        height: 140px;
         
     }
-    .action-button {
+    .modal-button {
         position: absolute;
         top: 0;
         right: 0;

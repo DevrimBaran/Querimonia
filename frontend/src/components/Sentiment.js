@@ -48,8 +48,8 @@ export default function Sentiment (props) {
       </span>
     );
   }
-  const smiley = smilies.find(smiley => props.tendency < smiley.tendency);
-  if (!props.fixed) {
+  const smiley = smilies.find(smiley => props.tendency <= smiley.tendency);
+  if (!props.small) {
     return (
       <span style={{ fontSize: '150%' }} role='img' title={props.tendency} className='emotion'>
         {smiley && smiley.smiley}
@@ -60,9 +60,6 @@ export default function Sentiment (props) {
     <span role='img' className='emotion'>
       <span style={{ fontSize: '120%' }} role='img' className='emotion'>
         {smiley && smiley.smiley}
-      </span>
-      <span role='img' className='emotion'>
-        ({props.tendency.toFixed(props.fixed)})
       </span>
     </span>
   );
