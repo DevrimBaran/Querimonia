@@ -167,9 +167,12 @@ public class ComplaintBuilder {
     ComplaintProperty newProperty = new ComplaintProperty(propertyName, value);
     if (!property.isEmpty()) {
       property.forEach(properties::remove);
+      Map<String, Double> probabilities = property.stream().findFirst().orElseThrow().getProbabilities();
+      System.out.println(probabilities);
+
       newProperty =
           new ComplaintProperty(propertyName, value,
-              property.stream().findFirst().orElseThrow().getProbabilities(),
+              probabilities,
               true);
     }
     properties.add(newProperty);
