@@ -79,11 +79,11 @@ class App extends Component {
           break;
         // R-Button-Event
         case 'KeyR' :
-          window.location.replace(prefix + '/rules');
+          window.location.replace(prefix + '/components');
           break;
         // K-Button-Event
         case 'KeyK' :
-          window.location.replace(prefix + '/configuration');
+          window.location.replace(prefix + '/configurations');
           break;
         // I-Button-Event
         case 'KeyI' :
@@ -155,30 +155,22 @@ class App extends Component {
             </div>
           </nav>
           <ErrorModal error={this.error} />
-          {login.access >= -1 && (
-            <React.Fragment>
-              <View exact path='/' component={Home} />
-              <View menu='bottomMenu' label='Impressum' path='/impressum' component={Impressum} />
-            </React.Fragment>
-          )}
-          {login.access === 0 && (
-            <React.Fragment>
-              <View label='Import' path='/import' component={Import} />
-              <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-              <View label='Statistiken' path='/statistics' component={Statistics} />
-            </React.Fragment>
-          )}
-          {login.access === 1 && (
-            <React.Fragment>
-              <View label='Import' path='/import' component={Import} />
-              <View label='Beschwerden' endpoint='complaints' path='/complaints/:id?' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />
-              <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />
-              <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />
-              <View label='Statistiken' path='/statistics' component={Statistics} />
-              <View label='Regeln' endpoint='components' path='/rules/:id?' component={Components} />
-              <View label='Konfigurationen' endpoint='config' path='/configuration/:id?' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />
-            </React.Fragment>
-          )}
+          <View exact path='/' component={Home} />
+          {login.access >= 0 &&
+            <View label='Import' path='/import' component={Import} />}
+          {login.access >= 0 &&
+            <View label='Beschwerden' endpoint='complaints' path='complaints' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />}
+          {login.access === 1 &&
+            <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />}
+          {login.access === 1 &&
+            <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />}
+          {login.access >= 0 &&
+            <View label='Statistiken' path='/statistics' component={Statistics} />}
+          {login.access === 1 &&
+            <View label='Regeln' endpoint='components' path='components' component={Components} />}
+          {login.access === 1 &&
+            <View label='Konfigurationen' endpoint='config' path='configurations' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />}
+          <View menu='bottomMenu' label='Impressum' path='/impressum' component={Impressum} />
         </Router>
       </React.Fragment>
     );

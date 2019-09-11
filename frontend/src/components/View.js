@@ -26,9 +26,9 @@ class View extends Component {
     if (endpoint) {
       return (
         <React.Fragment>
-          {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={'/' + endpoint}>{label}</NavLink>), this.li)}
-          <Route {...injected} exact path={'/' + endpoint + '/:id'} endpoint={endpoint} component={SingleView(endpoint, component, stateToProps)} />
-          <Route {...injected} exact path={'/' + endpoint} endpoint={endpoint} component={ListView(endpoint, component, stateToProps)} />
+          {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={'/' + (path || endpoint)}>{label}</NavLink>), this.li)}
+          <Route {...injected} exact path={'/' + (path || endpoint) + '/:id'} endpoint={endpoint} component={SingleView(endpoint, component, stateToProps)} />
+          <Route {...injected} exact path={'/' + (path || endpoint)} endpoint={endpoint} component={ListView(endpoint, component, stateToProps)} />
         </React.Fragment>
       );
     } else {

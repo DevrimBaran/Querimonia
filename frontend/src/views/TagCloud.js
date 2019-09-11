@@ -51,20 +51,19 @@ class TagCloud extends Component {
     if (hsl.l === 100) { // white
       hsl.l = 50;
       hsl.s = 70;
-      hsl.random = () => {
-        hsl.h = Math.random() * 360;
+      hsl.random = (perc) => {
+        hsl.h = (1 - perc) * 270;
         return hsl.css();
       };
     } else if (hsl.s === 0) { // grey
-      hsl.random = () => {
-        hsl.l = Math.random() * 60 + 30;
+      hsl.random = (perc) => {
+        hsl.l = (1 - perc) * 40 + 40;
         return hsl.css();
       };
     } else { // color
       hsl.l = 50;
-      hsl.random = () => {
-        // hsl.l = Math.random() * 0.6 + 0.3;
-        hsl.s = Math.random() * 80 + 20;
+      hsl.random = (perc) => {
+        hsl.s = (1 - perc) * 40 + 40;
         return hsl.css();
       };
     }
@@ -88,7 +87,7 @@ class TagCloud extends Component {
           return d.size + 'px';
         })
         .attr('fill', d => {
-          return hsl.random();
+          return hsl.random((d.size - 20) / 110);
         })
         .attr('text-anchor', 'middle')
         .attr('transform', function (d) {
