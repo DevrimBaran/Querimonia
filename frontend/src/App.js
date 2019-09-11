@@ -64,7 +64,7 @@ class App extends Component {
     document.addEventListener('keydown', this.handleKeyDown);
   }
   handleKeyDown = (e) => {
-    if (e.target === document.body && e.ctrlKey) {
+    if (e.altKey) {
       let prefix = '';
       if (window.location.pathname.startsWith('/dev')) {
         prefix = '/dev';
