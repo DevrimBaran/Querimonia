@@ -22,11 +22,20 @@ class View extends Component {
     document.getElementById(this.props.menu || 'mainMenu').appendChild(this.li);
   }
   render () {
-    const { path, component, endpoint, stateToProps, label, menu, ...injected } = { ...this.props };
+    const { path, component, endpoint, stateToProps, label, hotkey, menu, ...injected } = { ...this.props };
+    const hotkeyIndex = label ? label.indexOf(hotkey) : -1;
+    const hotkeyLabel = hotkeyIndex >= 0 ? (
+      [
+        <span key='0'>{label.substring(0, hotkeyIndex)}</span>,
+        <span key='1' className='underline'>{label.substr(hotkeyIndex, 1)}</span>,
+        <span key='2'>{label.substring(hotkeyIndex + 1)}</span>
+      ]
+    ) : label;
+    console.log(hotkeyIndex, hotkeyLabel);
     if (endpoint) {
       return (
         <React.Fragment>
-          {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={'/' + (path || endpoint)}>{label}</NavLink>), this.li)}
+          {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={'/' + (path || endpoint)}>{hotkeyLabel}</NavLink>), this.li)}
           <Route {...injected} exact path={'/' + (path || endpoint) + '/:id'} endpoint={endpoint} component={SingleView(endpoint, component, stateToProps)} />
           <Route {...injected} exact path={'/' + (path || endpoint)} endpoint={endpoint} component={ListView(endpoint, component, stateToProps)} />
         </React.Fragment>
@@ -34,7 +43,7 @@ class View extends Component {
     } else {
       return (
         <React.Fragment>
-          {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={path}>{label}</NavLink>), this.li)}
+          {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={path}>{hotkeyLabel}</NavLink>), this.li)}
           <Route {...injected} exact path={path} component={component} />
         </React.Fragment>
       );

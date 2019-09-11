@@ -157,20 +157,20 @@ class App extends Component {
           <ErrorModal error={this.error} />
           <View exact path='/' component={Home} />
           {login.access >= 0 &&
-            <View label='Import' path='/import' component={Import} />}
+            <View hotkey='I' label='Import' path='/import' component={Import} />}
           {login.access >= 0 &&
-            <View label='Beschwerden' endpoint='complaints' path='complaints' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />}
+            <View hotkey='B' label='Beschwerden' endpoint='complaints' path='complaints' stateToProps={(state) => ({ complaintStuff: state.complaintStuff })} component={Complaints} />}
           {login.access === 1 &&
-            <View label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />}
+            <View hotkey='h' label='Worthäufigkeit' path='/word_frequency' component={TagCloud} />}
           {login.access === 1 &&
-            <View label='Wortvektoren' path='/wordvectors' component={WordVectors} />}
+            <View hotkey='v' label='Wortvektoren' path='/wordvectors' component={WordVectors} />}
           {login.access >= 0 &&
-            <View label='Statistiken' path='/statistics' component={Statistics} />}
+            <View hotkey='S' label='Statistiken' path='/statistics' component={Statistics} />}
           {login.access === 1 &&
-            <View label='Regeln' endpoint='components' path='components' component={Components} />}
+            <View hotkey='R' label='Regeln' endpoint='components' path='components' component={Components} />}
           {login.access === 1 &&
-            <View label='Konfigurationen' endpoint='config' path='configurations' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />}
-          <View menu='bottomMenu' label='Impressum' path='/impressum' component={Impressum} />
+            <View hotkey='K' label='Konfigurationen' endpoint='config' path='configurations' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />}
+          <View menu='bottomMenu' hotkey='?' label='Impressum (?)' path='/impressum' component={Impressum} />
         </Router>
       </React.Fragment>
     );
