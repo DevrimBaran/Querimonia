@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * If used in a Row, it takes up as much space as needed, or scrolls.
  *
  * @version <0.1>
  */

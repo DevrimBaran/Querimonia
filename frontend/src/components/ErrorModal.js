@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Popup with error-Message
  *
  * @version <0.1>
  */

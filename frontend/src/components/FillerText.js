@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Text with selects for responses
  *
  * @version <0.1>
  */

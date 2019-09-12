@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Sends Request to Backend and displays the answers.
  *
  * @version <0.1>
  */

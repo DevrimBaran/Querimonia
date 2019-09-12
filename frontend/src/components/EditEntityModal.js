@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Popup to edit entities.
  *
  * @version <0.1>
  */

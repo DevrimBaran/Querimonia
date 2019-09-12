@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * It's a big div
  *
  * @version <0.1>
  */
