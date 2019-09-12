@@ -15,7 +15,6 @@ import Content from '../../components/Content';
 import DeepObject from '../../components/DeepObject';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
-import Input from '../../components/Input';
 
 function Header () {
   return (
