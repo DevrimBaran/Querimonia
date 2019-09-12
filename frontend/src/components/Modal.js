@@ -66,17 +66,17 @@ class Modal extends Component {
     });
   }
   render () {
-    const { title, register, htmlFor, onOpen, onClose, className = '', ...passThrough } = { ...this.props };
+    const { title, register, htmlFor, onOpen, onClose, className = '', contentName = 'content', ...passThrough } = { ...this.props };
     return (
       ReactDOM.createPortal(
         (<div ref={this.modal} className={className + ' modal'} htmlFor={htmlFor} {...passThrough} >
           <div className='background' onClick={this.hide} />
-          <div className='content'>
+          <div className={contentName}>
             <b style={{ align: 'center' }}>{title}</b>
             <br />
             <br />
             {this.props.children}
-            <Button icon='fas fa-times-circle fa-x' onClick={this.hide} />
+            <Button className={'modal-button'} icon='fas fa-times-circle fa-x' onClick={this.hide} />
           </div>
         </div>),
         document.body

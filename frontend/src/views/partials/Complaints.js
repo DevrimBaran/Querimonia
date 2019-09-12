@@ -17,7 +17,9 @@ import Content from '../../components/Content';
 import Collapsible from '../../components/Collapsible';
 import Sentiment from '../../components/Sentiment';
 import Tag from '../../components/Tag';
+import InformationTag from '../../components/InformationTag';
 import EditEntityModal from '../../components/EditEntityModal';
+import EditDetailsModal from '../../components/EditDetailsModal';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 import TaggedText from '../../components/TaggedText';
@@ -28,6 +30,8 @@ import Liste from '../../components/List';
 // import Input from '../../components/Input';
 // import Debug from '../../components/Debug';
 import Button from '../../components/Button';
+import DownloadButton from '../../components/DownloadButton';
+import api from '../../utility/Api';
 
 const sortedEntities = (data, complaintId, dispatch, disabled) => {
   const entities = data.ids.map(id => data.byId[id]).sort((a, b) => {
@@ -78,13 +82,18 @@ function List (data, dispatch, helpers) {
     }
     return false;
   };
+  const xml = (e) => {
+    e.stopPropagation();
+    return api.get(`/api/complaints/${data.id}/xml`, {}, 'blob');
+  };
   return (
-    <tr className='pointer' key={data.id} onClick={helpers ? helpers.transitionTo('/complaints/' + data.id) : undefined}>
+    <tr className='pointer' key={data.id} onClick={helpers.edit}>
       <th>
         <Row>
           {data.id}
           <div>
             <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'} icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
+            <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8' disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code' onClick={xml} />
             {helpers && helpers.remove(data.id)}
           </div>
         </Row>
@@ -92,7 +101,7 @@ function List (data, dispatch, helpers) {
       <td>{data.state}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment fixed={null} tendency={data.sentiment.tendency} /></td>
+      <td><Sentiment tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
     </tr>
@@ -130,7 +139,7 @@ function Single (active, dispatch, helpers) {
               <div label='Log'>
                 {helpers.props.complaintStuff.log.map((entry, i) => (
                   <div key={i} className='log'>
-                    <span className='category'>[{entry.category}]</span> <span className='datetime'>{entry.date} {entry.time}</span>
+                    <span className='category'>[{entry.category}]</span> <span className='datetime'>{entry.date} {entry.time} UTC</span>
                     <br />
                     <div className='message'>
                       {entry.message}
@@ -146,19 +155,32 @@ function Single (active, dispatch, helpers) {
               </div> */}
             </Tabbed>
           </Content>
-          <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
+          <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text}
+            entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
+          <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
           <Collapsible label='Details' />
           <Liste styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
-            ['Konfiguration', (<Link to={'/configuration/' + active.configuration.id}>{active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
+            ['Konfiguration', (<Link to={'/configuration/' + active.configuration.id}>
+              {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
             ['Eingangsdatum', (localize(active.receiveDate))],
             ['Eingangszeit', (active.receiveTime)],
             ['Status', (active.state)],
             ['ID', (active.id)],
-            { map: (cb) => (active.properties.map((property, i) => (
-              [property.name, property.value].map(cb)
-            ))) },
-            ['Sentiment', (<Sentiment fixed={2} tendency={active.sentiment ? active.sentiment.tendency : null} />)],
-            ['Emotion', (active.sentiment ? active.sentiment.emotion.value : 0)]
+            { map: (cb) => (active.properties.map((property) => {
+              return (
+                [property.name, <InformationTag text={property.value} probabilities={property.probabilities} />,
+                  <Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
+                    data-propertyindex={0} data-category={property.value} data-mode={'category'} onClick={(e) => EditDetailsModal.open(e)} />]
+                  .map(cb)
+              )
+              ;
+            })) },
+            ['Sentiment', <InformationTag text={<Sentiment small tendency={active.sentiment ? active.sentiment.tendency : null} />}
+              probabilities={active.sentiment.tendency} />, <Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten' icon={'fas fa-edit'} data-sentiment={
+              active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'} onClick={(e) => EditDetailsModal.open(e)} />],
+            ['Emotion', <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
+              probabilities={active.sentiment.emotion.probabilities} />, <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
+              active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />]
           ]} />
           <Collapsible label='Entitäten'
             disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}

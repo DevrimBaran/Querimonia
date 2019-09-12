@@ -123,6 +123,27 @@ export function refreshComplaint (id) {
     });
   };
 }
+export function editComplaint (complaintId, complaintStuff, query) {
+  return function (dispatch, getState) {
+    dispatch((dispatch) => {
+      Api.patch('/api/complaints/' + complaintId, query)
+        .then(response => {
+          if (!response.state || response.state !== 'ANALYSING') {
+            dispatch({
+              type: 'UPDATE_SINGLE',
+              data: response,
+              endpoint: 'complaints'
+            });
+            dispatch({
+              type: 'SET_ACTIVE',
+              endpoint: 'complaints',
+              id: complaintId
+            });
+          }
+        });
+    });
+  };
+}
 export function changeEntity (complaintId, id = 0, changes) {
   return function (dispatch, getState) {
     const data = getState().complaintStuff.entities.byId[id];

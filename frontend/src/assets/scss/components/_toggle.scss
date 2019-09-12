@@ -1,0 +1,88 @@
+label.toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    --height: 20px;
+    --width: 45px;
+    input {
+        display: none;
+        & + .toggle-input {
+            .fa {
+                position: relative;
+                font-size: var(--height);
+            }
+            .toggle-off {
+                color: $secondary;
+                font-size: var(--height);
+            }
+            .toggle-on {
+                color: $grey;
+                font-size: var(--height);
+            }
+            .toggle-toggle {
+                position: relative;
+                margin: 0 10px;
+                width: var(--width);
+                height: var(--height);
+                border-radius: var(--height);
+                display: inline-flex;
+                border: 1px solid $black;
+                box-sizing: content-box;
+                vertical-align: text-bottom;
+            }
+            .toggle-dot {
+                position: absolute;
+                width: var(--height);
+                height: var(--height);
+                border-radius: 50%;
+                background-color: $white;
+                flex-grow: 0;
+            }
+            .toggle-pre, .toggle-post {
+                position: relative;
+                overflow: hidden;
+                height: var(--height);
+                width: var(--width);
+                &::before {
+                    content: '';
+                    position: absolute;
+                    display: block;
+                    border-radius: var(--height);
+                    height: var(--height);
+                    width: var(--width);
+                }
+            }
+            .toggle-pre {
+                width: var(--width);
+                &::before {
+                    left: 0;
+                    background-color: $primary;
+                }
+            }
+            .toggle-post {
+                width: 0;
+                &::before {
+                    right: 0;
+                    background-color: $secondary;
+                }
+            }
+        }
+        &:checked + .toggle-input {
+            .toggle-off {
+                color: $grey;
+            }
+            .toggle-on {
+                color: $secondary;
+            }
+            .toggle-pre {
+                width: 0;
+            }
+            .toggle-dot {
+                right: 0px;
+            }
+            .toggle-post {
+                width: var(--width);
+            }
+        }
+    }
+}

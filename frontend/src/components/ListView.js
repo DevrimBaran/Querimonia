@@ -14,13 +14,9 @@ import Pagination from './Pagination';
 export default (endpoint, partial, stateToProps) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
     edit = (id) => {
-      return (
-        <Link to={'/' + endpoint + '/' + id}>
-          <span className='action-button'>
-            <i title='Bearbeiten' className={'far fa-edit'} />
-          </span>
-        </Link>
-      );
+      return (e) => {
+        this.props.history.push(endpoint + '/' + id);
+      };
     }
     copy = (id) => {
       const dispatchCopy = () => {
@@ -77,13 +73,9 @@ export default (endpoint, partial, stateToProps) => {
                     <tbody>
                       {this.props.ids.map(id => partial.List(this.props.byId[id], this.props.dispatch,
                         {
-                          edit: this.edit,
+                          edit: this.edit(id),
                           copy: this.copy,
-                          remove: this.remove,
-                          transitionTo: (to) =>
-                            (e) => {
-                              this.props.history.push(to);
-                            }
+                          remove: this.remove
                         }
                       ))}
                     </tbody>

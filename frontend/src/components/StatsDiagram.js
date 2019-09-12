@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Diagrams for the Statistic Page
  *
  * @version <0.1>
  */
@@ -19,11 +18,11 @@ class StatsDiagram extends Component {
 
   render () {
     const { id, data, style } = { ...this.props };
-    let barcharts = [renderBarchart3, renderBarchart5, renderBarchart6];
+    let barcharts = [renderBarchart, renderBarchartPercent, renderBarchartSentiment];
     let index = 0;
     if (data.colors) {
       index = 1;
-    } else if (data.value.find(d => d < 0)) {
+    } else if (data.data.find(d => d.value < 0)) {
       index = 2;
     }
     return (
@@ -32,30 +31,24 @@ class StatsDiagram extends Component {
   }
 }
 
-const renderBarchart6 = (target, data3, d3) => {
-  let data = data3.value;
-  let dataKeys = data3.key;
+const renderBarchartSentiment = (target, data3, d3) => {
+  let data = data3.data.reverse();
 
-  var width = 300;
-  var height = 300;
-
-  if (dataKeys.length > 4) {
-    width = 400;
-  }
+  let width = 350;
+  var height = 350;
 
   var widthView = 500;
-  var heightView = 450;
+  var heightView = 400;
 
   // set the ranges
-  var x = d3.scaleBand()
+  var x = d3.scaleLinear()
     .range([0, width])
-    .padding(0.1)
-    .domain(data.map(function (d, i) { return dataKeys[i]; }));
-  var y = d3.scaleLinear()
-    .range([height, 0])
     .domain([-1, 1]);
 
-  var yAxis = d3.axisLeft(y);
+  var y = d3.scaleBand()
+    .range([height, 0])
+    .padding(0.1)
+    .domain(data.map(function (d, i) { return d.key; }));
 
   // append the svg object to the body of the page
   // append a 'group' element to 'svg'
@@ -67,32 +60,43 @@ const renderBarchart6 = (target, data3, d3) => {
     .classed('svg-container', true)
     .append('svg')
     .attr('preserveAspectRatio', 'xMinYMin meet')
-    .attr('viewBox', '-50 -20 ' + widthView + ' ' + heightView);
+    .attr('viewBox', '-100 -20 ' + widthView + ' ' + heightView);
 
+  /*
   svg.selectAll('.bar')
     .data(data)
     .enter().append('rect')
-    .attr('class', function (d) { return d < 0 ? 'bar negative' : 'bar positive'; })
-    .attr('y', function (d) { return y(d + 0.02); })
-    .attr('x', function (d, i) { return x(dataKeys[i]); })
-    .attr('height', function (d) { return Math.abs(y(d + 0.02) - y(d - 0.02)); })
-    .attr('width', x.bandwidth())
+    .attr('class', function (d) { return d.value < 0 ? 'bar negative' : 'bar positive'; })
+    .attr('y', function (d, i) { return y(d.key); })
+    .attr('x', function (d, i) { return x(d.value - 0.02); })
+    .attr('width', function (d) { return Math.abs(x(d.value + 0.02) - x(d.value - 0.02)); })
+    .attr('height', y.bandwidth())
     .attr('fill', (d, i) => '#179c7d');
+*/
+  svg.selectAll('.bar')
+    .data(data)
+    .enter().append('rect')
+    .attr('class', function (d) { return d.value < 0 ? 'bar negative' : 'bar positive'; })
+    .attr('y', function (d, i) { return y(d.key); })
+    .attr('x', function (d, i) { return Math.abs(d.value) <= 0.02 ? x(-0.02) : Math.min(x(0), x(d.value)); })
+    .attr('width', function (d) { return Math.abs(d.value) <= 0.02 ? x(0.02) - x(-0.02) : Math.abs(x(d.value) - x(0)); })
+    .attr('height', y.bandwidth())
+    .attr('fill', (d, i) => (d.value < -0.02 ? 'red' : d.value > 0.02 ? 'green' : 'gray'));
+  svg.append('line')
+    .style('stroke', 'black')
+    .style('stroke-dasharray', '10')
+    .attr('y1', 0)
+    .attr('y2', height)
+    .attr('x1', x(0))
+    .attr('x2', x(0));
 
+  // add the y Axis
   svg.append('g')
-    .attr('class', 'x axis')
-    .call(yAxis);
-
+    .call(d3.axisLeft(y));
   // add the x Axis
   svg.append('g')
     .attr('transform', 'translate(0,' + height + ')')
-    .call(d3.axisBottom(x))
-    .selectAll('text')
-    .attr('y', 0)
-    .attr('x', 9)
-    .attr('dy', '.35em')
-    .attr('transform', 'rotate(90)')
-    .style('text-anchor', 'start');
+    .call(d3.axisBottom(x));
 
   svg.append('g')
     .attr('class', 'y axis')
@@ -102,23 +106,23 @@ const renderBarchart6 = (target, data3, d3) => {
     .attr('x1', 0)
     .attr('x2', width);
 };
-const renderBarchart5 = (target, data3, d3) => {
-  let data = data3.value;
-  let dataKeys = data3.key;
+const renderBarchartPercent = (target, data3, d3) => {
+  let data = data3.data;
   let colors = data3.colors;
 
-  let width = 300;
-  var height = 300;
+  let width = 270;
+  var height = 350;
 
   var widthView = 500;
-  var heightView = 450;
+  var heightView = 400;
 
   // set the ranges
-  var x = d3.scaleBand()
-    .range([0, width])
+  var x = d3.scaleLinear()
+    .range([0, width]);
+
+  var y = d3.scaleBand()
+    .range([height, 0])
     .padding(0.2);
-  var y = d3.scaleLinear()
-    .range([height, 0]);
 
   // append the svg object to the body of the page
   // append a 'group' element to 'svg'
@@ -130,39 +134,33 @@ const renderBarchart5 = (target, data3, d3) => {
     .classed('svg-container', true)
     .append('svg')
     .attr('preserveAspectRatio', 'xMinYMin meet')
-    .attr('viewBox', '-50 -20 ' + widthView + ' ' + heightView);
+    .attr('viewBox', '-100 -20 ' + widthView + ' ' + heightView);
 
   // Scale the range of the data in the domains
-  x.domain(data.map(function (d, i) { return dataKeys[i]; }));
-  y.domain([0, d3.max(data, function (d, i) { return 100; })]);
+  y.domain(data.map(function (d, i) { return d.key; }));
+  x.domain([0, d3.max(data, function (d, i) { return 100; })]);
 
   // append the rectangles for the bar chart
   svg.selectAll('.bar')
     .data(data)
     .enter().append('rect')
     .attr('class', 'bar')
-    .attr('x', function (d, i) { return x(dataKeys[i]); })
-    .attr('width', x.bandwidth())
-    .attr('y', function (d, i) { return y(d[1]); })
-    .attr('height', function (d, i) { return height - y(d[0]); })
-    .attr('fill', (d, i) => d[2]);
+    .attr('x', function (d, i) { return x(d.value[1] - d.value[0]); })
+    .attr('height', y.bandwidth())
+    .attr('y', function (d, i) { return y(d.key); })
+    .attr('width', function (d, i) { return x(d.value[0]); })
+    .attr('fill', (d, i) => d.value[2]);
 
   // add the x Axis
   svg.append('g')
     .attr('transform', 'translate(0,' + height + ')')
-    .call(d3.axisBottom(x))
-    .selectAll('text')
-    .attr('y', 0)
-    .attr('x', 9)
-    .attr('dy', '.35em')
-    .attr('transform', 'rotate(90)')
-    .style('text-anchor', 'start');
+    .call(d3.axisBottom(x));
 
   // add the y Axis
   svg.append('g')
     .call(d3.axisLeft(y));
 
-  var legendRectSize = 15;
+  var legendRectSize = 12;
   var legendSpacing = 8;
   var legend = svg.selectAll('.legend')
     .data(Object.values(colors))
@@ -171,8 +169,8 @@ const renderBarchart5 = (target, data3, d3) => {
     .attr('class', 'legend')
     .attr('transform', function (d, i) {
       var height = legendRectSize + legendSpacing;
-      var horz = 300;
-      var vert = i * height + 10;
+      var horz = 280;
+      var vert = i * height + 50;
       return 'translate(' + horz + ',' + vert + ')';
     });
 
@@ -183,30 +181,26 @@ const renderBarchart5 = (target, data3, d3) => {
     .style('stroke', 'black');
 
   legend.append('text')
-    .attr('x', legendRectSize + legendSpacing)
+    .attr('x', legendRectSize + legendSpacing / 2)
     .attr('y', legendRectSize - legendSpacing / 4)
+    .style('font-size', '13px')
     .text(function (d, i) { return Object.keys(colors)[i]; });
 };
-const renderBarchart3 = (target, data3, d3) => {
-  let data = data3.value;
-  let dataKeys = data3.key;
+const renderBarchart = (target, data3, d3) => {
+  let data = data3.data.reverse();
 
-  var width = 300;
-  var height = 300;
-
-  if (dataKeys.length > 4) {
-    width = 400;
-  }
+  let width = 350;
+  var height = 350;
 
   var widthView = 500;
-  var heightView = 450;
+  var heightView = 400;
 
   // set the ranges
-  var x = d3.scaleBand()
-    .range([0, width])
+  var x = d3.scaleLinear()
+    .range([0, width]);
+  var y = d3.scaleBand()
+    .range([height, 0])
     .padding(0.1);
-  var y = d3.scaleLinear()
-    .range([height, 0]);
 
   d3.select(target).selectAll('div').remove();
   var svg = d3.select(target)
@@ -215,33 +209,31 @@ const renderBarchart3 = (target, data3, d3) => {
     .classed('svg-container', true)
     .append('svg')
     .attr('preserveAspectRatio', 'xMinYMin meet')
-    .attr('viewBox', '-50 -20 ' + widthView + ' ' + heightView);
+    .attr('viewBox', '-100 -20 ' + widthView + ' ' + heightView);
 
   // Scale the range of the data in the domains
-  x.domain(data.map(function (d, i) { return dataKeys[i]; }));
-  y.domain([0, d3.max(data, function (d) { return d; })]);
+  y.domain(data.map(function (d, i) { return d.key; }));
+  x.domain([0, d3.max(data, function (d) { return d.value; })]);
 
   // append the rectangles for the bar chart
   svg.selectAll('.bar')
     .data(data)
     .enter().append('rect')
     .attr('class', 'bar')
-    .attr('x', function (d, i) { return x(dataKeys[i]); })
-    .attr('width', x.bandwidth())
-    .attr('y', function (d) { return y(d); })
-    .attr('height', function (d) { return height - y(d); })
+    .attr('x', function (d, i) { return 0; })
+    .attr('height', y.bandwidth())
+    .attr('y', function (d, i) { return y(d.key); })
+    .attr('width', function (d) { return x(d.value); })
     .attr('fill', (d, i) => '#179c7d');
+
+  const xAxisTicks = x.ticks()
+    .filter(tick => Number.isInteger(tick));
 
   // add the x Axis
   svg.append('g')
     .attr('transform', 'translate(0,' + height + ')')
-    .call(d3.axisBottom(x))
-    .selectAll('text')
-    .attr('y', 0)
-    .attr('x', 9)
-    .attr('dy', '.35em')
-    .attr('transform', 'rotate(90)')
-    .style('text-anchor', 'start');
+    .call(d3.axisBottom(x).tickValues(xAxisTicks)
+      .tickFormat(d3.format('d')));
 
   // add the y Axis
   svg.append('g')

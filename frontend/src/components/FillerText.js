@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { getColor, getGradient } from '../utility/colors';
+import { getColor } from '../utility/colors';
 
 import Input from './Input';
 
@@ -18,13 +18,12 @@ class FillerText extends Component {
     this.splitTexts();
     this.values = {};
     this.reference = React.createRef();
-    this.state = {
-      values: {}
-    };
+    this.state = {};
   }
   onChange = (e) => {
-    if (e) {
+    if (e && !e.fake) {
       this.setState({ [e.name]: e.value });
+      this.values[e.name] = e.value;
     }
     this.props.onChange && this.props.onChange({
       target: this.reference.current,
@@ -33,76 +32,48 @@ class FillerText extends Component {
     });
   }
   entitiesWithLabel = (label) => {
-    console.log(label);
     return this.props.entities.ids.map(id => this.props.entities.byId[id]).filter(entity => entity.label === label);
   }
-  getInput = (label) => {
-    let entities = this.entitiesWithLabel(label.split('#')[0]);
-    let values = null;
-    if (!this.state[label]) {
-      switch (entities.length) {
-        case 0: {
-          this.values[label] = 'Erstellen Sie eine Entität';
-          break;
+  getOptions = (entities) => {
+    if (entities.length === 0) {
+      return [{
+        label: 'Erstellen Sie eine Entität',
+        value: 'Erstellen Sie eine Entität',
+        style: {
+          backgroundColor: '#cccccc',
+          color: '#202124'
         }
-        case 1: {
-          this.values[label] = entities[0].value;
-          break;
-        }
-        default: {
-          const preferred = entities.find(e => e.preferred);
-          this.values[label] = preferred ? preferred.value : entities[0].value;
-        }
-      }
+      }];
     } else {
-      this.values[label] = this.state[label];
-    }
-    switch (entities.length) {
-      case 0: {
-        this.values[label] = 'Erstellen Sie eine Entität';
-        values = ['Erstellen Sie eine Entität'];
-        break;
-      }
-      case 1: {
-        const color = getColor(entities[0], this.props.config);
-        this.values[label] = entities[0].value;
-        values = [{
-          label: entities[0].value,
-          value: entities[0].value,
+      const labels = {};
+      return entities.map(e => {
+        const color = getColor(e, this.props.config);
+        return {
+          label: e.value,
+          value: e.value,
           style: {
             backgroundColor: color.background,
             color: color.color
           }
-        }];
-        break;
-      }
-      default: {
-        const preferred = entities.find(e => e.preferred);
-        const labels = {};
-        this.values[label] = preferred ? preferred.value : entities[0].value;
-        values = entities.map(e => {
-          const color = getColor(e, this.props.config);
-          return {
-            label: e.value,
-            value: e.value,
-            style: {
-              backgroundColor: color.background,
-              color: color.color
-            }
-          };
-        }).filter(v => {
-          if (labels[v.value]) return false;
-          labels[v.value] = true;
-          return true;
-        }).sort((a, b) => a.value <= b.value ? -1 : 1);
-      }
+        };
+      }).filter(v => {
+        if (labels[v.value]) return false;
+        labels[v.value] = true;
+        return true;
+      }).sort((a, b) => a.value <= b.value ? -1 : 1);
     }
-    const gradient = getGradient(entities, this.props.config); ;
+  }
+  getInput = (label) => {
+    const entities = this.entitiesWithLabel(label.split('#')[0]);
+    const options = this.getOptions(entities);
+    let value = this.state[label];
+    if (!value) {
+      const preferred = entities.find(e => e.preferred);
+      value = preferred ? preferred.value : options[0].value;
+    }
+    this.values[label] = value;
     return <Input
-      style={{
-        color: gradient.color,
-        backgroundImage: gradient.background
-      }}
+      style={options[0].style}
       label={label}
       inline
       onChange={this.onChange}
@@ -110,8 +81,8 @@ class FillerText extends Component {
       key={label}
       type='select'
       required
-      value={this.values[label]}
-      values={values}
+      value={value}
+      values={options}
     />;
   }
   splitTexts = () => {

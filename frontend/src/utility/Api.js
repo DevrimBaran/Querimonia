@@ -1,32 +1,17 @@
 import ErrorModal from './../components/ErrorModal';
 
-const fetchJson = function (action, options) {
+const fetchJson = function (action, options, responseFormat = 'json') {
   const processResponse = (response) => {
-    const json = response.json();
     if (!response.ok) {
-      return json.then(json => {
-        throw new ErrorModal.QuerimoniaError(json);
+      return response.json().then(data => {
+        throw new ErrorModal.QuerimoniaError(data);
       });
     }
-    return json;
+    return response[responseFormat]();
   };
-  if ((process.env.NODE_ENV === 'development')) {
-    const useMockInDev = (document.getElementById('useMock') && document.getElementById('useMock').checked);
-    if (useMockInDev) {
-      console.log('Application is using mock backend!');
-      return fetch('https://querimonia.iao.fraunhofer.de/mock' + action, options)
-        .then((response) => processResponse(response))
-        .catch(ErrorModal.catch);
-    } else {
-      return fetch('https://querimonia.iao.fraunhofer.de/dev' + action, options)
-        .then((response) => processResponse(response))
-        .catch(ErrorModal.catch);
-    }
-  } else {
-    return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
-      .then((response) => processResponse(response))
-      .catch(ErrorModal.catch);
-  }
+  return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
+    .then((response) => processResponse(response))
+    .catch(ErrorModal.catch);
 };
 const options = function (method, data, additional = {}) {
   data = data || {};
@@ -35,12 +20,13 @@ const options = function (method, data, additional = {}) {
     method: method,
     mode: 'cors',
     headers: {
-      // 'Authorization': 'Basic ' + btoa('admin:QuerimoniaPass2019'),
-      'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5',
       'Content-Type': 'application/json'
     },
     ...additional
   };
+  if (process.env.REACT_APP_AUTHORIZATION) {
+    options.headers['Authorization'] = 'Basic ' + btoa(process.env.REACT_APP_AUTHORIZATION);
+  }
   if (method === 'post' || method === 'put' || method === 'PATCH') {
     if (data instanceof FormData) {
       delete options.headers['Content-Type'];
@@ -54,7 +40,7 @@ const options = function (method, data, additional = {}) {
 };
 
 export const api = {
-  get: function (endpoint, query) {
+  get: function (endpoint, query, responseFormat) {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {
       if (Array.isArray(query[name])) {
         return query[name].map(element => {
@@ -64,7 +50,7 @@ export const api = {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
     //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
-    return fetchJson(endpoint + (query ? '?' + query : ''), options('get'));
+    return fetchJson(endpoint + (query ? '?' + query : ''), options('get'), responseFormat);
   },
   delete: function (endpoint, query) {
     query = Object.keys(query).filter((name) => query[name] || query[name] === 0).map((name) => {
@@ -80,6 +66,9 @@ export const api = {
   },
   put: function (endpoint, data) {
     return fetchJson(endpoint, options('put', data));
+  },
+  fetch: function (endpoint, data, mode) {
+    return fetch(endpoint, options(mode, data));
   },
   queryput: function (endpoint, query) {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {

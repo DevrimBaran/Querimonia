@@ -82,7 +82,6 @@ class Pagination extends Component {
           /
           {this.props.max})
           pro Seite:&nbsp;
-          <span className={this.props.count === 2 ? 'current count' : 'count'} onClick={() => this.onClick('count', 2)}>2</span>,&nbsp;
           <span className={this.props.count === 10 ? 'current count' : 'count'} onClick={() => this.onClick('count', 10)}>10</span>,&nbsp;
           <span className={this.props.count === 25 ? 'current count' : 'count'} onClick={() => this.onClick('count', 25)}>25</span>,&nbsp;
           <span className={this.props.count === 50 ? 'current count' : 'count'} onClick={() => this.onClick('count', 50)}>50</span>

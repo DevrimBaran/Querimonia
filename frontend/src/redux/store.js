@@ -10,8 +10,6 @@ const middleware = applyMiddleware(thunk);
 
 const initialState = {
   login: {
-    name: null,
-    password: null,
     access: -1
   },
   complaints: {

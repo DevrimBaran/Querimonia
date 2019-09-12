@@ -241,15 +241,11 @@ function login (state, action) {
   switch (action.type) {
     case 'LOGIN': {
       return {
-        name: action.name,
-        password: action.password,
-        access: action.access
+        access: parseInt(action.access)
       };
     }
     case 'LOGOUT': {
       return {
-        name: null,
-        password: null,
         access: -1
       };
     }
