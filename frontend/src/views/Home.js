@@ -8,6 +8,7 @@ import React from 'react';
 
 import Block from './../components/Block';
 import Row from './../components/Row';
+import Button from './../components/Button';
 import Content from './../components/Content';
 import spotlight from './../assets/img/spotlight.svg';
 import '../assets/scss/_images.scss';
@@ -26,6 +27,9 @@ function Home () {
                 <img src={spotlight} className='spotlight' alt='logo' />
               </div>
               <h1> Was kann Querimonia?</h1>
+              <Button icon='fas fa-trash'>Mit Text</Button>
+              <Button icon='fas fa-trash' />
+              <Button>Ohne Icon</Button>
               <br />
               <div className='boxWithMargin'>
                 <div className='fiftyFifty'>

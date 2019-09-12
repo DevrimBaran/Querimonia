@@ -15,6 +15,7 @@ import Content from '../../components/Content';
 import DeepObject from '../../components/DeepObject';
 // eslint-disable-next-line
 import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
+import Input from '../../components/Input';
 
 function Header () {
   return (
@@ -60,29 +61,27 @@ function Single (active, dispatch, helpers) {
   return (
     <React.Fragment>
       <Block>
-        <Row vertical>
-          <h6 className='center'>Regeln</h6>
-          <div>
-            <DeepObject save={save} filter={(key) => (key === 'id' || key === 'name' || key === 'priority')} data={active} template={template} />
-          </div>
-          <Content>
-            <DeepObject save={save} filter={(key) => (key === 'rulesXml')} data={active} template={template} />
-          </Content>
-        </Row>
-      </Block>
-      <Block>
-        <Row vertical>
-          <h6 className='center'>Antwortvariationen</h6>
-          <Content className='margin'>
-            <DeepObject save={save} filter={(key) => (key === 'texts')} data={active} template={template} />
-          </Content>
-          <h6 className='center'>Aktionen</h6>
-          <Content className='margin'>
-            <DeepObject save={save} filter={(key) => (key === 'actions')} data={active} template={template} />
-          </Content>
-          <div className='center margin'>
-            {helpers.save()}
-          </div>
+        <Row>
+          <Row vertical className='max-width center' style={{width:'50%'}}>
+            <h6 className='center'>Regeln</h6>
+              <DeepObject center save={save} filter={(key) => (key === 'id' || key === 'name' || key === 'priority')} data={active} template={template} />
+            <Content className="xml" style={{width:"100%"}}>
+              <DeepObject save={save} filter={(key) => (key === 'rulesXml')} data={active} template={template} />
+            </Content>
+          </Row>
+          <Row vertical className='max-width center' style={{width:'50%'}}>
+            <h6 className='center'>Antwortvariationen</h6>
+            <Content className='margin center'>
+              <DeepObject save={save} filter={(key) => (key === 'texts')} data={active} template={template} />
+            </Content>
+            <h6 className='center'>Aktionen</h6>
+            <Content className='margin'>
+              <DeepObject save={save} filter={(key) => (key === 'actions')} data={active} template={template} />
+            </Content>
+            <div className='center margin'>
+              {helpers.save()}
+            </div>
+          </Row>
         </Row>
       </Block>
     </React.Fragment>

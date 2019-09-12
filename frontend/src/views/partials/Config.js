@@ -71,7 +71,7 @@ function Single (active, dispatch, helpers) {
       <Block>
         <Row vertical>
           <h6 className='center'>Konfiguration</h6>
-          <Content className='margin'>
+          <Content className='margin config'>
             <DeepObject data={active} template={template(helpers.props.allExtractors['KIKUKO_PIPELINE'])} save={modifyActive} />
           </Content>
           <div className='center margin'>
