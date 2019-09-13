@@ -227,7 +227,7 @@ public class ConfigurationManager {
         toBeDeleted.add(configuration);
       }
     }
-    // configurationRepository.deleteAll(toBeDeleted);
+    configurationRepository.deleteAll(toBeDeleted);
     logger.info("Deleted all configurations");
   }
 
