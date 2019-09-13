@@ -14,6 +14,8 @@ import de.fraunhofer.iao.querimonia.nlp.sentiment.SentimentAnalyzerType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.lang.NonNull;
 import tec.uom.lib.common.function.Identifiable;
 
@@ -68,7 +70,8 @@ public class Configuration implements Identifiable<Long> {
   @NonNull
   private List<ExtractorDefinition> extractors = new ArrayList<>();
 
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @Fetch(FetchMode.SUBSELECT)
   @JoinColumn(name = "config_id")
   @NonNull
   private List<ClassifierDefinition> classifiers = new ArrayList<>();

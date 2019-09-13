@@ -113,7 +113,8 @@ public class ConfigurationManager {
     if (configurationRepository.existsById(configId)) {
       // remove reference in all complaints
       for (Complaint complaint : complaintRepository.findAll()) {
-        if (complaint.getConfiguration().getId() == configId) {
+        if (complaint.getConfiguration() != null
+            && complaint.getConfiguration().getId() == configId) {
           complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
         }
         complaintRepository.save(complaint);
@@ -216,7 +217,8 @@ public class ConfigurationManager {
    */
   public synchronized void deleteAllConfigurations() {
     for (Complaint complaint : complaintRepository.findAll()) {
-      complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
+      complaint =
+          complaint.withConfiguration(configurationRepository.findById(Configuration.FALLBACK_CONFIGURATION.getId()).orElse(Configuration.FALLBACK_CONFIGURATION));
       complaintRepository.save(complaint);
     }
     List<Configuration> toBeDeleted = new ArrayList<>();
@@ -225,7 +227,7 @@ public class ConfigurationManager {
         toBeDeleted.add(configuration);
       }
     }
-    configurationRepository.deleteAll(toBeDeleted);
+    // configurationRepository.deleteAll(toBeDeleted);
     logger.info("Deleted all configurations");
   }
 

@@ -538,7 +538,7 @@ paths:
                 $ref: '#/components/schemas/QuerimoniaException'
               example:
                 timestamp: '2019-07-04T15:24:23.3942221'
-                statusCode: 400
+                status: 400
                 message: 'Beschwerde kann nicht modifiziert werden, da sie bereits geschlossen ist.'
                 title: 'Beschwerde geschlossen'
                 exception: 'IllegalStateException'
@@ -2028,7 +2028,6 @@ components:
     Complaint:
       required:
         - state
-        - configuration
         - preview
         - receiveDate
         - receiveTime
@@ -2284,6 +2283,7 @@ components:
         - extractors
         - classifiers
         - sentimentAnalyzer
+      nullable: true
       properties:
         id:
           type: integer
@@ -2807,7 +2807,7 @@ components:
       type: object
       required:
         - timestamp
-        - statusCode
+        - status
         - message
         - title
       properties:
@@ -2856,17 +2856,17 @@ components:
       description: Eine Kombination aus Linie, Haltestelle und Ort.
       type: object
       properties:
-        line:
+        Linie:
           type: string
           example: "293"
           nullable: true
           description: Linienbezeichnung
-        stop:
+        Haltestelle:
           description: Haltestellenbezeichnun
           type: string
           nullable: true
           example: "Kirchplatz"
-        place:
+        Ort:
           description: Ortsname
           type: string
           example: "Wuppertal"
@@ -2922,7 +2922,7 @@ components:
             $ref: '#/components/schemas/QuerimoniaException'
           example:
             timestamp: '2019-07-04T15:24:23.3942221'
-            statusCode: 404
+            status: 404
             message: 'Ein Element mit der gegebenen ID existiert nicht!'
             title: 'Fehlendes Element'
             exception: 'NotFoundException'

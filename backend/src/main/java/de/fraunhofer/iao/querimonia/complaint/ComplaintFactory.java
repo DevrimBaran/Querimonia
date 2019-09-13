@@ -23,6 +23,7 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,7 +83,7 @@ public class ComplaintFactory {
 
     Configuration configuration = complaintBuilder.getConfiguration();
     // get the analysis tools from the configuration
-    var sentimentAnalyzerDefinition = configuration.getSentimentAnalyzer();
+    var sentimentAnalyzerDefinition = Objects.requireNonNull(configuration).getSentimentAnalyzer();
     var emotionAnalyzerDefinition = configuration.getEmotionAnalyzer();
 
     // the text of the complaint

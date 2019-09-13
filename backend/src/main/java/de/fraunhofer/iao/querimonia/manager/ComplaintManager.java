@@ -35,11 +35,7 @@ import javax.xml.bind.JAXBException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -310,7 +306,7 @@ public class ComplaintManager {
 
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
-    checkForbiddenStates(complaint, ANALYSING, CLOSED);
+    checkForbiddenStates(complaint, CLOSED);
 
     builder
         .setConfiguration(getConfigurationFromId(configId))
@@ -318,7 +314,7 @@ public class ComplaintManager {
 
     // run analysis
     var state = complaint.getState();
-    if (state == ERROR) {
+    if (state == ERROR || state == ANALYSING) {
       state = NEW;
     }
     runAnalysisAsync(builder, keepUserInformation.orElse(false), state);
@@ -607,8 +603,8 @@ public class ComplaintManager {
   private boolean isCombinationAbsent(HashSet<Combination> combinations,
                                       String line, String stop, String place) {
     return combinations.stream()
-        .filter(combination -> line == null || combination.getLine().equals(line))
-        .filter(combination -> place == null || combination.getPlace().equals(place))
+        .filter(combination -> line == null || Objects.equals(line, combination.getLine()))
+        .filter(combination -> place == null || Objects.equals(place, combination.getPlace()))
         .noneMatch(combination -> stop == null || stop.equals(combination.getStop()));
   }
 

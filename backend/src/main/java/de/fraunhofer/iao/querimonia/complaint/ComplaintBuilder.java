@@ -57,7 +57,7 @@ public class ComplaintBuilder {
   private LocalDate closeDate = LocalDate.now();
 
   private LocalTime closeTime = LocalTime.now();
-  @NonNull
+  @Nullable
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
   @NonNull
   private List<LogEntry> log = new ArrayList<>();
@@ -458,7 +458,7 @@ public class ComplaintBuilder {
    *
    * @return the configuration used to analyze this complaint.
    */
-  @NonNull
+  @Nullable
   public Configuration getConfiguration() {
     return configuration;
   }

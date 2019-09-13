@@ -10,11 +10,7 @@ import org.springframework.lang.NonNull;
 
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -77,8 +73,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         .withLocale(Locale.GERMAN)
         .format(complaintBuilder.getReceiveTime());
     // get first extractors that is used for the entities that are not in the text
-    String extractor = complaintBuilder
-        .getConfiguration()
+    String extractor = Objects.requireNonNull(complaintBuilder
+        .getConfiguration())
         .getExtractors()
         .stream()
         .findFirst()
@@ -145,8 +141,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
   }
 
   private String getColorOfEntity(ComplaintBuilder complaintBuilder, String label) {
-    return complaintBuilder
-        .getConfiguration()
+    return Objects.requireNonNull(complaintBuilder
+        .getConfiguration())
         .getExtractors()
         .stream()
         .filter(extractorDefinition -> extractorDefinition.getLabel().equals(label))

@@ -5,8 +5,6 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -17,8 +15,6 @@ import java.util.List;
  * complaint text gets sliced in text and placeholders.
  */
 public class ResponseSlice {
-
-  private static final Logger logger = LoggerFactory.getLogger(ResponseSlice.class);
 
   private final boolean isPlaceholder;
   // this is either the placeholder name or the raw text when the slice is no placeholder.
@@ -92,7 +88,6 @@ public class ResponseSlice {
     String[] parts = text.split("\\$\\{\\w*(#\\w*)?}");
 
     for (String currentPart : parts) {
-      logger.info("part=" +  currentPart);
       templatePosition += currentPart.length();
       // add raw text slice
       slices.add(new ResponseSlice(false, currentPart));

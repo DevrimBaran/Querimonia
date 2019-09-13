@@ -15,6 +15,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.eclipse.persistence.oxm.annotations.XmlPath;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import tec.uom.lib.common.function.Identifiable;
 
 import javax.persistence.*;
@@ -179,9 +180,10 @@ public class Complaint implements Identifiable<Long> {
   /**
    * The configuration which was used to analyze the complaint.
    */
-  @ManyToOne(cascade = CascadeType.MERGE)
+  @ManyToOne(
+      cascade = {CascadeType.MERGE})
   @JoinColumn(name = "config_id")
-  @NonNull
+  @Nullable
   private Configuration configuration = Configuration.FALLBACK_CONFIGURATION;
 
   /**
@@ -209,7 +211,7 @@ public class Complaint implements Identifiable<Long> {
       @NonNull LocalTime receiveTime,
       @NonNull LocalDate closeDate,
       @NonNull LocalTime closeTime,
-      @NonNull Configuration configuration,
+      @Nullable Configuration configuration,
       @NonNull List<LogEntry> log) {
 
     ComplaintUtility.checkStringLength(text, TEXT_MAX_LENGTH);
@@ -379,7 +381,7 @@ public class Complaint implements Identifiable<Long> {
    *
    * @return the configuration used to analyze this complaint.
    */
-  @NonNull
+  @Nullable
   public Configuration getConfiguration() {
     return configuration;
   }
