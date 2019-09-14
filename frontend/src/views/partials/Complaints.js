@@ -74,6 +74,14 @@ function Header () {
   );
 }
 
+function Overlay (dispatch, filter) {
+  const xml = (e) => {
+    e.stopPropagation();
+    return api.get(`/api/complaints/xml`, filter, 'blob');
+  };
+  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code' onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
+}
+
 function List (data, dispatch, helpers) {
   const refresh = (e) => {
     e.stopPropagation();
@@ -234,4 +242,4 @@ function Single (active, dispatch, helpers) {
   );
 }
 
-export default { Header, List, Single };
+export default { Header, List, Single, Overlay };

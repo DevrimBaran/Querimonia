@@ -13,7 +13,7 @@ import Pagination from './Pagination';
 import Button from './Button';
 
 export default (endpoint, partial, stateToProps, path) => {
-  return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
+  return connect((state, props) => ({ filter: state[endpoint].filter, ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
     edit = (id) => {
       return (e) => {
         this.props.history.push(path + '/' + id);
@@ -48,8 +48,11 @@ export default (endpoint, partial, stateToProps, path) => {
         <Block>
           <Row vertical>
             <Filter endpoint={endpoint} />
-            <br />
-            <br />
+            {partial.Overlay && (
+              <div className='overlay'>
+                {partial.Overlay(this.props.dispatch, this.props.filter)}
+              </div>
+            )}
             <Content className='padding'>
               {!this.props.fetching
                 ? (
@@ -68,11 +71,6 @@ export default (endpoint, partial, stateToProps, path) => {
                 )
                 : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
               }
-              {partial.Overlay && (
-                <div className='overlay'>
-                  {partial.Overlay(this.props.dispatch)}
-                </div>
-              )}
             </Content>
             <Pagination endpoint={endpoint} />
           </Row>

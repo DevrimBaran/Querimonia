@@ -12,9 +12,8 @@ import template from '../../redux/templates/components';
 import Block from '../../components/Block';
 import Row from '../../components/Row';
 import Content from '../../components/Content';
+import Button from '../../components/Button';
 import DeepObject from '../../components/DeepObject';
-// eslint-disable-next-line
-import { BrowserRouter as Router, Link, withRouter } from 'react-router-dom';
 
 function Header () {
   return (
@@ -31,11 +30,7 @@ function Header () {
 
 function Overlay (dispatch) {
   return (
-    <div className='plus-item'>
-      <Link to={'/components/0'}>
-        <i className={'fas fa-plus-circle fa-2x'} />
-      </Link>
-    </div>
+    <Button icon='fas fa-plus-circle' href='/components/0'>Neue Regel anlegen</Button>
   );
 }
 

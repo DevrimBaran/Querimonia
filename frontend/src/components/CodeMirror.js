@@ -132,6 +132,7 @@ class CodeMirror extends Component {
                     mode: 'xml',
                     theme: 'neat',
                     lineNumbers: true,
+                    viewportMargin: Infinity,
                     extraKeys: {
                         "'<'": completeAfter,
                         "'/'": completeIfAfterLt,
