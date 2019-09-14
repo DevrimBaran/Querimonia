@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Input fields
  *
  * @version <0.1>
  */

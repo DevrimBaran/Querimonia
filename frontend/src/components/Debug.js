@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Renders a json object unminified in a html pre-tag.
  *
  * @version <0.1>
  */

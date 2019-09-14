@@ -1,7 +1,7 @@
 /**
- * ToDO:
- * Please describe this class.
- *
+ * Wrapper for easy use with D3.
+ * Takes two Arguments: Data & Render
+ * 
  * @version <0.1>
  */
 

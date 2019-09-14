@@ -1,6 +1,6 @@
 /**
- * ToDO:
- * Please describe this class.
+ * TODO:
+ * Row stacks the child elements flexibly. Default horizontal, optionally vertical
  *
  * @version <0.1>
  */

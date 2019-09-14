@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Popup
  *
  * @version <0.1>
  */

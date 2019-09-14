@@ -25,6 +25,8 @@
 @import 'components/tooltip';
 @import 'components/form';
 @import 'components/TextBuilder';
+@import 'components/deepObject';
+
 
 #root {
     display: flex;
@@ -309,61 +311,7 @@
         text-align: center;
     }
 }
-.deep-array {
-    display: flex;
-    align-items: center;
-    background-color: $lightgrey;
 
-    & + .deep-array {
-        margin-top: 5px;
-    }
-
-    &:hover {
-        background-color: $grey;
-    }
-
-    & > div, & > input {
-        width: 100%;
-    }
-
-    & > i {
-        cursor: pointer;
-    }
-}
-
-.deep-object {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: stretch;
-
-    & + .deep-object {
-        margin-top: 5px;
-    }
-
-    & > div, & > input {
-        width: 100%;
-    }
-
-    & > strong {
-        padding: 0 5px;
-        text-align: center;
-    }
-
-    & > i {
-        cursor: pointer;
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        border-radius: 50%;
-        margin: 5px auto 0;
-        text-align: center;
-        background-color: rgba($primary, 0.8);
-
-        &:hover {
-            background-color: rgba($primary, 1);
-        }
-    }
-}
 
 .object > .object {
     display: flex;

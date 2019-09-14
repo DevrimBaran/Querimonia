@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Displays XML Code
  *
  * @version <0.1>
  */

@@ -1,6 +1,5 @@
 /**
- * ToDO:
- * Please describe this class.
+ * Self-explanatory
  *
  * @version <0.1>
  */
