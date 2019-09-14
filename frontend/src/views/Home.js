@@ -8,7 +8,7 @@ import React from 'react';
 
 import Block from './../components/Block';
 import Row from './../components/Row';
-import Button from './../components/Button';
+import Sentiment from './../components/Sentiment';
 import Content from './../components/Content';
 import spotlight from './../assets/img/spotlight.svg';
 import '../assets/scss/_images.scss';
@@ -27,9 +27,6 @@ function Home () {
                 <img src={spotlight} className='spotlight' alt='logo' />
               </div>
               <h1> Was kann Querimonia?</h1>
-              <Button icon='fas fa-trash'>Mit Text</Button>
-              <Button icon='fas fa-trash' />
-              <Button>Ohne Icon</Button>
               <br />
               <div className='boxWithMargin'>
                 <div className='fiftyFifty'>
@@ -46,8 +43,8 @@ function Home () {
                   </div>
                   <div className='rightBox' id='entityBox'>
                     <p>
-                    Die Buslinie <mark className='entity_buslinie'>637</mark> ist am <mark className='entity_datum'>01.03.2019</mark> an der
-                      <mark className='entity_haltestelle'>Gartenheimstr.</mark> in Langenberg(Schule!) um 13.46 Uhr
+                    Die Buslinie <mark className='entity_buslinie'>637</mark> ist am <mark className='entity_datum'>01.03.2019</mark> an
+                    der <mark className='entity_haltestelle'>Gartenheimstr.</mark> in Langenberg(Schule!) um 13.46 Uhr
                     nicht gekommen. Meine Tochter Anita hat eine
                     halbe Stunde warten müssen, bis ich ihr dann ein
                     Taxi habe schicken müssen. Die Fahrt hat <mark className='entity_preis'>14,60 Euro</mark>
@@ -78,9 +75,7 @@ function Home () {
                         Wenn ihnen ihre Kunden wichtig sind, dann reden sie bitte mit ihren Mitarbeitern und geben Sie jedem
                         erstmal einen Kurs in Freundlichkeit und anständiges Benehmen.
                       </p>
-                      <i className='tooltiptext'>
-                        <i className='far fa-angry fa-4x' />
-                      </i>
+                      <Sentiment className='tooltiptext' tendency='-1' />
                     </div>
                   </div>
                 </div>

@@ -208,17 +208,25 @@ function Single (active, dispatch, helpers) {
             }
           />
           <Content>
-            <Liste data={
-              helpers.props.complaintStuff.combinations &&
-              helpers.props.complaintStuff.combinations.map &&
-              helpers.props.complaintStuff.combinations.map((combination) => (
-                [
-                  combination.line,
-                  combination.stop,
-                  combination.place
-                ]
-              ))
-            } />
+            <Liste
+              header={['Linie', 'Haltestelle', 'Ort']}
+              data={
+                helpers.props.complaintStuff.combinations &&
+                helpers.props.complaintStuff.combinations.map &&
+                helpers.props.complaintStuff.combinations.map((combination) => (
+                  [
+                    combination.Linie || '-',
+                    combination.Haltestelle || '-',
+                    combination.Ort || '-'
+                  ]
+                ))
+              }
+              styles={[{
+              }, {
+                padding: '0 1em'
+              }, {
+              }]}
+            />
           </Content>
         </Row>
       </Block>

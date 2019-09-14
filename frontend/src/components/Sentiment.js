@@ -41,24 +41,26 @@ const smilies = [
 ];
 
 export default function Sentiment (props) {
-  if (!props.tendency) {
+  let { small, tendency, className = '', ...passThrough } = { ...props };
+  className += ' emotion';
+  if (!tendency) {
     return (
-      <span role='img' className='emotion'>
+      <span role='img' className={className} {...passThrough}>
         ---
       </span>
     );
   }
-  const smiley = smilies.find(smiley => props.tendency <= smiley.tendency);
-  if (!props.small) {
+  const smiley = smilies.find(smiley => tendency <= smiley.tendency);
+  if (!small) {
     return (
-      <span style={{ fontSize: '150%' }} role='img' title={props.tendency} className='emotion'>
+      <span style={{ fontSize: '150%' }} role='img' title={tendency} className={className} {...passThrough}>
         {smiley && smiley.smiley}
       </span>
     );
   }
   return (
-    <span role='img' className='emotion'>
-      <span style={{ fontSize: '120%' }} role='img' className='emotion'>
+    <span role='img' className={className}>
+      <span style={{ fontSize: '120%' }} role='img' className={className}>
         {smiley && smiley.smiley}
       </span>
     </span>

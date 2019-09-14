@@ -9,9 +9,16 @@ import React, { Component } from 'react';
 
 class List extends Component {
   render () {
-    const { className = '', data = [], styles = [], ...passThroughProps } = this.props;
+    const { className = '', header, data = [], styles = [], ...passThroughProps } = this.props;
     return (
       <table className={className + ' List'} {...passThroughProps}>
+        {header && (
+          <thead>
+            {header.map && header.map((col, j) => (
+              <th key={j}>{col}</th>
+            ))}
+          </thead>
+        )}
         <tbody>
           {data.map && data.map((row, i) => (
             <tr key={i}>

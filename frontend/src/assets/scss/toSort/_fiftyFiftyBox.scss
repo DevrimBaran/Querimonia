@@ -40,15 +40,12 @@
   }
 
   .tooltipStartseite .tooltiptext {
-    visibility: hidden;
+    opacity: 0;
+    animation: fadeIn 2s infinite alternate;
     width: 65px;
     height: 65px;
-    background-color: red;
+    font-size: 60px !important;
     position: absolute;
     top: 35px;
     left: 105%;
-  }
-
-  .tooltipStartseite:hover .tooltiptext {
-    visibility: visible;
   }

@@ -68,6 +68,8 @@ $inputBorder: 2px solid;
             line-height: 40px;
             font-size: 30px;
             padding: 0;
+            border: none !important;
+            -webkit-appearance: none;
             &::after {
                 content: '';
                 box-sizing: border-box;
@@ -76,8 +78,8 @@ $inputBorder: 2px solid;
                 display: block;
                 background-color: inherit;
                 color: inherit;
-                border: 1px solid;
-                border-color: $black;
+                border: 1px solid $black;
+                border-radius: 10px;
             }
             &:hover::after {
                 filter: brightness(110%);
