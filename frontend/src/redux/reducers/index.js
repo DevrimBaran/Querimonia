@@ -129,7 +129,23 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
         ids: action.data.map(item => item.id)
       };
     }
+    case 'REMOVE_START': {
+      return {
+        ...state,
+        fetching: true,
+        active: false
+      };
+    }
+    case 'REMOVE_END': {
+      return {
+        ...state,
+        fetching: false,
+        active: false,
+        ids: state.ids.filter(id => id !== action.id)
+      };
+    }
     case 'UPDATE_SINGLE': {
+      if (!action.data) return state;
       return {
         ...state,
         fetching: false,

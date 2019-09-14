@@ -37,6 +37,9 @@ class TextBuilder extends Component {
       used: { ...state.used, [id]: true }
     }));
   }
+  refresh = (e) => {
+    console.log('refresh');
+  }
   finish = () => {
     fetch('https://querimonia.iao.fraunhofer.de/tmp/done', {
       method: 'post',
@@ -60,6 +63,7 @@ class TextBuilder extends Component {
       <React.Fragment>
         <Input type='textarea' readOnly={disabled} min='5' value={this.state.response} onChange={this.changeText} />
         {disabled || <Button onClick={this.finish}>Abschließen</Button>}
+        <Button confirm='Der bisherige Antworttext wird gelöscht. Sind Sie sicher?' onClick={this.refresh}>Antwortbausteine neu generieren</Button>
         <Collapsible label='Antworten / Aktionen'
           disabled={disabled || (disableResponses && disableActions)}
           collapse={disabled || (disableResponses && disableActions)}

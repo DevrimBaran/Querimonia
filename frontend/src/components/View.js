@@ -31,7 +31,6 @@ class View extends Component {
         <span key='2'>{label.substring(hotkeyIndex + 1)}</span>
       ]
     ) : label;
-    console.log(hotkeyIndex, hotkeyLabel);
     if (endpoint) {
       return (
         <React.Fragment>

@@ -10,6 +10,7 @@ import Content from './Content';
 import Table from './Table';
 import Filter from './Filter';
 import Pagination from './Pagination';
+import Button from './Button';
 
 export default (endpoint, partial, stateToProps) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
@@ -39,22 +40,6 @@ export default (endpoint, partial, stateToProps) => {
         </Link>
       );
     }
-    remove = (id) => {
-      return (
-        <Link to={'/' + endpoint}>
-          <span className='action-button'>
-            <i title='Löschen' className='fa fa-trash-alt' onClick={(e) => {
-              e.stopPropagation();
-              if (window.confirm('Wollen sie das Element wirklich löschen?')) {
-                this.props.dispatch(remove(endpoint, id));
-              } else {
-                e.preventDefault();
-              }
-            }} />
-          </span>
-        </Link>
-      );
-    }
     componentDidMount = () => {
       this.props.dispatch(fetchData(endpoint));
     }
@@ -75,7 +60,7 @@ export default (endpoint, partial, stateToProps) => {
                         {
                           edit: this.edit(id),
                           copy: this.copy,
-                          remove: this.remove
+                          remove: <Button title='Löschen' icon='fa fa-trash-alt' confirm='Wollen sie das Element wirklich löschen?' onClick={(e) => this.props.dispatch(remove(endpoint, id))} />
                         }
                       ))}
                     </tbody>
