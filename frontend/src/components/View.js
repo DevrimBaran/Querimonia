@@ -36,7 +36,7 @@ class View extends Component {
         <React.Fragment>
           {label && ReactDOM.createPortal((<NavLink activeClassName='active' to={'/' + (path || endpoint)}>{hotkeyLabel}</NavLink>), this.li)}
           <Route {...injected} exact path={'/' + (path || endpoint) + '/:id'} endpoint={endpoint} component={SingleView(endpoint, component, stateToProps)} />
-          <Route {...injected} exact path={'/' + (path || endpoint)} endpoint={endpoint} component={ListView(endpoint, component, stateToProps)} />
+          <Route {...injected} exact path={'/' + (path || endpoint)} endpoint={endpoint} component={ListView(endpoint, component, stateToProps, path || endpoint)} />
         </React.Fragment>
       );
     } else {

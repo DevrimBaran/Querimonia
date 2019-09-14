@@ -16,8 +16,8 @@ import TagCloud from './views/TagCloud';
 import Impressum from './views/Impressum';
 import Statistics from './views/Statistics';
 import Complaints from './views/partials/Complaints';
-import Components from './views/partials/Component';
-import Config from './views/partials/Config';
+import Components from './views/partials/Components';
+import Config from './views/partials/Configurations';
 
 // import OpenApi from './components/OpenApi';
 import Api from './utility/Api';

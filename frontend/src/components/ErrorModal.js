@@ -7,7 +7,7 @@
 import React, { Component } from 'react';
 
 import Modal from './Modal';
-import List from './List';
+import ListTable from './ListTable';
 
 class ErrorModal extends Component {
   static QuerimoniaError = class QuerimoniaError extends Error {
@@ -51,7 +51,7 @@ class ErrorModal extends Component {
     const error = this.state.error;
     return (
       <Modal title={error ? error.title : ''} id='errorPopup' className={error ? 'show' : ''} onClose={this.removeError} register={this.register} {...passThrough}>
-        <List
+        <ListTable
           data={[
             ['Status Code:', error && error.status],
             ['Nachricht:', error && error.message]

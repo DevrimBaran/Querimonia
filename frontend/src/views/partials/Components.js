@@ -29,6 +29,16 @@ function Header () {
   );
 }
 
+function Overlay (dispatch) {
+  return (
+    <div className='plus-item'>
+      <Link to={'/components/0'}>
+        <i className={'fas fa-plus-circle fa-2x'} />
+      </Link>
+    </div>
+  );
+}
+
 function List (data, dispatch, helpers) {
   return (
     <tr key={data.id} className='pointer' onClick={helpers.edit}>
@@ -37,7 +47,7 @@ function List (data, dispatch, helpers) {
           {data.id}
           <div>
             {helpers.copy(data.id)}
-            {helpers.remove(data.id)}
+            {helpers.remove}
           </div>
         </Row>
       </th>
@@ -86,4 +96,4 @@ function Single (active, dispatch, helpers) {
   );
 }
 
-export default { Header, List, Single };
+export default { Header, List, Single, Overlay };

@@ -7,16 +7,18 @@
 
 import React, { Component } from 'react';
 
-class List extends Component {
+class ListTable extends Component {
   render () {
     const { className = '', header, data = [], styles = [], ...passThroughProps } = this.props;
     return (
-      <table className={className + ' List'} {...passThroughProps}>
+      <table className={className + ' ListTable'} {...passThroughProps}>
         {header && (
           <thead>
-            {header.map && header.map((col, j) => (
-              <th key={j}>{col}</th>
-            ))}
+            <tr>
+              {header.map && header.map((col, j) => (
+                <th key={j}>{col}</th>
+              ))}
+            </tr>
           </thead>
         )}
         <tbody>
@@ -33,4 +35,4 @@ class List extends Component {
   }
 }
 
-export default List;
+export default ListTable;

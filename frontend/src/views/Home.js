@@ -47,8 +47,8 @@ function Home () {
                     der <mark className='entity_haltestelle'>Gartenheimstr.</mark> in Langenberg(Schule!) um 13.46 Uhr
                     nicht gekommen. Meine Tochter Anita hat eine
                     halbe Stunde warten müssen, bis ich ihr dann ein
-                    Taxi habe schicken müssen. Die Fahrt hat <mark className='entity_preis'>14,60 Euro</mark>
-                    gekostet. Warum kaufe ich ein Schokoticket? Ich
+                    Taxi habe schicken müssen. Die Fahrt hat <mark className='entity_preis'>14,60 Euro</mark> gekostet.
+                    Warum kaufe ich ein Schokoticket? Ich
                     bitte um Erstattung meiner zusätzlichen Kosten.
                     Viele Grüße <mark className='entity_name'>Maria Seifert</mark>
                     </p>
@@ -98,12 +98,10 @@ function Home () {
                         entstandenen
                         Unannehmlichkeiten.
                         Ihren Antrag auf Erstattung von
-                        Taxikosten in Höhe von <mark className='entity_preis'>14,60 Euro</mark>
-                        haben wir erhalten.
+                        Taxikosten in Höhe von <mark className='entity_preis'>14,60 Euro</mark> haben wir erhalten.
                         Demnach konnten Sie am <mark className='entity_datum'>01.03.2019</mark>,
                         einen Bus der <mark className='entity_buslinie'>637</mark>, ab der
-                        Haltestelle <mark className='entity_haltestelle'>„Gartenheimstraße“</mark>
-                        nicht nehmen.
+                        Haltestelle <mark className='entity_haltestelle'>„Gartenheimstraße“</mark> nicht nehmen.
                         Der Grund hierfür war ein
                         krankheitsbedingter Ausfall.
                         Damit der Betrag zeitnah Ihrem

@@ -26,7 +26,7 @@ import TaggedText from '../../components/TaggedText';
 import Tabbed from '../../components/Tabbed';
 import TextBuilder from '../../components/TextBuilder';
 // import Table from '../../components/Table';
-import Liste from '../../components/List';
+import ListTable from '../../components/ListTable';
 // import Input from '../../components/Input';
 // import Debug from '../../components/Debug';
 import Button from '../../components/Button';
@@ -159,8 +159,8 @@ function Single (active, dispatch, helpers) {
             entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
           <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
           <Collapsible label='Details' />
-          <Liste styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
-            ['Konfiguration', (<Link to={'/configuration/' + active.configuration.id}>
+          <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
+            ['Konfiguration', (<Link to={'/configurations/' + active.configuration.id}>
               {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
             ['Eingangsdatum', (localize(active.receiveDate))],
             ['Eingangszeit', (active.receiveTime)],
@@ -187,7 +187,7 @@ function Single (active, dispatch, helpers) {
             collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
           />
           <Content>
-            <Liste data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
+            <ListTable data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
               styles={[{
                 fontWeight: 'bold'
               }, {
@@ -208,7 +208,7 @@ function Single (active, dispatch, helpers) {
             }
           />
           <Content>
-            <Liste
+            <ListTable
               header={['Linie', 'Haltestelle', 'Ort']}
               data={
                 helpers.props.complaintStuff.combinations &&

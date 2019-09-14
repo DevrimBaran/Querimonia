@@ -12,11 +12,11 @@ import Filter from './Filter';
 import Pagination from './Pagination';
 import Button from './Button';
 
-export default (endpoint, partial, stateToProps) => {
+export default (endpoint, partial, stateToProps, path) => {
   return connect((state, props) => ({ ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
     edit = (id) => {
       return (e) => {
-        this.props.history.push(endpoint + '/' + id);
+        this.props.history.push(path + '/' + id);
       };
     }
     copy = (id) => {
@@ -68,13 +68,11 @@ export default (endpoint, partial, stateToProps) => {
                 )
                 : (<div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>)
               }
-              {endpoint !== 'complaints' &&
-                <div className='plus-item'>
-                  <Link to={endpoint + '/0'}>
-                    <i className={'fas fa-plus-circle fa-2x'} />
-                  </Link>
+              {partial.Overlay && (
+                <div className='overlay'>
+                  {partial.Overlay(this.props.dispatch)}
                 </div>
-              }
+              )}
             </Content>
             <Pagination endpoint={endpoint} />
           </Row>

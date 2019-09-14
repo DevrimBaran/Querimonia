@@ -1,5 +1,4 @@
 import Api from '../../utility/Api';
-import localize from '../../utility/date';
 
 export function setActive (endpoint, id) {
   return function (dispatch, getState) {
