@@ -5,7 +5,7 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 0.9.1
+  version: 1.0.0
 servers:
   - url: https://beschwerdemanagement.iao.fraunhofer.de/dev
   - url: https://beschwerdemanagement.iao.fraunhofer.de
@@ -303,6 +303,12 @@ paths:
          eine <b>Antwort</b> generiert.</p>
       parameters:
         - $ref: '#/components/parameters/ConfigIdQueryParameter'
+        - name: respond_to
+          in: query
+          description: Enthält eine Route, an die ein POST-Request mit der Antwort geschickt wird, sobald die Beschwerde geschlossen wird.
+          required: false
+          schema:
+            type: string
       requestBody:
         description: Die Datei/der Text, die hochgeladen werden soll.
         content:
@@ -1167,6 +1173,24 @@ paths:
       responses:
         200:
           description: Die Antwort der Beschwerde wird zurückgegeben.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+    put:
+      tags:
+        - responses
+      summary: Aktualisiert die Antwort einer Beschwerde.
+      description: Hier können der Antworttext und die verwendeten Komponenten gespeichert werden.
+      operationId: updateResponse
+      responses:
+        200:
+          description: Die Antwort wurde aktualisiert.
           content:
             application/json:
               schema:
@@ -2531,6 +2555,7 @@ components:
       required:
         - component
         - entities
+        - used
       properties:
         entities:
           type: array
@@ -2539,24 +2564,26 @@ components:
             $ref: '#/components/schemas/NamedEntity'
         component:
           $ref: '#/components/schemas/ResponseComponent'
+        used:
+          type: boolean
+          description: Gibt an, ob der Nutzer die Komponente ausgewählt hat oder nicht.
+          example: false
 
     ResponseSuggestion:
       description: Vollständiger Antwortvorschlag, bestehend aus ausgefüllten Text-Komponenten und Aktionen.
       type: object
       required:
         - components
-        - actions
+        - text
       properties:
         components:
           type: array
           items:
             $ref: '#/components/schemas/CompletedResponsePart'
           description: Eine Liste an Antwortbausteinen, deren Reihenfolge der Reihenfolge entspricht, wie sie im Gesamten einen sinnvollen Text ergeben.
-        actions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Action'
-          description: Die Aktionen, die bei Abschluss der Beschwerde ausgeführt werden sollen.
+        text:
+          type: string
+          description: Der gespeicherte Text, der bereits vom Nutzer ausgewählt/geschrieben wurde.
       example:
         components:
           - id: 645
@@ -2641,7 +2668,7 @@ components:
                 preferred: false
                 extractor: QuerimoniaExtract
                 color: "#e9bdf0"
-        actions: []
+        text: "Guten Tag, Herr Mustermann"
 
     Action:
       description: Eine Aktion kann automatisch beim Abschluss einer Beschwerde ausgelöst werden, wenn bestimmt Regeln dafür erfüllt sind. Zum Beispiel können E-Mails versendet werden, Gutscheine als Attachment angehängt werden, Beschwerden weitergeleitet werden etc.
