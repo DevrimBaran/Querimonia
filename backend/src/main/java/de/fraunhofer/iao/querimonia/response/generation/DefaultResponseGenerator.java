@@ -62,7 +62,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
    * Returns all entities of a complaint and adds entities for the upload date and time.
    */
   @NonNull
-  private List<NamedEntity> getAllEntities(ComplaintBuilder complaintBuilder) {
+  public static List<NamedEntity> getAllEntities(ComplaintBuilder complaintBuilder) {
     List<NamedEntity> allEntities = new ArrayList<>(complaintBuilder.getEntities());
 
     // add upload date entities
@@ -140,7 +140,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     return new ResponseSuggestion(generatedResponse, validActions);
   }
 
-  private String getColorOfEntity(ComplaintBuilder complaintBuilder, String label) {
+  private static String getColorOfEntity(ComplaintBuilder complaintBuilder, String label) {
     return Objects.requireNonNull(complaintBuilder
         .getConfiguration())
         .getExtractors()

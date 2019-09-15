@@ -424,7 +424,8 @@ public class ComplaintManager {
    * @see ComplaintController#getEntities(long) getEntities
    */
   public List<NamedEntity> getEntities(long complaintId) {
-    return getComplaint(complaintId).getEntities();
+    var complaint = getComplaint(complaintId);
+    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(complaint));
   }
 
   /**
