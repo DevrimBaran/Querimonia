@@ -457,7 +457,7 @@ public class ComplaintManager {
     complaint = builder.createComplaint();
     storeComplaint(complaint);
     // reload for entity id that is set by the database (otherwise the new entity has id 0)
-    return getComplaint(complaintId).getEntities();
+    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(getComplaint(complaintId)));
   }
 
   /**
@@ -494,7 +494,7 @@ public class ComplaintManager {
     complaint = builder.createComplaint();
     storeComplaint(complaint);
     // reload for entity id that is set by the database (otherwise the new entity has id 0)
-    return getComplaint(complaintId).getEntities();
+    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(getComplaint(complaintId)));
   }
 
   private void checkValidityOfEntity(NamedEntity entity, Complaint complaint) {
@@ -552,7 +552,7 @@ public class ComplaintManager {
     }
 
     storeComplaint(builder.createComplaint());
-    return complaintEntities;
+    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(getComplaint(complaintId)));
   }
 
   /**
