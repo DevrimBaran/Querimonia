@@ -438,10 +438,13 @@ public class ComplaintManager {
     checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
     checkValidityOfEntity(entity, complaint);
 
+    if (entity.isPreferred()) {
+      clearPreferredEntities(builder, entity.getLabel());
+    }
+
     List<NamedEntity> complaintEntities = builder.getEntities();
     if (!complaintEntities.contains(entity)) {
-      // only add if not already there
-      // todo value formatting!
+      // only add if not already there, dont allow preferred flag
       complaintEntities.add(entity);
       builder.appendLogItem(LogCategory.GENERAL, "Entität " + entity + " hinzugefügt");
     } else {
@@ -475,6 +478,10 @@ public class ComplaintManager {
     entityBuilder.setId(entityId);
     var entities = builder.getEntities();
 
+    if (entity.isPreferred()) {
+      clearPreferredEntities(builder, entity.getLabel());
+    }
+
     // replace the entity with the given id with the new entity
     entities.replaceAll(namedEntity -> {
       if (namedEntity.getId() == entityId) {
@@ -499,6 +506,24 @@ public class ComplaintManager {
           + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
           + "Entität");
     }
+  }
+
+  /**
+   * Sets the preferred flag of all entities to false.
+   *
+   * @param complaintBuilder the complaint.
+   * @param label            all entities with this label will be set to not preferred.
+   */
+  private void clearPreferredEntities(ComplaintBuilder complaintBuilder, String label) {
+    var entities = complaintBuilder.getEntities();
+    // set preferred to false when label is matching
+    entities.replaceAll(entity -> {
+      if (entity.getLabel().equals(label)) {
+        return entity.withPreferred(false);
+      }
+      return entity;
+    });
+    complaintBuilder.setEntities(entities);
   }
 
   /**

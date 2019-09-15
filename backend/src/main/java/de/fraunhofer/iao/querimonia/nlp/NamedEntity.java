@@ -226,6 +226,51 @@ public class NamedEntity implements Comparable<NamedEntity> {
     return color;
   }
 
+  public NamedEntity withId(long id) {
+    return new NamedEntityBuilder(this).setId(id)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withLabel(@NonNull String label) {
+    return new NamedEntityBuilder(this).setLabel(label)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withStart(int start) {
+    return new NamedEntityBuilder(this).setStart(start)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withEnd(int end) {
+    return new NamedEntityBuilder(this).setEnd(end)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withValue(@NonNull String value) {
+    return new NamedEntityBuilder(this).setValue(value)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withSetByUser(boolean setByUser) {
+    return new NamedEntityBuilder(this).setSetByUser(setByUser)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withPreferred(boolean preferred) {
+    return new NamedEntityBuilder(this).setPreferred(preferred)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withExtractor(@NonNull String extractor) {
+    return new NamedEntityBuilder(this).setExtractor(extractor)
+        .createNamedEntity();
+  }
+
+  public NamedEntity withColor(@NotNull String color) {
+    return new NamedEntityBuilder(this).setColor(color)
+        .createNamedEntity();
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -243,6 +288,9 @@ public class NamedEntity implements Comparable<NamedEntity> {
         .append(end, that.end)
         .append(label, that.label)
         .append(value, that.value)
+        .append(preferred, that.preferred)
+        .append(color, that.color)
+        .append(setByUser, that.setByUser)
         .append(extractor, that.extractor)
         .isEquals();
   }
@@ -255,6 +303,9 @@ public class NamedEntity implements Comparable<NamedEntity> {
         .append(end)
         .append(value)
         .append(extractor)
+        .append(color)
+        .append(setByUser)
+        .append(preferred)
         .toHashCode();
   }
 
