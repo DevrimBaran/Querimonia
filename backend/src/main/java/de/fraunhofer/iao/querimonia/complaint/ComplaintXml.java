@@ -18,6 +18,19 @@ public class ComplaintXml {
   private ComplaintXml() {
   }
 
+  @XmlRootElement(name = "fraunhoferTextDocuments")
+  @XmlAccessorType(XmlAccessType.FIELD)
+  public static class ComplaintXmls {
+    List<ComplaintXml> fraunhoferTextDocument;
+
+    private ComplaintXmls(){
+    }
+
+    public ComplaintXmls(List<ComplaintXml> complaints) {
+      fraunhoferTextDocument = complaints;
+    }
+  }
+
   /**
    * Creating a ComplaintXml out of a Complaint and mapping all relevant properties.
    * @param complaint Complaint to create an Xml of

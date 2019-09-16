@@ -90,24 +90,15 @@ public class ComplaintManager {
    * Returns the complaints of the database with filtering and sorting.
    *
    * @see ComplaintController#getComplaints(Optional, Optional, Optional, Optional, Optional,
-   *     Optional, Optional, Optional, Optional) getComplaints
+   * Optional, Optional, Optional, Optional) getComplaints
    */
   public synchronized List<Complaint> getComplaints(
       Optional<Integer> count, Optional<Integer> page, Optional<String[]> sortBy,
       Optional<String[]> state, Optional<String> dateMin, Optional<String> dateMax,
       Optional<String[]> sentiment, Optional<String[]> subject, Optional<String[]> keywords) {
 
-    ArrayList<Complaint> result = new ArrayList<>();
-    complaintRepository.findAll().forEach(result::add);
-
-    Stream<Complaint> filteredResult =
-        result.stream()
-            .filter(complaint -> ComplaintFilter.filterByState(complaint, state))
-            .filter(complaint -> ComplaintFilter.filterByDate(complaint, dateMin, dateMax))
-            .filter(complaint -> ComplaintFilter.filterByEmotion(complaint, sentiment))
-            .filter(complaint -> ComplaintFilter.filterBySubject(complaint, subject))
-            .filter(complaint -> ComplaintFilter.filterByKeywords(complaint, keywords))
-            .sorted(ComplaintFilter.createComplaintComparator(sortBy));
+    Stream<Complaint> filteredResult = getFilteredComplaints(sortBy, state, dateMin, dateMax,
+        sentiment, subject, keywords);
 
     if (count.isPresent()) {
       if (page.isPresent()) {
@@ -122,6 +113,22 @@ public class ComplaintManager {
     return filteredResult.collect(Collectors.toList());
   }
 
+  private Stream<Complaint> getFilteredComplaints(
+      Optional<String[]> sortBy, Optional<String[]> state, Optional<String> dateMin,
+      Optional<String> dateMax, Optional<String[]> sentiment, Optional<String[]> subject,
+      Optional<String[]> keywords) {
+    ArrayList<Complaint> result = new ArrayList<>();
+    complaintRepository.findAll().forEach(result::add);
+
+    return result.stream()
+        .filter(complaint -> ComplaintFilter.filterByState(complaint, state))
+        .filter(complaint -> ComplaintFilter.filterByDate(complaint, dateMin, dateMax))
+        .filter(complaint -> ComplaintFilter.filterByEmotion(complaint, sentiment))
+        .filter(complaint -> ComplaintFilter.filterBySubject(complaint, subject))
+        .filter(complaint -> ComplaintFilter.filterByKeywords(complaint, keywords))
+        .sorted(ComplaintFilter.createComplaintComparator(sortBy));
+  }
+
   /**
    * Upload method for complaints from files. The text of the file gets extracted and the text
    * gets analyzed.
@@ -129,9 +136,7 @@ public class ComplaintManager {
    * @param file     the file that should be uploaded.
    * @param configId the id of the config that should be used for analysis, if not given the
    *                 active configuration gets used.
-   *
    * @return the new created complaint.
-   *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadComplaint(MultipartFile, Optional) uploadComplaint
    */
@@ -148,9 +153,7 @@ public class ComplaintManager {
    * @param input    the text that should be uploaded.
    * @param configId the id of the config that should be used for analysis, if not given the
    *                 active configuration gets used.
-   *
    * @return the new created complaint.
-   *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadText(TextInput, Optional) uploadText
    */
@@ -198,9 +201,7 @@ public class ComplaintManager {
    * Method for getting a complaint with an id.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the complaint with the given id.
-   *
    * @throws NotFoundException when no complaint with the given id exists.
    * @see ComplaintController#getComplaint(long) getComplaint
    */
@@ -213,9 +214,7 @@ public class ComplaintManager {
    * Returns the text of a complaint.
    *
    * @param complaintId the id of the complaint
-   *
    * @return the text of the complaint.
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getText(long) getText
    */
@@ -224,11 +223,11 @@ public class ComplaintManager {
   }
 
   /**
-   * Returns the xml of a complaint.
+   * Returns the xml String of a complaint.
    *
-   * @param complaintId th id of the complaint
-   *
-   * @return the complaint in fraunhofer xml format
+   * @param complaintId the id of the complaint
+   * @return the xml of the complaint
+   * @throws NotFoundException if no complaint with the given id exists
    */
   public String getXml(long complaintId) {
     try {
@@ -362,9 +361,7 @@ public class ComplaintManager {
    * Sets the state of a complaint to closed and executes all actions.
    *
    * @param complaintId the id of the complaint that should be closed.
-   *
    * @return the closed complaint.
-   *
    * @throws QuerimoniaException if the complaint with the given id does not exist or the
    *                             complaint cannot be closed in its state.
    * @see ComplaintController#closeComplaint(long) closeComplaint
@@ -395,7 +392,7 @@ public class ComplaintManager {
    * Return the amount of complaints that match the given parameters.
    *
    * @see ComplaintController#countComplaints(Optional, Optional, Optional, Optional, Optional,
-   *     Optional)  countComplaints
+   * Optional)  countComplaints
    */
   public synchronized String countComplaints(Optional<String[]> state, Optional<String> dateMin,
                                              Optional<String> dateMax, Optional<String[]> sentiment,
@@ -409,9 +406,7 @@ public class ComplaintManager {
    * Returns the log of a complaint.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the log of a complaint.
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getLog(long) getLog
    */
@@ -423,9 +418,7 @@ public class ComplaintManager {
    * Returns all entities of a complaint.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return all entities of a complaint.
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getEntities(long) getEntities
    */
@@ -472,7 +465,6 @@ public class ComplaintManager {
    * @param complaintId the id of the complaint.
    * @param entityId    the id of the entity.
    * @param entity      the new entity that replaces the entity with the given id.
-   *
    * @return a updated list of entities of the given complaint.
    */
   public List<NamedEntity> updateEntity(long complaintId, long entityId, NamedEntity entity) {
@@ -566,7 +558,6 @@ public class ComplaintManager {
    * entities from the same context.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the list of the combinations.
    */
   public List<Combination> getCombinations(long complaintId) {
@@ -647,9 +638,7 @@ public class ComplaintManager {
    *                 #DEFAULT_TEXTS_DEFAULT_COUNT} texts will be added.
    * @param configId the id of the config that should be used for the analysis. If this is not
    *                 given, the active config will be used.
-   *
    * @return the list of added complaints.
-   *
    * @throws QuerimoniaException on an unexpected server error or if no config with the given id
    *                             exists in the database.
    * @see ComplaintController#addDefaultComplaints(Optional, Optional) addDefaultComplaints
@@ -686,9 +675,7 @@ public class ComplaintManager {
    * Refreshed the response for a complaint.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the new creates response
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ResponseController#refreshResponse(long) refreshResponse
    */
@@ -708,7 +695,6 @@ public class ComplaintManager {
    * Returns all complaints with the given state.
    *
    * @param state the state of the complaints.
-   *
    * @return a list of all complaints that are in the given state.
    */
   public List<Complaint> getComplaintsWithState(ComplaintState state) {
@@ -738,7 +724,6 @@ public class ComplaintManager {
    *
    * @param complaint       the complaint to check.
    * @param forbiddenStates the states that are not allowed.
-   *
    * @throws QuerimoniaException if the state of the complaint is one of the forbidden states.
    */
   private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
@@ -761,6 +746,44 @@ public class ComplaintManager {
           + "werden, da die Analyse nicht abgeschlossen werden konnte. Starten Sie die Analyse "
           + "neu mit einer gültigen Konfiguration, um mit der Bearbeitung zu beginnen.", exception,
           "Beschwerde wurde nicht analysiert.");
+    }
+  }
+
+  /**
+   * Returns the complaints of the database with filtering and sorting in one xml.
+   *
+   * @param sortBy   an array of sorting aspects. The order in the array represents the priority
+   *                 for the sorting: The complaints get sorted by the first array entry first, and
+   *                 then by the second, etc. Valid sort aspects are: <code>upload_date_asc,
+   *                 upload_date_desc, subject_asc, subject_desc, sentiment_asc,
+   *                 sentiment_desc}</code>
+   * @param state    If given, only complaints in that state will be returned.
+   * @param dateMin  If given, no complaints that were uploaded before that date will be returned.
+   * @param dateMax  If given, no complaints that were uploaded after that date will be returned.
+   * @param emotion  If given, only complaints with this emotion will be returned.
+   * @param subject  If given, only complaints with this subject will be returned.
+   * @param keywords If given, only complaints that contain the keywords will returned.
+   * @return a response entity with the following contents:
+   * <ul>
+   * <li>status code 200 and a xml of the sorted, filtered complaints
+   * setting as response body on success.</li>
+   * <li>status code 400 and a the exception as response body when the sorting parameters are
+   * invalid</li>
+   * <li>status code 500 and the exception as response body on an unexpected server error.</li>
+   * </ul>
+   */
+  public String getXmls(Optional<String[]> sortBy, Optional<String[]> state,
+                        Optional<String> dateMin, Optional<String> dateMax,
+                        Optional<String[]> emotion, Optional<String[]> subject,
+                        Optional<String[]> keywords) {
+    Stream<Complaint> filteredComplaint = getFilteredComplaints(sortBy, state, dateMin, dateMax,
+        emotion, subject, keywords);
+    try {
+      return Complaint.getXmls(filteredComplaint);
+    } catch (JAXBException e) {
+      e.printStackTrace();
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Xml konnte nicht erstellt "
+          + "werden", "Xml-Converter Fehler");
     }
   }
 }

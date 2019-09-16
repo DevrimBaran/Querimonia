@@ -78,6 +78,44 @@ public class ComplaintController {
   }
 
   /**
+   * Returns the complaints of the database in xml format. With the given parameters the complaints
+   * get filtered, sorted.
+   * @param sortBy   an array of sorting aspects. The order in the array represents the priority
+   *                 for the sorting: The complaints get sorted by the first array entry first, and
+   *                 then by the second, etc. Valid sort aspects are: <code>upload_date_asc,
+   *                 upload_date_desc, subject_asc, subject_desc, sentiment_asc,
+   *                 sentiment_desc}</code>
+   * @param state    If given, only complaints in that state will be returned.
+   * @param dateMin  If given, no complaints that were uploaded before that date will be returned.
+   * @param dateMax  If given, no complaints that were uploaded after that date will be returned.
+   * @param emotion  If given, only complaints with this emotion will be returned.
+   * @param subject  If given, only complaints with this subject will be returned.
+   * @param keywords If given, only complaints that contain the keywords will returned.
+   *
+   * @return a response entity with the following contents:
+   *     <ul>
+   *     <li>status code 200 and a list of the sorted, filtered complaints matching the pagination
+   *     setting as response body on success.</li>
+   *     <li>status code 400 and a the exception as response body when the sorting parameters are
+   *     invalid</li>
+   *     <li>status code 500 and the exception as response body on an unexpected server error.</li>
+   *     </ul>
+   */
+  @GetMapping("/api/complaints/xml")
+  public ResponseEntity<?> getXmls(
+      @RequestParam("sort_by") Optional<String[]> sortBy,
+      @RequestParam("state") Optional<String[]> state,
+      @RequestParam("date_min") Optional<String> dateMin,
+      @RequestParam("date_max") Optional<String> dateMax,
+      @RequestParam("emotion") Optional<String[]> emotion,
+      @RequestParam("subject") Optional<String[]> subject,
+      @RequestParam("keywords") Optional<String[]> keywords
+  ) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.getXmls(sortBy,
+        state, dateMin, dateMax, emotion, subject, keywords));
+  }
+
+  /**
    * This endpoint is used for uploading files with complaint texts. It accepts txt, word and pdf
    * files and extracts the text from them. Then the complaint gets analyzed with a given
    * configuration or the currently active configuration.
