@@ -10,6 +10,7 @@ import Block from './../components/Block';
 import Input from '../components/Input';
 import Content from './../components/Content';
 import Autocomplete from '../components/Autocomplete';
+import { NONAME } from 'dns';
 
 // TODO Api anpassen/backend ändern
 const Api = {
@@ -134,6 +135,9 @@ class WordVectors extends Component {
   };
 
   calculate = () => {
+    //visibilty of the Table
+    document.getElementById("wordvectable").style.visibility = "visible";
+
     const value = document.getElementById('analogy').value;
     console.log(value);
     if (!value) return;
@@ -245,15 +249,16 @@ class WordVectors extends Component {
               <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
               <Input type='submit' name='berechneButton' onClick={this.calculate} value='Berechnen' />
             </div>
-            <table className='center'>
-              <thead>
+            <table  id="wordvectable" style={{visibility:"hidden"}} >
+              <thead style={{boxShadow:"none"}}>
                 <tr>
                   <th>Wort</th>
                   <th>Wahrscheinlichkeit</th>
                 </tr>
               </thead>
               <tbody>
-                {this.state.result.map((word, index) => {
+                {
+                  this.state.result.map((word, index) => {
                   const split = word.split(': ');
                   return (
                     <tr key={index}>
