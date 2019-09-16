@@ -19,13 +19,14 @@ const options = function (method, data, additional = {}) {
   let options = {
     method: method,
     mode: 'cors',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json'
     },
     ...additional
   };
   if (process.env.REACT_APP_AUTHORIZATION) {
-    options.headers['Authorization'] = 'Basic ' + btoa(process.env.REACT_APP_AUTHORIZATION);
+    // options.headers['Authorization'] = 'Basic ' + btoa(process.env.REACT_APP_AUTHORIZATION);
   }
   if (method === 'post' || method === 'put' || method === 'PATCH') {
     if (data instanceof FormData) {
