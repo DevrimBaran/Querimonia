@@ -33,6 +33,14 @@ import Button from '../../components/Button';
 import DownloadButton from '../../components/DownloadButton';
 import api from '../../utility/Api';
 
+const states = {
+  NEW: 'Neu',
+  IN_PROGRESS: 'In Bearbeitung',
+  CLOSED: 'Geschlossen',
+  ANALYSING: 'In Analyse',
+  ERROR: 'Fehler'
+};
+
 const sortedEntities = (data, complaintId, dispatch, disabled) => {
   const entities = data.ids.map(id => data.byId[id]).sort((a, b) => {
     if (a.label === b.label) {
@@ -76,8 +84,16 @@ function Header () {
 
 function Overlay (dispatch, filter) {
   const xml = (e) => {
+    console.log(filter);
+    const query = filter.reduce((obj, input) => {
+      if (input.value) {
+        obj[input.name] = input.value;
+      }
+      return obj;
+    }, {});
+    console.log(query);
     e.stopPropagation();
-    return api.get(`/api/complaints/xml`, filter, 'blob');
+    return api.get(`/api/complaints/xml`, query, 'blob');
   };
   return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code' onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
 }
@@ -106,7 +122,7 @@ function List (data, dispatch, helpers) {
           </div>
         </Row>
       </th>
-      <td>{data.state}</td>
+      <td>{states[data.state]}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
       <td><Sentiment tendency={data.sentiment.tendency} /></td>
@@ -172,7 +188,7 @@ function Single (active, dispatch, helpers) {
               {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
             ['Eingangsdatum', (localize(active.receiveDate))],
             ['Eingangszeit', (active.receiveTime)],
-            ['Status', (active.state)],
+            ['Status', (states[active.state])],
             ['ID', (active.id)],
             { map: (cb) => (active.properties.map((property) => {
               return (
