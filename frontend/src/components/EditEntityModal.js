@@ -24,6 +24,7 @@ class EditEntityModal extends Component {
       extractorList,
       id: '',
       label: '',
+      value: '',
       start: 0,
       end: 0
     };
@@ -31,11 +32,11 @@ class EditEntityModal extends Component {
   }
 
   addEntity = () => {
-    const { start, end, label, extractorList } = { ...this.state };
+    const { start, end, label, value, extractorList } = { ...this.state };
     this.props.dispatch(addEntity(this.props.active.id, {
       start: start,
       end: end,
-      value: this.props.text.substring(start, end),
+      value: value,
       setByUser: true,
       preferred: false,
       label: label,
@@ -48,9 +49,12 @@ class EditEntityModal extends Component {
     if (selection.anchorOffset === selection.focusOffset) {
       return;
     }
+    const start = Math.min(selection.anchorOffset, selection.focusOffset);
+    const end = Math.max(selection.anchorOffset, selection.focusOffset);
     this.setState({
-      start: Math.min(selection.anchorOffset, selection.focusOffset),
-      end: Math.max(selection.anchorOffset, selection.focusOffset)
+      start: start,
+      end: end,
+      value: this.props.text.substring(start, end)
     });
   }
   onChange = (e) => {
@@ -68,7 +72,7 @@ class EditEntityModal extends Component {
   }
   render () {
     const { text, entities } = { ...this.props };
-    const { start, end, label, extractorList } = { ...this.state };
+    const { start, end, label, value, extractorList } = { ...this.state };
     const color = new Color(extractorList[label] ? extractorList[label].color : '#cccccc');
     let cpos = 0;
     let key = 0;
@@ -96,7 +100,8 @@ class EditEntityModal extends Component {
           </div>
         </div>
         <Input label='Label' type='select' value={label} values={Object.keys(extractorList)} name='label' onChange={this.onChange} />
-        <Input label='Text' type='text' readOnly className='entitytextbox' name='note' value={start !== end ? text.substring(start, end) : 'Bitte markieren sie den gewünschten Abschnitt!'} />
+        <Input label='Ausgewählt' type='text' readOnly className='entitytextbox' name='note' value={start !== end ? text.substring(start, end) : 'Bitte markieren sie den gewünschten Abschnitt!'} />
+        <Input label='Wert' type='text' className='entitytextbox' name='value' value={value} onChange={this.onChange} />
         <Input label='Start' type='number' name='start' value={start} min={0} max={end} onChange={this.onChange} />
         <Input label='Ende' type='number' name='end' value={end} min={start} onChange={this.onChange} />
         <Button disabled={start === end} style={{ padding: '2px', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-save' onClick={this.addEntity}>Speichern</Button>

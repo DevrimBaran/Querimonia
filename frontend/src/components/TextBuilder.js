@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { finishComplaint } from '../redux/actions/';
+import { finishComplaint, refreshResponses } from '../redux/actions/';
 
 import Content from './../components/Content';
 import Response from './../components/Response';
@@ -38,7 +38,7 @@ class TextBuilder extends Component {
     }));
   }
   refresh = (e) => {
-    console.log('refresh');
+    this.props.dispatch(refreshResponses(this.props.complaintId));
   }
   finish = () => {
     fetch('https://querimonia.iao.fraunhofer.de/tmp/done', {
@@ -56,7 +56,9 @@ class TextBuilder extends Component {
     this.props.dispatch(finishComplaint(this.props.complaintId));
   };
   render () {
-    const { disabled, components = [], actions = [] } = { ...this.props };
+    const { disabled, components = [] } = { ...this.props };
+    const actions = components.reduce((array, component) => array.concat(component.component.actions), []);
+    console.log(actions);
     const disableResponses = components.filter(c => !this.state.used[c.id]).length === 0;
     const disableActions = actions.length === 0;
     return (
@@ -94,7 +96,7 @@ const mapStateToProps = (state, props) => {
     entities: state.complaintStuff.entities,
     complaintId: state.complaintStuff.id,
     components: state.complaintStuff.components,
-    actions: state.complaintStuff.actions,
+    // actions: state.complaintStuff.actions,
     counter: state.complaintStuff.counter
   };
 };

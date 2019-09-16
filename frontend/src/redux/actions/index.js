@@ -267,6 +267,21 @@ export function fetchCurrentConfig () {
     });
   };
 }
+export function refreshResponses (id) {
+  return function (dispatch, getState) {
+    dispatch({
+      type: 'REFRESH_RESPONSES_START'
+    });
+    Api.get('/api/complaints/' + id + '/response', {})
+      .then(data => {
+        dispatch({
+          type: 'REFRESH_RESPONSES_END',
+          components: data.components,
+          actions: data.actions
+        });
+      });
+  };
+}
 export function fetchStuff (id) {
   return function (dispatch, getState) {
     if (!getState().complaints.data.byId[id]) return;

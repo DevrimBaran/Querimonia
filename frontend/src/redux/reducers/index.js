@@ -228,6 +228,20 @@ function complaintStuff (state = {}, action) {
         done: true
       };
     }
+    case 'REFRESH_RESPONSES_START': {
+      return {
+        ...state,
+        done: false
+      };
+    }
+    case 'REFRESH_RESPONSES_END': {
+      return {
+        ...state,
+        components: action.components,
+        actions: action.actions,
+        done: true
+      };
+    }
     case 'MODIFY_ENTITY': {
       return {
         ...state,

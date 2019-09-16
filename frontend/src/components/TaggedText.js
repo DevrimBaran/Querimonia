@@ -36,6 +36,7 @@ class TaggedText extends Component {
     let key = 0;
     if (entities) {
       for (const entity of entities) {
+        if (entity.start === entity.end) continue;
         // String before next entity
         !text.substring(cpos, entity.start) || html.push(<span key={key++} data-key={html.length}>{text.substring(cpos, entity.start)}</span>);
         // String that is entity

@@ -57,13 +57,15 @@ class Tag extends Component {
               'data-end': '',
               'data-label': '',
               'data-id': '',
+              'data-value': '',
               'data-mode': ''
             };
             let entitiyData = {
               'data-id': entity.id,
               'data-start': entity.start,
               'data-end': entity.end,
-              'data-label': entity.label
+              'data-label': entity.label,
+              'data-value': entity.value
             };
             return <div
               key={i}
