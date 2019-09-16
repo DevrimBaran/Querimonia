@@ -255,8 +255,6 @@ public class ComplaintFactory {
     entityStream = entityStream.sorted();
     var entities = entityStream.collect(Collectors.toList());
     complaintBuilder.setEntities(getAllEntities(complaintBuilder, entities));
-
-    complaintBuilder.setEntities(new ArrayList<>(entityStream.collect(Collectors.toList())));
   }
 
   @NonNull
