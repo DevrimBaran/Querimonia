@@ -134,6 +134,9 @@ class WordVectors extends Component {
   };
 
   calculate = () => {
+    // visibilty of the Table
+    document.getElementById('wordvectable').style.visibility = 'visible';
+
     const value = document.getElementById('analogy').value;
     console.log(value);
     if (!value) return;
@@ -245,23 +248,24 @@ class WordVectors extends Component {
               <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
               <Input type='submit' name='berechneButton' onClick={this.calculate} value='Berechnen' />
             </div>
-            <table className='center'>
-              <thead>
+            <table id='wordvectable' style={{ visibility: 'hidden' }} >
+              <thead style={{ boxShadow: 'none' }}>
                 <tr>
                   <th>Wort</th>
                   <th>Wahrscheinlichkeit</th>
                 </tr>
               </thead>
               <tbody>
-                {this.state.result.map((word, index) => {
-                  const split = word.split(': ');
-                  return (
-                    <tr key={index}>
-                      <td>{split[0]}</td>
-                      <td>{(split[1] * 100).toFixed(2)}%</td>
-                    </tr>
-                  );
-                })}
+                {
+                  this.state.result.map((word, index) => {
+                    const split = word.split(': ');
+                    return (
+                      <tr key={index}>
+                        <td>{split[0]}</td>
+                        <td>{(split[1] * 100).toFixed(2)}%</td>
+                      </tr>
+                    );
+                  })}
               </tbody>
             </table>
           </Content>
