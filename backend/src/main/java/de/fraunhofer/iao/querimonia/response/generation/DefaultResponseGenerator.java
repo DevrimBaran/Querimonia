@@ -2,15 +2,13 @@ package de.fraunhofer.iao.querimonia.response.generation;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
-import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
-import de.fraunhofer.iao.querimonia.nlp.extractor.ExtractorDefinition;
 import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
-import org.springframework.lang.NonNull;
 
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +33,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
         filterComponents(complaintBuilder, responseComponents);
 
     // find all entities
-    List<NamedEntity> allEntities = getAllEntities(complaintBuilder);
+    List<NamedEntity> allEntities = complaintBuilder.getEntities();
 
     return createResponseSuggestion(complaintBuilder, responseComponentsFiltered, allEntities);
   }
@@ -56,50 +54,6 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     // reverse for highest priority is first in the list
     Collections.reverse(responseComponentsFiltered);
     return responseComponentsFiltered;
-  }
-
-  /**
-   * Returns all entities of a complaint and adds entities for the upload date and time.
-   */
-  @NonNull
-  public static List<NamedEntity> getAllEntities(ComplaintBuilder complaintBuilder) {
-    List<NamedEntity> allEntities = new ArrayList<>(complaintBuilder.getEntities());
-
-    // add upload date entities
-    String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
-        .withLocale(Locale.GERMAN)
-        .format(complaintBuilder.getReceiveDate());
-    String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
-        .withLocale(Locale.GERMAN)
-        .format(complaintBuilder.getReceiveTime());
-    // get first extractors that is used for the entities that are not in the text
-    String extractor = Objects.requireNonNull(complaintBuilder
-        .getConfiguration())
-        .getExtractors()
-        .stream()
-        .findFirst()
-        .map(ExtractorDefinition::getName)
-        .orElse("");
-
-    allEntities.add(new NamedEntityBuilder()
-        .setLabel("Eingangsdatum")
-        .setStart(0)
-        .setEnd(0)
-        .setSetByUser(false)
-        .setExtractor(extractor)
-        .setValue(formattedDate)
-        .setColor(getColorOfEntity(complaintBuilder, "Eingangsdatum"))
-        .createNamedEntity());
-    allEntities.add(new NamedEntityBuilder()
-        .setLabel("Eingangszeit")
-        .setStart(0)
-        .setEnd(0)
-        .setSetByUser(false)
-        .setExtractor(extractor)
-        .setValue(formattedTime)
-        .setColor(getColorOfEntity(complaintBuilder, "Eingangszeit"))
-        .createNamedEntity());
-    return allEntities;
   }
 
   private ResponseSuggestion createResponseSuggestion(ComplaintBuilder complaintData,
@@ -140,15 +94,4 @@ public class DefaultResponseGenerator implements ResponseGenerator {
     return new ResponseSuggestion(generatedResponse, validActions);
   }
 
-  private static String getColorOfEntity(ComplaintBuilder complaintBuilder, String label) {
-    return Objects.requireNonNull(complaintBuilder
-        .getConfiguration())
-        .getExtractors()
-        .stream()
-        .filter(extractorDefinition -> extractorDefinition.getLabel().equals(label))
-        .map(ExtractorDefinition::getColor)
-        .findAny()
-        // fallback color
-        .orElse("#cc22cc");
-  }
 }

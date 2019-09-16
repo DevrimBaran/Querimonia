@@ -2,6 +2,7 @@ package de.fraunhofer.iao.querimonia.complaint;
 
 import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
+import de.fraunhofer.iao.querimonia.nlp.NamedEntityBuilder;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.nlp.analyze.StopWordFilter;
 import de.fraunhofer.iao.querimonia.nlp.classifier.ClassifierDefinition;
@@ -20,9 +21,12 @@ import org.springframework.lang.NonNull;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,6 +54,63 @@ public class ComplaintFactory {
   public ComplaintFactory(ResponseGenerator responseGenerator, StopWordFilter stopWordFilter) {
     this.responseGenerator = responseGenerator;
     this.stopWordFilter = stopWordFilter;
+  }
+
+  /**
+   * Returns all entities of a complaint and adds entities for the upload date and time.
+   */
+  @NonNull
+  private static List<NamedEntity> getAllEntities(ComplaintBuilder complaintBuilder,
+                                                  List<NamedEntity> entities) {
+    List<NamedEntity> allEntities = new ArrayList<>(entities);
+
+    // add upload date entities
+    String formattedDate = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)
+        .withLocale(Locale.GERMAN)
+        .format(complaintBuilder.getReceiveDate());
+    String formattedTime = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)
+        .withLocale(Locale.GERMAN)
+        .format(complaintBuilder.getReceiveTime());
+    // get first extractors that is used for the entities that are not in the text
+    String extractor = Objects.requireNonNull(complaintBuilder
+        .getConfiguration())
+        .getExtractors()
+        .stream()
+        .findFirst()
+        .map(ExtractorDefinition::getName)
+        .orElse("");
+
+    allEntities.add(new NamedEntityBuilder()
+        .setLabel("Eingangsdatum")
+        .setStart(0)
+        .setEnd(0)
+        .setSetByUser(false)
+        .setExtractor(extractor)
+        .setValue(formattedDate)
+        .setColor(getColorOfEntity(complaintBuilder, "Eingangsdatum"))
+        .createNamedEntity());
+    allEntities.add(new NamedEntityBuilder()
+        .setLabel("Eingangszeit")
+        .setStart(0)
+        .setEnd(0)
+        .setSetByUser(false)
+        .setExtractor(extractor)
+        .setValue(formattedTime)
+        .setColor(getColorOfEntity(complaintBuilder, "Eingangszeit"))
+        .createNamedEntity());
+    return allEntities;
+  }
+
+  private static String getColorOfEntity(ComplaintBuilder complaintBuilder, String label) {
+    return Objects.requireNonNull(complaintBuilder
+        .getConfiguration())
+        .getExtractors()
+        .stream()
+        .filter(extractorDefinition -> extractorDefinition.getLabel().equals(label))
+        .map(ExtractorDefinition::getColor)
+        .findAny()
+        // fallback color
+        .orElse("#cc22cc");
   }
 
 
@@ -192,6 +253,8 @@ public class ComplaintFactory {
     }
     // sort entities
     entityStream = entityStream.sorted();
+    var entities = entityStream.collect(Collectors.toList());
+    complaintBuilder.setEntities(getAllEntities(complaintBuilder, entities));
 
     complaintBuilder.setEntities(new ArrayList<>(entityStream.collect(Collectors.toList())));
   }

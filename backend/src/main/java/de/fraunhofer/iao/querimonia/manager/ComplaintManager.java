@@ -223,7 +223,13 @@ public class ComplaintManager {
     return new TextInput(getComplaint(complaintId).getText());
   }
 
-  // TODO javadoc @Samuel
+  /**
+   * Returns the xml of a complaint.
+   *
+   * @param complaintId th id of the complaint
+   *
+   * @return the complaint in fraunhofer xml format
+   */
   public String getXml(long complaintId) {
     try {
       return getComplaint(complaintId).toXml();
@@ -425,7 +431,7 @@ public class ComplaintManager {
    */
   public List<NamedEntity> getEntities(long complaintId) {
     var complaint = getComplaint(complaintId);
-    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(complaint));
+    return complaint.getEntities();
   }
 
   /**
@@ -457,7 +463,7 @@ public class ComplaintManager {
     complaint = builder.createComplaint();
     storeComplaint(complaint);
     // reload for entity id that is set by the database (otherwise the new entity has id 0)
-    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(getComplaint(complaintId)));
+    return getComplaint(complaintId).getEntities();
   }
 
   /**
@@ -494,7 +500,7 @@ public class ComplaintManager {
     complaint = builder.createComplaint();
     storeComplaint(complaint);
     // reload for entity id that is set by the database (otherwise the new entity has id 0)
-    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(getComplaint(complaintId)));
+    return getComplaint(complaintId).getEntities();
   }
 
   private void checkValidityOfEntity(NamedEntity entity, Complaint complaint) {
@@ -552,7 +558,7 @@ public class ComplaintManager {
     }
 
     storeComplaint(builder.createComplaint());
-    return DefaultResponseGenerator.getAllEntities(new ComplaintBuilder(getComplaint(complaintId)));
+    return getComplaint(complaintId).getEntities();
   }
 
   /**
