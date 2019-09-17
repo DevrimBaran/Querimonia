@@ -151,7 +151,7 @@ function Single (active, dispatch, helpers) {
         <Row vertical>
           <h6 className='center'>Meldetext</h6>
           <Content>
-            <Tabbed vertical>
+            <Tabbed>
               <div label='Überarbeitet'>
                 <TaggedText disabled={disabled} active={active} dispatch={dispatch}
                   text={helpers.props.complaintStuff.text}

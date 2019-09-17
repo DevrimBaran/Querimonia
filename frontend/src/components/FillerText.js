@@ -88,11 +88,17 @@ class FillerText extends Component {
     this.texts = this.props.texts.map(t => t.split(/\$\{(.+?)\}/));
   }
   componentDidMount = () => {
-    this.onChange();
+    if (this.props.texts.length !== 0) {
+      this.onChange();
+    }
   }
   render () {
     const { texts, selected, entities, dispatch, onChange, ...passThrough } = { ...this.props };
-    const render = this.texts[selected % this.texts.length].map((t, i) => {
+    if (texts.length === 0) {
+      return <React.Fragment />;
+    }
+    const text = this.texts[selected % this.texts.length] || [];
+    const render = text.map((t, i) => {
       return (i % 2 === 0) ? (
         <span key={i}>{t}</span>
       ) : (

@@ -26,7 +26,7 @@ class Response extends Component {
   }
   render () {
     const { component, entities, dispatch, onSelect, ...passThrough } = { ...this.props };
-    return component ? (
+    return component && component.texts.length > 0 ? (
       <div className='response' {...passThrough} >
         <span className='content'>
           <FillerText onChange={this.onChange} texts={component.texts} selected={this.state.selected} />

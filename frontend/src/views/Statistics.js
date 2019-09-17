@@ -222,7 +222,7 @@ class Statistics extends Component {
             <Row vertical>
               <h1 className='center'>Statistiken</h1>
               <Content>
-                <Tabbed vertical>
+                <Tabbed>
                   <div titleHeader='Merkmale nach Kategorien aufgesplittet' label='Kategorien'>
                     <Table className='stats-table'>
                       <tbody>
@@ -308,7 +308,7 @@ class Statistics extends Component {
             <Row vertical>
               <h1 className='center'>Statistiken</h1>
               <Content>
-                <Tabbed vertical>
+                <Tabbed>
                   <div label='Kategorien' />
                   <div label='Entitäten' />
                   <div label='Regeln' />
