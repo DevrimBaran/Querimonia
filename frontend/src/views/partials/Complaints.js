@@ -55,7 +55,7 @@ const sortedEntities = (data, complaintId, dispatch, disabled) => {
   return entities.map(entity => (
     [
       entity.label,
-      <Tag text={entity.value} ids={[entity.id]} disabled={disabled} />,
+      <Tag text={entity.value} ids={[entity.id]} disabled={disabled}/>,
       <Button
         disabled={disabled}
         onClick={() => dispatch(changeEntity(complaintId, entity.id, { preferred: !entity.preferred }))}
@@ -69,15 +69,15 @@ const sortedEntities = (data, complaintId, dispatch, disabled) => {
 function Header () {
   return (
     <thead>
-      <tr>
-        <th>Anliegen</th>
-        <th>Status</th>
-        <th>Vorschau</th>
-        <th>Emotion</th>
-        <th>Sentiment</th>
-        <th>Kategorie</th>
-        <th>Datum</th>
-      </tr>
+    <tr>
+      <th>Anliegen</th>
+      <th>Status</th>
+      <th>Vorschau</th>
+      <th>Emotion</th>
+      <th>Sentiment</th>
+      <th>Kategorie</th>
+      <th>Datum</th>
+    </tr>
     </thead>
   );
 }
@@ -95,7 +95,8 @@ function Overlay (dispatch, filter) {
     e.stopPropagation();
     return api.get(`/api/complaints/xml`, query, 'blob');
   };
-  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code' onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
+  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code'
+                         onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
 }
 
 function List (data, dispatch, helpers) {
@@ -116,8 +117,11 @@ function List (data, dispatch, helpers) {
         <Row>
           {data.id}
           <div>
-            <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'} icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
-            <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8' disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code' onClick={xml} />
+            <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
+                    icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh}/>
+            <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8'
+                            disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code'
+                            onClick={xml}/>
             {helpers.remove}
           </div>
         </Row>
@@ -125,16 +129,17 @@ function List (data, dispatch, helpers) {
       <td>{states[data.state]}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td><Sentiment tendency={data.sentiment.tendency}/></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
     </tr>
   );
 }
+
 function Single (active, dispatch, helpers) {
   if (!helpers.props.complaintStuff.done || !active) {
     return (
-      <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>
+      <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary'/></div>
     );
   }
   const disabled =
@@ -143,19 +148,20 @@ function Single (active, dispatch, helpers) {
     active.state === 'ERROR';
   return (
     <React.Fragment>
-      <Block>
+      <div className='builderBlock'>
         <Row vertical>
           <h6 className='center'>Anwort</h6>
-          <TextBuilder disabled={disabled} />
+          <TextBuilder disabled={disabled}/>
         </Row>
-      </Block>
-      <Block>
+
         <Row vertical>
           <h6 className='center'>Meldetext</h6>
           <Content>
             <Tabbed vertical>
               <div label='Überarbeitet'>
-                <TaggedText disabled={disabled} active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text} entities={helpers.props.complaintStuff.entities} />
+                <TaggedText disabled={disabled} active={active} dispatch={dispatch}
+                            text={helpers.props.complaintStuff.text}
+                            entities={helpers.props.complaintStuff.entities}/>
               </div>
               <div label='Original'>
                 {helpers.props.complaintStuff.text}
@@ -163,8 +169,9 @@ function Single (active, dispatch, helpers) {
               <div label='Log'>
                 {helpers.props.complaintStuff.log.map((entry, i) => (
                   <div key={i} className='log'>
-                    <span className='category'>[{entry.category}]</span> <span className='datetime'>{entry.date} {entry.time} UTC</span>
-                    <br />
+                    <span className='category'>[{entry.category}]</span> <span
+                    className='datetime'>{entry.date} {entry.time} UTC</span>
+                    <br/>
                     <div className='message'>
                       {entry.message}
                     </div>
@@ -180,9 +187,9 @@ function Single (active, dispatch, helpers) {
             </Tabbed>
           </Content>
           <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text}
-            entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
-          <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
-          <Collapsible label='Details' />
+                           entities={Object.values(helpers.props.complaintStuff.entities.byId)}/>
+          <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff}/>
+          <Collapsible label='Details'/>
           <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
             ['Konfiguration', (<Link to={'/configurations/' + active.configuration.id}>
               {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
@@ -190,46 +197,55 @@ function Single (active, dispatch, helpers) {
             ['Eingangszeit', (active.receiveTime)],
             ['Status', (states[active.state])],
             ['ID', (active.id)],
-            { map: (cb) => (active.properties.map((property) => {
-              return (
-                [property.name, <InformationTag text={property.value} probabilities={property.probabilities} />,
-                  <Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
-                    data-propertyindex={0} data-category={property.value} data-mode={'category'} onClick={(e) => EditDetailsModal.open(e)} />]
-                  .map(cb)
-              )
-              ;
-            })) },
-            ['Sentiment', <InformationTag text={<Sentiment small tendency={active.sentiment ? active.sentiment.tendency : null} />}
-              probabilities={active.sentiment.tendency} />, <Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten' icon={'fas fa-edit'} data-sentiment={
-              active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'} onClick={(e) => EditDetailsModal.open(e)} />],
+            {
+              map: (cb) => (active.properties.map((property) => {
+                return (
+                  [property.name, <InformationTag text={property.value} probabilities={property.probabilities}/>,
+                    <Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
+                            data-propertyindex={0} data-category={property.value} data-mode={'category'}
+                            onClick={(e) => EditDetailsModal.open(e)}/>]
+                    .map(cb)
+                )
+                  ;
+              }))
+            },
+            ['Sentiment',
+              <InformationTag text={<Sentiment small tendency={active.sentiment ? active.sentiment.tendency : null}/>}
+                              probabilities={active.sentiment.tendency}/>,
+              <Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten' icon={'fas fa-edit'}
+                      data-sentiment={
+                        active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'}
+                      onClick={(e) => EditDetailsModal.open(e)}/>],
             ['Emotion', <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
-              probabilities={active.sentiment.emotion.probabilities} />, <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
-              active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />]
-          ]} />
+                                        probabilities={active.sentiment.emotion.probabilities}/>,
+              <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
+                active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'}
+                      onClick={(e) => EditDetailsModal.open(e)}/>]
+          ]}/>
           <Collapsible label='Entitäten'
-            disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
-            collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+                       disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+                       collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
           />
           <Content>
             <ListTable data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
-              styles={[{
-                fontWeight: 'bold'
-              }, {
-                padding: '0 1em'
-              }]}
+                       styles={[{
+                         fontWeight: 'bold'
+                       }, {
+                         padding: '0 1em'
+                       }]}
             />
           </Content>
           <Collapsible label='Kombinationen'
-            disabled={
-              !(helpers.props.complaintStuff.combinations &&
-              helpers.props.complaintStuff.combinations.map &&
-              helpers.props.complaintStuff.combinations.length !== 0)
-            }
-            collapse={
-              !(helpers.props.complaintStuff.combinations &&
-              helpers.props.complaintStuff.combinations.map &&
-              helpers.props.complaintStuff.combinations.length !== 0)
-            }
+                       disabled={
+                         !(helpers.props.complaintStuff.combinations &&
+                           helpers.props.complaintStuff.combinations.map &&
+                           helpers.props.complaintStuff.combinations.length !== 0)
+                       }
+                       collapse={
+                         !(helpers.props.complaintStuff.combinations &&
+                           helpers.props.complaintStuff.combinations.map &&
+                           helpers.props.complaintStuff.combinations.length !== 0)
+                       }
           />
           <Content>
             <ListTable
@@ -245,15 +261,13 @@ function Single (active, dispatch, helpers) {
                   ]
                 ))
               }
-              styles={[{
-              }, {
+              styles={[{}, {
                 padding: '0 1em'
-              }, {
-              }]}
+              }, {}]}
             />
           </Content>
         </Row>
-      </Block>
+      </div>
     </React.Fragment>
   );
 }

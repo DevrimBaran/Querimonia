@@ -54,6 +54,19 @@
         border-right: none;
     }
 }
+.builderBlock{
+    overflow: auto;
+    width: 100%;
+    border-right: 1px solid $grey;
+    margin: 20px;
+    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background: $white;
+    display: flex;
+    &:last-of-type {
+        border-right: none;
+    }
+}
 
 .content {
     position: relative;
