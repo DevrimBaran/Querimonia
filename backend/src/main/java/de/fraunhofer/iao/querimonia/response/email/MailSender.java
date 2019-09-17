@@ -25,7 +25,7 @@ public class MailSender {
 
   public static void mailTest() {
     try {
-      versendeEMail("Test", "Test Mail Inhalt", "samuel.gi@hotmail.de",
+      versendeEMail("Test", "Test Mail Inhalt", "samuel.gigliotti@iao.fraunhofer.de",
           "st157598@stud.uni-stuttgart.de");
     } catch (MessagingException e) {
       e.printStackTrace();
