@@ -69,6 +69,9 @@
 
     &.flex-column {
         overflow-x: hidden;
+        & > :not(.collapsible) {
+            padding: 0 20px;
+        }
     }
 
     &.flex-row {
@@ -78,9 +81,6 @@
         padding: 0;
     }
 
-    & > :not(.collapsible) {
-        padding: 0 20px;
-    }
 }
 
 .input-symbol-euro {
