@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PYTHONVENVV="$(pipenv --venv)"
+uwsgi --ini uwsgi.ini
