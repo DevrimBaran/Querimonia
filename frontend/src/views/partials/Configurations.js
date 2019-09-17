@@ -28,6 +28,7 @@ function Header () {
         <th>Extraktoren</th>
         <th>Klassififkatoren</th>
         <th>Stimmungsanalysator</th>
+        <th>Aktionen</th>
       </tr>
     </thead>
   );
@@ -42,15 +43,7 @@ function Overlay (dispatch) {
 function List (data, dispatch, helpers) {
   return (
     <tr key={data.id} className='pointer' onClick={helpers.edit}>
-      <th>
-        <Row>
-          {data.id}
-          <div>
-            {helpers.copy(data.id)}
-            {helpers.remove}
-          </div>
-        </Row>
-      </th>
+      <td>{data.id}</td>
       <td>
         {
           data.active
@@ -62,6 +55,10 @@ function List (data, dispatch, helpers) {
       <td>{data.extractors.length}</td>
       <td>{data.classifiers.map((c) => c.name).join(', ')}</td>
       <td>{data.sentimentAnalyzer.name}</td>
+      <th>
+        {helpers.copy(data.id)}
+        {helpers.remove}
+      </th>
     </tr>
   );
 }

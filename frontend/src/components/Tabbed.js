@@ -25,6 +25,7 @@ class Tabbed extends Component {
       return (
         <div className={'tabbed ' + this.props.className} style={this.style}>
           {this.props.children && this.props.children.map((tab, i) => {
+            const { titleHeader } = { ...tab.props };
             let className = 'tab';
             if (i === this.state.index) {
               (className += ' active');
@@ -34,7 +35,7 @@ class Tabbed extends Component {
             }
             return (
               [
-                <h5 key={'label' + i} title={tab.props.titleHeader} className={className} onClick={tab.props.disabled ? undefined : () => this.handleClick(i)}>{tab.props.label}</h5>,
+                <h5 key={'label' + i} title={titleHeader} className={className} onClick={tab.props.disabled ? undefined : () => this.handleClick(i)}>{tab.props.label}</h5>,
                 <Content key={'content' + i}>{tab}</Content>
               ]
             );

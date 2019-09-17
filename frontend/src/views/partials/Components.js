@@ -23,6 +23,7 @@ function Header () {
         <th>Name</th>
         <th>Priorität</th>
         <th>Varianten</th>
+        <th>Aktionen</th>
       </tr>
     </thead>
   );
@@ -37,18 +38,14 @@ function Overlay (dispatch) {
 function List (data, dispatch, helpers) {
   return (
     <tr key={data.id} className='pointer' onClick={helpers.edit}>
-      <th>
-        <Row>
-          {data.id}
-          <div>
-            {helpers.copy(data.id)}
-            {helpers.remove}
-          </div>
-        </Row>
-      </th>
+      <td>{data.id}</td>
       <td style={{ textAlign: 'left' }}>{data.name}</td>
       <td>{data.priority}</td>
       <td>{data.texts.length}</td>
+      <th>
+        {helpers.copy(data.id)}
+        {helpers.remove}
+      </th>
     </tr>
   );
 }

@@ -75,6 +75,7 @@ function Header () {
         <th>Sentiment</th>
         <th>Kategorie</th>
         <th>Datum</th>
+        <th>Aktionen</th>
       </tr>
     </thead>
   );
@@ -111,25 +112,21 @@ function List (data, dispatch, helpers) {
   };
   return (
     <tr className='pointer' key={data.id} onClick={helpers.edit}>
-      <th>
-        <Row>
-          {data.id}
-          <div>
-            <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
-              icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
-            <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8'
-              disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code'
-              onClick={xml} />
-            {helpers.remove}
-          </div>
-        </Row>
-      </th>
+      <td>{data.id}</td>
       <td>{states[data.state]}</td>
       <td>{data.preview}</td>
       <td>{data.sentiment.emotion.value}</td>
       <td><Sentiment tendency={data.sentiment.tendency} /></td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
+      <th>
+        <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
+          icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
+        <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8'
+          disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code'
+          onClick={xml} />
+        {helpers.remove}
+      </th>
     </tr>
   );
 }
