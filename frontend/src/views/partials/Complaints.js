@@ -215,8 +215,7 @@ function Single (active, dispatch, helpers) {
                   active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'}
                 onClick={(e) => EditDetailsModal.open(e)} />],
             ['Emotion', <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
-              probabilities={active.sentiment.emotion.probabilities} />,
-            <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
+              probabilities={active.sentiment.emotion.probabilities} />, <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
               active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />]
           ]} />
           <Collapsible label='Entitäten'
