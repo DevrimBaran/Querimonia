@@ -1,4 +1,4 @@
-.colorpicker {
+.colorpicker:not(.input) {
     position: absolute;
     flex-wrap: wrap;
     background-color: white;

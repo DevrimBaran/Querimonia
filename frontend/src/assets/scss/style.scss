@@ -76,7 +76,7 @@
 }
 
 .row {
-    height: 100%;
+    height: fit-content;
     width: 100%;
     overflow: auto;
 
@@ -89,6 +89,7 @@
 
     &.flex-row {
         overflow-y: hidden;
+        justify-content: space-between;
     }
     &.content{
         padding: 0;
