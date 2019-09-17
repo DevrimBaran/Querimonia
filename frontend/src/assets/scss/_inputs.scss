@@ -20,7 +20,6 @@ $inputBorder: 2px solid;
   display: inline-block;
   padding: 10px 10px;
   flex-grow: 1;
-  height: 60px;
 
   label {
     font-family: inherit;
@@ -109,8 +108,11 @@ $inputBorder: 2px solid;
       user-select: none;
     }
   }
-  &:focus-within {
+  &.select.multiple{
+    height: 60px;
+    &:focus-within {
       z-index: 10;
+    }
   }
   select[multiple]:focus {
     height: auto;

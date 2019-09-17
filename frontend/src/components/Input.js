@@ -62,11 +62,13 @@ class Input extends Component {
     }
     render () {
       const classes = '';
-      const { className, onChange, type, label, values, value, checked, name, inline, id = this.props.name, ...passThroughProps } = this.props;
+      const { className, onChange, type, label, values, value, checked, name, required, inline, multiple, id = this.props.name, ...passThroughProps } = this.props;
 
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,
-        type: type
+        type: type,
+        multiple: multiple,
+        required: required
       };
 
       let input;
@@ -110,8 +112,13 @@ class Input extends Component {
           break;
         }
       }
+      let inputClasses = `input ${type}`;
+      inline && (inputClasses += ' inline');
+      required && (inputClasses += ' required');
+      multiple && (inputClasses += ' multiple');
       return (
-        <div className={inline ? 'input inline' : 'input'} style={type === 'hidden' ? { display: 'none' } : {}}>
+
+        <div className={inputClasses} style={type === 'hidden' ? { display: 'none' } : {}}>
           { label && (<label htmlFor={id}>{label}</label>) }
           { input }
         </div>
