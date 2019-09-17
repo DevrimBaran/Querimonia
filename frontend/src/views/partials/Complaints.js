@@ -151,7 +151,6 @@ function Single (active, dispatch, helpers) {
           <h6 className='center'>Anwort</h6>
           <TextBuilder disabled={disabled} />
         </Row>
-
         <Row vertical>
           <h6 className='center'>Meldetext</h6>
           <Content>
