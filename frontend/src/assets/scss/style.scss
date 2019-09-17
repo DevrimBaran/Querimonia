@@ -19,6 +19,7 @@
 @import 'components/pagination';
 @import 'components/tabbed';
 @import 'components/tag';
+@import 'components/listTable';
 @import 'components/autocomplete';
 @import 'components/modal';
 @import 'components/_errorPopup.scss';
@@ -77,8 +78,8 @@
         padding: 0;
     }
 
-    & > *:not(.content) {
-        padding: 35px 10px 10px 10px;
+    & > :not(.collapsible) {
+        padding: 0 20px;
     }
 }
 
