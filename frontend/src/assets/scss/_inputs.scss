@@ -109,12 +109,9 @@ $inputBorder: 2px solid;
       user-select: none;
     }
   }
-  @for $i from 1 through 20 {
-      &:nth-of-type(#{20 - $i}) {
-        z-index: #{$i};
-      }
+  &:focus-within {
+      z-index: 10;
   }
-
   select[multiple]:focus {
     height: auto;
     option:hover{
