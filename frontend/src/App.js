@@ -46,7 +46,8 @@ function init () {
   };
 }
 
-function login () {
+function login (e) {
+  console.log(e);
   return (dispatch) => {
     Api.fetch(process.env.REACT_APP_BACKEND_PATH + '/access', {}, 'post').then((response) => {
       dispatch({

@@ -20,6 +20,7 @@ $inputBorder: 2px solid;
   display: inline-block;
   padding: 10px 10px;
   flex-grow: 1;
+  height: 60px;
 
   label {
     font-family: inherit;
@@ -108,12 +109,17 @@ $inputBorder: 2px solid;
       user-select: none;
     }
   }
-
-  select[multiple] {
-    height: auto;
-      option:hover{
-          background-color: rgba($primary, 0.5);
+  @for $i from 1 through 20 {
+      &:nth-of-type(#{20 - $i}) {
+        z-index: #{$i};
       }
+  }
+
+  select[multiple]:focus {
+    height: auto;
+    option:hover{
+        background-color: rgba($primary, 0.5);
+    }
   }
 
 
