@@ -16,11 +16,14 @@
         grid-row: 1 / 2;
         margin: 0em;
         cursor: pointer;
+        &.disabled {
+            cursor: not-allowed;
+        }
         white-space: nowrap;
         text-align: center;
-    }
-    & > .tab.active, & > .tab:hover {
-        border-bottom: 2px solid $primary;
+        &.active, &:hover:not(.disabled) {
+            border-bottom: 2px solid $primary;
+        }
     }
     & > .tab.active + .content {
         display: block;

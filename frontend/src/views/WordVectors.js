@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import Block from './../components/Block';
 import Input from '../components/Input';
 import Content from './../components/Content';
+import ListTable from './../components/ListTable';
 import Autocomplete from '../components/Autocomplete';
 
 // TODO Api anpassen/backend ändern
@@ -111,34 +112,22 @@ class WordVectors extends Component {
   };
 
   word2vec = (word) => {
-    // return new Promise(function (resolve, reject) {
-    //  resolve([parseInt(data), parseInt(data)]);
-    // })
     return Api.post('/word_to_vec', { word: word, model: this.state.corpora });
-    // .then((response) => {
-    //  if (data.sign !== '-') return response;
-    //  return response.map(a => -a);
-    // });
   }
   vec2word = (vec) => {
-    // console.log('result: ' + vec[0]);
-    // return vec;
     return Api.post('/vec_to_word', { vector: vec, model: this.state.corpora })
       .then((response) => {
         return {
-          result: response.map(function (arr, index) {
-            return arr[0] + ': ' + arr[1];
+          result: response.map(r => {
+            r[1] = (r[1] * 100).toFixed(2) + '%';
+            return r;
           })
         };
       });
   };
 
   calculate = () => {
-    // visibilty of the Table
-    document.getElementById('wordvectable').style.visibility = 'visible';
-
     const value = document.getElementById('analogy').value;
-    console.log(value);
     if (!value) return;
     let analogy = this.parseText(value);// this.state.analogy.slice();
     const normalize = (x) => {
@@ -199,37 +188,25 @@ class WordVectors extends Component {
     this.setState({ corpora: e.target.value });
   };
 
-  renderDescription = () => {
+  getDescription = () => {
     switch (this.state.corpora) {
       case 'beschwerden3kPolished.bin': {
-        return (
-          <p>Der Korpus besteht aus den 3041 uns zur Verfügung gestellten Beispielbeschwerden, was 207.917 Wörtern entspricht. Er ist auf unsere Aufgabenstellung maßgeschneidert, kommt aber mit abweichenden Inhalten kaum zurecht.</p>
-        );
+        return 'Der Korpus besteht aus den 3041 uns zur Verfügung gestellten Beispielbeschwerden, was 207.917 Wörtern entspricht. Er ist auf unsere Aufgabenstellung maßgeschneidert, kommt aber mit abweichenden Inhalten kaum zurecht.';
       }
       case 'cc.de.300.bin': {
-        return (
-          <p>Facebook stellt diesen 300-dimensionalen Korpus zur Verfügung. Er wurde auf Wikipedia-Artikeln und Common Crawl trainiert. Wie viele Wörter dazu betrachtet wurden ist nicht bekannt, es sind vermutlich mehr als 24.000.000.</p>
-        );
+        return 'Facebook stellt diesen 300-dimensionalen Korpus zur Verfügung. Er wurde auf Wikipedia-Artikeln und Common Crawl trainiert. Wie viele Wörter dazu betrachtet wurden ist nicht bekannt, es sind vermutlich mehr als 24.000.000.';
       }
       case 'ngram_ger.bin': {
-        return (
-          <p>Der Korpus wurde an den von Google zur Verfügung gestellten nGrams trainiert, die 270 032 618 Wörter beinhalten. Leider lassen sich Wortvektor-Modelle nicht mit nGrams trainieren, die Ergebnisse sind furchtbar.</p>
-        );
+        return 'Der Korpus wurde an den von Google zur Verfügung gestellten nGrams trainiert, die 270 032 618 Wörter beinhalten. Leider lassen sich Wortvektor-Modelle nicht mit nGrams trainieren, die Ergebnisse sind furchtbar.';
       }
       case 'BeschwerdenCATLeipzig.bin': {
-        return (
-          <p>Ein Modell, welches auf den Beispielbeschwerden und dem Leipzig-Korpus trainiert wurde. Die gute Performanz der Beispielbeschwerden auf unserem Gebiet soll mit der guten allgemeinen Performanz des Leipzig-Korpus kombiniert werden.</p>
-        );
+        return 'Ein Modell, welches auf den Beispielbeschwerden und dem Leipzig-Korpus trainiert wurde. Die gute Performanz der Beispielbeschwerden auf unserem Gebiet soll mit der guten allgemeinen Performanz des Leipzig-Korpus kombiniert werden.';
       }
       case 'leipzigCorporaCollection1M.bin': {
-        return (
-          <p>Die Grundlage für diesen Korpus ist der größte von der Uni Leipzig zu Verfügung gestellte Textkorpus. Der wurde 2011 mit Webcrawlern erstellt und enthält 6 597 048 Wörter.</p>
-        );
+        return 'Die Grundlage für diesen Korpus ist der größte von der Uni Leipzig zu Verfügung gestellte Textkorpus. Der wurde 2011 mit Webcrawlern erstellt und enthält 6 597 048 Wörter.';
       }
       default: {
-        return (
-          <p>Keine Beschreibung verfügbar</p>
-        );
+        return 'Keine Beschreibung verfügbar';
       }
     }
   }
@@ -239,16 +216,21 @@ class WordVectors extends Component {
       <React.Fragment>
         <Block>
           <h1 className='center'>Wortvektoren</h1>
-          <Content className='center'style={{ flexBasis: '100%' }}>
-            <div className='smallmargin' style={{ margin: 'auto', textAlign: 'justify', marginBottom: '10px' }}>
-              <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
-              {this.renderDescription()}
-            </div>
+          <Content className='center'>
+            <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
+            <p className='center' style={{ textAlign: 'justify' }}>{this.getDescription()}</p>
             <div className='smallmargin'>
               <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
               <Input type='submit' name='berechneButton' onClick={this.calculate} value='Berechnen' />
             </div>
-            <table id='wordvectable' style={{ visibility: 'hidden' }} >
+            <ListTable
+              header={['Wort', 'Wahrscheinichkeit']}
+              headerStyles={[{ textAlign: 'left', paddingRight: '1em' }]}
+              styles={[{ textAlign: 'left', paddingRight: '1em' }]}
+              data={this.state.result}
+              style={{ margin: 'auto' }}
+            />
+            {/* <table id='wordvectable' style={{ visibility: 'hidden' }} >
               <thead style={{ boxShadow: 'none' }}>
                 <tr>
                   <th>Wort</th>
@@ -267,7 +249,7 @@ class WordVectors extends Component {
                     );
                   })}
               </tbody>
-            </table>
+            </table> */}
           </Content>
         </Block>
       </React.Fragment>

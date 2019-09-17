@@ -26,9 +26,9 @@ class Filter extends Component {
     });
   }
   renderInput = (input) => {
-    const { name, value = '', ...passThrough } = { ...input };
+    const { name, value, multiple, ...passThrough } = { ...input };
     return (
-      <Input key={name} name={name} onChange={this.onChange} value={value} {...passThrough} />
+      <Input key={name} name={name} onChange={this.onChange} value={value || (multiple ? [] : '')} multiple={multiple} {...passThrough} />
     );
   }
   render () {

@@ -9,14 +9,14 @@ import React, { Component } from 'react';
 
 class ListTable extends Component {
   render () {
-    const { className = '', header, data = [], styles = [], ...passThroughProps } = this.props;
+    const { className = '', header, data = [], styles = [], headerStyles = [], ...passThroughProps } = this.props;
     return (
       <table className={className + ' ListTable'} {...passThroughProps}>
         {header && (
           <thead>
             <tr>
               {header.map && header.map((col, j) => (
-                <th key={j}>{col}</th>
+                <th key={j} style={headerStyles[j]}>{col}</th>
               ))}
             </tr>
           </thead>

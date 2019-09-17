@@ -7,10 +7,11 @@
 import React from 'react';
 
 const Content = (props) => {
-  const isEmpty = (props.children && props.children.length === 0) || false;
+  const { className = '', children, ...passThrough } = { ...props };
+  const isEmpty = (children && children.length === 0) || false;
   return (
-    <div {...props} className={(isEmpty ? ' ' : 'content ') + props.className}>
-      {props.children}
+    <div {...passThrough} className={className + (isEmpty || ' content')}>
+      {children}
     </div>
   );
 };

@@ -208,15 +208,9 @@ button.action-button{
   font-weight: 700;
   text-align: center;
   cursor: pointer;
-  // max-width: 200px;
-  // margin: auto;
-  // display: block;
-  // width: 100%;
-  // box-sizing: border-box;
-  // align-items: flex-start;
-  display: inline-block;  // so breit wie der text
-  margin-bottom: 6px;     // höhe vom box-shaddow
-  white-space: nowrap;    // immer einzeilig
+  display: inline-block;
+  margin-bottom: 14px;
+  white-space: nowrap;
   
   &:hover {
     color: #fff;

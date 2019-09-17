@@ -31,7 +31,7 @@ const initialState = {
         name: 'status',
         multiple: 'multiple',
         type: 'select',
-        icon: 'fas fa-file-code',
+        icon: 'fas fa-clipboard',
         values: [
           { label: 'Neu', value: 'NEW' },
           { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
