@@ -3,6 +3,7 @@
     flex-wrap: wrap;
     background-color: white;
     padding: 2px;
+    margin: 0 -10px;
     z-index: 99999;
     box-shadow: 0 10px 20px -20px black;
     & > label {
@@ -15,5 +16,9 @@
         background-color: $white;
         color: $primaryAccentColor;
         font-weight: bolder;
+    }
+    & > * {
+        padding-left: 10px;
+        padding-right: 10px;
     }
 }
