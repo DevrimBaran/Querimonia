@@ -20,21 +20,24 @@ $inputBorder: 2px solid;
   display: inline-block;
   padding: 10px 10px;
   flex-grow: 1;
-
-  label {
+  %labelSize {
     font-family: inherit;
     white-space: nowrap;
+    padding: 0 5px;
+    font-size: 1em !important;
+    letter-spacing: 1px;
+    font-weight: bold;
+  }
+  label {
+    @extend %labelSize;
     position: absolute;
     top: 5px;
     background-color: $white;
     color: $black !important;
-    padding: 0 5px;
     border-radius: 10px;
     left: 18px;
     z-index: 1;
-    font-size: 1em !important;
     line-height: 14px;
-    font-weight: bold;
 
     &::before {
       content: '';
@@ -49,7 +52,15 @@ $inputBorder: 2px solid;
       z-index: -2;
     }
   }
-
+  .labelspacer {
+      @extend %labelSize;
+      position: relative;
+      left: 8px;
+      height: 0px;
+      width: max-content;
+      display: block;
+      overflow: hidden;
+  }
   input, textarea, select, select[multiple] {
     font-family: inherit;
     background-color: $white;

@@ -120,6 +120,7 @@ class Input extends Component {
 
         <div className={inputClasses} style={type === 'hidden' ? { display: 'none' } : {}}>
           { label && (<label htmlFor={id}>{label}</label>) }
+          {label && (<span className='labelspacer'>{label}</span>) }
           { input }
         </div>
       );

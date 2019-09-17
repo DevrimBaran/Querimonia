@@ -4,7 +4,7 @@
     display: flex;
     align-items: center;
     background-color: $primaryBackgroundColor;
-    width: 100%;
+    padding: 10px;
 
     & + .deep-array {
         margin-top: 5px;
@@ -69,7 +69,13 @@
     }
 }
 
+div.content.margin.config.max-width{
+    padding: 20px 0px;
+}
+
 .config{
+    padding: 20px 0px;
+    overflow-y: auto;
     .deep-object{
         .deep-array{
             border: 1px solid $black;

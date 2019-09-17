@@ -16,6 +16,7 @@ import Input from './../components/Input';
 import Collapsible from './Collapsible';
 // import Debug from './Debug';
 import Tabbed from './Tabbed';
+import Row from './Row';
 import Button from './Button';
 
 class TextBuilder extends Component {
@@ -64,10 +65,10 @@ class TextBuilder extends Component {
     return (
       <React.Fragment>
         <Input type='textarea' readOnly={disabled} min='5' value={this.state.response} onChange={this.changeText} />
-        <div>
+        <Row>
           {disabled || <Button onClick={this.finish}>Abschließen</Button>}
           <Button confirm='Der bisherige Antworttext wird gelöscht. Sind Sie sicher?' onClick={this.refresh}>Antwortbausteine neu generieren</Button>
-        </div>
+        </Row>
         <Collapsible label='Antworten / Aktionen'
           disabled={disabled || (disableResponses && disableActions)}
           collapse={disabled || (disableResponses && disableActions)}
