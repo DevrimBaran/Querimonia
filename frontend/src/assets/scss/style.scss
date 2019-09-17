@@ -19,6 +19,7 @@
 @import 'components/pagination';
 @import 'components/tabbed';
 @import 'components/tag';
+@import 'components/listTable';
 @import 'components/autocomplete';
 @import 'components/modal';
 @import 'components/_errorPopup.scss';
@@ -68,6 +69,9 @@
 
     &.flex-column {
         overflow-x: hidden;
+        & > * {
+            padding: 20px 20px 0;
+        }
     }
 
     &.flex-row {
@@ -77,9 +81,6 @@
         padding: 0;
     }
 
-    & > *:not(.content) {
-        padding: 35px 10px 10px 10px;
-    }
 }
 
 .input-symbol-euro {

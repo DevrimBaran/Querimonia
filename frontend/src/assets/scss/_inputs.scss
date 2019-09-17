@@ -108,12 +108,17 @@ $inputBorder: 2px solid;
       user-select: none;
     }
   }
-
-  select[multiple] {
+  &.select.multiple{
+    height: 60px;
+    &:focus-within {
+      z-index: 10;
+    }
+  }
+  select[multiple]:focus {
     height: auto;
-      option:hover{
-          background-color: rgba($primary, 0.5);
-      }
+    option:hover{
+        background-color: rgba($primary, 0.5);
+    }
   }
 
 
