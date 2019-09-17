@@ -21,12 +21,13 @@ const initialState = {
     },
     filter: [
       {
-        label: 'Stichwort 🔍 ',
+        label: 'Stichwort',
+        icon: 'fas fa-search',
         name: 'keywords',
         type: 'text'
       },
       {
-        label: 'Status 📋',
+        label: 'Status',
         name: 'status',
         multiple: 'multiple',
         type: 'select',
@@ -40,10 +41,11 @@ const initialState = {
         ]
       },
       {
-        label: 'Sentiment 🎭',
+        label: 'Sentiment',
         name: 'sentiment',
         type: 'select',
         multiple: 'multiple',
+        icon: 'fas fa-theater-masks',
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },

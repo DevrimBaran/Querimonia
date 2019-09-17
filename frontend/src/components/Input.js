@@ -62,7 +62,7 @@ class Input extends Component {
     }
     render () {
       const classes = '';
-      const { className, onChange, type, label, values, value, checked, name, required, inline, multiple, id = this.props.name, ...passThroughProps } = this.props;
+      const { className, onChange, type, label, values, value, checked, name, required, inline, icon, multiple, id = this.props.name, ...passThroughProps } = this.props;
 
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,
@@ -117,10 +117,17 @@ class Input extends Component {
       required && (inputClasses += ' required');
       multiple && (inputClasses += ' multiple');
       return (
-
         <div className={inputClasses} style={type === 'hidden' ? { display: 'none' } : {}}>
-          { label && (<label htmlFor={id}>{label}</label>) }
-          {label && (<span className='labelspacer'>{label}</span>) }
+          {label && (
+            <React.Fragment>
+              <label htmlFor={id}>
+                {label} {icon && <i className={icon} />}
+              </label>
+              <span className='labelspacer'>
+                {label} {icon && <i className={icon} />}
+              </span>
+            </React.Fragment>
+          )}
           { input }
         </div>
       );

@@ -39,18 +39,18 @@ $inputBorder: 2px solid;
     z-index: 1;
     line-height: 14px;
 
-    &::before {
-      content: '';
-      top: 5px;
-      left: -4px;
-      width: calc(100% + 8px);
-      display: block;
-      height: 1px;
-      position: relative;
-      background-color: $white;
-      box-sizing: content-box;
-      z-index: -2;
-    }
+    // &::before {
+    //   content: '';
+    //   top: 5px;
+    //   left: -4px;
+    //   width: calc(100% + 8px);
+    //   display: block;
+    //   height: 1px;
+    //   position: relative;
+    //   background-color: $white;
+    //   box-sizing: content-box;
+    //   z-index: -2;
+    // }
   }
   .labelspacer {
       @extend %labelSize;
