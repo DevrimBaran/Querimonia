@@ -45,7 +45,7 @@ const initialState = {
         name: 'sentiment',
         type: 'select',
         multiple: 'multiple',
-        icon: 'fas fa-theater-masks',
+        icon: 'utf8 masks', // 'fas fa-theater-masks',
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },
