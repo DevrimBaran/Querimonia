@@ -3,12 +3,12 @@
 .pagination {
   display: block;
   margin: auto;
-
+  
   span.count {
     cursor: pointer;
 
     &.current {
-      color: $secondary;
+      color: $primary;
     }
   }
 
@@ -17,15 +17,16 @@
     margin: 0;
     padding: 10px;
     display: inline-flex;
+    
 
     li {
-      border: 1px solid $secondary;
+      border: 1px solid $primary;
       padding: 5px 10px;
       cursor: pointer;
 
       &.current {
         color: $white;
-        background-color: $secondary;
+        background-color: $primary;
         cursor: initial;
       }
 
