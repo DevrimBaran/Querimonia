@@ -5,6 +5,9 @@
     overflow: hidden;
     height: 30px;
     min-height: 30px;
+    box-sizing: content-box;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
     .handle {
         position: relative;
         display: block;
@@ -35,6 +38,10 @@
             background-color: $primaryBackgroundColor;
         }
     }
+    & + * {
+        padding-top: 0px !important;
+        margin-top: 0px !important;
+    }
     &.disabled .handle {
         color: $grey;
         cursor: initial;
@@ -48,6 +55,9 @@
     &[data-collapse=true] {
         & + * {
             display: none;
+            & + .collapsible {
+                padding-top: 0px;
+            }
         }
     }
 }

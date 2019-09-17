@@ -82,8 +82,8 @@
 
     &.flex-column {
         overflow-x: hidden;
-        & > :not(.collapsible) {
-            padding: 0 20px;
+        & > * {
+            padding: 20px 20px 0;
         }
     }
 

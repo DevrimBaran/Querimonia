@@ -64,8 +64,10 @@ class TextBuilder extends Component {
     return (
       <React.Fragment>
         <Input type='textarea' readOnly={disabled} min='5' value={this.state.response} onChange={this.changeText} />
-        {disabled || <Button onClick={this.finish}>Abschließen</Button>}
-        <Button confirm='Der bisherige Antworttext wird gelöscht. Sind Sie sicher?' onClick={this.refresh}>Antwortbausteine neu generieren</Button>
+        <div>
+          {disabled || <Button onClick={this.finish}>Abschließen</Button>}
+          <Button confirm='Der bisherige Antworttext wird gelöscht. Sind Sie sicher?' onClick={this.refresh}>Antwortbausteine neu generieren</Button>
+        </div>
         <Collapsible label='Antworten / Aktionen'
           disabled={disabled || (disableResponses && disableActions)}
           collapse={disabled || (disableResponses && disableActions)}
