@@ -145,7 +145,7 @@ function Single (active, dispatch, helpers) {
     <React.Fragment>
       <div className='builderBlock'>
         <Row vertical>
-          <h6 className='center'>Anwort</h6>
+          <h6 className='center'>Antwort</h6>
           <TextBuilder disabled={disabled} />
         </Row>
         <Row vertical>
