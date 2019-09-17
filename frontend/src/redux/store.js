@@ -21,15 +21,16 @@ const initialState = {
     },
     filter: [
       {
-        label: 'Stichwort',
+        label: 'Stichwort 🔍 ',
         name: 'keywords',
-        multiple: true,
         type: 'text'
       },
       {
-        label: 'Status',
+        label: 'Status 📋',
         name: 'status',
+        multiple: 'multiple',
         type: 'select',
+        icon: 'fas fa-file-code',
         values: [
           { label: 'Neu', value: 'NEW' },
           { label: 'In Bearbeitung', value: 'IN_PROGRESS' },
@@ -39,10 +40,10 @@ const initialState = {
         ]
       },
       {
-        label: 'Emotionen',
+        label: 'Sentiment 🎭',
         name: 'sentiment',
         type: 'select',
-
+        multiple: 'multiple',
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },
@@ -54,14 +55,29 @@ const initialState = {
         ]
       },
       {
-        label: 'Kategorie',
+        label: 'Kategorie ',
         name: 'subject',
         type: 'select',
+        multiple: 'multiple',
         values: [
           { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
           { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
           { label: 'Sonstiges', value: 'Sonstiges' }
 
+        ]
+      },
+      {
+        label: 'Sortieren nach',
+        name: 'sort_by',
+        type: 'select',
+        multiple: 'multiple',
+        values: [
+          { label: 'Eingangsdatum (absteigend)', value: 'upload_date_asc' },
+          { label: 'Eingangsdatum (aufsteigend)', value: 'upload_date_desc' },
+          { label: 'Kategorie (absteigend)', value: 'subject_asc' },
+          { label: 'Kategorie (aufsteigend)', value: 'subject_desc' },
+          { label: 'Stimmung (absteigend)', value: 'sentiment_asc' },
+          { label: 'Stimmung (aufsteigend)', value: 'sentiment_desc' }
         ]
       },
       {
@@ -73,19 +89,6 @@ const initialState = {
         label: 'Eingangsdatum (bis)',
         name: 'date_max',
         type: 'date'
-      },
-      {
-        label: 'Sortieren nach',
-        name: 'sort_by',
-        type: 'select',
-        values: [
-          { label: 'Eingangsdatum (absteigend)', value: 'upload_date_asc' },
-          { label: 'Eingangsdatum (aufsteigend)', value: 'upload_date_desc' },
-          { label: 'Kategorie (absteigend)', value: 'subject_asc' },
-          { label: 'Kategorie (aufsteigend)', value: 'subject_desc' },
-          { label: 'Stimmung (absteigend)', value: 'sentiment_asc' },
-          { label: 'Stimmung (aufsteigend)', value: 'sentiment_desc' }
-        ]
       }
     ],
     pagination: {
@@ -121,6 +124,7 @@ const initialState = {
         label: 'Sortieren nach',
         name: 'sort_by',
         type: 'select',
+        multiple: 'multiple',
         values: [
           { label: 'ID (absteigend)', value: 'id_desc' },
           { label: 'ID (aufsteigend)', value: 'id_asc' },
@@ -149,6 +153,7 @@ const initialState = {
         label: 'Sortieren nach',
         name: 'sort_by',
         type: 'select',
+        multiple: 'multiple',
         values: [
           { label: 'ID (absteigend)', value: 'id_desc' },
           { label: 'ID (aufsteigend)', value: 'id_asc' },

@@ -246,7 +246,6 @@ class TagCloud extends Component {
         <React.Fragment>
           <Block>
             <Row vertical>
-              <h1 className='center'>Worthäufigkeiten</h1>
               <Form>
                 <Input type='date' label='Eingangsdatum (von)' name='date_min' onChange={this.changeQuery} value={this.state.query.date_min} />
                 <Input type='date' label='Eingangsdatum (bis)' name='date_max' onChange={this.changeQuery} value={this.state.query.date_max} />

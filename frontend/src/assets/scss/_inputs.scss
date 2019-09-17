@@ -5,135 +5,174 @@ $inputMargin: 1% 2% 1% 1%;
 $inputBorderColor: $secondaryBackgroundColor $secondaryBackgroundColor $tertiaryBackgroundColor $secondaryBackgroundColor;
 $inputBorder: 2px solid;
 
-%standardSize{
-    width: 10em;
-    height: 2em;
+%standardSize {
+  width: 10em;
+  height: 2em;
 }
 
 %inputs {
-    @extend %font;
+  @extend %font;
 }
 
 .input {
-    @extend %font;
-    position: relative;
-    display: inline-block;
-    padding: 10px 10px;
-    flex-grow: 1;
-    label {
-        font-family: inherit;
-        white-space: nowrap;
-        position: absolute;
-        top: 5px;
-        left: 24px;
-        z-index: 1;
-        font-size: 14px;
-        line-height: 14px;
-        font-weight: bold;
-        &::before {
-            content: '';
-            top: 5px;
-            left: -4px;
-            width: calc(100% + 8px);
-            display: block;
-            height: 1px;
-            position: relative;
-            background-color: $white;
-            box-sizing: content-box;
-            z-index: -2;
-        }
+  @extend %font;
+  position: relative;
+  display: inline-block;
+  padding: 10px 10px;
+  flex-grow: 1;
+
+  label {
+    font-family: inherit;
+    white-space: nowrap;
+    position: absolute;
+    top: 5px;
+    background-color: $white;
+    color: $black !important;
+    padding: 0 5px;
+    border-radius: 10px;
+    left: 18px;
+    z-index: 1;
+    font-size: 1em !important;
+    line-height: 14px;
+    font-weight: bold;
+
+    &::before {
+      content: '';
+      top: 5px;
+      left: -4px;
+      width: calc(100% + 8px);
+      display: block;
+      height: 1px;
+      position: relative;
+      background-color: $white;
+      box-sizing: content-box;
+      z-index: -2;
     }
-    input, textarea, select {
-        font-family: inherit;
-        position: relative;
-        background-color: $white;
-        color: $primaryTextColor;
+  }
+
+  input, textarea, select, select[multiple] {
+    font-family: inherit;
+    background-color: $white;
+    color: $primaryTextColor;
+    border: 1px solid $black;
+    border-radius: 10px;
+    padding: 10px 14px;
+    height: 45px;
+    width: 100%;
+    min-width: 75px;
+    left: 0;
+    font-size: 1em;
+    outline: none;
+
+    &:focus {
+      border-color: $primary;
+    }
+
+    &[type=checkbox], &[type=colorpicker] {
+      min-width: 40px;
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      line-height: 40px;
+      font-size: 30px;
+      padding: 0;
+      border: none !important;
+      -webkit-appearance: none;
+
+      &::after {
+        content: '';
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        display: block;
+        background-color: inherit;
+        color: inherit;
         border: 1px solid $black;
         border-radius: 10px;
-        left: 0;
-        padding: 10px 14px;
-        height: 40px;
-        font-size: 1em;
-        width: 100%;
-        min-width: 75px;
-        outline: none;
-        &:focus {
-            border-color: $primary;
-        }
-        &[type=checkbox], &[type=colorpicker] {
-            min-width: 40px;
-            width: 40px;
-            height: 40px;
-            text-align: center;
-            line-height: 40px;
-            font-size: 30px;
-            padding: 0;
-            border: none !important;
-            -webkit-appearance: none;
-            &::after {
-                content: '';
-                box-sizing: border-box;
-                width: 100%;
-                height: 100%;
-                display: block;
-                background-color: inherit;
-                color: inherit;
-                border: 1px solid $black;
-                border-radius: 10px;
-            }
-            &:hover::after {
-                filter: brightness(110%);
-            }
-            &:checked::after {
-                content: '\2713',
+      }
 
-            }
-        }
-        &[type=colorpicker] {
-            font-size: 9px;
-            font-family: monospace;
-            cursor: pointer;
-            user-select: none;
-        }
-    }
-    select[multiple]:focus {
-        height: auto;
-    }
-    input[type=submit], input[type=button], button {
-        max-width: 200px;
-        background-color: $primaryAccentColor;
-        color: $white;
-        box-shadow: 0 6px $grey;
-        border: none;
+      &:hover::after {
+        filter: brightness(110%);
+      }
 
-        &:hover {
-            background-color: $primaryAccentColorActive;
-        }
-        &:active {
-            background-color: $primaryAccentColorActive;
-            box-shadow: 0 4px $dimgray;
-            transform: translateY(2px);
-        }
+      &:checked::after {
+        content: '\2713'
+
+      }
     }
 
-    select {
-        padding-left: 10px; /* chrome + ff add aditional padding to selects -.- */
+    &[type=colorpicker] {
+      font-size: 9px;
+      font-family: monospace;
+      cursor: pointer;
+      user-select: none;
+    }
+  }
 
+  select[multiple] {
+    height: auto;
+      option:hover{
+          background-color: rgba($primary, 0.5);
+      }
+  }
+
+
+  input[type=submit], input[type=button], button {
+    max-width: 200px;
+    background-color: $primaryAccentColor;
+    color: $white;
+    box-shadow: 0 6px $grey;
+    border: none;
+
+    &:hover {
+      background-color: $primaryAccentColorActive;
     }
-    &.inline {
-        margin: 0;
-        input, textarea, select {
-            width: auto;
-        }
+
+    &:active {
+      background-color: $primaryAccentColorActive;
+      box-shadow: 0 4px $dimgray;
+      transform: translateY(2px);
     }
+  }
+
+  select {
+    padding-left: 10px; /* chrome + ff add aditional padding to selects -.- */
+
+  }
+
+  &.inline {
+    margin: 0;
+
+    input, textarea, select {
+      width: auto;
+    }
+  }
 }
-*export-button {
-    color: $primaryAccentColor;
+
+* export-button {
+  color: $primaryAccentColor;
 }
 
 [disabled], [disabled]:hover {
-    color: $grey;
-    cursor: not-allowed;
+  color: $grey;
+  cursor: not-allowed;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 10px;
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  background-color: #F5F5F5;
+  margin: 5px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 ///*
