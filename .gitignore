@@ -1,0 +1,11 @@
+slack_bot/*.lock
+slack_bot/*.pdf
+slack_bot/.vscode
+slack_bot/__pycache__
+slack_bot/.mypy_cache
+slack_bot/redmine/*.pdf
+slack_bot/redmine/.mypy_cache
+slack_bot/redmine/__pycache__
+slack_bot/redmine/settings.py
+slack_bot/actions/settings.py
+
