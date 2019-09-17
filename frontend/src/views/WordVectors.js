@@ -8,25 +8,12 @@ import React, { Component } from 'react';
 
 import Block from './../components/Block';
 import Input from '../components/Input';
+import Row from '../components/Row';
 import Content from './../components/Content';
 import ListTable from './../components/ListTable';
 import Autocomplete from '../components/Autocomplete';
 
-// TODO Api anpassen/backend ändern
-const Api = {
-  post: (endpoint, data) => {
-    return fetch('https://querimonia.iao.fraunhofer.de/python' + endpoint, {
-      method: 'post',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
-      },
-      body: JSON.stringify(data)
-    })
-      .then(response => { return response.ok ? response.json() : []; });
-  }
-};
+import Api from '../utility/Api';
 
 class WordVectors extends Component {
   constructor () {
@@ -112,10 +99,10 @@ class WordVectors extends Component {
   };
 
   word2vec = (word) => {
-    return Api.post('/word_to_vec', { word: word, model: this.state.corpora });
+    return Api.post('/python/word_to_vec', { word: word, model: this.state.corpora });
   }
   vec2word = (vec) => {
-    return Api.post('/vec_to_word', { vector: vec, model: this.state.corpora })
+    return Api.post('/python/vec_to_word', { vector: vec, model: this.state.corpora })
       .then((response) => {
         return {
           result: response.map(r => {
@@ -215,42 +202,24 @@ class WordVectors extends Component {
     return (
       <React.Fragment>
         <Block>
-          <h1 className='center'>Wortvektoren</h1>
-          <Content className='center'>
-            <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
-            <p className='center' style={{ textAlign: 'justify' }}>{this.getDescription()}</p>
-            <div className='smallmargin'>
-              <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
-              <Input type='submit' name='berechneButton' onClick={this.calculate} value='Berechnen' />
-            </div>
-            <ListTable
-              header={['Wort', 'Wahrscheinichkeit']}
-              headerStyles={[{ textAlign: 'left', paddingRight: '1em' }]}
-              styles={[{ textAlign: 'left', paddingRight: '1em' }]}
-              data={this.state.result}
-              style={{ margin: 'auto' }}
-            />
-            {/* <table id='wordvectable' style={{ visibility: 'hidden' }} >
-              <thead style={{ boxShadow: 'none' }}>
-                <tr>
-                  <th>Wort</th>
-                  <th>Wahrscheinlichkeit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {
-                  this.state.result.map((word, index) => {
-                    const split = word.split(': ');
-                    return (
-                      <tr key={index}>
-                        <td>{split[0]}</td>
-                        <td>{(split[1] * 100).toFixed(2)}%</td>
-                      </tr>
-                    );
-                  })}
-              </tbody>
-            </table> */}
-          </Content>
+          <Row vertical>
+            <h1 className='center'>Wortvektoren</h1>
+            <Content className='center'>
+              <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
+              <p className='center' style={{ textAlign: 'justify' }}>{this.getDescription()}</p>
+              <div className='smallmargin'>
+                <Autocomplete model={this.state.corpora} id='analogy' label='Anfrage' type='text' onKeyUp={this.calculateOnEnter} />
+                <Input type='submit' name='berechneButton' onClick={this.calculate} value='Berechnen' />
+              </div>
+              <ListTable
+                header={['Wort', 'Wahrscheinichkeit']}
+                headerStyles={[{ textAlign: 'left', paddingRight: '1em' }]}
+                styles={[{ textAlign: 'left', paddingRight: '1em' }]}
+                data={this.state.result}
+                style={{ margin: 'auto' }}
+              />
+            </Content>
+          </Row>
         </Block>
       </React.Fragment>
     );

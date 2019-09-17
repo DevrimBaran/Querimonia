@@ -44,13 +44,7 @@ function List (data, dispatch, helpers) {
   return (
     <tr key={data.id} className='pointer' onClick={helpers.edit}>
       <td>{data.id}</td>
-      <td>
-        {
-          data.active
-            ? (<input defaultChecked type='radio' name='active' />)
-            : (<input onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} type='radio' name='active' />)
-        }
-      </td>
+      <td><Button title='Konfiguration auswählen' icon={(data.active ? 'far fa-check-circle' : 'far fa-circle')} disabled={data.active} onClick={(e) => { dispatch(setCurrentConfig(data.id)); }} /></td>
       <td style={{ textAlign: 'left' }}>{data.name}</td>
       <td>{data.extractors.length}</td>
       <td>{data.classifiers.map((c) => c.name).join(', ')}</td>

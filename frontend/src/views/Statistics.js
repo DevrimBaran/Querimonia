@@ -178,11 +178,9 @@ class Statistics extends Component {
   }
 
   sortData = (value, key, opt) => {
-    console.log('start');
     var list = [];
     for (var j = 0; j < value.length; j++) { list.push({ 'value': value[j], 'key': key[j] }); }
     opt ? list.sort((a, b) => { return b.value - a.value; }) : list.sort((a, b) => { return a.key === b.key ? a.value[0] - b.value[0] : 0; });
-    console.log(list);
     return list;
   }
 

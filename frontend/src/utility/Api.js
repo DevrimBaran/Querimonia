@@ -2,18 +2,27 @@ import ErrorModal from './../components/ErrorModal';
 
 const fetchJson = function (action, options, responseFormat = 'json') {
   const processResponse = (response) => {
-    if (!response.ok) {
-      return response.json().then(data => {
-        throw new ErrorModal.QuerimoniaError(data);
-      });
+    if (responseFormat) {
+      if (!response.ok) {
+        return response.json().then(data => {
+          throw new ErrorModal.QuerimoniaError(data);
+        });
+      }
+      return response[responseFormat]();
+    } else {
+      return response;
     }
-    return response[responseFormat]();
   };
+  // if (action.substr(0, 7) === '/python') {
+  //   return fetch('https://querimonia.iao.fraunhofer.de' + action, options)
+  //     .then((response) => processResponse(response))
+  //     .catch(ErrorModal.catch);
+  // };
   return fetch(process.env.REACT_APP_BACKEND_PATH + action, options)
     .then((response) => processResponse(response))
     .catch(ErrorModal.catch);
 };
-const options = function (method, data, additional = {}) {
+const getOptions = function (method, data, additional = {}) {
   data = data || {};
 
   let options = {
@@ -25,9 +34,6 @@ const options = function (method, data, additional = {}) {
     },
     ...additional
   };
-  if (process.env.REACT_APP_AUTHORIZATION) {
-    // options.headers['Authorization'] = 'Basic ' + btoa(process.env.REACT_APP_AUTHORIZATION);
-  }
   if (method === 'post' || method === 'put' || method === 'PATCH') {
     if (data instanceof FormData) {
       delete options.headers['Content-Type'];
@@ -41,7 +47,7 @@ const options = function (method, data, additional = {}) {
 };
 
 export const api = {
-  get: function (endpoint, query, responseFormat) {
+  get: function (endpoint, query, options, responseFormat) {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {
       if (Array.isArray(query[name])) {
         return query[name].map(element => {
@@ -50,28 +56,24 @@ export const api = {
       }
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
-    //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
-    return fetchJson(endpoint + (query ? '?' + query : ''), options('get'), responseFormat);
+    return fetchJson(endpoint + (query ? '?' + query : ''), getOptions('get', {}, options), responseFormat);
   },
-  delete: function (endpoint, query) {
+  delete: function (endpoint, query, options, responseFormat) {
     query = Object.keys(query).filter((name) => query[name] || query[name] === 0).map((name) => {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
-    return fetchJson(endpoint + (query ? '?' + query : ''), options('delete'));
+    return fetchJson(endpoint + (query ? '?' + query : ''), getOptions('delete', {}, options), responseFormat);
   },
-  patch: function (endpoint, data) {
-    return fetchJson(endpoint, options('PATCH', data));
+  patch: function (endpoint, query, options, responseFormat) {
+    return fetchJson(endpoint, getOptions('PATCH', query, options), responseFormat);
   },
-  post: function (endpoint, data) {
-    return fetchJson(endpoint, options('post', data));
+  post: function (endpoint, query, options, responseFormat) {
+    return fetchJson(endpoint, getOptions('post', query, options), responseFormat);
   },
-  put: function (endpoint, data) {
-    return fetchJson(endpoint, options('put', data));
+  put: function (endpoint, query, options, responseFormat) {
+    return fetchJson(endpoint, getOptions('put', query, options), responseFormat);
   },
-  fetch: function (endpoint, data, mode) {
-    return fetch(endpoint, options(mode, data));
-  },
-  queryput: function (endpoint, query) {
+  queryput: function (endpoint, query, options, responseFormat) {
     query = Object.keys(query).filter((name) => query[name]).map((name) => {
       if (Array.isArray(query[name])) {
         return query[name].map(element => {
@@ -80,8 +82,7 @@ export const api = {
       }
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
-    //! ((document.location.search !== query) || (document.location.search !== '?' + query)) && (document.location.href = '?' + query);
-    return fetchJson(endpoint + (query ? '?' + query : ''), options('put'));
+    return fetchJson(endpoint + (query ? '?' + query : ''), getOptions('put', {}, options), responseFormat);
   }
 };
 

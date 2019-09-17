@@ -5,6 +5,7 @@
  */
 
 import React, { Component } from 'react';
+import Api from '../utility/Api';
 
 class Autocomplete extends Component {
   constructor (props) {
@@ -21,23 +22,11 @@ class Autocomplete extends Component {
     this.controller && this.controller.abort();
     this.controller = new AbortController();
     const signal = this.controller.signal;
-    fetch('https://querimonia.iao.fraunhofer.de/python/predict_word',
-      {
-        method: 'post',
-        mode: 'cors',
-        signal: signal,
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
-        },
-        body: JSON.stringify({
-          query: word,
-          model: this.props.model,
-          limit: 5
-        })
-      }
-    )
-      .then((response) => response.json())
+    Api.post('/python/predict_word', {
+      query: word,
+      model: this.props.model,
+      limit: 5
+    }, { signal: signal })
       .then(this.onFetch);
   }
   selectWord = (e) => {
@@ -48,8 +37,9 @@ class Autocomplete extends Component {
     return (<input type='text' className={this.state.selected === index + 1 ? 'active' : ''} readOnly key={word} value={word} onClick={this.selectWord} />);
   }
   onFetch = (words) => {
-    console.log(words);
-    this.setState({ words: words });
+    if (words) {
+      this.setState({ words: words });
+    }
   }
   onChange = (e) => {
     const value = e.target.value;

@@ -196,16 +196,7 @@ class TagCloud extends Component {
 
     lemmatizeData = (data) => {
       if (data) {
-        fetch('https://querimonia.iao.fraunhofer.de/python/lemmatize', {
-          method: 'post',
-          mode: 'cors',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Basic YWRtaW46UXVlcmltb25pYVBhc3MyMDE5'
-          },
-          body: JSON.stringify({ text: Object.keys(data).join(' ') })
-        })
-          .then(response => response.json())
+        Api.post('/python/lemmatize', { text: Object.keys(data).join(' ') })
           .then((lemma) => this.setData(data, lemma));
       }
     }

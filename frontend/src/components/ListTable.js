@@ -10,6 +10,9 @@ import React, { Component } from 'react';
 class ListTable extends Component {
   render () {
     const { className = '', header, data = [], styles = [], headerStyles = [], ...passThroughProps } = this.props;
+    if (data.length === 0) {
+      return <React.Fragment />;
+    }
     return (
       <table className={className + ' ListTable'} {...passThroughProps}>
         {header && (

@@ -315,12 +315,15 @@ export function fetchStuff (id) {
 }
 export function setCurrentConfig (id) {
   return function (dispatch) {
-    dispatch((dispatch) => {
+    dispatch((dispatch, getState) => {
       Api.put('/api/config/current?configId=' + id, {})
         .then(data => {
+          const active = Object.values(getState().config.data.byId).find(c => c.active);
           dispatch({
-            type: 'CURRENT_CONFIG',
-            id: id
+            type: 'ACTIVATE_CONFIG',
+            id: id,
+            oldId: active.id,
+            endpoint: 'config'
           });
         });
     });

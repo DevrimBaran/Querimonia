@@ -159,6 +159,16 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
         }
       };
     }
+    case 'ACTIVATE_CONFIG': {
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [action.oldId]: { ...state.byId[action.oldId], active: false },
+          [action.id]: { ...state.byId[action.id], active: true }
+        }
+      };
+    }
     default:
       return state;
   }
