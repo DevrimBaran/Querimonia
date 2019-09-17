@@ -18,6 +18,7 @@ import DownloadButton from './../components/DownloadButton';
 import Toggle from './../components/Toggle';
 
 import { Color } from '../utility/colors';
+import ListTable from '../components/ListTable';
 
 var cloud = require('../assets/js/d3.layout.cloud');
 class TagCloud extends Component {
@@ -33,8 +34,8 @@ class TagCloud extends Component {
       lemmatizedMaxOccurrence: 0,
       lemmaOrigin: {},
       color: '#000000',
-      listView: true,
-      lemmatize: true,
+      listView: false,
+      lemmatize: false,
       query: {
         date_min: undefined,
         date_max: undefined,
@@ -69,6 +70,7 @@ class TagCloud extends Component {
     }
     let draw = (words) => {
       loaded();
+      target.firstChild && target.firstChild.remove();
       let text = d3.select(target).append('svg')
         .attr('width', layout.size()[0])
         .attr('height', layout.size()[1])
@@ -103,7 +105,7 @@ class TagCloud extends Component {
     };
 
     let layout = cloud()
-      .size([target.clientWidth - padding[0] * 2, (target.clientHeight || 1) - (padding[1]) * 2])
+      .size([target.clientWidth - padding[0] * 2, (target.clientHeight || 500) - (padding[1]) * 2])
       .words(data.words)
       .spiral('rectangular')
       .padding(1)
@@ -123,7 +125,11 @@ class TagCloud extends Component {
     return true;
   };
   renderList = (target, data, d3) => {
-    let row = d3.select(target).append('table')
+    const table = d3.select(target).append('table');
+    const thead = table.append('thead').append('tr');
+    thead.append('th').text('Wort').style('font-weight', 'bold');
+    thead.append('th').text('Häufigkeit').style('font-weight', 'bold');
+    const row = table.append('tbody')
       .selectAll('tr')
       .data(data.words)
       .enter()
@@ -142,7 +148,6 @@ class TagCloud extends Component {
   };
 
     onChange = (e) => {
-      console.log(e.name, e.value);
       this.setState({ [e.name]: e.value });
     }
 
@@ -220,7 +225,7 @@ class TagCloud extends Component {
             word: word,
             count: data[word]
           });
-          lemmatizedWords[lemma[word]] += data[word];
+          lemmatizedWords[lemma[word]] += data[word] || 0;
         }
         const max = Math.max(...Object.values(lemmatizedWords));
         const min = Math.min(...Object.values(lemmatizedWords));
@@ -252,7 +257,7 @@ class TagCloud extends Component {
                   <DownloadButton disabled={this.state.listView} icon='fas fa-3x fa-file-image' type='image/svg+xml; charset=utf-8' name='Tagcloud.svg' onClick={this.downloadSvg} />
                 </span>
                 <span>
-                  <Toggle on='fas fa-cloud' off='fas fa-list' style={{ '--width': '90px', '--height': '35px' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
+                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '90px', '--height': '35px' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
                 </span>
                 <span>
                   <Input type='checkbox' label='Stammformen' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
@@ -261,12 +266,41 @@ class TagCloud extends Component {
                   <Input type='colorpicker' label='Farbton' name='color' onChange={this.onChange} value={this.state.color} />
                 </span>
               </div>
-              <Content style={{ width: '100%', height: '100%', padding: '20px' }}>
+              <Content style={{ paddingTop: '0px' }}>
                 <D3
                   id='d3Container'
-                  render={this.state.listView ? this.renderList : this.renderCloud}
-                  data={{ color: this.state.color, words: this.createWordArray(), list: this.state.listView }}
-                  style={{ height: '100%', display: 'flex', 'justifyContent': 'center' }} />
+                  render={this.renderCloud}
+                  data={{ color: this.state.color, words: this.createWordArray() }}
+                  style={{
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center'
+                  }}
+                />
+                <div style={{
+                  position: 'absolute',
+                  backgroundColor: 'white',
+                  top: '-20px',
+                  left: '0px',
+                  right: '0px',
+                  height: '100%',
+                  display: this.state.listView ? 'block' : 'none'
+                }}>
+                  <ListTable
+                    style={{ margin: 'auto' }}
+                    header={['Wort', 'Vorkommen']}
+                    data={this.createWordArray().map(w => (
+                      [
+                        this.state.lemmatize ? (
+                          <span title={this.state.lemmaOrigin[w.text].sort((a, b) => b.count - a.count).map(w => `${w.word}: ${w.count}`).join('\n')}>{w.text}</span>
+                        ) : (
+                          w.text
+                        ),
+                        w.value
+                      ]
+                    ))}
+                  />
+                </div>
               </Content>
             </Row>
           </Block>

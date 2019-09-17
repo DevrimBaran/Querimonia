@@ -124,12 +124,7 @@ class App extends Component {
     return { title: '', message: '', status: '0' };
   }
   render () {
-    let basepath;
-    try {
-      basepath = new URL(process.env.REACT_APP_BACKEND_PATH).pathname;
-    } catch (e) {
-      basepath = '/';
-    }
+    let basepath = process.env.REACT_APP_BASEPATH || '/';
     const { login } = { ...this.props };
     return (
       <React.Fragment>

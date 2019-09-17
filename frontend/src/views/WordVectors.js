@@ -197,7 +197,6 @@ class WordVectors extends Component {
       }
     }
   }
-
   render () {
     return (
       <React.Fragment>

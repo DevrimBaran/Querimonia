@@ -64,11 +64,6 @@ export default (extractors) => ({
         }
       }
     },
-    active: {
-      type: 'checkbox',
-      label: 'Aktiv',
-      attributes: { readOnly: true }
-    },
     extractors: {
       type: 'array',
       label: 'Extraktoren',

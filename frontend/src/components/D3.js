@@ -14,7 +14,7 @@ class D3 extends Component {
     super(props);
     this.container = React.createRef();
   }
-  componentDidMount = () => {
+  redraw = () => {
     this.container.current && (this.container.current.innerText = '');
     const addSpinner = this.props.render(this.container.current, JSON.parse(JSON.stringify(this.props.data)), d3, () => {
       this.container.current && this.container.current.classList.remove('loading');
@@ -23,11 +23,13 @@ class D3 extends Component {
       this.container.current && this.container.current.classList.add('loading');
     }
   }
-  componentDidUpdate = () => {
-    this.componentDidMount();
+  componentDidMount = () => {
+    this.redraw();
   }
-  shouldComponentUpdate = (nextProps) => {
-    return JSON.stringify(this.props.data) !== JSON.stringify(nextProps.data);
+  componentDidUpdate = (prevProps) => {
+    if (JSON.stringify(this.props.data) !== JSON.stringify(prevProps.data)) {
+      this.redraw();
+    }
   }
   render () {
     const { data, render, ...passThrough } = { ...this.props };

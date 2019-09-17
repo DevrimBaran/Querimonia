@@ -1,10 +1,10 @@
 import React from 'react';
 
 export default function Toggle (props) {
-  const { onChange, on, off, ...passThrough } = { ...props };
+  const { onChange, on, off, state = false, ...passThrough } = { ...props };
   return (
     <label className='toggle' {...passThrough}>
-      <input type='checkbox' onChange={onChange} />
+      <input type='checkbox' defaultChecked={state} onChange={onChange} />
       <div className='toggle-input'>
         <div className={'toggle-off ' + off} />
         <div className='toggle-toggle'>
