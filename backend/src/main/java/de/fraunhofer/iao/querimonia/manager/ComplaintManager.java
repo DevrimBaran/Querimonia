@@ -10,6 +10,7 @@ import de.fraunhofer.iao.querimonia.repository.CombinationRepository;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import de.fraunhofer.iao.querimonia.response.email.MailSender;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
@@ -34,6 +35,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import java.time.LocalDate;
@@ -373,7 +375,7 @@ public class ComplaintManager {
    *                             complaint cannot be closed in its state.
    * @see ComplaintController#closeComplaint(long) closeComplaint
    */
-  public synchronized Complaint closeComplaint(long complaintId) {
+  public synchronized Complaint closeComplaint(long complaintId) throws MessagingException {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ANALYSING, CLOSED);
@@ -397,6 +399,9 @@ public class ComplaintManager {
 
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
+    MailSender.versendeEMail("Nachricht " + complaintId,
+        complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
+            + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
 
     complaint = builder.createComplaint();
     storeComplaint(complaint);
