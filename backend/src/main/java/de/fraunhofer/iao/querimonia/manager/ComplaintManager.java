@@ -391,6 +391,9 @@ public class ComplaintManager {
         .map(ResponseComponent::getActions)
         .flatMap(List::stream)
         .forEach(Action::executeAction);
+    //TODO: Email versenden Methode ComplaintUtility oder man legt sich darauf fest, dass das
+    // durch die Actions realisiert werden soll z.B. können dann mehrere Mails an verschiedene
+    // gesendet werden
 
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
