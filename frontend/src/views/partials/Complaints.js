@@ -142,125 +142,117 @@ function Single (active, dispatch, helpers) {
     active.state === 'ANALYSING' ||
     active.state === 'ERROR';
   return (
-    <React.Fragment>
-      <div className='builderBlock'>
-        <Row vertical>
-          <h6 className='center'>Antwort</h6>
-          <TextBuilder disabled={disabled} />
-        </Row>
-        <Row vertical>
-          <h6 className='center'>Meldetext</h6>
-          <Content>
-            <Tabbed>
-              <div label='Überarbeitet'>
-                <TaggedText disabled={disabled} active={active} dispatch={dispatch}
-                  text={helpers.props.complaintStuff.text}
-                  entities={helpers.props.complaintStuff.entities} />
-              </div>
-              <div label='Original'>
-                {helpers.props.complaintStuff.text}
-              </div>
-              <div label='Log'>
-                {helpers.props.complaintStuff.log.map((entry, i) => (
-                  <div key={i} className='log'>
-                    <span className='category'>[{entry.category}]</span> <span
-                      className='datetime'>{entry.date} {entry.time} UTC</span>
-                    <br />
-                    <div className='message'>
-                      {entry.message}
-                    </div>
+    <div className='builderBlock'>
+      <Row vertical>
+        <h6 className='center'>Antwort</h6>
+        <TextBuilder disabled={disabled} />
+      </Row>
+      <Row vertical>
+        <h6 className='center'>Meldetext</h6>
+        <Content>
+          <Tabbed>
+            <div label='Überarbeitet'>
+              <TaggedText disabled={disabled} active={active} dispatch={dispatch}
+                text={helpers.props.complaintStuff.text}
+                entities={helpers.props.complaintStuff.entities} />
+            </div>
+            <div label='Original'>
+              <p>{helpers.props.complaintStuff.text}</p>
+            </div>
+            <div label='Log'>
+              {helpers.props.complaintStuff.log.map((entry, i) => (
+                <div key={i} className='log'>
+                  <span className='category'>[{entry.category}]</span> <span
+                    className='datetime'>{entry.date} {entry.time} UTC</span>
+                  <br />
+                  <div className='message'>
+                    {entry.message}
                   </div>
-                ))}
-              </div>
-              {/* <div label='active'>
-                <Debug data={active} />
-              </div>
-              <div label='stuff'>
-                <Debug data={helpers.props.complaintStuff} />
-              </div> */}
-            </Tabbed>
-          </Content>
-          <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text}
-            entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
-          <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
-          <Collapsible label='Details' />
-          <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
-            ['Konfiguration', (<Link to={'/configurations/' + active.configuration.id}>
-              {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
-            ['Eingangsdatum', (localize(active.receiveDate))],
-            ['Eingangszeit', (active.receiveTime)],
-            ['Status', (states[active.state])],
-            ['ID', (active.id)],
-            {
-              map: (cb) => (active.properties.map((property) => {
-                return (
-                  [property.name, <InformationTag text={property.value} probabilities={property.probabilities} />,
-                    <Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
-                      data-propertyindex={0} data-category={property.value} data-mode={'category'}
-                      onClick={(e) => EditDetailsModal.open(e)} />]
-                    .map(cb)
-                )
-                ;
-              }))
-            },
-            ['Sentiment',
-              <InformationTag text={<Sentiment small tendency={active.sentiment ? active.sentiment.tendency : null} />}
-                probabilities={active.sentiment.tendency} />,
-              <Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten' icon={'fas fa-edit'}
-                data-sentiment={
-                  active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'}
-                onClick={(e) => EditDetailsModal.open(e)} />],
-            ['Emotion', <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
-              probabilities={active.sentiment.emotion.probabilities} />, <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
-              active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />]
-          ]} />
-          <Collapsible label='Entitäten'
-            disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
-            collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+                </div>
+              ))}
+            </div>
+          </Tabbed>
+        </Content>
+        <EditEntityModal active={active} dispatch={dispatch} text={helpers.props.complaintStuff.text}
+          entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
+        <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
+        <Collapsible label='Details' />
+        <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
+          ['Konfiguration', (<Link to={'/configurations/' + active.configuration.id}>
+            {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
+          ['Eingangsdatum', (localize(active.receiveDate))],
+          ['Eingangszeit', (active.receiveTime)],
+          ['Status', (states[active.state])],
+          ['ID', (active.id)],
+          {
+            map: (cb) => (active.properties.map((property) => {
+              return (
+                [property.name, <InformationTag text={property.value} probabilities={property.probabilities} />,
+                  <Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
+                    data-propertyindex={0} data-category={property.value} data-mode={'category'}
+                    onClick={(e) => EditDetailsModal.open(e)} />]
+                  .map(cb)
+              )
+              ;
+            }))
+          },
+          ['Sentiment',
+            <InformationTag text={<Sentiment small tendency={active.sentiment ? active.sentiment.tendency : null} />}
+              probabilities={active.sentiment.tendency} />,
+            <Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten' icon={'fas fa-edit'}
+              data-sentiment={
+                active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'}
+              onClick={(e) => EditDetailsModal.open(e)} />],
+          ['Emotion', <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
+            probabilities={active.sentiment.emotion.probabilities} />, <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
+            active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />]
+        ]} />
+        <Collapsible label='Entitäten'
+          disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+          collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
+        />
+        <Content>
+          <ListTable data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
+            styles={[{
+              fontWeight: 'bold'
+            }, {
+              padding: '0 1em'
+            }]}
           />
-          <Content>
-            <ListTable data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
-              styles={[{
-                fontWeight: 'bold'
-              }, {
-                padding: '0 1em'
-              }]}
-            />
-          </Content>
-          <Collapsible label='Kombinationen'
-            disabled={
-              !(helpers.props.complaintStuff.combinations &&
-                           helpers.props.complaintStuff.combinations.map &&
-                           helpers.props.complaintStuff.combinations.length !== 0)
+        </Content>
+        <Collapsible label='Kombinationen'
+          disabled={
+            !(helpers.props.complaintStuff.combinations &&
+                          helpers.props.complaintStuff.combinations.map &&
+                          helpers.props.complaintStuff.combinations.length !== 0)
+          }
+          collapse={
+            !(helpers.props.complaintStuff.combinations &&
+                          helpers.props.complaintStuff.combinations.map &&
+                          helpers.props.complaintStuff.combinations.length !== 0)
+          }
+        />
+        <Content>
+          <ListTable
+            header={['Linie', 'Haltestelle', 'Ort']}
+            data={
+              helpers.props.complaintStuff.combinations &&
+              helpers.props.complaintStuff.combinations.map &&
+              helpers.props.complaintStuff.combinations.map((combination) => (
+                [
+                  combination.Linie || '-',
+                  combination.Haltestelle || '-',
+                  combination.Ort || '-'
+                ]
+              ))
             }
-            collapse={
-              !(helpers.props.complaintStuff.combinations &&
-                           helpers.props.complaintStuff.combinations.map &&
-                           helpers.props.complaintStuff.combinations.length !== 0)
-            }
+            styles={[{}, {
+              padding: '0 1em'
+            }, {}]}
           />
-          <Content>
-            <ListTable
-              header={['Linie', 'Haltestelle', 'Ort']}
-              data={
-                helpers.props.complaintStuff.combinations &&
-                helpers.props.complaintStuff.combinations.map &&
-                helpers.props.complaintStuff.combinations.map((combination) => (
-                  [
-                    combination.Linie || '-',
-                    combination.Haltestelle || '-',
-                    combination.Ort || '-'
-                  ]
-                ))
-              }
-              styles={[{}, {
-                padding: '0 1em'
-              }, {}]}
-            />
-          </Content>
-        </Row>
-      </div>
-    </React.Fragment>
+        </Content>
+      </Row>
+    </div>
   );
 }
 

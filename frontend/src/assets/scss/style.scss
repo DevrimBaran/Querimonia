@@ -58,12 +58,15 @@
 .builderBlock{
     overflow: auto;
     width: 100%;
+    flex-grow: 0;
+    flex-basis: 100%;
     border-right: 1px solid $grey;
     margin: 20px;
     box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     background: $white;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(2, auto);
     &:last-of-type {
         border-right: none;
     }
@@ -77,12 +80,15 @@
 }
 
 .row {
-    height: 100%;
-    width: 100%;
     overflow: auto;
 
     &.flex-column {
         overflow-x: hidden;
+        height: 100%;
+        &.fit {
+            height: auto;
+            width: max-content;
+        }
         & > * {
             padding: 20px 20px 0;
         }
@@ -90,15 +96,22 @@
 
     &.flex-row {
         overflow-y: hidden;
+        width: 100%;
         justify-content: space-between;
+        &.fit {
+            width: auto;
+            height: max-content;
+        }
     }
     &.content{
         padding: 0;
     }
     & > .flex-row {
+        width: auto;
         height: fit-content;
     }
     & > .flex-column {
+        height: auto;
         width: fit-content;
     }
 
