@@ -876,6 +876,59 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
+  /api/complaints/{complaintId}/xml:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    get:
+      tags:
+        - complaints
+      summary: Gibt eine Beschwerde mit der gegebenen ID als xml zurück.
+      description: Gibt eine Beschwerde mit der gegebenen ID als xml zurück.
+      operationId: getXml
+      responses:
+        200:
+          description: Erfolgreiche Anfrage.
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/fraunhoferTextDocument'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/complaints/xml:
+    get:
+      tags:
+        - complaints
+      summary: Gibt eine xml aller Beschwerden zurück
+      description: Gibt alle Beschwerden im Fraunhofer-Xml Format zurück, die dem Filter entsprechen
+      operationId: getXmls
+      parameters:
+        - $ref: '#/components/parameters/ComplaintsSortParameter'
+        - $ref: '#/components/parameters/ComplaintStateParameter'
+        - $ref: '#/components/parameters/DateMinParameter'
+        - $ref: '#/components/parameters/DateMaxParameter'
+        - $ref: '#/components/parameters/EmotionParameter'
+        - $ref: '#/components/parameters/SubjectParameter'
+        - $ref: '#/components/parameters/KeywordsParameter'
+      responses:
+        200:
+          description: Erfolgreiche Anfrage. Die Beschwerden werden entsprechend den Paramtern zurückgegeben.
+          content:
+            application/xml:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/fraunhoferTextDocument'
+                xml:
+                  name: fraunhoferTextDocuments
+                  wrapped: true
+              example:
+                summary: The Example of a xml
+                externalValue: 'https://stupropm.iao.fraunhofer.de/redmine/attachments/2566/fraunhoferXmlExample.xml'
+
   /api/complaints/{complaintId}/entities:
     parameters:
       - $ref: '#/components/parameters/ComplaintIdParameter'
@@ -2176,6 +2229,15 @@ components:
               Sonstiges: 0.3
               Fahrer unfreundlich: 0
             setByUser: false
+
+    fraunhoferTextDocument:
+      type: object
+      description: Eine Beschwerde im Fraunhofer-Xml Format
+
+      example:
+        externalValue: 'https://stupropm.iao.fraunhofer.de/redmine/attachments/2566/fraunhoferXmlExample.xml'
+      xml:
+        name: fraunhoferTextDocument
 
     ComplaintProperty:
       type: object

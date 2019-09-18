@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * This class is represents a complaint. A complaint is the main data structure of querimonia
@@ -43,19 +45,19 @@ import java.util.Map;
  * <h2>{@link ComplaintState States of complaints}</h2>
  * <p>Complaints have different states during the workflow:</p>
  * <ul>
- *   <li>{@link ComplaintState#ANALYSING}: Complaint that get uploaded start in this state. The
- *   analysis has started, but is not finished yet. The complaint has no entities, categories,
- *   sentiment and response yet. Deleting and editing is not allowed in this state.
- *   </li>
- *   <li>{@link ComplaintState#ERROR}: If the analysis could not be finished, complaints will
- *   be in this state. They can't be edited in this state, but removed and reanalysed.</li>
- *   <li>{@link ComplaintState#NEW}: If the analysis has finished, complaints are in this state.
- *   All editing and deleting is allowed.</li>
- *   <li>{@link ComplaintState#IN_PROGRESS}: The complaint can be manually set to this state to
- *   indicate, that the work by the user on this complaint has begun. All editing and deleting is
- *   allowed.</li>
- *   <li>{@link ComplaintState#CLOSED}: The work on the complaint is finished. All actions are
- *   executed. Editing is not allowed in this state, but deleting.</li>
+ * <li>{@link ComplaintState#ANALYSING}: Complaint that get uploaded start in this state. The
+ * analysis has started, but is not finished yet. The complaint has no entities, categories,
+ * sentiment and response yet. Deleting and editing is not allowed in this state.
+ * </li>
+ * <li>{@link ComplaintState#ERROR}: If the analysis could not be finished, complaints will
+ * be in this state. They can't be edited in this state, but removed and reanalysed.</li>
+ * <li>{@link ComplaintState#NEW}: If the analysis has finished, complaints are in this state.
+ * All editing and deleting is allowed.</li>
+ * <li>{@link ComplaintState#IN_PROGRESS}: The complaint can be manually set to this state to
+ * indicate, that the work by the user on this complaint has begun. All editing and deleting is
+ * allowed.</li>
+ * <li>{@link ComplaintState#CLOSED}: The work on the complaint is finished. All actions are
+ * executed. Editing is not allowed in this state, but deleting.</li>
  * </ul>
  */
 @XmlRootElement(name = "fraunhoferTextDocument")
@@ -444,9 +446,8 @@ public class Complaint implements Identifiable<Long> {
    * as the complaint state attribute.
    *
    * @param state the new state, which the copied complaint should have.
-   *
    * @return a new complaint with all the properties of this complaint but with the given state
-   *     as the complaint state attribute.
+   * as the complaint state attribute.
    */
   @NonNull
   public Complaint withState(@NonNull ComplaintState state) {
@@ -460,9 +461,8 @@ public class Complaint implements Identifiable<Long> {
    * configuration as attribute.
    *
    * @param configuration the new configuration, which the copied complaint should have.
-   *
    * @return a new complaint with all the properties of this complaint but with the given
-   *     configuration as attribute.
+   * configuration as attribute.
    */
   public Complaint withConfiguration(Configuration configuration) {
     return new ComplaintBuilder(this)
@@ -502,9 +502,8 @@ public class Complaint implements Identifiable<Long> {
    * text, state, subject, emotion, entities and their response is equal.
    *
    * @param o the other complaint. Must be a complaint object.
-   *
    * @return true, if the given object is a complaint object and the two complaint objects are
-   *     equal.
+   * equal.
    */
   @Override
   public boolean equals(Object o) {
@@ -566,17 +565,36 @@ public class Complaint implements Identifiable<Long> {
    * @throws JAXBException thrown on incorrect JAXB annotations
    */
   public String toXml() throws JAXBException {
+    return getXmls(Stream.of(this));
+  }
+
+  /**
+   * Converts multiple Complaints to their xml representation and wraps them in one Xml-Document.
+   *
+   * @param complaintStream complaints that gets
+   * @return the xml-representation of the complaints in the stream
+   * @throws JAXBException thrown on missing annotations or methods
+   */
+  public static String getXmls(Stream<Complaint> complaintStream) throws JAXBException {
     // create JAXB context and instantiate marshaller
-    JAXBContext context = JAXBContextFactory.createContext(new Class[] {ComplaintXml.class}, null);
+    JAXBContext context = JAXBContextFactory.createContext(new Class[] {ComplaintXml.class,
+        ComplaintXml.ComplaintXmls.class}, null);
     Marshaller m = context.createMarshaller();
     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
     m.setProperty(Marshaller.JAXB_FRAGMENT, true);
 
-    // Write to File
-    // File xmlFile = new File(targetPath);
+    // Write to String
     StringWriter stringWriter = new StringWriter();
     stringWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
-    m.marshal(new ComplaintXml(this), stringWriter);
+    List<ComplaintXml> complains =
+        complaintStream.map(ComplaintXml::new).collect(Collectors.toList());
+    if (complains.size() == 1) {
+      m.marshal(complains.get(0), stringWriter);
+    } else {
+      m.marshal(new ComplaintXml.ComplaintXmls(complains), stringWriter);
+    }
+
     return stringWriter.toString();
   }
+
 }
