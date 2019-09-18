@@ -28,7 +28,7 @@ const initialState = {
       },
       {
         label: 'Status',
-        name: 'status',
+        name: 'state',
         multiple: 'multiple',
         type: 'select',
         icon: 'fas fa-clipboard',

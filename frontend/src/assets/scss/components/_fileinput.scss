@@ -1,7 +1,6 @@
 input.FileInput {
     display: none;
 }
-
 label.FileInput {
     height: 60px;
     min-width: 60px;
@@ -26,5 +25,43 @@ label.FileInput {
     }
     &::before {
         display: none;
+    }
+}
+.drag {
+    .input.file {
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 999;
+    }
+    label.FileInput {
+        height: 100%;
+        i {
+            font-size: 90px;
+            line-height: 140px;
+            &::after {
+                @extend %font;
+                content: 'Lassen Sie die Datei hier los';
+                display: block;
+                font-size: 30px;
+                line-height: 60px;
+                width: 80%;
+                white-space: initial;
+                margin: auto;
+                letter-spacing: 0px;
+                font-weight: bold;
+            }
+        }
+        &:hover {
+            border-color: $primary;
+            i {
+                color: $primary;
+                &::after {
+                    color: $primary;
+                }
+            }
+        }
     }
 }

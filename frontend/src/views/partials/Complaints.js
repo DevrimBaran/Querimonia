@@ -92,7 +92,7 @@ function Overlay (dispatch, filter) {
     }, {});
     console.log(query);
     e.stopPropagation();
-    return api.get(`/api/complaints/xml`, query, 'blob');
+    return api.get(`/api/complaints/xml`, query, null, 'blob');
   };
   return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code'
     onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
@@ -108,7 +108,7 @@ function List (data, dispatch, helpers) {
   };
   const xml = (e) => {
     e.stopPropagation();
-    return api.get(`/api/complaints/${data.id}/xml`, {}, 'blob');
+    return api.get(`/api/complaints/${data.id}/xml`, {}, null, 'blob');
   };
   return (
     <tr className='pointer' key={data.id} onClick={helpers.edit}>

@@ -13,8 +13,9 @@ class Block extends Component {
     this.state = {};
   }
   render () {
+    const { className = '', ...passThrough } = { ...this.props };
     return (
-      <div className={this.props.className ? this.props.className + ' Block shadow' : 'Block shadow'} style={this.props.style || {}}>
+      <div className={className + ' Block shadow'} {...passThrough}>
         {this.props.children}
       </div>
     );

@@ -20,6 +20,7 @@ class ImportBlock extends Component {
     super(props);
     this.textInput = React.createRef();
     this.fileInput = React.createRef();
+    this.dragTimer = false;
     this.state = {
       response: [],
       loading: false,
@@ -82,16 +83,24 @@ class ImportBlock extends Component {
   }
 
   onDragOver = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
+    if (this.dragTimer) {
+      clearTimeout(this.dragTimer);
+    } else {
+      document.getElementById('Import').classList.add('drag');
+    }
+    this.dragTimer = setTimeout(() => {
+      document.getElementById('Import').classList.remove('drag');
+      this.dragTimer = false;
+    }, 200);
   }
 
   render () {
     return (
-      <Block>
+      <Block onDragOver={this.onDragOver} onDragLeave={this.onDragLeave}>
         <h1 className='center'>Import</h1>
         <Row vertical className='centerColumn'>
-          <div className='input' id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}>
+          {/* <div className='input' id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}> */}
+          <div className={'input' + (this.dragCounter > 0 && 'drag')} id='Import'>
             {this.state.type !== 'file' && <textarea className='textarea' style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref={this.textInput} placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
             <div className='center'>
               {this.state.type !== 'textarea' && <Input label='File' type='file' onChange={this.onChange} name='file' ref={this.fileInput} />}

@@ -28,7 +28,7 @@ class StatsTable extends Component {
         </thead>
         <tbody>
           {data.data.map((d, i) => <tr key={i}>
-            {data.header[0] === 'ID' ? <td><Link to={'/rules/' + d.key}>{d.key}</Link></td> : <td>{d.key}</td>}
+            {data.header[0] === 'ID' ? <td><Link to={'/components/' + d.key}>{d.key}</Link></td> : <td>{d.key}</td>}
             <td>{parseFloat(Number(d.value).toFixed(2))}</td>
           </tr>)}
         </tbody>
