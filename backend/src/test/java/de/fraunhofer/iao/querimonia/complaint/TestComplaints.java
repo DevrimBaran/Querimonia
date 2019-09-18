@@ -162,7 +162,7 @@ public class TestComplaints {
   public static class TestResponses {
 
     public static final ResponseSuggestion SUGGESTION_A = new ResponseSuggestion(
-        List.of(), List.of()
+        List.of(), ""
     );
 
     public static final ResponseSuggestion SUGGESTION_B = new ResponseSuggestion(
@@ -174,7 +174,7 @@ public class TestComplaints {
                 Collections.emptyList()
             )
         ),
-        List.of()
+        ""
     );
 
     public static final ResponseSuggestion SUGGESTION_C = new ResponseSuggestion(
@@ -186,7 +186,7 @@ public class TestComplaints {
                 Collections.emptyList()
             )
         ),
-        List.of()
+        ""
     );
   }
 

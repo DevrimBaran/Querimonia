@@ -28,11 +28,11 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   private long id;
 
   @JoinColumn(name = "component_id")
-  @ManyToOne(cascade = CascadeType.MERGE)
+  @ManyToOne()
   @NonNull
   private ResponseComponent component = new ResponseComponent();
 
-  @OneToMany(cascade = CascadeType.MERGE)
+  @OneToMany()
   @JoinColumn(name = "component_id")
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();

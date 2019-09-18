@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.response.generation;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.fraunhofer.iao.querimonia.response.action.Action;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -32,19 +31,18 @@ public class ResponseSuggestion implements Identifiable<Long> {
   private List<CompletedResponseComponent> responseComponents = new ArrayList<>();
 
   @NonNull
-  @Column(name = "action_id")
-  @OneToMany(cascade = CascadeType.ALL)
-  private List<Action> actions = new ArrayList<>();
+  @Column(length = 10000)
+  private String response = "";
 
   @JsonCreator
   public ResponseSuggestion(
       @JsonProperty("components")
       @NonNull
           List<CompletedResponseComponent> responseComponents,
-      @JsonProperty("actions")
+      @JsonProperty("response")
       @NonNull
-          List<Action> actions) {
-    this.actions = actions;
+          String response) {
+    this.response = response;
     this.responseComponents = responseComponents;
   }
 
@@ -68,8 +66,8 @@ public class ResponseSuggestion implements Identifiable<Long> {
   }
 
   @NonNull
-  public List<Action> getActions() {
-    return actions;
+  public String getResponse() {
+    return response;
   }
 
   @Override
@@ -91,7 +89,7 @@ public class ResponseSuggestion implements Identifiable<Long> {
 
     return new EqualsBuilder()
         .append(responseComponents, that.responseComponents)
-        .append(actions, that.actions)
+        .append(response, that.response)
         .isEquals();
   }
 
@@ -99,7 +97,7 @@ public class ResponseSuggestion implements Identifiable<Long> {
   public int hashCode() {
     return new HashCodeBuilder(17, 37)
         .append(responseComponents)
-        .append(actions)
+        .append(response)
         .toHashCode();
   }
 
@@ -108,7 +106,7 @@ public class ResponseSuggestion implements Identifiable<Long> {
     return new ToStringBuilder(this)
         .append("id", id)
         .append("responseComponents", responseComponents)
-        .append("actions", actions)
+        .append("response", response)
         .toString();
   }
 }

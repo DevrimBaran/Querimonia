@@ -148,7 +148,8 @@ public class Complaint implements Identifiable<Long> {
   /**
    * The response for the complaint.
    */
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(
+      cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REMOVE})
   @JsonIgnore
   @NonNull
   private ResponseSuggestion responseSuggestion = ResponseSuggestion.getEmptyResponse();
@@ -195,6 +196,13 @@ public class Complaint implements Identifiable<Long> {
   private List<LogEntry> log = new ArrayList<>();
 
   /**
+   * Gets called on closing.
+   */
+  @Nullable
+  @JsonIgnore
+  private String callbackRoute;
+
+  /**
    * Constructor for builder.
    */
   Complaint(
@@ -212,7 +220,8 @@ public class Complaint implements Identifiable<Long> {
       @NonNull LocalDate closeDate,
       @NonNull LocalTime closeTime,
       @Nullable Configuration configuration,
-      @NonNull List<LogEntry> log) {
+      @NonNull List<LogEntry> log,
+      @Nullable String callbackRoute) {
 
     ComplaintUtility.checkStringLength(text, TEXT_MAX_LENGTH);
     ComplaintUtility.checkStringLength(preview, PREVIEW_MAX_LENGTH);
@@ -232,6 +241,7 @@ public class Complaint implements Identifiable<Long> {
     this.closeTime = closeTime;
     this.configuration = configuration;
     this.log = log;
+    this.callbackRoute = callbackRoute;
   }
 
   /**
@@ -419,6 +429,17 @@ public class Complaint implements Identifiable<Long> {
   }
 
   /**
+   * Return the callback route. This is called with a POST request on closing the complaint with
+   * the response and the id of the complaint as body.
+   *
+   * @return the callback route.
+   */
+  @Nullable
+  public String getCallbackRoute() {
+    return callbackRoute;
+  }
+
+  /**
    * Returns a new complaint with all the properties of this complaint but with the given state
    * as the complaint state attribute.
    *
@@ -468,6 +489,12 @@ public class Complaint implements Identifiable<Long> {
         DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     this.receiveTime = LocalTime.parse(localDateTime.substring(0, localDateTime.length() - 1),
         DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+  }
+
+  public Complaint withResponseSuggestion(ResponseSuggestion responseSuggestion) {
+    return new ComplaintBuilder(this)
+        .setResponseSuggestion(responseSuggestion)
+        .createComplaint();
   }
 
   /**
@@ -533,7 +560,9 @@ public class Complaint implements Identifiable<Long> {
 
   /**
    * crates the xml representation of this complaint.
+   *
    * @return the xml representation of this complaint
+   *
    * @throws JAXBException thrown on incorrect JAXB annotations
    */
   public String toXml() throws JAXBException {

@@ -250,7 +250,7 @@ public class ComplaintControllerTest {
     ResponseEntity<?> responseEntity =
         complaintController.uploadComplaint(new MockMultipartFile("TestFile.txt", "TestFile.txt",
             "text/plain",
-            testText.getBytes(Charset.defaultCharset())), Optional.of(1L));
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1L), Optional.empty());
     assertEquals("Wrong status code on success", HttpStatus.CREATED,
         responseEntity.getStatusCode());
     Complaint body = (Complaint) responseEntity.getBody();
@@ -272,7 +272,7 @@ public class ComplaintControllerTest {
     var responseEntity =
         complaintController.uploadComplaint(new MockMultipartFile("TestFile.xlsx", "TestFile.xlsx",
             "text/plain",
-            testText.getBytes(Charset.defaultCharset())), Optional.of(1L));
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1L), Optional.empty());
     assertEquals("Wrong status code on success", HttpStatus.BAD_REQUEST,
         responseEntity.getStatusCode());
     var exceptionBody = (QuerimoniaException) responseEntity.getBody();
@@ -290,7 +290,7 @@ public class ComplaintControllerTest {
     var responseEntity =
         complaintController.uploadComplaint(new MockMultipartFile("TestFile.pdf", "TestFile.pdf",
             "text/plain",
-            testText.getBytes(Charset.defaultCharset())), Optional.of(1L));
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1L), Optional.empty());
     assertEquals("Wrong status code on fail", HttpStatus.INTERNAL_SERVER_ERROR,
         responseEntity.getStatusCode());
     var exceptionBody = (QuerimoniaException) responseEntity.getBody();
@@ -308,7 +308,7 @@ public class ComplaintControllerTest {
     var responseEntity =
         complaintController.uploadComplaint(new MockMultipartFile("TestFile.docx", "TestFile.docx",
             "text/plain",
-            testText.getBytes(Charset.defaultCharset())), Optional.of(1L));
+            testText.getBytes(Charset.defaultCharset())), Optional.of(1L), Optional.empty());
     assertEquals("Wrong status code on fail", HttpStatus.INTERNAL_SERVER_ERROR,
         responseEntity.getStatusCode());
     var exceptionBody = (QuerimoniaException) responseEntity.getBody();
@@ -327,7 +327,8 @@ public class ComplaintControllerTest {
     configurationRepository.save(testConfiguration2);
 
     // TC 3.1 using default configuration
-    var response = complaintController.uploadText(new TextInput(testText), Optional.empty());
+    var response = complaintController.uploadText(new TextInput(testText), Optional.empty(),
+        Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.CREATED));
     assertNotNull("Missing response body", response.getBody());
     var complaint = (Complaint) response.getBody();
@@ -348,7 +349,8 @@ public class ComplaintControllerTest {
     configurationRepository.save(testConfiguration2);
 
     // TC 3.2 using a given configuration
-    var response = complaintController.uploadText(new TextInput(testText), Optional.of(2L));
+    var response = complaintController.uploadText(new TextInput(testText), Optional.of(2L),
+        Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.CREATED));
     assertNotNull("Missing response body", response.getBody());
     var complaint = (Complaint) response.getBody();
@@ -369,7 +371,8 @@ public class ComplaintControllerTest {
     configurationRepository.save(testConfiguration2);
 
     // TC 3.1 illegal configuration
-    var response = complaintController.uploadText(new TextInput(testText), Optional.of(3L));
+    var response = complaintController.uploadText(new TextInput(testText), Optional.of(3L),
+        Optional.empty());
     assertThat(response, hasStatusCode(HttpStatus.NOT_FOUND));
     assertNotNull("Missing response body", response.getBody());
     var body = (NotFoundException) response.getBody();
@@ -384,7 +387,8 @@ public class ComplaintControllerTest {
     configurationRepository.save(testConfiguration);
 
     // TC 4.0 mock configuration
-    var immediateResponse = complaintController.uploadText(new TextInput(testText), Optional.of(7L));
+    var immediateResponse = complaintController.uploadText(new TextInput(testText),
+        Optional.of(7L), Optional.empty());
     assertThat(immediateResponse, hasStatusCode(HttpStatus.CREATED));
     Optional<Complaint> analyzedComplaintOptional = complaintRepository.findById(2L);
     // Test has to wait for async analysis to finish

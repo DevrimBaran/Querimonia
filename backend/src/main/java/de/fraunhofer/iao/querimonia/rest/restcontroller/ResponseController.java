@@ -1,12 +1,9 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST Controller for generating and retrieving responses.
@@ -71,5 +68,13 @@ public class ResponseController {
   @PatchMapping("api/complaints/{complaintId}/response/refresh")
   public ResponseEntity<?> refreshResponseNew(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() -> complaintManager.refreshResponse(complaintId));
+  }
+
+  @PutMapping("api/complaints/{complaintId}/response")
+  public ResponseEntity<?> saveResponse(@PathVariable long complaintId, @RequestBody
+                                        ResponseSuggestion responseSuggestion) {
+    return ControllerUtility.tryAndCatch(() -> {
+      complaintManager.saveResponse(complaintId, responseSuggestion);
+    });
   }
 }

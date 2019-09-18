@@ -196,7 +196,7 @@ public class ResponseComponentManager {
     for (Complaint complaint : complaintRepository.findAll()) {
       // delete references
       complaint = new ComplaintBuilder(complaint)
-          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), new ArrayList<>()))
+          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), ""))
           .createComplaint();
       complaintRepository.save(complaint);
     }
@@ -207,7 +207,7 @@ public class ResponseComponentManager {
     for (Complaint complaint : complaintRepository.findAll()) {
       // add empty responses
       complaint = new ComplaintBuilder(complaint)
-          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), new ArrayList<>()))
+          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), ""))
           .createComplaint();
       complaintRepository.save(complaint);
     }

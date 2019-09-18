@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 
 /**
  * Contains factory methods to create {@link LogEntry log entries}.
@@ -25,7 +26,9 @@ public class ComplaintLog {
    */
   public static LogEntry createLogEntry(LogCategory category, long complaintId, String message) {
     LOGGER.info("complaint " + complaintId + " - " + category.name() + " - " + message);
-    return new LogEntry(category, fitStringLength(message), LocalDate.now(), LocalTime.now());
+    return new LogEntry(category, fitStringLength(message),
+        LocalDate.now(ZoneId.of("Europe/Berlin")),
+        LocalTime.now(ZoneId.of("Europe/Berlin")));
   }
 
   private static String fitStringLength(String message) {

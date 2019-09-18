@@ -10,10 +10,13 @@ import de.fraunhofer.iao.querimonia.repository.CombinationRepository;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
+import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
+import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ComplaintController;
 import de.fraunhofer.iao.querimonia.rest.restcontroller.ResponseController;
+import de.fraunhofer.iao.querimonia.rest.restobjects.CallbackResponse;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
@@ -25,6 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
@@ -133,13 +137,13 @@ public class ComplaintManager {
    * @return the new created complaint.
    *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
-   * @see ComplaintController#uploadComplaint(MultipartFile, Optional) uploadComplaint
+   * @see ComplaintController#uploadComplaint(MultipartFile, Optional, Optional) uploadComplaint
    */
-  public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Long> configId) {
+  public synchronized Complaint uploadComplaint(MultipartFile file, Optional<Long> configId,
+                                                Optional<String> callbackUrl) {
     String fileName = fileStorageService.storeFile(file);
-
     String text = fileStorageService.getTextFromData(fileName);
-    return uploadText(new TextInput(text), configId);
+    return uploadText(new TextInput(text), configId, callbackUrl);
   }
 
   /**
@@ -152,12 +156,14 @@ public class ComplaintManager {
    * @return the new created complaint.
    *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
-   * @see ComplaintController#uploadText(TextInput, Optional) uploadText
+   * @see ComplaintController#uploadText(TextInput, Optional, Optional) uploadText
    */
-  public synchronized Complaint uploadText(TextInput input, Optional<Long> configId) {
+  public synchronized Complaint uploadText(TextInput input, Optional<Long> configId,
+                                           Optional<String> callbackUrl) {
     Configuration configuration = getConfigurationFromId(configId);
 
     var complaintBuilder = complaintFactory.createBaseComplaint(input.getText(), configuration);
+    complaintBuilder.setCallbackRoute(callbackUrl.orElse(null));
     complaintBuilder.setState(ANALYSING);
 
     var complaint = complaintBuilder.createComplaint();
@@ -187,6 +193,7 @@ public class ComplaintManager {
    * state.
    */
   private void onException(ComplaintBuilder complaintBuilder, Throwable e) {
+    e.printStackTrace();
     complaintBuilder
         .setState(ERROR)
         .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
@@ -380,15 +387,52 @@ public class ComplaintManager {
     // execute actions of the complaint
     complaint
         .getResponseSuggestion()
-        .getActions()
+        .getResponseComponents()
+        .stream()
+        .filter(completedResponseComponent -> true) // add used filter TODO
+        .map(CompletedResponseComponent::getComponent)
+        .map(ResponseComponent::getActions)
+        .flatMap(List::stream)
         .forEach(Action::executeAction);
 
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
+    executeCallback(builder);
 
     complaint = builder.createComplaint();
     storeComplaint(complaint);
 
     return complaint;
+  }
+
+  private void executeCallback(ComplaintBuilder builder) {
+    var url = builder.getCallbackRoute();
+
+    if (url != null) {
+      var complaintResponse = new CallbackResponse(builder.getId(),
+          builder.getResponseSuggestion().getResponse());
+      try {
+
+        var template = new RestTemplateBuilder()
+            .basicAuthentication("admin", "QuerimoniaPass2019")
+            .build();
+        var response = template.postForEntity(url, complaintResponse, String.class);
+        if (response.getStatusCodeValue() >= 500) {
+          throw new RuntimeException(
+              "Callback meldet StatusCode " + response.getStatusCodeValue() + "; "
+                  + response.getBody());
+        }
+        builder.appendLogItem(LogCategory.GENERAL, "Callback erfolgreich: " + response.getBody());
+      } catch (RuntimeException e) {
+        builder.appendLogItem(LogCategory.ERROR,
+            "Fehler beim Abschließen der Beschwerde: " + e.getMessage());
+      }
+    }
+  }
+
+  public synchronized ResponseSuggestion saveResponse(long complaintId, ResponseSuggestion body) {
+    Complaint complaint = getComplaint(complaintId);
+    storeComplaint(complaint.withResponseSuggestion(body));
+    return body;
   }
 
   /**
@@ -661,7 +705,7 @@ public class ComplaintManager {
         // only import count amount of texts
         .limit(count.orElse(DEFAULT_TEXTS_DEFAULT_COUNT))
         .map(textInput -> {
-          var complaint = uploadText(textInput, configId);
+          var complaint = uploadText(textInput, configId, Optional.empty());
           try {
             Thread.sleep(7000);
           } catch (InterruptedException e) {

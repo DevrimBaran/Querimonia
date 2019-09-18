@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.response.generation;
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
-import de.fraunhofer.iao.querimonia.response.action.Action;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -85,13 +84,7 @@ public class DefaultResponseGenerator implements ResponseGenerator {
       break;
     }
 
-    // get list of all actions used in the response
-    List<Action> validActions = generatedResponse.stream()
-        .map(CompletedResponseComponent::getComponent)
-        .map(ResponseComponent::getActions)
-        .flatMap(List::stream)
-        .collect(Collectors.toList());
-    return new ResponseSuggestion(generatedResponse, validActions);
+    return new ResponseSuggestion(generatedResponse, "");
   }
 
 }

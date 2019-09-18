@@ -223,8 +223,7 @@ public class ComplaintFactory {
     complaintBuilder
         .setResponseSuggestion(response)
         .appendLogItem(LogCategory.ANALYSIS,
-            "Antwort mit " + response.getResponseComponents().size() + " Komponenten und "
-                + response.getActions().size() + " Aktionen generiert.");
+            "Antwort mit " + response.getResponseComponents().size() + " Komponenten generiert.");
   }
 
   /**

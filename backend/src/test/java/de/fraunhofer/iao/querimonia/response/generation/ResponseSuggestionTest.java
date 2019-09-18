@@ -52,13 +52,13 @@ public class ResponseSuggestionTest {
         responseComponent3, Collections.emptyList());
 
     ResponseSuggestion suggestion1 = new ResponseSuggestion(
-        Collections.singletonList(completedResponseComponent1), Collections.emptyList());
+        Collections.singletonList(completedResponseComponent1), "");
 
     ResponseSuggestion suggestion2 = new ResponseSuggestion(
-        Collections.singletonList(completedResponseComponent2), Collections.emptyList());
+        Collections.singletonList(completedResponseComponent2), "");
 
     ResponseSuggestion suggestion3 = new ResponseSuggestion(
-        Collections.singletonList(completedResponseComponent3), Collections.emptyList());
+        Collections.singletonList(completedResponseComponent3), "");
 
     int hashCode1 = suggestion1.hashCode();
     int hashCode2 = suggestion2.hashCode();
@@ -84,7 +84,7 @@ public class ResponseSuggestionTest {
         responseComponent1, Collections.emptyList());
 
     ResponseSuggestion suggestion1 = new ResponseSuggestion(
-        Collections.singletonList(completedResponseComponent1), Collections.emptyList());
+        Collections.singletonList(completedResponseComponent1), "");
 
     String subString0 = "de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion";
     String subString1 = "[id=0,responseComponents=[de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent";
@@ -93,6 +93,6 @@ public class ResponseSuggestionTest {
 
     assertTrue(suggestionString.contains(subString0));
     assertTrue(suggestionString.contains(subString1));
-    assertTrue(suggestionString.contains(subString2));
+    assertFalse(suggestionString.contains(subString2));
   }
 }

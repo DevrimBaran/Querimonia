@@ -100,9 +100,10 @@ public class ComplaintController {
                consumes = "multipart/form-data")
   public ResponseEntity<?> uploadComplaint(
       @RequestParam("file") MultipartFile file,
-      @RequestParam("configId") Optional<Long> configId) {
-    return ControllerUtility.tryAndCatch(() -> complaintManager.uploadComplaint(file, configId),
-        HttpStatus.CREATED);
+      @RequestParam("configId") Optional<Long> configId,
+      @RequestParam("respond_to") Optional<String> respondTo) {
+    return ControllerUtility.tryAndCatch(
+        () -> complaintManager.uploadComplaint(file, configId, respondTo), HttpStatus.CREATED);
   }
 
   /**
@@ -125,9 +126,10 @@ public class ComplaintController {
   @PostMapping(value = "/api/complaints/import", produces = "application/json",
                consumes = "application/json")
   public ResponseEntity<?> uploadText(@RequestBody TextInput input,
-                                      @RequestParam Optional<Long> configId) {
-    return ControllerUtility.tryAndCatch(() -> complaintManager.uploadText(input, configId),
-        HttpStatus.CREATED);
+                                      @RequestParam Optional<Long> configId,
+                                      @RequestParam("respond_to") Optional<String> respondTo) {
+    return ControllerUtility.tryAndCatch(
+        () -> complaintManager.uploadText(input, configId, respondTo), HttpStatus.CREATED);
   }
 
   // TODO @Samuel Javadoc

@@ -312,7 +312,6 @@ public class NamedEntity implements Comparable<NamedEntity> {
   @Override
   public String toString() {
     return new ToStringBuilder(this, ToStringStyle.NO_CLASS_NAME_STYLE)
-        .append("id", id)
         .append("label", label)
         .append("start", start)
         .append("end", end)

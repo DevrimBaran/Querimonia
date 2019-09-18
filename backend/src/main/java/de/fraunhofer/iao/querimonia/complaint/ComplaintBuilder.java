@@ -62,6 +62,8 @@ public class ComplaintBuilder {
   @NonNull
   private List<LogEntry> log = new ArrayList<>();
   private long id = 0;
+  @Nullable
+  private String callbackRoute;
 
   /**
    * Creates a new complaint builder.
@@ -94,6 +96,7 @@ public class ComplaintBuilder {
     this.log = new ArrayList<>(complaint.getLog());
     this.closeDate = complaint.getCloseDate();
     this.closeTime = complaint.getCloseTime();
+    this.callbackRoute = complaint.getCallbackRoute();
   }
 
   /**
@@ -167,7 +170,11 @@ public class ComplaintBuilder {
     ComplaintProperty newProperty = new ComplaintProperty(propertyName, value);
     if (!property.isEmpty()) {
       property.forEach(properties::remove);
-      Map<String, Double> probabilities = property.stream().findFirst().orElseThrow().getProbabilities();
+      Map<String, Double> probabilities = property
+          .stream()
+          .findFirst()
+          .orElseThrow()
+          .getProbabilities();
       System.out.println(probabilities);
 
       newProperty =
@@ -320,6 +327,17 @@ public class ComplaintBuilder {
   }
 
   /**
+   * Sets tha callback route for the complaint.
+   *
+   * @param callbackRoute a valid route.
+   * @return this complaint builder.
+   */
+  public ComplaintBuilder setCallbackRoute(@Nullable String callbackRoute) {
+    this.callbackRoute = callbackRoute;
+    return this;
+  }
+
+  /**
    * Adds a new log entry to the complaint and logs it in the console.
    *
    * @param category the category of the log entry.
@@ -344,7 +362,7 @@ public class ComplaintBuilder {
         Objects.requireNonNull(properties), Objects.requireNonNull(sentiment),
         Objects.requireNonNull(entities), Objects.requireNonNull(responseSuggestion),
         Objects.requireNonNull(wordList), receiveDate, receiveTime, closeDate, closeTime,
-        configuration, log);
+        configuration, log, callbackRoute);
   }
 
   /**
@@ -482,5 +500,10 @@ public class ComplaintBuilder {
    */
   public long getId() {
     return id;
+  }
+
+  @Nullable
+  public String getCallbackRoute() {
+    return callbackRoute;
   }
 }
