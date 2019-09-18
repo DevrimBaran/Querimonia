@@ -6,11 +6,13 @@ import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.util.Optional;
 
 /**
@@ -314,7 +316,14 @@ public class ComplaintController {
   @PatchMapping("api/complaints/{complaintId}/close")
   public ResponseEntity<?> closeComplaint(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() ->
-        complaintManager.closeComplaint(complaintId));
+    {
+      try {
+        return complaintManager.closeComplaint(complaintId);
+      } catch (MessagingException e) {
+        throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), "Mail "
+            + "Fehler");
+      }
+    });
   }
 
 
