@@ -1241,6 +1241,12 @@ paths:
       summary: Aktualisiert die Antwort einer Beschwerde.
       description: Hier können der Antworttext und die verwendeten Komponenten gespeichert werden.
       operationId: updateResponse
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResponseSuggestion'
       responses:
         200:
           description: Die Antwort wurde aktualisiert.
