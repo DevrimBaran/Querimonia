@@ -51,7 +51,13 @@ class Input extends Component {
       });
     }
     componentDidMount = () => {
-      // TODO
+      if (this.props.initialValue && !this.props.value) {
+        this.onChange({
+          target: this.target.current,
+          name: this.props.name,
+          value: this.props.initialValue
+        }, true);
+      }
       if (this.target.current.nodeName === 'SELECT') {
         this.onChange({
           target: this.target.current,
@@ -62,7 +68,7 @@ class Input extends Component {
     }
     render () {
       const classes = '';
-      const { className, onChange, type, label, values, value, checked, name, required, inline, icon, multiple, id = this.props.name, ...passThroughProps } = this.props;
+      const { className, onChange, type, label, values, value, initialValue, checked, name, required, inline, icon, multiple, id = this.props.name, ...passThroughProps } = this.props;
 
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,

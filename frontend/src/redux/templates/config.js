@@ -79,7 +79,8 @@ export default (extractors) => ({
             }
           },
           type: {
-            type: 'hidden'
+            type: 'hidden',
+            default: 'KIKUKO_PIPELINE'
           },
           label: {
             type: 'text',
@@ -87,7 +88,8 @@ export default (extractors) => ({
           },
           color: {
             type: 'color',
-            label: 'Farbe'
+            label: 'Farbe',
+            default: '#cccccc'
           }
         }
       }
@@ -111,7 +113,8 @@ export default (extractors) => ({
             label: 'Eigenschaft'
           },
           type: {
-            type: 'hidden'
+            type: 'hidden',
+            default: 'KIKUKO_CLASSIFIER'
           }
         }
       }

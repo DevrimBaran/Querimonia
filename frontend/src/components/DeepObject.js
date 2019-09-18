@@ -38,6 +38,7 @@ class DeepObject extends Component {
   add = () => {
     const newData = this.props.data.slice();
     newData.push(this.templateToDefault(this.props.template.children));
+    console.log('add', newData);
     if (this.props.deepChange) {
       this.props.deepChange(this.props.name, newData);
     } else {
@@ -74,13 +75,13 @@ class DeepObject extends Component {
     }
   }
   renderKey = (key, index) => {
-    const value = this.props.data[key];
+    let value = this.props.data[key];
     const template = this.props.template.children[key];
     if (template) {
       if (template.children) {
         return (<DeepObject data={value} template={template} name={key} key={key} deepChange={this.deepChange} />);
       } else {
-        return (<Input type={template.type} key={key} label={template.label} {...template.attributes} value2={template.attributes && template.attributes.name2 && this.props.data[template.attributes.name2]} value={value} name={key} onChange={this.onChange} />);
+        return (<Input type={template.type} key={key} label={template.label} {...template.attributes} value={value} name={key} onChange={this.onChange} />);
       }
     }
   }
@@ -131,6 +132,7 @@ class DeepObject extends Component {
     }
   }
   render () {
+    console.log('render');
     if (this.props.template) {
       if (this.isArray()) {
         return (

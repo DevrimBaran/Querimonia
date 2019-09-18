@@ -36,7 +36,7 @@ function Header () {
 
 function Overlay (dispatch) {
   return (
-    <Button icon='fas fa-plus-circle' href='/components/0'>Neue Konfiguration anlegen</Button>
+    <Button icon='fas fa-plus-circle' href='/configurations/0'>Neue Konfiguration anlegen</Button>
   );
 }
 

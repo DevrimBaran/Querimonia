@@ -13,11 +13,12 @@ const defaults = {
     id: 0,
     name: '',
     extractors: [],
-    classifier: {
+    classifiers: [],
+    sentimentAnalyzer: {
       name: 'DEFAULT',
       type: 'NONE'
     },
-    sentimentAnalyzer: {
+    emotionAnalyzer: {
       name: 'DEFAULT',
       type: 'NONE'
     }
@@ -94,6 +95,7 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       };
     }
     case 'MODIFY_ACTIVE': {
+      console.log(action.data);
       return {
         ...state,
         active: {
