@@ -1189,8 +1189,8 @@ möglich|ADJX	0.0040	mögliche,möglichem,möglichen,möglicher,mögliches
 mühelos|ADJX	0.0040	mühelosere,müheloserer,müheloseres,mühelosester,müheloseren,mühelosestem,mühelosesten,müheloserem,müheloser,müheloses,mühelosen,mühelosem,mühelose,müheloseste,mühelosestes
 nachahmenswert|ADJX	0.0818	nachahmenswerteren,nachahmenswertesten,nachahmenswerterem,nachahmenswertestem,nachahmenswertem,nachahmenswerterer,nachahmenswerten,nachahmenswerteres,nachahmenswertester,nachahmenswerte,nachahmenswertestes,nachahmenswerter,nachahmenswertere,nachahmenswertes,nachahmenswerteste
 nachhaltig|ADJX	0.0040	nachhaltigstem,nachhaltigsten,nachhaltigstes,nachhaltigster,nachhaltigeren,nachhaltigere,nachhaltigerem,nachhaltige,nachhaltiges,nachhaltiger,nachhaltigen,nachhaltigem,nachhaltigerer,nachhaltigste,nachhaltigeres
-nah|ADJX	0.2267	nahe,nahem,nahen,naher,nahes,nähere,näherem,näheren,näherer,näheres,nächste,nächstem,nächsten,nächster,nächstes
-namhaft|ADJX	0.0040	,namhaftesten,namhaftestem,namhafte,namhafteste,namhaftere,namhafteres,namhaftestes,namhafterer,namhaftester,namhafteren,namhaften,namhafterem,namhaftem,namhaftes,namhafter
+nah|ADJX	0.2267	nahe,nahem,nahen,naher,nahes
+namhaft|ADJX	0.0040	namhaftesten,namhaftestem,namhafte,namhafteste,namhaftere,namhafteres,namhaftestes,namhafterer,namhaftester,namhafteren,namhaften,namhafterem,namhaftem,namhaftes,namhafter
 nennenswert|ADJX	0.0040	nennenswerteres,nennenswerterer,nennenswerterem,nennenswertere,nennenswerteren,nennenswerte,nennenswertestem,nennenswertes,nennenswerter,nennenswertesten,nennenswerten,nennenswertestes,nennenswertester,nennenswertem,nennenswerteste
 nett|ADJX	0.1405	netteren,netterem,nette,netten,netteste,netter,nettes,nettere,nettestem,nettem,nettestes,nettester,nettesten,netterer,netteres
 neu|ADJX	0.0040	neuem,neuen,neustem,neusten,neuer,neueste,neustes,neuster,neues,neuerem,neue,neueren,neuester,neueres,neuste,neuestes,neuere,neuerer,neuesten,neuestem
