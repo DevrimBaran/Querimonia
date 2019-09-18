@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.response.email.MailSender;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -70,8 +69,4 @@ public class ResponseController {
     return ControllerUtility.tryAndCatch(() -> complaintManager.refreshResponse(complaintId));
   }
 
-  @PostMapping("api/mail")
-  public void sendMail() {
-    MailSender.mailTest();
-  }
 }

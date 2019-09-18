@@ -12,12 +12,6 @@ import java.util.Map;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ComplaintXml {
 
-  private Input input;
-  private Output output;
-
-  private ComplaintXml() {
-  }
-
   @XmlRootElement(name = "fraunhoferTextDocuments")
   @XmlAccessorType(XmlAccessType.FIELD)
   public static class ComplaintXmls {
@@ -29,6 +23,13 @@ public class ComplaintXml {
     public ComplaintXmls(List<ComplaintXml> complaints) {
       fraunhoferTextDocument = complaints;
     }
+  }
+
+  private Input input;
+
+  private Output output;
+
+  private ComplaintXml() {
   }
 
   /**
@@ -75,8 +76,13 @@ public class ComplaintXml {
       preferredResult.type = "preferred";
       preferredResult.result = String.valueOf(entity.isPreferred());
 
+      Result colorResult = new Result();
+      colorResult.type = "color";
+      colorResult.result = entity.getColor();
+
       annotation.result.add(setByUserResult);
       annotation.result.add(preferredResult);
+      annotation.result.add(colorResult);
 
       output.extractor.annotation.add(annotation);
     }

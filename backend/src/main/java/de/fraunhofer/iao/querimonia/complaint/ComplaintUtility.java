@@ -3,9 +3,16 @@ package de.fraunhofer.iao.querimonia.complaint;
 import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.http.HttpStatus;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * Helper methods for working with complaints.
@@ -62,4 +69,27 @@ public class ComplaintUtility {
           "Textlänge überschreitet Maximum von " + maxLength + " Zeichen!", "Zu langer Text");
     }
   }
+
+  /**
+   * Sending a mail from the fraunhofer mail host
+   *
+   * @param subject of the mail
+   * @param content content of mail
+   * @param sender sender of the mail HAS TO BE a @iao.fraunhofer.de mail
+   * @param receiver recipient of the mail
+   * @throws MessagingException if mailing has invalif parameter
+   */
+  public static void versendeEMail(String subject, String content, String sender,
+                                    String receiver) throws MessagingException {
+    Properties properties = System.getProperties();
+    properties.setProperty("mail.smtp.host", "mailhost.iao.fraunhofer.de");
+    Session session = Session.getDefaultInstance(properties);
+    MimeMessage message = new MimeMessage(session);
+    message.setFrom(new InternetAddress(sender));
+    message.addRecipient(Message.RecipientType.TO, new InternetAddress(receiver));
+    message.setSubject(subject, "ISO-8859-1");
+    message.setText(content, "UTF-8");
+    Transport.send(message);
+  }
+
 }
