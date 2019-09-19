@@ -87,5 +87,5 @@ def main(query):
 if __name__ == '__main__':
     print('Use test in comments in code')
 
-    #testQuery = 'Der Kunde ist König…schon mal davon gehört? Es kann und darf nicht sein, dass der Busfahrer der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf die Tür vor meiner Nase schließt, als ich fragen wollte, ob der Bus auch beim Wuppertal-Hauptbahnhof hält. So etwas unverschämtes ist mir bisher noch nie passiert und das wird noch ein Nachspiel haben!'
-    #print(main(testQuery))
+# testQuery = 'Der Kunde ist König…schon mal davon gehört? Es kann und darf nicht sein, dass der Busfahrer der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf die Tür vor meiner Nase schließt, als ich fragen wollte, ob der Bus auch beim Wuppertal-Hauptbahnhof hält. So etwas unverschämtes ist mir bisher noch nie passiert und das wird noch ein Nachspiel haben!'
+# print(main(testQuery))
