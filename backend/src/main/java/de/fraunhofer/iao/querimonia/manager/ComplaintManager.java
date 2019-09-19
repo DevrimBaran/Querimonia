@@ -10,7 +10,6 @@ import de.fraunhofer.iao.querimonia.repository.CombinationRepository;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.repository.ResponseComponentRepository;
 import de.fraunhofer.iao.querimonia.response.action.Action;
-import de.fraunhofer.iao.querimonia.response.email.MailSender;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.DefaultResponseGenerator;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
@@ -399,7 +398,7 @@ public class ComplaintManager {
 
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
-    MailSender.versendeEMail("Nachricht " + complaintId,
+    ComplaintUtility.sendEMail("Nachricht " + complaintId,
         complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
             + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
 

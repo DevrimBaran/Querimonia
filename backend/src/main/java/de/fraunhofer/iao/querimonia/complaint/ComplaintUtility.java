@@ -71,7 +71,7 @@ public class ComplaintUtility {
   }
 
   /**
-   * Sending a mail from the fraunhofer mail host
+   * Sending a mail from the fraunhofer mail host.
    *
    * @param subject of the mail
    * @param content content of mail
@@ -79,7 +79,7 @@ public class ComplaintUtility {
    * @param receiver recipient of the mail
    * @throws MessagingException if mailing has invalif parameter
    */
-  public static void versendeEMail(String subject, String content, String sender,
+  public static void sendEMail(String subject, String content, String sender,
                                     String receiver) throws MessagingException {
     Properties properties = System.getProperties();
     properties.setProperty("mail.smtp.host", "mailhost.iao.fraunhofer.de");
