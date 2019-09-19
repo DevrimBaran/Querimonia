@@ -167,7 +167,7 @@ deploy-python:
     - echo 'rollback data'
     - mkdir          /home/beschwerdemanagement/export/rollback/python/python_dev_$CI_COMMIT_SHA
     - cp -r python/* /home/beschwerdemanagement/export/rollback/python/python_dev_$CI_COMMIT_SHA
-    - sudo systemctl restart stupropython_dev
+    - sudo systemctl restart stuprouwsgi
   only:
     - /^python.*$/
 

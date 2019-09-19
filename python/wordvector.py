@@ -2,10 +2,10 @@ from gensim.models.wrappers import FastText
 import numpy as np
 import logging
 from collections import defaultdict
-import os
+import platform
 
 # setup
-if os.getenv("DEPLOY", "not found") != "not found":
+if platform.node() == "querimonia":
     print("server mode")
     # Pfad zu den Modellen
     basepath = "/home/beschwerdemanagement/wortvektoren/fastText/models/"
