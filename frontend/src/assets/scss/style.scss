@@ -296,19 +296,15 @@
 
     tbody tr {
         box-shadow: 0 10px 20px -20px black;
-        background-color: #ffffff;
+        background-color: $white;
     }
 
     tbody tr:nth-of-type(even) {
-        background-color: #c7c7c8;
+        background-color: $lightgrey;
     }
 
-    tbody tr:nth-of-type(odd):hover {
+    tbody tr:hover {
         background-color: #d1ebe5;
-    }
-
-    tbody tr:nth-of-type(even):hover {
-        background-color: #a2d7cb;
     }
 }
 .stats-table {
@@ -330,8 +326,6 @@
         max-width: 600px;
         margin-bottom: 20px;
         padding: 20px 0;
-        border-right: 5px solid $grey;
-        border-bottom: 5px solid $grey;
 
         &:first-child {
             left: 0;
