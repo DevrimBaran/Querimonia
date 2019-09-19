@@ -7,8 +7,11 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.utility.log.ComplaintLog;
 import de.fraunhofer.iao.querimonia.utility.log.LogCategory;
 import de.fraunhofer.iao.querimonia.utility.log.LogEntry;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.messaging.handler.annotation.SendTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -38,7 +41,7 @@ public class ComplaintBuilder {
   @Nullable
   private String preview;
   @NonNull
-  private ComplaintState state = ComplaintState.NEW;
+  private ComplaintState state = null;
   @NonNull
   private List<ComplaintProperty> properties = new ArrayList<>();
   @NonNull
@@ -134,8 +137,23 @@ public class ComplaintBuilder {
    * @return this complaint builder.
    */
   public ComplaintBuilder setState(@NonNull ComplaintState state) {
+    ComplaintState oldState = this.state;
     this.state = Objects.requireNonNull(state);
+    broadcastStateChange(oldState);
     return this;
+  }
+
+  @SendTo("")
+  private String broadcastStateChange(ComplaintState oldState) {
+    JSONObject response = new JSONObject();
+    try {
+      response.put("id", this.id);
+      response.put("oldState", oldState);
+      response.put("state", this.state);
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return response.toString();
   }
 
   /**
