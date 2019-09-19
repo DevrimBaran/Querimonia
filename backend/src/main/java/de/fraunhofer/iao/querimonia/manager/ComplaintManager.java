@@ -398,9 +398,10 @@ public class ComplaintManager {
 
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
-    ComplaintUtility.sendEMail("Nachricht " + complaintId,
-        complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
-            + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
+//  TODO: move E-Mail sending to an action
+//   ComplaintUtility.sendEMail("Nachricht " + complaintId,
+//        complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
+//            + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
 
     complaint = builder.createComplaint();
     storeComplaint(complaint);
