@@ -38,24 +38,6 @@ build-frontend-dev: &base-frontend
     - frontend
 
 build-frontend-dev-featurebranch:
-  stage: build
-  tags:
-    - shell
-  script:
-    - cd frontend/
-    - docker build -f /home/beschwerdemanagement/docker/dockerfiles/Dockerfile_node  -t stuprommk/stupro:stupro-react .
-    - buildpath=$(pwd)
-    - mkdir build
-    - docker run -i -v $buildpath/build:/usr/src/app/build  stuprommk/stupro:stupro-react npm run build-dev
-    - sudo chown -R gitlab-runner:gitlab-runner .
-  artifacts:
-    paths:
-      - frontend/build/
-  allow_failure: false
-  only:
-    - frontend
-
-build-frontend-dev-featurebranch:
   <<: *base-frontend
   allow_failure: true
   only:
