@@ -6,11 +6,11 @@
     .rightBox{
         float: left;
         width: 40%;
-        margin-bottom: 20px;
+        margin-bottom: 1.25em;
         height: 100%;
-        border: solid 4px rgb(66, 194, 164);
-        box-shadow: 10px 10px 15px silver;
-        border-radius: 20px;
+        border: solid 0.25em rgb(66, 194, 164);
+        box-shadow: 0.625em 0.625em 0.9375em silver;
+        border-radius: 1.25em;
         padding: 2%;
     }
 
@@ -18,7 +18,7 @@
         float: left;
         width: 49%;
         margin-right: 5%;
-        margin-bottom: 20px;
+        margin-bottom: 1.25em;
         height: 100%;
     }
 }
@@ -42,10 +42,10 @@
   .tooltipStartseite .tooltiptext {
     opacity: 0;
     animation: fadeIn 2s infinite alternate;
-    width: 65px;
-    height: 65px;
-    font-size: 60px !important;
+    width: 4.0625em;
+    height: 4.0625em;
+    font-size: 3.75em !important;
     position: absolute;
-    top: 35px;
+    top: 2.1875em;
     left: 105%;
   }

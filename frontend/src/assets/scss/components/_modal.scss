@@ -7,30 +7,30 @@
 .scrollableText {
     position: relative;
     height: 60%;
-    font-size: 16px;
+    font-size: 1em;
     font-family: Arial;
-    padding: 5px;
+    padding: 0.3125em;
     overflow: scroll;
-    letter-spacing: 0.5px;
-    line-height: 22px;
+    letter-spacing: 0.03125em;
+    line-height: 1.375em;
     div {
         position: absolute;
-        left: 5px;
-        top: 5px;
+        left: 0.3125em;
+        top: 0.3125em;
         &:first-child {
             user-select: none;
             span:nth-child(even) {
-                margin-bottom: -3px;
-                padding-bottom: 1px;
-                border-bottom: 2px solid var(--color);
+                margin-bottom: -0.1875em;
+                padding-bottom: 0.0625em;
+                border-bottom: 0.125em solid var(--color);
             }
         }
         &:nth-child(2) {
             user-select: none;
             span:nth-child(even) {
-                margin: -3px;
-                padding: 1px;
-                border: 2px solid var(--color);
+                margin: -0.1875em;
+                padding: 0.0625em;
+                border: 0.125em solid var(--color);
             }
         }
     }
@@ -38,34 +38,34 @@
 .entitytextbox {
     resize: none;
     width: 50%;
-    height: 25px;
-    font-size: 16px;
-    padding: 2px;
-    margin-right: 5px;
+    height: 1.5625em;
+    font-size: 1em;
+    padding: 0.125em;
+    margin-right: 0.3125em;
     font-family: Arial;
-    border: 1px solid $grey;
+    border: 0.0625em solid $grey;
 }
 
 .addEntity-table {
-    margin: 10px;
+    margin: 0.625em;
     width: calc(100%);
     overflow: auto;
     table {
-        // margin: 0px auto;
+        // margin: 0em auto;
         position: relative;
         width: 100%;
-        border-spacing: 0px;
+        border-spacing: 0em;
     }
     th {
         font-size: large;
-        padding: 1px;
+        padding: 0.0625em;
         text-align: left;
         padding-left:10px;
         padding-right:10px;
     }
     td {
         font-size: 'medium';
-        padding: 1px;
+        padding: 0.0625em;
         text-align: left;
         padding-left:10px;
         padding-right:10px;
@@ -92,8 +92,8 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        border: 1px solid $primaryTextColor;
-        padding: 30px;
+        border: 0.0625em solid $primaryTextColor;
+        padding: 1.875em;
         transform: translate3d(-50%, -50%, 0);
         background-color: $primaryBackgroundColor;
         width: 80%;
@@ -103,11 +103,11 @@
         position: absolute;
         top: 50%;
         left: 50%;
-        border: 1px solid $primaryTextColor;
-        padding: 30px;
+        border: 0.0625em solid $primaryTextColor;
+        padding: 1.875em;
         transform: translate3d(-50%, -50%, 0);
         background-color: $primaryBackgroundColor;
-        height: 140px;
+        height: 8.75em;
         
     }
     .modal-button {

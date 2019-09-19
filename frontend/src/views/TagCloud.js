@@ -144,7 +144,7 @@ class TagCloud extends Component {
     row.append('td')
       .text(d => d.value)
       .style('text-align', 'right')
-      .style('padding-left', '20px');
+      .style('padding-left', '1.25em');
   };
 
     onChange = (e) => {
@@ -257,7 +257,7 @@ class TagCloud extends Component {
                   <DownloadButton disabled={this.state.listView} icon='fas fa-3x fa-file-image' type='image/svg+xml; charset=utf-8' name='Tagcloud.svg' onClick={this.downloadSvg} />
                 </span>
                 <span>
-                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '90px', '--height': '35px' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
+                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '5.625em', '--height': '2.1875em' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
                 </span>
                 <span>
                   <Input type='checkbox' label='Stammformen' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
@@ -266,7 +266,7 @@ class TagCloud extends Component {
                   <Input type='colorpicker' label='Farbton' name='color' onChange={this.onChange} value={this.state.color} />
                 </span>
               </div>
-              <Content style={{ paddingTop: '0px' }}>
+              <Content style={{ paddingTop: '0em' }}>
                 <D3
                   id='d3Container'
                   render={this.renderCloud}
@@ -280,9 +280,9 @@ class TagCloud extends Component {
                 <div style={{
                   position: 'absolute',
                   backgroundColor: 'white',
-                  top: '-20px',
-                  left: '0px',
-                  right: '0px',
+                  top: '-1.25em',
+                  left: '0em',
+                  right: '0em',
                   height: '100%',
                   display: this.state.listView ? 'block' : 'none'
                 }}>

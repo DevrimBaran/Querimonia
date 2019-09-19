@@ -225,8 +225,8 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Option' values={catArray} onChange={(e) => showMe(e, catArray, 1)} /></td>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='number' min={0} id='countCategories' label='Anzahl' onChange={(e) => this.editCountCategories()} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='select' required label='Option' values={catArray} onChange={(e) => showMe(e, catArray, 1)} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='number' min={0} id='countCategories' label='Anzahl' onChange={(e) => this.editCountCategories()} /></td>
                         </tr>
                         <tr>
                           <td>
@@ -243,8 +243,8 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Label' values={entArray} onChange={(e) => showMe(e, entArray, 2)} /></td>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='number' min={0} id='countEntities' label='Anzahl' onChange={(e) => this.editCountEntities()} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='select' required label='Label' values={entArray} onChange={(e) => showMe(e, entArray, 2)} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='number' min={0} id='countEntities' label='Anzahl' onChange={(e) => this.editCountEntities()} /></td>
                         </tr>
                         <tr>
                           <td>
@@ -261,8 +261,8 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Option' values={rulArray} onChange={(e) => showMe(e, rulArray, 3)} /></td>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='number' min={0} id='countRules' label='Anzahl' onChange={(e) => this.editCountRules()} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='select' required label='Option' values={rulArray} onChange={(e) => showMe(e, rulArray, 3)} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='number' min={0} id='countRules' label='Anzahl' onChange={(e) => this.editCountRules()} /></td>
                         </tr>
                         <tr>
                           <td>
@@ -279,8 +279,8 @@ class Statistics extends Component {
                     <Table className='stats-table'>
                       <tbody>
                         <tr>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='select' required label='Option' values={monArray} onChange={(e) => showMe(e, monArray, 4)} /></td>
-                          <td style={{ width: '50%', borderBottom: '5px solid grey' }}><Input type='date' id='startDateMonths' label='Start-Datum' onChange={(e) => this.editDateMonths()} /><Input type='date' id='endDateMonths' label='End-Datum' onChange={(e) => this.editDateMonths()} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='select' required label='Option' values={monArray} onChange={(e) => showMe(e, monArray, 4)} /></td>
+                          <td style={{ width: '50%', borderBottom: '0.3125em solid grey' }}><Input type='date' id='startDateMonths' label='Start-Datum' onChange={(e) => this.editDateMonths()} /><Input type='date' id='endDateMonths' label='End-Datum' onChange={(e) => this.editDateMonths()} /></td>
                         </tr>
                         <tr>
                           <td>

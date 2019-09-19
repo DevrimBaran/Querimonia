@@ -1,0 +1,53 @@
+#notifications {
+    &[data-count="0"] {
+        display: none;
+    }
+    position: absolute;
+    z-index: 999999999;
+    bottom: 1.25em;
+    right: 1.25em;
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background-color: $primary;
+        border: 1px solid $primary;
+        border-radius: 10px 10px 0 0;
+        padding: 5px 10px;
+        button.action-button {
+            color: $white;
+            margin-bottom: 0;
+            box-shadow: none;
+            padding: 0 10px 0 0;
+            &:hover {
+                background-color: $primary;
+            } 
+        }
+        h3 {
+            color: $white;
+            width: 100%;
+        }
+    }
+    .notificationList {
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid $black;
+        border-right: 1px solid $black;
+        .notification {
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            background-color: $white;
+            padding: 5px 10px;
+            .title {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                font-weight: bold;
+            }
+            &:hover {
+                background-color: $lightgrey;
+            }
+        }
+    }
+}

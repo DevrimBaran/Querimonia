@@ -183,7 +183,7 @@ const renderBarchartPercent = (target, data3, d3) => {
   legend.append('text')
     .attr('x', legendRectSize + legendSpacing / 2)
     .attr('y', legendRectSize - legendSpacing / 4)
-    .style('font-size', '13px')
+    .style('font-size', '0.8125em')
     .text(function (d, i) { return Object.keys(colors)[i]; });
 };
 const renderBarchart = (target, data3, d3) => {

@@ -55,9 +55,9 @@ class EditDetailsModal extends Component {
         { mode === 'category'
           ? <Input label='Kategorie' type='select' required value={category} values={categoryList}name={'category'} onChange={this.onChange} />
           : (mode === 'sentiment'
-            ? <Input label='Sentiment' style={{ width: '150px' }} type='number' value={sentiment} step='0.01' min={-1} max={1} name={'sentiment'} onChange={this.onChange} />
+            ? <Input label='Sentiment' style={{ width: '9.375em' }} type='number' value={sentiment} step='0.01' min={-1} max={1} name={'sentiment'} onChange={this.onChange} />
             : <Input label='Emotion' type='select' required value={emotion} values={emotionList} name={'emotion'} onChange={this.onChange} />) }
-        <Button style={{ marginLeft: '10px', padding: '2px', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-save'
+        <Button style={{ marginLeft: '0.625em', padding: '0.125em', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-save'
           onClick={this.editCategory}>Speichern</Button>
       </Modal>
     );
