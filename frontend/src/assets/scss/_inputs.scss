@@ -169,10 +169,7 @@ $inputBorder: 0.125em solid;
   color: $primaryAccentColor;
 }
 
-[disabled], [disabled]:hover {
-  color: $grey;
-  cursor: not-allowed;
-}
+
 
 ::-webkit-scrollbar-track {
   border-radius: 0.625em;
@@ -211,7 +208,7 @@ button.action-button{
   display: inline-block;
   margin-bottom: 0.875em;
   white-space: nowrap;
-  
+
   &:hover {
     color: #fff;
     background-color: $primaryAccentColorActive;
@@ -222,14 +219,21 @@ button.action-button{
     box-shadow: 0 0.25em $dimgray;
     transform: translateY(2px);
   }
-  i {
-
+}
+// Icons Design
+  .far.fa-check-circle{
+    font-weight: bolder;
   }
-}
 
-i.action-button{
+  [disabled], [disabled]:hover {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 
-}
+
+// END Icons Design
+
+
 ///*
 //*   Buttons
 //**/

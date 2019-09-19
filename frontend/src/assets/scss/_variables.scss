@@ -25,6 +25,9 @@ $buttonColorHover: #E5E5E5;
 $primaryBackgroundColor: #FFFFFF;
 $secondaryBackgroundColor: #F3F3F3;
 $tertiaryBackgroundColor: #E5E5E5;
+$thirdAccentColor: #9c1727;
+$fourthAccentColor: #4a179c;
+$fifthAccentColor: #9c7417;
 
 
 $standardpadding: 5%;
@@ -75,3 +78,7 @@ $standardmarginleft: $standardmargin;
 .secondaryAccentColorActive {color: $secondaryAccentColorActive}
 .buttonColor {color: $buttonColor}
 .buttonColorHover {color: $buttonColorHover}
+.thirdAccentColor { color: $thirdAccentColor}
+.fourthAccentColor {color: $fourthAccentColor}
+.fifthAccentColor {color: $fifthAccentColor}
+

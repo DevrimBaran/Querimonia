@@ -303,20 +303,16 @@
     }
 
     tbody tr {
-        box-shadow: 0 0.625em 1.25em -1.25em black;
-        background-color: #ffffff;
+        box-shadow: 0 0.625em 1.25em -1.25em $black;
+        background-color: $white;
     }
 
     tbody tr:nth-of-type(even) {
-        background-color: #c7c7c8;
+        background-color: $lightgrey;
     }
 
-    tbody tr:nth-of-type(odd):hover {
+    tbody tr:hover {
         background-color: #d1ebe5;
-    }
-
-    tbody tr:nth-of-type(even):hover {
-        background-color: #a2d7cb;
     }
 }
 .stats-table {
