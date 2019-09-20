@@ -168,17 +168,6 @@ public class ResponseComponentManager {
           // set to empty response
           builder.setResponseSuggestion(ResponseSuggestion.getEmptyResponse());
           complaintRepository.save(builder.createComplaint());
-          responseSuggestionRepository.delete(suggestion);
-          completedComponentRepository.deleteAll(completedComponents);
-        }
-      }
-      // now check component table
-      for (CompletedResponseComponent completedResponseComponent
-          : completedComponentRepository.findAll()) {
-
-        // delete response if component is part of it
-        if (completedResponseComponent.getComponent().getId() == componentId) {
-          completedComponentRepository.delete(completedResponseComponent);
         }
       }
 
