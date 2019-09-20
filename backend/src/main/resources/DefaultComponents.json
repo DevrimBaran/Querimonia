@@ -1,0 +1,482 @@
+[
+  {
+    "name": "BegrüßungMitName",
+    "priority": 100,
+    "texts": [
+      "Sehr geehrte/geehrter Frau/Herr ${Name},\n",
+      "Liebe/Lieber Frau/Herr ${Name},\n",
+      "Guten Tag, Frau/Herr ${Name},\n"
+    ],
+    "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><EntityAvailable label=\"Name\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "BegrüßungOhneName",
+    "priority": 100,
+    "texts": [
+      "Sehr geehrte/geehrter Kundin/Kunde,\n",
+      "Liebe/Lieber Kundin/Kunde,\n",
+      "Guten Tag,\n"
+    ],
+    "rulesXml": "<Rules><And><PredecessorCount max=\"0\"/><Not><EntityAvailable label=\"Name\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EingangsdatumDatumUndZeit",
+    "priority": 90,
+    "texts": [
+      "vielen Dank für Ihre Beschwerde, die am ${Eingangsdatum} um ${Eingangszeit} Uhr bei uns im System eingegangen ist.\n",
+      "vielen Dank für Ihre Beschwerde, die wir am ${Eingangsdatum} um ${Eingangszeit} Uhr erhalten haben.\n",
+      "vielen Dank für Ihre Beschwerde, die Sie am ${Eingangsdatum} um ${Eingangszeit} Uhr bei uns eingereicht haben.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Begrüßung.*\" position=\"last\"/><EntityAvailable label=\"Eingangsdatum\"/><EntityAvailable label=\"Eingangszeit\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EingangsdatumNurDatum",
+    "priority": 90,
+    "texts": [
+      "vielen Dank für Ihre Beschwerde, die am ${Eingangsdatum} bei uns im System eingegangen ist.\n",
+      "vielen Dank für Ihre Beschwerde, die wir am ${Eingangsdatum} erhalten haben.\n",
+      "vielen Dank für Ihre Beschwerde, die Sie am ${Eingangsdatum} bei uns eingereicht haben.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Begrüßung.*\" position=\"last\"/><EntityAvailable label=\"Eingangsdatum\"/><Not><EntityAvailable label=\"Eingangszeit\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EingangsdatumNurZeit",
+    "priority": 90,
+    "texts": [
+      "vielen Dank für Ihre Beschwerde, die um ${Eingangszeit} Uhr bei uns im System eingegangen ist.\n",
+      "vielen Dank für Ihre Beschwerde, die wir um ${Eingangszeit} Uhr erhalten haben.\n",
+      "vielen Dank für Ihre Beschwerde, die Sie um ${Eingangszeit} Uhr bei uns eingereicht haben.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Begrüßung.*\" position=\"last\"/><EntityAvailable label=\"Eingangszeit\"/><Not><EntityAvailable label=\"Eingangsdatum\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EingangsdatumKeinePlatzhalter",
+    "priority": 90,
+    "texts": [
+      "vielen Dank für Ihre Beschwerde, die kürzlich bei uns im System eingegangen ist.\n",
+      "vielen Dank für Ihre Beschwerde, die wir vor Kurzem erhalten haben.\n",
+      "vielen Dank für Ihre Beschwerde, die Sie vor Kurzem bei uns eingereicht haben.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Begrüßung.*\" position=\"last\"/><Not><EntityAvailable label=\"Eingangsdatum\"/></Not><Not><EntityAvailable label=\"Eingangszeit\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EingangsdatumMitVorgangsnummer",
+    "priority": 100,
+    "texts": [
+      "vielen Dank für Ihre Folgebeschwerde bezüglich Vorgang Nr. ${Vorgangsnummer}.\n",
+      "vielen Dank für Ihre Folgebeschwerde zum Vorgang mit der Nummer ${Vorgangsnummer}.\n",
+      "vielen Dank für Ihre Folgebeschwerde in Hinsicht auf Vorgang Nr. ${Vorgangsnummer}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Begrüßung.*\" position=\"last\"/><EntityAvailable label=\"Vorgangsnummer\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichKeinePlatzhalter",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers.\n",
+      "Sie beschwerten sich über einen Fahrer, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichNurLinie",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers der Linie ${Linie} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers der Linie ${Linie}.\n",
+      "Sie beschwerten sich über einen Fahrer der Linie ${Linie}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not><EntityAvailable label=\"Linie\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichNurHaltestelle",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers an der Haltestelle ${Haltestelle} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers an der Haltestelle ${Haltestelle}.\n",
+      "Sie beschwerten sich über einen Fahrer an der Haltestelle ${Haltestelle}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><EntityAvailable label=\"Haltestelle\"/><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichNurOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers in ${Ort} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers in ${Ort}.\n",
+      "Sie beschwerten sich über einen Fahrer in ${Ort}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><EntityAvailable label=\"Ort\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><Not><EntityAvailable label=\"Linie\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichLinieUndHaltestelle",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers der Linie ${Linie} an der Haltestelle ${Haltestelle} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n",
+      "Sie beschwerten sich über einen Fahrer der Linie ${Linie} an der Haltestelle ${Haltestelle}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichLinieUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers der Linie ${Linie} in ${Ort} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers der Linie ${Linie} in ${Ort}.\n",
+      "Sie beschwerten sich über einen Fahrer der Linie ${Linie} in ${Ort}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><EntityAvailable label=\"Ort\"/><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichHaltestelleUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers an der Haltestelle ${Haltestelle} in ${Ort} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers an der Haltestelle ${Haltestelle} in ${Ort}.\n",
+      "Sie beschwerten sich über einen Fahrer an der Haltestelle ${Haltestelle} in ${Ort}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Ort\"/><Not><EntityAvailable label=\"Linie\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrerUnfreundlichLinieUndHaltestelleUndOrtsName",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über das Fehlverhalten eines Fahrers der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort} beschwert.\n",
+      "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort}.\n",
+      "Sie beschwerten sich über einen Fahrer der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort}, der sich unangemessen verhalten hat.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Linie\"/><EntityAvailable label=\"Ort\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtKeinePlatzhalter",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt beschwert.\n",
+      "Sie beschwerten sich darüber, dass eine Haltestelle nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtNurLinie",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt der Linie ${Linie} beschwert.\n",
+      "Sie beschwerten sich darüber, dass eine Haltestelle von der Linie ${Linie} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Linie}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtNurHaltestelle",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle} beschwert.\n",
+      "Sie beschwerten sich darüber, dass die Haltestelle ${Haltestelle} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><EntityAvailable label=\"Haltestelle\"/><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtNurOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt in ${Ort} beschwert.\n",
+      "Sie beschwerten sich darüber, dass eine Haltestelle in ${Ort} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><EntityAvailable label=\"Ort\"/><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Haltestelle\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtLinieUndHaltestelle",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt der Linie ${Linie} an der Haltestelle ${Haltestelle} beschwert.\n",
+      "Sie beschwerten sich darüber, dass die Haltestelle ${Haltestelle} von der Linie ${Linie} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtLinieUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt der Linie ${Linie} in ${Ort} beschwert.\n",
+      "Sie beschwerten sich darüber, dass eine Haltestelle in ${Ort} von der Linie ${Linie} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Linie} in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><EntityAvailable label=\"Ort\"/><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtHaltestelleUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle} in ${Ort} beschwert.\n",
+      "Sie beschwerten sich darüber, dass die Haltestelle ${Haltestelle} in ${Ort} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle} in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><EntityAvailable label=\"Ort\"/><EntityAvailable label=\"Haltestelle\"/><Not><EntityAvailable label=\"Linie\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungFahrtNichtErfolgtLinieUndHaltestelleUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin haben Sie sich über eine nicht erfolgte Fahrt der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort} beschwert.\n",
+      "Sie beschwerten sich darüber, dass die Haltestelle ${Haltestelle} in ${Ort} von der Linie ${Linie} nicht bedient wurde.\n",
+      "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Linie\"/><EntityAvailable label=\"Ort\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesKeinePlatzhalter",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesNurLinie",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb der Linie ${Linie}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb der Linie ${Linie}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Linie}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesNurHaltestelle",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb an der Haltestelle ${Haltestelle}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb an der Haltestelle ${Haltestelle}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb an der Haltestelle ${Haltestelle}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><EntityAvailable label=\"Haltestelle\"/><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesNurOrt",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb in ${Ort}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb in ${Ort}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><EntityAvailable label=\"Ort\"/><Not><EntityAvailable label=\"Linie\"/></Not><Not><EntityAvailable label=\"Haltestelle\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesLinieUndHaltestelle",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Ort\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesLinieUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb der Linie ${Linie} in ${Ort}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb der Linie ${Linie} in ${Ort}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Linie} in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><EntityAvailable label=\"Ort\"/><EntityAvailable label=\"Linie\"/><Not><EntityAvailable label=\"Haltestelle\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesHaltestelleUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb an der Haltestelle ${Haltestelle} in ${Ort}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb an der Haltestelle ${Haltestelle} in ${Ort}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb an der Haltestelle ${Haltestelle} in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Ort\"/><Not><EntityAvailable label=\"Linie\"/></Not></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ProblembeschreibungSonstigesLinieUndHaltestelleUndOrt",
+    "priority": 100,
+    "texts": [
+      "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort}.\n",
+      "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort}.\n",
+      "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Linie} an der Haltestelle ${Haltestelle} in ${Ort}.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Eingangsdatum.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/><EntityAvailable label=\"Haltestelle\"/><EntityAvailable label=\"Linie\"/><EntityAvailable label=\"Ort\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "Vorfallsdatum",
+    "priority": 100,
+    "texts": [
+      "Der beschriebene Vorfall ereignete sich angeblich am ${Datum}.\n",
+      "Ihren Beschreibungen zufolge trat der Vorfall am ${Datum} auf.\n",
+      "Das beschriebene Problem spielte sich scheinbar am ${Datum} ab.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Problembeschreibung.*\" position=\"last\"/><EntityAvailable label=\"Datum\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EntschuldigungFahrerUnfreundlich",
+    "priority": 100,
+    "texts": [
+      "Wir bedauern das Verhalten unseres Fahrers sehr und entschuldigen uns dafür.\n",
+      "Für das Verhalten unseres Fahrers und die daraus für Sie entstandenen Unannehmlichkeiten bitten wir um Entschuldigung.\n",
+      "Dass Sie von diesem Fehlverhalten betroffen waren, bedauern wir und entschuldigen uns für die daraus entstandenen Unannehmlichkeiten.\n"
+    ],
+    "rulesXml": "<Rules><And><Or><Predecessor matches=\"Problembeschreibung.*\" position=\"last\"/><Predecessor matches=\"Vorfallsdatum.*\" position=\"last\"/></Or><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EntschuldigungFahrtNichtErfolgt",
+    "priority": 100,
+    "texts": [
+      "Dass Sie von diesem Ausfall betroffen waren, bedauern wir und entschuldigen uns für die Unannehmlichkeiten, die Ihnen hieraus entstanden sind.\n",
+      "Wir bedauern den Ausfall der betroffenen Fahrt und bitten Sie, die daraus entstandenen Unannehmlichkeiten zu entschuldigen.\n",
+      "Für den Ausfall der betroffenen Fahrt und die daraus für Sie enstandenen Unannehmlichkeiten entschuldigen wir uns.\n"
+    ],
+    "rulesXml": "<Rules><And><Or><Predecessor matches=\"Problembeschreibung.*\" position=\"last\"/><Predecessor matches=\"Vorfallsdatum.*\" position=\"last\"/></Or><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "EntschuldigungSonstiges",
+    "priority": 100,
+    "texts": [
+      "Wir bedauern den Vorfall sowie die daraus für Sie entstandenen Unannehmlichkeiten sehr und entschuldigen uns dafür.\n",
+      "Ihre Verärgerung über den Vorfall ist nachvollziehbar und wir bitten Sie diesbezüglich um Entschuldigung.\n",
+      "Der Vorfall ist bedauernswert und wir bitten Sie, die daraus entstandenen Unannehmlichkeiten zu entschuldigen.\n"
+    ],
+    "rulesXml": "<Rules><And><Or><Predecessor matches=\"Problembeschreibung.*\" position=\"last\"/><Predecessor matches=\"Vorfallsdatum.*\" position=\"last\"/></Or><Property name=\"Kategorie\" matches=\"Sonstiges\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "LösungsvorschlagFahrerUnfreundlich",
+    "priority": 100,
+    "texts": [
+      "Über den von Ihnen geschilderten Sachverhalt haben wir den Bereich Fahrdienst informiert, damit dort ein Gespräch mit dem betreffenden Personal geführt werden kann.\n",
+      "Wir lassen den Fahrer durch den zuständigen Fachbereich ansprechen.\n",
+      "Wir haben Ihr Anliegen an den Teamleiter des betreffenden Fahrers weitergegeben, der ihn diesbezüglich ansprechen wird.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Entschuldigung.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrer unfreundlich\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "LösungsvorschlagFahrtNichtErfolgt",
+    "priority": 100,
+    "texts": [
+      "Der Grund für den Ausfall war eine unerwartete Störung in unserem Betrieb. Diese wurde nun behoben, sodass keine weiteren Ausfälle diesbezüglich zu erwarten sind.\n",
+      "Die Störung, welche den Ausfall versursacht hat, wurde inzwischen behoben und die betroffenen Linien und Haltestellen werden wieder planmäßig betrieben.\n",
+      "Der Ausfall ist auf eine Störung in unserem Betrieb zurückzuführen, welche mittlerweile behoben wurde. Der Betrieb sollte daher wieder planmäßig laufen.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Entschuldigung.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Fahrt nicht erfolgt\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "LösungsvorschlagSonstiges",
+    "priority": 100,
+    "texts": [
+      "Wir haben die zuständigen Fachbereiche über den Sachverhalt informiert. Eine Lösung ist derzeit in Arbeit.\n",
+      "Die zuständigen Fachbereiche wurden informiert, sodass schnellstmöglich eine Lösung erarbeitet werden kann.\n",
+      "Wir haben das Problem an die zuständigen Fachbereiche weitergeleitet, welche aktuell an einer Lösung dafür arbeiten.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Entschuldigung.*\" position=\"last\"/><Property name=\"Kategorie\" matches=\"Sonstiges\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "ErstattungMitGeldbetrag",
+    "priority": 100,
+    "texts": [
+      "Die entstandenen Kosten in Höhe von ${Geldbetrag} werden Ihnen baldmöglichst zurückerstattet.\n",
+      "Der Betrag von ${Geldbetrag} wird Ihrem Konto schnellstmöglich gutgeschrieben.\n",
+      "Als Entschädigung wird Ihnen der genannte Betrag von ${Geldbetrag} so bald wie möglich überwiesen.\n"
+    ],
+    "rulesXml": "<Rules><And><Predecessor matches=\"Lösungsvorschlag.*\" position=\"last\"/><EntityAvailable label=\"Geldbetrag\"/></And></Rules>",
+    "actions": [
+      {
+        "name": "Erstattung",
+        "actionCode": "COMPENSATION",
+        "parameters": {
+          "Kontodaten": "Beispiel",
+          "Betrag": "15"
+        }
+      }
+    ]
+  },
+  {
+    "name": "KontaktMitTelefon",
+    "priority": 100,
+    "texts": [
+      "Auf Ihren Wunsch hin melden wir uns demnächst telefonisch bei Ihnen über die Nummer ${Telefonnummer}.\n",
+      "Wie gewünscht werden wir uns baldmöglichst mit Ihnen telefonisch über die Nummer ${Telefonnummer} in Verbindung setzen.\n",
+      "Wir werden Sie wie gewünscht möglichst bald über die Nummer ${Telefonnummer} telefonisch kontaktieren.\n"
+    ],
+    "rulesXml": "<Rules><And><Or><Predecessor matches=\"Lösungsvorschlag.*\" position=\"last\"/><Predecessor matches=\"Erstattung.*\" position=\"last\"/></Or><EntityAvailable label=\"Telefonnummer\"/></And></Rules>",
+    "actions": []
+  },
+  {
+    "name": "KontaktMitEmail",
+    "priority": 100,
+    "texts": [
+      "Auf Ihren Wunsch hin melden wir uns demnächst per E-Mail bei Ihnen über die Adresse ${E-Mail}.\n",
+      "Wie gewünscht werden wir uns baldmöglichst mit Ihnen per E-Mail über die Adresse ${E-Mail} in Verbindung setzen.\n",
+      "Wir werden Sie wie gewünscht möglichst bald über die Adresse ${E-Mail} per E-Mail kontaktieren.\n"
+    ],
+    "rulesXml": "<Rules><And><Or><Predecessor matches=\"Lösungsvorschlag.*\" position=\"last\"/><Predecessor matches=\"Erstattung.*\" position=\"last\"/></Or><EntityAvailable label=\"E-Mail\"/></And></Rules>",
+    "actions": [
+      {
+        "name": "E-Mail",
+        "actionCode": "SEND_MAIL",
+        "parameters": {
+          "E-Mail": "beispiel@gmail.com",
+          "Text": "Beispieltext"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Schluss",
+    "priority": 90,
+    "texts": [
+      "Wir hoffen, damit in Ihrem Sinne gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen alles Gute.\n",
+      "Wir hoffen Ihnen damit behilflich gewesen sein zu können.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten.\n",
+      "Wir hoffen in Ihrem Interesse gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten mit unseren Verkehrsmitteln.\n"
+    ],
+    "rulesXml": "<Rules><Or><Predecessor matches=\"Erstattung.*\" position=\"last\"/><Predecessor matches=\"Lösungsvorschlag.*\" position=\"last\"/><Predecessor matches=\"Kontakt.*\" position=\"last\"/></Or></Rules>",
+    "actions": []
+  }
+]

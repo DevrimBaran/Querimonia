@@ -1,0 +1,1105 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+###### Alle Default Templates einspeichern
+
+POST http://localhost:8080/api/templates/default
+
+###### test
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/combinations/default
+
+###### Begrüßung - Mit Name
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sehr geehrte/geehrter Frau/Herr ${Name},\n\n",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Eingangsdatum"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Liebe/Lieber Frau/Herr ${Name},\n\n",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Eingangsdatum"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Guten Tag, Frau/Herr ${Name},\n\n",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Eingangsdatum"
+  ],
+  "name": null
+}
+
+###### Begrüßung - Ohne Name
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sehr geehrte/geehrter Kundin/Kunde,\n\n",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Eingangsdatum"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Liebe/Lieber Kundin/Kunde,\n\n",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Eingangsdatum"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Guten Tag,\n\n",
+  "responsePart": "Begrüßung",
+  "successorParts": [
+    "Eingangsdatum"
+  ],
+  "name": null
+}
+
+###### Eingangsdatum - Mit Datum
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "vielen Dank für Ihre Beschwerde, die am ${Upload_Datum} bei uns im System eingegangen ist.\n",
+  "responsePart": "Eingangsdatum",
+  "successorParts": [
+    "Problembeschreibung"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "vielen Dank für Ihre Beschwerde, die wir am ${Upload_Datum} erhalten haben.\n",
+  "responsePart": "Eingangsdatum",
+  "successorParts": [
+    "Problembeschreibung"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "vielen Dank für Ihre Beschwerde, die Sie am ${Upload_Datum} bei uns eingereicht haben.\n",
+  "responsePart": "Eingangsdatum",
+  "successorParts": [
+    "Problembeschreibung"
+  ],
+  "name": null
+}
+
+###### Eingangsdatum - Ohne Datum
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "vielen Dank für Ihre Beschwerde, die kürzlich bei uns im System eingegangen ist.\n",
+  "responsePart": "Eingangsdatum",
+  "successorParts": [
+    "Problembeschreibung"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "vielen Dank für Ihre Beschwerde, die wir vor Kurzem erhalten haben.\n",
+  "responsePart": "Eingangsdatum",
+  "successorParts": [
+    "Problembeschreibung"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "vielen Dank für Ihre Beschwerde, die Sie vor Kurzem bei uns eingereicht haben.\n",
+  "responsePart": "Eingangsdatum",
+  "successorParts": [
+    "Problembeschreibung"
+  ],
+  "name": null
+}
+
+###### Problembeschreibung - Fahrer unfreundlich - Formulierung 1
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über das Fehlverhalten eines Fahrers beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über das Fehlverhalten eines Fahrers der Linie ${Liniennummer} beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über das Fehlverhalten eines Fahrers an der Haltestelle ${Haltestelle} beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über das Fehlverhalten eines Fahrers der Linie ${Liniennummer} an der Haltestelle ${Haltestelle} beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###### Problembeschreibung - Fahrer unfreundlich - Formulierung 2
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers der Linie ${Liniennummer}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Grund für Ihre Beschwerde war das Fehlverhalten eines Fahrers der Linie ${Liniennummer} an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###### Problembeschreibung - Fahrer unfreundlich - Formulierung 3
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich über einen Fahrer, der sich unangemessen verhalten hat.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich über einen Fahrer der Linie ${Liniennummer}, der sich unangemessen verhalten hat.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich über einen Fahrer an der Haltestelle ${Haltestelle}, der sich unangemessen verhalten hat.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich über einen Fahrer der Linie ${Liniennummer} an der Haltestelle ${Haltestelle}, der sich unangemessen verhalten hat.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###### Problembeschreibung - Fahrt nicht erfolgt - Formulierung 1
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über eine nicht erfolgte Fahrt beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über eine nicht erfolgte Fahrt der Linie ${Liniennummer} beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle} beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin haben Sie sich über eine nicht erfolgte Fahrt der Linie ${Liniennummer} an der Haltestelle ${Haltestelle} beschwert.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###### Problembeschreibung - Fahrt nicht erfolgt - Formulierung 2
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich darüber, dass die betroffene Haltestelle nicht bedient wurde.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich darüber, dass die betroffene Haltestelle von der Linie ${Liniennummer} nicht bedient wurde.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich darüber, dass die Haltestelle ${Haltestelle} nicht bedient wurde.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Sie beschwerten sich darüber, dass die Haltestelle ${Haltestelle} von der Linie ${Liniennummer} nicht bedient wurde.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###### Problembeschreibung - Fahrt nicht erfolgt - Formulierung 3
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Liniennummer}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war eine nicht erfolgte Fahrt der Linie ${Liniennummer} an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+### Problembeschreibung - Sonstiges - Formulierung 1
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb der Linie ${Liniennummer}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin beschwerten Sie sich über ein Problem mit unserem Betrieb der Linie ${Liniennummer} an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###### Problembeschreibung - Sonstiges - Formulierung 2
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb der Linie ${Liniennummer}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Auslöser für Ihre Beschwerde war ein Problem mit unserem Betrieb der Linie ${Liniennummer} an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###### Problembeschreibung - Sonstiges - Formulierung 3
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin äußerten Sie Kritik an unserem Betrieb.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Liniennummer}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin äußerten Sie Kritik an unserem Betrieb an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Darin äußerten Sie Kritik an unserem Betrieb der Linie ${Liniennummer} an der Haltestelle ${Haltestelle}.\n",
+  "responsePart": "Problembeschreibung",
+  "successorParts": [
+    "Entschuldigung",
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###### Entschuldigung - Fahrer unfreundlich
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir bedauern das Verhalten unseres Fahrers sehr und entschuldigen uns dafür.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Für das Verhalten unseres Fahrers und die daraus für Sie entstandenen Unannehmlichkeiten bitten wir um Entschuldigung.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Dass Sie von diesem Fehlverhalten betroffen waren, bedauern wir und entschuldigen uns für die daraus entstandenen Unannehmlichkeiten.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###### Entschuldigung - Fahrt nicht erfolgt
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Dass Sie von diesem Ausfall betroffen waren, bedauern wir und entschuldigen uns für die Unannehmlichkeiten, die Ihnen hieraus entstanden sind.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir bedauern den Ausfall der betroffenen Fahrt und bitten Sie, die daraus entstandenen Unannehmlichkeiten zu entschuldigen.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Für den Ausfall der betroffenen Fahrt und die daraus für Sie enstandenen Unannehmlichkeiten entschuldigen wir uns.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###### Entschuldigung - Sonstiges
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir bedauern den Vorfall sowie die daraus für Sie entstandenen Unannehmlichkeiten sehr und entschuldigen uns dafür.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Ihre Verärgerung über den Vorfall ist nachvollziehbar und wir bitten Sie diesbezüglich um Entschuldigung.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Vorfall ist bedauernswert und wir bitten Sie, die daraus entstandenen Unannehmlichkeiten zu entschuldigen.\n",
+  "responsePart": "Entschuldigung",
+  "successorParts": [
+    "Lösungsvorschlag"
+  ],
+  "name": "Sonstiges"
+}
+
+###### Lösungsvorschlag - Fahrer unfreundlich
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Über den von Ihnen geschilderten Sachverhalt haben wir den Bereich Fahrdienst informiert, damit dort ein Gespräch mit dem betreffenden Personal geführt werden kann.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir lassen den Fahrer durch den zuständigen Fachbereich ansprechen.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir haben ihr Anliegen an den Teamleiter des betreffenden Fahrers weitergegeben, der ihn diesbezüglich ansprechen wird.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Fahrer unfreundlich"
+}
+
+###### Lösungsvorschlag - Fahrt nicht erfolgt
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Grund für den Ausfall war eine unerwartete Störung in unserem Betrieb. Diese wurde nun behoben, sodass keine weiteren Ausfälle diesbezüglich zu erwarten sind.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Die Störung, welche den Ausfall versursacht hat, wurde inzwischen behoben und die betroffenen Linien und Haltestellen werden wieder planmäßig betrieben.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Ausfall ist auf eine Störung in unserem Betrieb zurückzuführen, welche mittlerweile behoben wurde. Der Betrieb sollte daher wieder planmäßig laufen.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Fahrt nicht erfolgt"
+}
+
+###### Lösungsvorschlag - Sonstiges
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir haben die zuständigen Fachbereiche über den Sachverhalt informiert. Eine Lösung ist derzeit in Arbeit.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Die zuständigen Fachbereiche wurden informiert, sodass schnellstmöglich eine Lösung erarbeitet werden kann.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Sonstiges"
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir haben das Problem an die zuständigen Fachbereiche weitergeleitet, welche aktuell an einer Lösung dafür arbeiten.\n",
+  "responsePart": "Lösungsvorschlag",
+  "successorParts": [
+    "Schluss",
+    "Erstattung"
+  ],
+  "name": "Sonstiges"
+}
+
+###### Erstattung - Mit Geldbetrag
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Die enstandenen Kosten in Höhe von ${Geldbetrag} werden Ihnen baldmöglichst zurückerstattet.\n",
+  "responsePart": "Erstattung",
+  "successorParts": [
+    "Schluss"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Der Betrag von ${Geldbetrag} wird Ihrem Konto schnellstmöglich gutgeschrieben.\n",
+  "responsePart": "Erstattung",
+  "successorParts": [
+    "Schluss"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Als Entschädigung wird Ihnen der genannte Betrag von ${Geldbetrag} so bald wie möglich überwiesen.\n",
+  "responsePart": "Erstattung",
+  "successorParts": [
+    "Schluss"
+  ],
+  "name": null
+}
+
+###### Erstattung - Ohne Geldbetrag
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Die entstandenen Kosten werden Ihnen baldmöglichst zurückerstattet.\n",
+  "responsePart": "Erstattung",
+  "successorParts": [
+    "Schluss"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Ein entsprechender Geldbetrag wird Ihrem Konto als Kompensation schnellstmöglich gutgeschrieben.\n",
+  "responsePart": "Erstattung",
+  "successorParts": [
+    "Schluss"
+  ],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Als Entschädigung wird Ihnen so bald wie möglich ein entsprechender Geldbetrag überwiesen.\n",
+  "responsePart": "Erstattung",
+  "successorParts": [
+    "Schluss"
+  ],
+  "name": null
+}
+
+###### Schluss
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir hoffen, damit in Ihrem Sinne gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen alles Gute.\n",
+  "responsePart": "Schluss",
+  "successorParts": [],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir hoffen Ihnen damit behilflich gewesen sein zu können.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten.\n",
+  "responsePart": "Schluss",
+  "successorParts": [],
+  "name": null
+}
+
+###
+
+POST https://beschwerdemanagement.iao.fraunhofer.de/dev/api/templates
+Content-Type: application/json
+
+{
+  "templateText": "Wir hoffen in Ihrem Interesse gehandelt zu haben.\nFür die Zukunft wünschen wir Ihnen reibungslose Fahrten mit unseren Verkehrsmitteln.\n",
+  "responsePart": "Schluss",
+  "successorParts": [],
+  "name": null
+}
+
+###

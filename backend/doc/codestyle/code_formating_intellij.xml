@@ -1,0 +1,70 @@
+<code_scheme name="Default copy" version="173">
+  <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" expectedRegex="999" />
+  <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" expectedRegex="999" />
+  <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+    <expectedRegex />
+  </option>
+  <option name="IMPORT_LAYOUT_TABLE">
+    <expectedRegex>
+      <package name="" withSubpackages="true" static="true" />
+      <emptyLine />
+      <package name="" withSubpackages="true" static="false" />
+      <emptyLine />
+      <package name="" withSubpackages="true" static="false" />
+    </expectedRegex>
+  </option>
+  <option name="RIGHT_MARGIN" expectedRegex="100" />
+  <option name="WRAP_WHEN_TYPING_REACHES_RIGHT_MARGIN" expectedRegex="true" />
+  <JavaCodeStyleSettings>
+    <option name="ANNOTATION_PARAMETER_WRAP" expectedRegex="1" />
+    <option name="ALIGN_MULTILINE_ANNOTATION_PARAMETERS" expectedRegex="true" />
+    <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" expectedRegex="100" />
+    <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" expectedRegex="100" />
+  </JavaCodeStyleSettings>
+  <JetCodeStyleSettings>
+    <option name="PACKAGES_TO_USE_STAR_IMPORTS">
+      <expectedRegex>
+        <package name="java.util" withSubpackages="false" static="false" />
+        <package name="kotlinx.android.synthetic" withSubpackages="true" static="false" />
+        <package name="tornadofx" withSubpackages="false" static="false" />
+      </expectedRegex>
+    </option>
+  </JetCodeStyleSettings>
+  <codeStyleSettings language="JAVA">
+    <option name="RIGHT_MARGIN" expectedRegex="100" />
+    <option name="BLANK_LINES_BEFORE_PACKAGE" expectedRegex="1" />
+    <option name="ALIGN_MULTILINE_PARAMETERS_IN_CALLS" expectedRegex="true" />
+    <option name="ALIGN_MULTILINE_PARENTHESIZED_EXPRESSION" expectedRegex="true" />
+    <option name="SPACE_BEFORE_ARRAY_INITIALIZER_LBRACE" expectedRegex="true" />
+    <option name="SPACE_BEFORE_ANNOTATION_ARRAY_INITIALIZER_LBRACE" expectedRegex="true" />
+    <option name="CALL_PARAMETERS_WRAP" expectedRegex="1" />
+    <option name="METHOD_PARAMETERS_WRAP" expectedRegex="1" />
+    <option name="RESOURCE_LIST_WRAP" expectedRegex="1" />
+    <option name="EXTENDS_LIST_WRAP" expectedRegex="1" />
+    <option name="THROWS_LIST_WRAP" expectedRegex="1" />
+    <option name="EXTENDS_KEYWORD_WRAP" expectedRegex="1" />
+    <option name="THROWS_KEYWORD_WRAP" expectedRegex="1" />
+    <option name="METHOD_CALL_CHAIN_WRAP" expectedRegex="5" />
+    <option name="BINARY_OPERATION_WRAP" expectedRegex="1" />
+    <option name="BINARY_OPERATION_SIGN_ON_NEXT_LINE" expectedRegex="true" />
+    <option name="TERNARY_OPERATION_WRAP" expectedRegex="5" />
+    <option name="TERNARY_OPERATION_SIGNS_ON_NEXT_LINE" expectedRegex="true" />
+    <option name="FOR_STATEMENT_WRAP" expectedRegex="1" />
+    <option name="ARRAY_INITIALIZER_WRAP" expectedRegex="1" />
+    <option name="ASSIGNMENT_WRAP" expectedRegex="1" />
+    <option name="WRAP_COMMENTS" expectedRegex="true" />
+    <option name="ASSERT_STATEMENT_WRAP" expectedRegex="1" />
+    <option name="IF_BRACE_FORCE" expectedRegex="3" />
+    <option name="DOWHILE_BRACE_FORCE" expectedRegex="3" />
+    <option name="WHILE_BRACE_FORCE" expectedRegex="3" />
+    <option name="FOR_BRACE_FORCE" expectedRegex="3" />
+    <option name="PARAMETER_ANNOTATION_WRAP" expectedRegex="5" />
+    <option name="VARIABLE_ANNOTATION_WRAP" expectedRegex="2" />
+    <option name="ENUM_CONSTANTS_WRAP" expectedRegex="1" />
+    <option name="WRAP_ON_TYPING" expectedRegex="1" />
+    <indentOptions>
+      <option name="INDENT_SIZE" expectedRegex="2" />
+      <option name="CONTINUATION_INDENT_SIZE" expectedRegex="4" />
+    </indentOptions>
+  </codeStyleSettings>
+</code_scheme>

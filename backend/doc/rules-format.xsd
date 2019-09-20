@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="https://www.w3schools.com"
+           xmlns="https://www.w3schools.com"
+           elementFormDefault="qualified">
+
+    <xs:element name="Rules" type="tPredicate"/>
+
+    <xs:complexType name="tPredicate" mixed="true">
+        <xs:group ref="possibleChildren"/>
+    </xs:complexType>
+
+    <xs:complexType name="tMultiPredicate" mixed="true">
+        <xs:group ref="possibleChildren" maxOccurs="unbounded" minOccurs="2"/>
+    </xs:complexType>
+
+    <xs:group name="possibleChildren">
+        <xs:choice>
+            <xs:element name="Property">
+                <xs:complexType>
+                    <xs:attribute name="name" type="xs:string" use="required"/>
+                    <xs:attribute name="matches" type="xs:string" use="required"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Sentiment">
+                <xs:complexType>
+                    <xs:attribute name="min" type="xs:double"/>
+                    <xs:attribute name="max" type="xs:double"/>
+                    <xs:attribute name="emotion" type="xs:string">
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="EntityAvailable">
+                <xs:complexType>
+                    <xs:attribute name="label" type="xs:string" use="required"/>
+                    <xs:attribute name="matches" type="xs:string"/>
+                    <xs:attribute name="countMin" type="xs:nonNegativeInteger" default="1"/>
+                    <xs:attribute name="countMax" type="xs:nonNegativeInteger"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Predecessor">
+                <xs:complexType>
+                    <xs:attribute name="matches" type="xs:string" use="required"/>
+                    <xs:attribute name="position">
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:pattern value="any|\d+|last"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="PredecessorCount">
+                <xs:complexType>
+                    <xs:attribute name="min" type="xs:nonNegativeInteger" default="0"/>
+                    <xs:attribute name="max" type="xs:nonNegativeInteger" />
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="UploadDate">
+                <xs:complexType>
+                    <xs:attribute name="min" type="xs:date"/>
+                    <xs:attribute name="max" type="xs:date"/>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="UploadTime">
+                <xs:complexType>
+                    <xs:attribute name="min" type="xs:time"/>
+                    <xs:attribute name="max" type="xs:time"/>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="Not" type="tPredicate"/>
+            <xs:element name="Or" type="tMultiPredicate"/>
+            <xs:element name="And" type="tMultiPredicate"/>
+        </xs:choice>
+    </xs:group>
+</xs:schema>
