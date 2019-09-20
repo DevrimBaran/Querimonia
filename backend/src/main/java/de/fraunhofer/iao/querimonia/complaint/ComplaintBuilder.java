@@ -198,9 +198,9 @@ public class ComplaintBuilder {
       Map<String, Double> newProbabilities = new HashMap<>();
       probabilities.keySet()
           .stream()
-          .filter(property -> !property.equals(propertyName))
+          .filter(property -> !property.equals(value))
           .forEach(property -> newProbabilities.put(property, 0.0));
-      newProbabilities.put(propertyName, 1.0);
+      newProbabilities.put(value, 1.0);
 
       newProperty =
           new ComplaintProperty(propertyName, value, newProbabilities, true);
