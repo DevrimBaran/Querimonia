@@ -34,7 +34,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import javax.xml.bind.JAXBException;
 import java.time.LocalDate;
@@ -95,7 +94,7 @@ public class ComplaintManager {
    * Returns the complaints of the database with filtering and sorting.
    *
    * @see ComplaintController#getComplaints(Optional, Optional, Optional, Optional, Optional,
-   * Optional, Optional, Optional, Optional) getComplaints
+   *     Optional, Optional, Optional, Optional) getComplaints
    */
   public synchronized List<Complaint> getComplaints(
       Optional<Integer> count, Optional<Integer> page, Optional<String[]> sortBy,
@@ -141,7 +140,9 @@ public class ComplaintManager {
    * @param file     the file that should be uploaded.
    * @param configId the id of the config that should be used for analysis, if not given the
    *                 active configuration gets used.
+   *
    * @return the new created complaint.
+   *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadComplaint(MultipartFile, Optional, Optional) uploadComplaint
    */
@@ -158,7 +159,9 @@ public class ComplaintManager {
    * @param input    the text that should be uploaded.
    * @param configId the id of the config that should be used for analysis, if not given the
    *                 active configuration gets used.
+   *
    * @return the new created complaint.
+   *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadText(TextInput, Optional, Optional) uploadText
    */
@@ -209,7 +212,9 @@ public class ComplaintManager {
    * Method for getting a complaint with an id.
    *
    * @param complaintId the id of the complaint.
+   *
    * @return the complaint with the given id.
+   *
    * @throws NotFoundException when no complaint with the given id exists.
    * @see ComplaintController#getComplaint(long) getComplaint
    */
@@ -222,7 +227,9 @@ public class ComplaintManager {
    * Returns the text of a complaint.
    *
    * @param complaintId the id of the complaint
+   *
    * @return the text of the complaint.
+   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getText(long) getText
    */
@@ -234,7 +241,9 @@ public class ComplaintManager {
    * Returns the xml String of a complaint.
    *
    * @param complaintId the id of the complaint
+   *
    * @return the xml of the complaint
+   *
    * @throws NotFoundException if no complaint with the given id exists
    */
   public String getXml(long complaintId) {
@@ -369,12 +378,14 @@ public class ComplaintManager {
    * Sets the state of a complaint to closed and executes all actions.
    *
    * @param complaintId the id of the complaint that should be closed.
+   *
    * @return the closed complaint.
+   *
    * @throws QuerimoniaException if the complaint with the given id does not exist or the
    *                             complaint cannot be closed in its state.
    * @see ComplaintController#closeComplaint(long) closeComplaint
    */
-  public synchronized Complaint closeComplaint(long complaintId) throws MessagingException {
+  public synchronized Complaint closeComplaint(long complaintId) {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ANALYSING, CLOSED);
@@ -387,21 +398,17 @@ public class ComplaintManager {
         .getResponseSuggestion()
         .getResponseComponents()
         .stream()
-        .filter(completedResponseComponent -> true) // add used filter TODO
+        .filter(CompletedResponseComponent::isUsed)
         .map(CompletedResponseComponent::getComponent)
         .map(ResponseComponent::getActions)
         .flatMap(List::stream)
         .forEach(Action::executeAction);
-    //TODO: Email versenden Methode ComplaintUtility oder man legt sich darauf fest, dass das
-    // durch die Actions realisiert werden soll z.B. können dann mehrere Mails an verschiedene
-    // gesendet werden
-
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
-//  TODO: move E-Mail sending to an action
-//   ComplaintUtility.sendEMail("Nachricht " + complaintId,
-//        complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
-//            + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
+    //  TODO: move E-Mail sending to an action
+    //   ComplaintUtility.sendEMail("Nachricht " + complaintId,
+    //        complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
+    //            + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
 
     complaint = builder.createComplaint();
     storeComplaint(complaint);
@@ -434,8 +441,17 @@ public class ComplaintManager {
     }
   }
 
+  /**
+   * Updates the response of a complaint.
+   *
+   * @param complaintId the id of the complaint.
+   * @param body        the new response.
+   *
+   * @return the new response.
+   */
   public synchronized ResponseSuggestion saveResponse(long complaintId, ResponseSuggestion body) {
     Complaint complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING);
     storeComplaint(complaint.withResponseSuggestion(body));
     return body;
   }
@@ -444,7 +460,7 @@ public class ComplaintManager {
    * Return the amount of complaints that match the given parameters.
    *
    * @see ComplaintController#countComplaints(Optional, Optional, Optional, Optional, Optional,
-   * Optional)  countComplaints
+   *     Optional)  countComplaints
    */
   public synchronized String countComplaints(Optional<String[]> state, Optional<String> dateMin,
                                              Optional<String> dateMax, Optional<String[]> sentiment,
@@ -458,7 +474,9 @@ public class ComplaintManager {
    * Returns the log of a complaint.
    *
    * @param complaintId the id of the complaint.
+   *
    * @return the log of a complaint.
+   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getLog(long) getLog
    */
@@ -470,7 +488,9 @@ public class ComplaintManager {
    * Returns all entities of a complaint.
    *
    * @param complaintId the id of the complaint.
+   *
    * @return all entities of a complaint.
+   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getEntities(long) getEntities
    */
@@ -517,6 +537,7 @@ public class ComplaintManager {
    * @param complaintId the id of the complaint.
    * @param entityId    the id of the entity.
    * @param entity      the new entity that replaces the entity with the given id.
+   *
    * @return a updated list of entities of the given complaint.
    */
   public List<NamedEntity> updateEntity(long complaintId, long entityId, NamedEntity entity) {
@@ -551,7 +572,7 @@ public class ComplaintManager {
     // check validity of entity
     int start = entity.getStartIndex();
     int end = entity.getEndIndex();
-    if (start < 0 || end <= start || end > complaint.getText().length()) {
+    if (start < 0 || end < start || end > complaint.getText().length()) {
       throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Die Entität ist ungültig. Alle "
           + "Indices müssen größer gleich null sein, der Startindex muss kleiner als der Endindex"
           + " sein und die Indices dürfen die Textgrenze nicht überschreiten,", "Ungültige "
@@ -610,6 +631,7 @@ public class ComplaintManager {
    * entities from the same context.
    *
    * @param complaintId the id of the complaint.
+   *
    * @return the list of the combinations.
    */
   public List<Combination> getCombinations(long complaintId) {
@@ -690,7 +712,9 @@ public class ComplaintManager {
    *                 #DEFAULT_TEXTS_DEFAULT_COUNT} texts will be added.
    * @param configId the id of the config that should be used for the analysis. If this is not
    *                 given, the active config will be used.
+   *
    * @return the list of added complaints.
+   *
    * @throws QuerimoniaException on an unexpected server error or if no config with the given id
    *                             exists in the database.
    * @see ComplaintController#addDefaultComplaints(Optional, Optional) addDefaultComplaints
@@ -704,7 +728,7 @@ public class ComplaintManager {
         .map(textInput -> {
           var complaint = uploadText(textInput, configId, Optional.empty());
           try {
-            Thread.sleep(7000);
+            Thread.sleep(10000);
           } catch (InterruptedException e) {
             logger.error("Safety pause between default complaints interrupted");
           }
@@ -727,7 +751,9 @@ public class ComplaintManager {
    * Refreshed the response for a complaint.
    *
    * @param complaintId the id of the complaint.
+   *
    * @return the new creates response
+   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ResponseController#refreshResponse(long) refreshResponse
    */
@@ -747,6 +773,7 @@ public class ComplaintManager {
    * Returns all complaints with the given state.
    *
    * @param state the state of the complaints.
+   *
    * @return a list of all complaints that are in the given state.
    */
   public List<Complaint> getComplaintsWithState(ComplaintState state) {
@@ -763,9 +790,11 @@ public class ComplaintManager {
     // store the configuration
     try {
       complaintRepository.save(complaint);
+    } catch (RuntimeException e) {
+      throw e;
     } catch (Exception e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Fehler beim Speichern der "
-          + "Beschwerde: " + e.getMessage(), e, "Beschwerde");
+          + "Beschwerde: " + e.getMessage(), e, "Beschwerde konnte nicht gespeichert werden");
     }
     logger.info("Saved complaint with id {}", complaint.getId());
   }
@@ -776,6 +805,7 @@ public class ComplaintManager {
    *
    * @param complaint       the complaint to check.
    * @param forbiddenStates the states that are not allowed.
+   *
    * @throws QuerimoniaException if the state of the complaint is one of the forbidden states.
    */
   private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
@@ -815,14 +845,15 @@ public class ComplaintManager {
    * @param emotion  If given, only complaints with this emotion will be returned.
    * @param subject  If given, only complaints with this subject will be returned.
    * @param keywords If given, only complaints that contain the keywords will returned.
+   *
    * @return a response entity with the following contents:
-   * <ul>
-   * <li>status code 200 and a xml of the sorted, filtered complaints
-   * setting as response body on success.</li>
-   * <li>status code 400 and a the exception as response body when the sorting parameters are
-   * invalid</li>
-   * <li>status code 500 and the exception as response body on an unexpected server error.</li>
-   * </ul>
+   *     <ul>
+   *     <li>status code 200 and a xml of the sorted, filtered complaints
+   *     setting as response body on success.</li>
+   *     <li>status code 400 and a the exception as response body when the sorting parameters are
+   *     invalid</li>
+   *     <li>status code 500 and the exception as response body on an unexpected server error.</li>
+   *     </ul>
    */
   public String getXmls(Optional<String[]> sortBy, Optional<String[]> state,
                         Optional<String> dateMin, Optional<String> dateMax,

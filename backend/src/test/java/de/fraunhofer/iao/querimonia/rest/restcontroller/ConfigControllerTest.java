@@ -127,7 +127,6 @@ public class ConfigControllerTest {
     configController.addConfiguration(CONFIGURATION_E);
     configController.deleteConfiguration(4);
     Iterator<Configuration> iterator = mockConfigurationRepository.findAll().iterator();
-    assertEquals(Configuration.FALLBACK_CONFIGURATION, iterator.next());
     assertEquals(CONFIGURATION_E, iterator.next());
     assertFalse(iterator.hasNext());
   }
@@ -139,14 +138,14 @@ public class ConfigControllerTest {
     configController.deleteConfiguration(4);
     Optional<Complaint> complaint = mockComplaintRepository.findById(6L);
     assertTrue(complaint.isPresent());
-    assertEquals(Configuration.FALLBACK_CONFIGURATION, complaint.get().getConfiguration());
+    assertNull(complaint.get().getConfiguration());
   }
 
   @Test
   public void testDeleteConfigurationFallback() {
     configController.addConfiguration(CONFIGURATION_D);
     configController.deleteConfiguration(4);
-    assertEquals(Configuration.FALLBACK_CONFIGURATION, mockConfigurationRepository.findAll().iterator().next());
+    assertFalse(mockComplaintRepository.findAll().iterator().hasNext());
   }
 
   @Test
@@ -238,7 +237,7 @@ public class ConfigControllerTest {
     configController.deleteAllConfigurations();
     Optional<Complaint> complaint = mockComplaintRepository.findById(6L);
     assertTrue(complaint.isPresent());
-    assertEquals(Configuration.FALLBACK_CONFIGURATION, complaint.get().getConfiguration());
+    assertNull(complaint.get().getConfiguration());
     assertEquals(0, mockConfigurationRepository.count());
   }
 

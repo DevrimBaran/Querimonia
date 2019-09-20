@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -115,17 +114,13 @@ public class ConfigurationManager {
       for (Complaint complaint : complaintRepository.findAll()) {
         if (complaint.getConfiguration() != null
             && complaint.getConfiguration().getId() == configId) {
-          complaint = complaint.withConfiguration(Configuration.FALLBACK_CONFIGURATION);
+          complaint = complaint.withConfiguration(null);
         }
         complaintRepository.save(complaint);
       }
 
-      // dont delete fallback configuration
-      if (configId != Configuration.FALLBACK_CONFIGURATION.getId()) {
-        configurationRepository.deleteById(configId);
-      }
+      configurationRepository.deleteById(configId);
       // check if current configuration gets removed
-      this.storeConfiguration(Configuration.FALLBACK_CONFIGURATION.withActive(true));
     } else {
       throw new NotFoundException(configId);
     }
@@ -218,16 +213,10 @@ public class ConfigurationManager {
   public synchronized void deleteAllConfigurations() {
     for (Complaint complaint : complaintRepository.findAll()) {
       complaint =
-          complaint.withConfiguration(configurationRepository.findById(Configuration.FALLBACK_CONFIGURATION.getId()).orElse(Configuration.FALLBACK_CONFIGURATION));
+          complaint.withConfiguration(null);
       complaintRepository.save(complaint);
     }
-    List<Configuration> toBeDeleted = new ArrayList<>();
-    for (Configuration configuration : configurationRepository.findAll()) {
-      if (!configuration.getId().equals(Configuration.FALLBACK_CONFIGURATION.getId())) {
-        toBeDeleted.add(configuration);
-      }
-    }
-    configurationRepository.deleteAll(toBeDeleted);
+    configurationRepository.deleteAll();
     logger.info("Deleted all configurations");
   }
 

@@ -70,11 +70,18 @@ public class ResponseController {
     return ControllerUtility.tryAndCatch(() -> complaintManager.refreshResponse(complaintId));
   }
 
+  /**
+   * This route allows saving responses.
+   *
+   * @param complaintId        the id of the complaint of the response.
+   * @param responseSuggestion the new response.
+   *
+   * @return the updated response.
+   */
   @PutMapping("api/complaints/{complaintId}/response")
   public ResponseEntity<?> saveResponse(@PathVariable long complaintId, @RequestBody
-                                        ResponseSuggestion responseSuggestion) {
-    return ControllerUtility.tryAndCatch(() -> {
-      complaintManager.saveResponse(complaintId, responseSuggestion);
-    });
+      ResponseSuggestion responseSuggestion) {
+    return ControllerUtility.tryAndCatch(
+        () -> complaintManager.saveResponse(complaintId, responseSuggestion));
   }
 }
