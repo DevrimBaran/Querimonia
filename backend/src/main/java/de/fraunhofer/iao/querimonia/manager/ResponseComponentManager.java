@@ -173,16 +173,22 @@ public class ResponseComponentManager {
           complaintRepository.save(builder.createComplaint());
         }
       }*/
+      List<Complaint> complaintsThatUseComponent = new ArrayList<>();
       for (Complaint complaint : complaintRepository.findAll()) {
         for (CompletedResponseComponent completedResponseComponent :
             complaint.getResponseSuggestion().getResponseComponents()) {
-
           if (completedResponseComponent.getComponent().getId() == componentId) {
-            throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Komponente kann nicht gelöscht "
-                + "werden, da sie noch in einer Beschwerde verwendet wird.",
-                "Löschen nicht möglich");
+            complaintsThatUseComponent.add(complaint);
           }
         }
+      }
+      if (!complaintsThatUseComponent.isEmpty()) {
+        throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Komponente kann nicht gelöscht "
+            + "werden, da sie noch in einer Beschwerde verwendet wird. Bitte löschen Sie "
+            + "zunächst alle Beschwerden, die diese Komponente verwenden. Die Beschwerden mit"
+            + " folgenden IDs verwenden die zu löschende Komponente: "
+            + complaintsThatUseComponent.toString(),
+            "Löschen nicht möglich");
       }
       componentRepository.deleteById(componentId);
     } else {
