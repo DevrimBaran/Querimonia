@@ -4,11 +4,13 @@ import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.utility.log.ComplaintLog;
 import de.fraunhofer.iao.querimonia.utility.log.LogCategory;
 import de.fraunhofer.iao.querimonia.utility.log.LogEntry;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -41,7 +43,7 @@ public class ComplaintBuilder {
   @Nullable
   private String preview;
   @NonNull
-  private ComplaintState state = null;
+  private ComplaintState state = ComplaintState.ERROR;
   @NonNull
   private List<ComplaintProperty> properties = new ArrayList<>();
   @NonNull
@@ -151,7 +153,7 @@ public class ComplaintBuilder {
       response.put("oldState", oldState);
       response.put("state", this.state);
     } catch (JSONException e) {
-      e.printStackTrace();
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler");
     }
     return response.toString();
   }
@@ -180,25 +182,14 @@ public class ComplaintBuilder {
    * @return this complaint builder.
    */
   public ComplaintBuilder setValueOfProperty(String propertyName, String value) {
-    var property = Stream.ofNullable(properties)
+    var possibleProperties = Stream.ofNullable(properties)
         .flatMap(List::stream)
         .filter(complaintProperty -> complaintProperty.getName().equals(propertyName))
         .collect(Collectors.toList());
 
     ComplaintProperty newProperty = new ComplaintProperty(propertyName, value);
-    if (!property.isEmpty()) {
-      property.forEach(properties::remove);
-      Map<String, Double> probabilities = property
-          .stream()
-          .findFirst()
-          .orElseThrow()
-          .getProbabilities();
-      System.out.println(probabilities);
-
-      newProperty =
-          new ComplaintProperty(propertyName, value,
-              probabilities,
-              true);
+    if (!possibleProperties.isEmpty()) {
+      possibleProperties.forEach(properties::remove);
     }
     properties.add(newProperty);
     return this;
