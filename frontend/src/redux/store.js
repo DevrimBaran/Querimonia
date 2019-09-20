@@ -65,7 +65,6 @@ const initialState = {
           { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
           { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
           { label: 'Sonstiges', value: 'Sonstiges' }
-
         ]
       },
       {

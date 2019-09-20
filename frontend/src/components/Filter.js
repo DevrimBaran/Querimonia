@@ -40,7 +40,7 @@ class Filter extends Component {
         {/* <Collapsible label='Filter' className='Filter' /> */}
         <Form className='Filter responsive' action={pathname} onSubmit={this.submit} >
           {mappedInputs}
-          {mappedInputs.length > 0 && (<Input type='submit' value='Anwenden' />)}
+          {/* {mappedInputs.length > 0 && (<Input type='submit' value='Anwenden' />)} */}
         </Form>
       </React.Fragment>
     );

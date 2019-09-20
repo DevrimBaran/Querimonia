@@ -85,15 +85,18 @@
     overflow: auto;
     flex-grow: 1;
     flex-shrink: 1;
+    flex-basis: 100%;
 }
 
 .row {
-    overflow: auto;
     height: 100%;
     width: 100%;
 
     &.flex-column {
-        overflow-x: hidden;
+        overflow-y: auto;
+        & > .content {
+            max-height: fit-content;
+        }
         &.fit {
             height: auto;
             width: max-content;
@@ -104,8 +107,11 @@
     }
 
     &.flex-row {
-        overflow-y: hidden;
+        overflow-x: auto;
         justify-content: space-between;
+        & > .content {
+            max-width: fit-content;
+        }
         &.fit {
             width: auto;
             height: max-content;
