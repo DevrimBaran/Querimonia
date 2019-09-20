@@ -190,6 +190,20 @@ public class ComplaintBuilder {
     ComplaintProperty newProperty = new ComplaintProperty(propertyName, value);
     if (!possibleProperties.isEmpty()) {
       possibleProperties.forEach(properties::remove);
+      Map<String, Double> probabilities = possibleProperties
+          .stream()
+          .findFirst()
+          .orElseThrow()
+          .getProbabilities();
+      Map<String, Double> newProbabilities = new HashMap<>();
+      probabilities.keySet()
+          .stream()
+          .filter(property -> !property.equals(propertyName))
+          .forEach(property -> newProbabilities.put(property, 0.0));
+      newProbabilities.put(propertyName, 1.0);
+
+      newProperty =
+          new ComplaintProperty(propertyName, value, newProbabilities, true);
     }
     properties.add(newProperty);
     return this;
