@@ -156,12 +156,12 @@ public class ResponseComponentManager {
   public synchronized void deleteComponent(long componentId) {
     if (componentRepository.existsById(componentId)) {
       // find references in complaints
-      List<Complaint> complaintsThatUseComponent = new ArrayList<>();
+      List<Long> complaintsThatUseComponent = new ArrayList<>();
       for (Complaint complaint : complaintRepository.findAll()) {
         for (CompletedResponseComponent completedResponseComponent :
             complaint.getResponseSuggestion().getResponseComponents()) {
           if (completedResponseComponent.getComponent().getId() == componentId) {
-            complaintsThatUseComponent.add(complaint);
+            complaintsThatUseComponent.add(complaint.getId());
           }
         }
       }
