@@ -13,10 +13,12 @@ import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import de.fraunhofer.iao.querimonia.utility.exception.NotFoundException;
+import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -153,7 +155,7 @@ public class ResponseComponentManager {
   public synchronized void deleteComponent(long componentId) {
     if (componentRepository.existsById(componentId)) {
       // remove references in complaints
-      for (Complaint complaint : complaintRepository.findAll()) {
+      /*for (Complaint complaint : complaintRepository.findAll()) {
         var builder = new ComplaintBuilder(complaint);
         var suggestion = builder.getResponseSuggestion();
         // remove references
@@ -166,11 +168,22 @@ public class ResponseComponentManager {
             .anyMatch(id -> id == componentId);
         if (componentIsUsed) {
           // set to empty response
-          builder.setResponseSuggestion(ResponseSuggestion.getEmptyResponse());
+          // responseSuggestionRepository.delete(builder.getResponseSuggestion());
+          builder.setResponseSuggestion(null);
           complaintRepository.save(builder.createComplaint());
         }
-      }
+      }*/
+      for (Complaint complaint : complaintRepository.findAll()) {
+        for (CompletedResponseComponent completedResponseComponent :
+            complaint.getResponseSuggestion().getResponseComponents()) {
 
+          if (completedResponseComponent.getComponent().getId() == componentId) {
+            throw new QuerimoniaException(HttpStatus.BAD_REQUEST, "Komponente kann nicht gelöscht "
+                + "werden, da sie noch in einer Beschwerde verwendet wird.",
+                "Löschen nicht möglich");
+          }
+        }
+      }
       componentRepository.deleteById(componentId);
     } else {
       throw new NotFoundException(componentId);

@@ -394,15 +394,18 @@ public class ComplaintManager {
         .setCloseTime(LocalTime.now(ZoneId.of("Europe/Berlin")));
 
     // execute actions of the complaint
-    complaint
-        .getResponseSuggestion()
-        .getResponseComponents()
-        .stream()
-        .filter(CompletedResponseComponent::isUsed)
-        .map(CompletedResponseComponent::getComponent)
-        .map(ResponseComponent::getActions)
-        .flatMap(List::stream)
-        .forEach(Action::executeAction);
+    if (complaint
+        .getResponseSuggestion() != null) {
+      complaint
+          .getResponseSuggestion()
+          .getResponseComponents()
+          .stream()
+          .filter(CompletedResponseComponent::isUsed)
+          .map(CompletedResponseComponent::getComponent)
+          .map(ResponseComponent::getActions)
+          .flatMap(List::stream)
+          .forEach(Action::executeAction);
+    }
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
     //  TODO: move E-Mail sending to an action

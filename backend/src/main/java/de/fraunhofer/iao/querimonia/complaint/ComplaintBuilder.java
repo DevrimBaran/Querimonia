@@ -319,7 +319,7 @@ public class ComplaintBuilder {
    *
    * @return this complaint builder.
    */
-  public ComplaintBuilder setConfiguration(@NonNull Configuration configuration) {
+  public ComplaintBuilder setConfiguration(@Nullable Configuration configuration) {
     this.configuration = configuration;
     return this;
   }
