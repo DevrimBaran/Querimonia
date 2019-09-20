@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia.manager;
 
 import de.fraunhofer.iao.querimonia.complaint.Complaint;
-import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.manager.filter.ResponseComponentFilter;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.repository.CompletedComponentRepository;
@@ -10,7 +9,6 @@ import de.fraunhofer.iao.querimonia.repository.ResponseSuggestionRepository;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseComponentBuilder;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.utility.FileStorageService;
 import de.fraunhofer.iao.querimonia.utility.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
@@ -148,31 +146,16 @@ public class ResponseComponentManager {
   }
 
   /**
-   * Deletes a component from the database. Removes all responses that contain that component.
+   * Deletes a component from the database. This is not possible, if a complaint uses the
+   * component with the given id.
    *
    * @param componentId the id of the component, that should be deleted.
+   *
+   * @throws QuerimoniaException if a complaint uses the component in the response.
    */
   public synchronized void deleteComponent(long componentId) {
     if (componentRepository.existsById(componentId)) {
-      // remove references in complaints
-      /*for (Complaint complaint : complaintRepository.findAll()) {
-        var builder = new ComplaintBuilder(complaint);
-        var suggestion = builder.getResponseSuggestion();
-        // remove references
-        var completedComponents = suggestion.getResponseComponents();
-
-        // delete response if component is part of it
-        boolean componentIsUsed = completedComponents
-            .stream()
-            .map(CompletedResponseComponent::getId)
-            .anyMatch(id -> id == componentId);
-        if (componentIsUsed) {
-          // set to empty response
-          // responseSuggestionRepository.delete(builder.getResponseSuggestion());
-          builder.setResponseSuggestion(null);
-          complaintRepository.save(builder.createComplaint());
-        }
-      }*/
+      // find references in complaints
       List<Complaint> complaintsThatUseComponent = new ArrayList<>();
       for (Complaint complaint : complaintRepository.findAll()) {
         for (CompletedResponseComponent completedResponseComponent :
@@ -197,27 +180,11 @@ public class ResponseComponentManager {
   }
 
   /**
-   * Deletes all components. This will also delete any responses from complaints.
+   * Deletes all components. This is not possible, if any complaint uses a component.
    */
   public synchronized void deleteAllComponents() {
-    // remove references in complaints
-    for (Complaint complaint : complaintRepository.findAll()) {
-      // delete references
-      complaint = new ComplaintBuilder(complaint)
-          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), ""))
-          .createComplaint();
-      complaintRepository.save(complaint);
-    }
-    responseSuggestionRepository.deleteAll();
-    completedComponentRepository.deleteAll();
-    componentRepository.deleteAll();
-
-    for (Complaint complaint : complaintRepository.findAll()) {
-      // add empty responses
-      complaint = new ComplaintBuilder(complaint)
-          .setResponseSuggestion(new ResponseSuggestion(new ArrayList<>(), ""))
-          .createComplaint();
-      complaintRepository.save(complaint);
+    for (ResponseComponent component : componentRepository.findAll()) {
+      deleteComponent(component.getId());
     }
     logger.info("Deleted all components.");
   }
