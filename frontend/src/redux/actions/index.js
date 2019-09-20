@@ -272,7 +272,7 @@ export function refreshResponses (id) {
     dispatch({
       type: 'REFRESH_RESPONSES_START'
     });
-    Api.get('/api/complaints/' + id + '/response/refresh', {})
+    Api.patch('/api/complaints/' + id + '/response/refresh', {})
       .then(data => {
         dispatch({
           type: 'REFRESH_RESPONSES_END',

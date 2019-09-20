@@ -88,12 +88,12 @@
 }
 
 .row {
-    // overflow: auto;
+    overflow: auto;
     height: 100%;
     width: 100%;
 
     &.flex-column {
-        // overflow-x: hidden;
+        overflow-x: hidden;
         &.fit {
             height: auto;
             width: max-content;
@@ -104,7 +104,7 @@
     }
 
     &.flex-row {
-        // overflow-y: hidden;
+        overflow-y: hidden;
         justify-content: space-between;
         &.fit {
             width: auto;
