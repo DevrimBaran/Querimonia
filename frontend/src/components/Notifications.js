@@ -19,40 +19,19 @@ class Notifications extends Component {
     this.url = new URL(this.icon.href);
     this.state = {
       hidden: false,
-      notifications: [
-        {
-          id: 1,
-          oldState: null,
-          state: 'ANALYSING'
-        },
-        {
-          id: 2,
-          oldState: 'NEW',
-          state: 'ANALYSING'
-        },
-        {
-          id: 3,
-          oldState: 'ANALYSING',
-          state: 'ERROR'
-        },
-        {
-          id: 4,
-          oldState: 'ANALYSING',
-          state: 'NEW'
-        }
-      ]
+      notifications: []
     };
   }
 
-  onOpen = () => {
+  socketOpen = () => {
     console.log('Socket opened');
   }
 
-  onClose = () => {
+  socketClose = () => {
     console.log('Socket closed');
   }
 
-  onMessage = (e) => {
+  socketMessage = (e) => {
     console.log('new Message', e);
   }
 
@@ -81,9 +60,7 @@ class Notifications extends Component {
   onClick = (i) => {
     const notification = this.state.notifications[i];
     this.close(i);
-    if (notification.state !== 'ANALYSING' && notification.state !== 'ERROR') {
-      this.props.history.push(`/complaints/${notification.id}`);
-    }
+    this.props.history.push(`/complaints/${notification.id}`);
   }
 
   mapNotification = (notification, i) => {
@@ -109,9 +86,9 @@ class Notifications extends Component {
 
   componentDidMount = () => {
     const sock = new SockJS(`${process.env.REACT_APP_BACKEND_PATH}/api/websocket`);
-    sock.onopen = this.onOpen;
-    sock.onclose = this.onClose;
-    sock.onmessage = this.onMessage;
+    sock.onopen = this.socketOpen;
+    sock.onclose = this.socketClose;
+    sock.onmessage = this.socketMessage;
   }
   render () {
     // const { a, b, ...passThrough } = { ...this.props };

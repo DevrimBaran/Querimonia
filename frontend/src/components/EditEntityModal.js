@@ -16,6 +16,11 @@ class EditEntityModal extends Component {
   constructor (props) {
     super(props);
     let config = props.active.configuration;
+    if (!config) {
+      config = {
+        extractors: []
+      };
+    }
     let extractorList = config.extractors.reduce((obj, extractor) => {
       obj[extractor.label] = { name: extractor.name, type: extractor.type, color: extractor.color };
       return obj;

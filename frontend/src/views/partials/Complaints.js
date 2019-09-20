@@ -178,8 +178,15 @@ function Single (active, dispatch, helpers) {
         <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
         <Collapsible label='Details' />
         <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
-          ['Konfiguration', (<Link to={'/configurations/' + active.configuration.id}>
-            {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
+          ['Konfiguration', (
+            active.configuration ? (
+              <Link to={'/configurations/' + active.configuration.id}>
+                {active.configuration.name + ' (' + active.configuration.id + ')'}
+              </Link>
+            ) : (
+              <span>gelöscht</span>
+            )
+          )],
           ['Eingangsdatum', (localize(active.receiveDate))],
           ['Eingangszeit', (active.receiveTime)],
           ['Status', (states[active.state])],
