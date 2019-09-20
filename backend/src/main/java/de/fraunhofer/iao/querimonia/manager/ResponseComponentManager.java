@@ -183,7 +183,7 @@ public class ResponseComponentManager {
    * Deletes all components. This is not possible, if any complaint uses a component.
    */
   public synchronized void deleteAllComponents() {
-    for (ResponseComponent component : componentRepository.findAll()) {
+    for (var component : componentRepository.findAll()) {
       deleteComponent(component.getId());
     }
     logger.info("Deleted all components.");
