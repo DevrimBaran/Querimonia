@@ -21,7 +21,13 @@ class RedmineHandler:
         self.current_sprint_name = self.project.versions[len(self.project.versions) - 1].name
 
 
-    def get_issues(self) -> List[Any]:
+    def get_issues(self, sprint=None) -> List[Any]:
+
+        # custom sprint id
+        if (sprint != None):
+            self.current_sprint_id = self.project.versions[sprint].id
+            self.current_sprint_name = self.project.versions[sprint].name
+
         issues = []
         for issue_type in [self.tracker_bug_id, self.tracker_story_id, self.tracker_feature_id]:
             issues = issues + list(self.redmine.issue.filter(

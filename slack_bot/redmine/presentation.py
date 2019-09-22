@@ -1,11 +1,11 @@
 import pypandoc
-import pdb
 from datetime import date
 from .handler import RedmineHandler
 
 
 def _filter_issues_review(issues_unfiltered):
-    return [i for i in issues_unfiltered if i.category.name != "Meetings"]
+    return [i for i in issues_unfiltered if getattr(i, "category", False)
+            and i.category.name != "Meetings"]
 
 
 def _filter_issues_weekly(issues_unfiltered):
@@ -69,30 +69,39 @@ def _build_string(issues, current_sprint_name):
             for subtask in i.children:
                 subtasks_list.append(subtask)
                 subtasks = subtasks + subtask.subject + ", "
-            present_list.append("**Subtasks**: " + subtasks[0:-2] + "\n")
+            present_list.append("\n **Subtasks**: " + subtasks[0:-2] + "\n")
         # notes
         tmp_notes = _get_notes(i)
         if len(tmp_notes) > 0:
             present_list.append(sub_title + "Notes" + "\n")
             present_list.extend(tmp_notes)
         # subtask notes
+        subtasks_tmp_notes = []
         for subtask in subtasks_list:
             tmp_notes = _get_notes(subtask)
             if len(tmp_notes) > 0:
-                present_list.extend(tmp_notes)
+                subtasks_tmp_notes.append(f"**Subtask:** {subtask.subject}\n")
+                subtasks_tmp_notes.extend(tmp_notes)
+        if len(subtasks_tmp_notes) > 0:
+            present_list.append(sub_title + "Subtasksnotes" + "\n")
+            present_list.extend(subtasks_tmp_notes)
 
     return "\n".join(present_list)
 
 
 def _create_pdf(present):
     pypandoc.convert_text(
-        present, "beamer", format="md", extra_args=['-V', 'theme:metropolis'], outputfile="present.pdf"
+        present, "beamer", format="md", extra_args=['-V', 'theme:metropolis'],
+        outputfile=f"present.pdf"
     )
 
 
-def create_presentation():
+def create_presentation(sprint_number=None):
     Handler = RedmineHandler()
-    issues_unfiltered = Handler.get_issues()
+    if (sprint_number is not None):
+        issues_unfiltered = Handler.get_issues(sprint_number)
+    else:
+        issues_unfiltered = Handler.get_issues()
     issues = _filter_issues_review(issues_unfiltered)
     current_sprint_name = Handler.get_sprint_name()
     present = _build_string(issues, current_sprint_name)
