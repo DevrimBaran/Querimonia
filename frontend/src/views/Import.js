@@ -33,8 +33,7 @@ class ImportBlock extends Component {
       <td><h3>{data.id}</h3></td>
       <td>{data.state}</td>
       <td>{data.preview}</td>
-      <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td>{data.sentiment.emotion.value} / <Sentiment tendency={data.sentiment.tendency} /> </td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{data.receiveDate} {data.receiveTime}</td>
       <td />
