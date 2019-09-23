@@ -25,6 +25,11 @@ class Filter extends Component {
       value: e.value
     });
   }
+  reset = () => {
+    this.props.filter.forEach((input) => {
+      this.onChange({ name: input.name, value: '' });
+    });
+  }
   renderInput = (input) => {
     const { name, value, multiple, ...passThrough } = { ...input };
     return (
@@ -41,6 +46,7 @@ class Filter extends Component {
         <Form className='Filter responsive' action={pathname} onSubmit={this.submit} >
           {mappedInputs}
           {/* {mappedInputs.length > 0 && (<Input type='submit' value='Anwenden' />)} */}
+          <Input type='reset' onClick={this.reset} />
         </Form>
       </React.Fragment>
     );

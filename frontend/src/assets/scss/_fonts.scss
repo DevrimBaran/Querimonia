@@ -53,12 +53,6 @@ label, .label {
     @extend %font;
     letter-spacing: 0.0625em;
 }
-input[type=submit], input[type=button]{
-    @extend %font;
-
-    font-size: 1em;
-    font-weight: 700;
-}
 th{
     font-size: 1.2em;
     letter-spacing: 0.0625em;

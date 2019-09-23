@@ -14,6 +14,13 @@ $inputBorder: 0.125em solid;
   @extend %font;
 }
 
+input[type=reset], input[type=submit], input[type=button]{
+    @extend %font;
+
+    font-size: 1em;
+    font-weight: 700;
+}
+
 .input {
   @extend %font;
   position: relative;
@@ -133,7 +140,7 @@ $inputBorder: 0.125em solid;
   }
 
 
-  input[type=submit], input[type=button], button {
+  input[type=submit], input[type=reset], input[type=button], button {
     max-width: 12.5em;
     background-color: $primaryAccentColor;
     color: $white;
