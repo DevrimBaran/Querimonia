@@ -32,7 +32,8 @@
         grid-column-start: 1;
         grid-column-end: var(--tabCount);
         grid-row: 2 / 3;
-        padding: 1.3em var(--contentMargin) 0em var(--contentMargin);
+        padding: 1.3em 1.25em 0em 0em;
+        margin-right: -1.25em;
         overflow: auto;
         display: none;
         padding-top: 0.3125em;
