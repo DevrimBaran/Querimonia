@@ -191,7 +191,7 @@ $inputBorder: 0.125em solid;
 
 button.action-button{
   background-color: #179c7d;
-  color: #fff;
+  color: $white !important;
   box-shadow: 0 0.375em rgba(0, 0, 0, 0.22);
   border: none;
   font-family: inherit;
@@ -225,16 +225,18 @@ button.action-button{
     font-weight: bolder;
   }
 
-  [disabled], [disabled]:hover {
-    opacity: 0.4;
+  i[disabled], i[disabled]:hover, [disabled], [disabled]:hover {
+    color: $primaryAccentColorDimed !important;
     cursor: not-allowed;
+  }
+  i:not(.fa-download){
+    color: $primaryAccentColor;
   }
 
 
 // END Icons Design
 
 
-///*
 //*   Buttons
 //**/
 //

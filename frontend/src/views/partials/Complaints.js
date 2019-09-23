@@ -94,8 +94,8 @@ function Overlay (dispatch, filter) {
     e.stopPropagation();
     return api.get(`/api/complaints/xml`, query, null, 'blob');
   };
-  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code'
-    onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
+  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-download'
+    onClick={xml}>Beschwerden herunterladen</DownloadButton>;
 }
 
 function List (data, dispatch, helpers) {
@@ -123,7 +123,7 @@ function List (data, dispatch, helpers) {
         <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
           icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
         <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8'
-          disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code'
+          disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-download'
           onClick={xml} />
         {helpers.remove}
       </th>
