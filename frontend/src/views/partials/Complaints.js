@@ -68,11 +68,10 @@ function Header () {
   return (
     <thead>
       <tr>
-        <th>Anliegen</th>
+        <th>Nr.</th>
         <th>Status</th>
         <th>Vorschau</th>
-        <th>Emotion</th>
-        <th>Sentiment</th>
+        <th>Emotion / Sentiment</th>
         <th>Kategorie</th>
         <th>Datum</th>
         <th>Aktionen</th>
@@ -115,8 +114,7 @@ function List (data, dispatch, helpers) {
       <td>{data.id}</td>
       <td>{states[data.state]}</td>
       <td>{data.preview}</td>
-      <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td>{data.sentiment.emotion.value} / <Sentiment tendency={data.sentiment.tendency} /> </td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
       <th>
