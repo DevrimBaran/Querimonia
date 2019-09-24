@@ -5,6 +5,7 @@ import sentiment_analyse
 import emotion_analyse
 import wordvector
 import lemmatize
+import scikit_learn
 
 app = Flask(__name__)
 # TODO change base url
@@ -163,6 +164,22 @@ class Lemmatize(Resource):
         result = lemmatize.lemmatize(text)
         return jsonify(result)
 
+@api.route('/python/classifier')
+@api.doc(
+    params={
+        'text': 'Text, der klassifiziert werden soll',
+    },
+    responses={
+        200: 'Success'
+    }
+)
+class Classifier(Resource):
+    def post(self):
+        '''Gibt für jeden Text ein Label zurück'''
+        content = request.get_json()
+        text = content["text"]
+        result = scikit_learn.classify(text)
+        return jsonify(result)
 
 if __name__ == "__main__":
     app.run(debug=False)
