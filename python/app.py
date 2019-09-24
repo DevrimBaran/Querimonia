@@ -164,6 +164,7 @@ class Lemmatize(Resource):
         result = lemmatize.lemmatize(text)
         return jsonify(result)
 
+
 @api.route('/python/classifier')
 @api.doc(
     params={
@@ -180,6 +181,7 @@ class Classifier(Resource):
         text = content["text"]
         result = scikit_learn.classify(text)
         return jsonify(result)
+
 
 if __name__ == "__main__":
     app.run(debug=False)
