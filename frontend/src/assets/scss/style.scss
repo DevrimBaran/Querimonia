@@ -248,6 +248,10 @@
     color: rgb(196, 100, 22);
 }
 
+.crone:hover {
+    filter: brightness(80%);
+}
+
 :hover > .plus-item {
     opacity: 1;
     background: white;
