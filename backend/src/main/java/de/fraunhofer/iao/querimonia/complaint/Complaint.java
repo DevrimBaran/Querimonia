@@ -464,7 +464,7 @@ public class Complaint implements Identifiable<Long> {
    * @return a new complaint with all the properties of this complaint but with the given
    * configuration as attribute.
    */
-  public Complaint withConfiguration(Configuration configuration) {
+  public Complaint withConfiguration(@Nullable Configuration configuration) {
     return new ComplaintBuilder(this)
         .setConfiguration(configuration)
         .createComplaint();

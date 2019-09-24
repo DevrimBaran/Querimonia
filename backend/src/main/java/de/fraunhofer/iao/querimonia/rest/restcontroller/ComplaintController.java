@@ -6,13 +6,11 @@ import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.rest.restobjects.ComplaintUpdateRequest;
 import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
-import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.mail.MessagingException;
 import java.util.Optional;
 
 /**
@@ -82,6 +80,7 @@ public class ComplaintController {
   /**
    * Returns the complaints of the database in xml format. With the given parameters the complaints
    * get filtered, sorted.
+   *
    * @param sortBy   an array of sorting aspects. The order in the array represents the priority
    *                 for the sorting: The complaints get sorted by the first array entry first, and
    *                 then by the second, etc. Valid sort aspects are: <code>upload_date_asc,
@@ -316,14 +315,7 @@ public class ComplaintController {
   @PatchMapping("api/complaints/{complaintId}/close")
   public ResponseEntity<?> closeComplaint(@PathVariable long complaintId) {
     return ControllerUtility.tryAndCatch(() ->
-    {
-      try {
-        return complaintManager.closeComplaint(complaintId);
-      } catch (MessagingException e) {
-        throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), "Mail "
-            + "Fehler");
-      }
-    });
+        complaintManager.closeComplaint(complaintId));
   }
 
 

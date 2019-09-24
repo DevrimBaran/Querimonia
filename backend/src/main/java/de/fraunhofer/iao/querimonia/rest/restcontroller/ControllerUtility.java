@@ -62,7 +62,7 @@ public class ControllerUtility {
     try {
       return new ResponseEntity<>(tryClause.get(), onSuccess);
     } catch (QuerimoniaException e) {
-      logger.debug("Exception occurred", e);
+      logger.info("Exception occurred", e);
       return new ResponseEntity<>(e, e.getStatus());
 
     } catch (Exception e) {
