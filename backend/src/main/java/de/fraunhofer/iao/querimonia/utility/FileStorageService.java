@@ -114,7 +114,7 @@ public class FileStorageService {
       switch (suffix) {
         case ".txt":
           System.out.println(Charset.defaultCharset().displayName());
-          text = Files.readString(Paths.get(fullFilePath), Charset.defaultCharset());
+          text = Files.readString(Paths.get(fullFilePath), Charset.forName("UTF-8"));
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
