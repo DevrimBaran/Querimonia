@@ -54,7 +54,7 @@ def prozent(dict):
     for key, value in dict.items():
         dict[key] = round((100 / sum) * value, 2)
     if not dict:
-        dict['Neutral'] = '0'
+        dict['Neutral'] = 0.0
         return dict
     return dict
 
@@ -87,5 +87,5 @@ def main(query):
 if __name__ == '__main__':
     print('Use test in comments in code')
 
-    # testQuery = 'Vielen Dank für Ihre Rückmeldung, es hat mich sehr gefreut, dass Sie meine Kritik an den Fahrer weitergeleitet haben. Das Busfahren ist weiterhin keine Freude. Heute Morgen fiel der CE 62 aus um 08.13 Uhr in Richtung statt. Und heute nachmittag der CE62 17.37 ab Karlsplatz Richtung Eckbusch. Zweimal am Tag, nicht schön. Inzwischen habe ich aber auch wieder jede Menge nette und hilfsbereite Busfahrer auf den Linien angetroffen, da bin ich immer schnell getröstet und wünsche alle eine gute Fahrt'
-    # print(main(testQuery))
+# testQuery = 'Der Kunde ist König…schon mal davon gehört? Es kann und darf nicht sein, dass der Busfahrer der Linie CE62 von Wuppertal-Elberfeld nach Wuppertal-Ronsdorf die Tür vor meiner Nase schließt, als ich fragen wollte, ob der Bus auch beim Wuppertal-Hauptbahnhof hält. So etwas unverschämtes ist mir bisher noch nie passiert und das wird noch ein Nachspiel haben!'
+# print(main(testQuery))

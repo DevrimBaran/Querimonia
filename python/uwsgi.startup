@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export PYTHONVENVV="$(/home/beschwerdemanagement/.local/bin/pipenv --venv)"
+uwsgi --ini uwsgi.ini

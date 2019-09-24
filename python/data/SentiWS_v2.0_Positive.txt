@@ -872,8 +872,8 @@ freikommen|VVINF	0.0040	freikomme,freikommst,freikommt,freikommest,freikommet,fr
 freisprechen|VVINF	0.0040	freispreche,freisprichst,freispricht,freisprecht,freisprechest,freisprechet,freisprach,freisprachst,freisprachen,freispracht,freispräche,freisprächest,freisprächst,freisprächen,freisprächet,freisprächt
 freiwillig|ADJX	0.0040	,freiwilligste,freiwilligere,freiwilligster,freiwilligstes,freiwilligeren,freiwilligerem,freiwilligsten,freiwilligstem,freiwillige,freiwilliger,freiwilliges,freiwilligem,freiwilligeres,freiwilligen,freiwilligerer
 freudig|ADJX	0.3256	freudigstem,freudigere,freudigste,freudigeren,freudigerem,freudigen,freudigem,freudiger,freudige,freudigeres,freudiges,freudigerer,freudigster,freudigstes,freudigsten
-freuen|VVINF	0.2198	freute,freust,freutest,freut,freue,freuet,freuten,freuest,freutet,gefreut
-freundlich|ADJX	0.6022	freundlichsten,freundlichstem,freundlicheren,freundlichen,freundlicherem,freundlichem,freundlicheres,freundlicherer,freundlichere,freundlicher,freundliche,freundlichster,freundlichste,freundlichstes,freundliches
+freuen|VVINF	0.1198	freute,freust,freutest,freut,freue,freuet,freuten,freuest,freutet,gefreut
+freundlich|ADJX	0.1022	freundlichsten,freundlichstem,freundlicheren,freundlichen,freundlicherem,freundlichem,freundlicheres,freundlicherer,freundlichere,freundlicher,freundliche,freundlichster,freundlichste,freundlichstes,freundliches
 freundschaftlich|ADJX	0.0040	freundschaftlichste,freundschaftliche,freundschaftlicherer,freundschaftlicheres,freundschaftlicheren,freundschaftlicherem,freundschaftlichem,freundschaftlichsten,freundschaftlichstem,freundschaftlichen,freundschaftlichere,freundschaftlicher,freundschaftliches,freundschaftlichstes,freundschaftlichster
 friedlich|ADJX	0.0924	friedlichsten,friedliches,friedlicherem,friedliche,friedlichster,friedlichste,friedlichstes,friedlicheren,friedlicher,friedlicheres,friedlicherer,friedlichem,friedlichen,friedlichere,friedlichstem
 friedvoll|ADJX	0.0908	friedvolle,friedvollem,friedvollen,friedvoller,friedvolles,friedvollere,friedvollerem,friedvolleren,friedvollerer,friedvolleres,friedvollste,friedvollstem,friedvollsten,friedvollster,friedvollstes
@@ -1189,8 +1189,8 @@ möglich|ADJX	0.0040	mögliche,möglichem,möglichen,möglicher,mögliches
 mühelos|ADJX	0.0040	mühelosere,müheloserer,müheloseres,mühelosester,müheloseren,mühelosestem,mühelosesten,müheloserem,müheloser,müheloses,mühelosen,mühelosem,mühelose,müheloseste,mühelosestes
 nachahmenswert|ADJX	0.0818	nachahmenswerteren,nachahmenswertesten,nachahmenswerterem,nachahmenswertestem,nachahmenswertem,nachahmenswerterer,nachahmenswerten,nachahmenswerteres,nachahmenswertester,nachahmenswerte,nachahmenswertestes,nachahmenswerter,nachahmenswertere,nachahmenswertes,nachahmenswerteste
 nachhaltig|ADJX	0.0040	nachhaltigstem,nachhaltigsten,nachhaltigstes,nachhaltigster,nachhaltigeren,nachhaltigere,nachhaltigerem,nachhaltige,nachhaltiges,nachhaltiger,nachhaltigen,nachhaltigem,nachhaltigerer,nachhaltigste,nachhaltigeres
-nah|ADJX	0.2267	nahe,nahem,nahen,naher,nahes,nähere,näherem,näheren,näherer,näheres,nächste,nächstem,nächsten,nächster,nächstes
-namhaft|ADJX	0.0040	,namhaftesten,namhaftestem,namhafte,namhafteste,namhaftere,namhafteres,namhaftestes,namhafterer,namhaftester,namhafteren,namhaften,namhafterem,namhaftem,namhaftes,namhafter
+nah|ADJX	0.2267	nahe,nahem,nahen,naher,nahes
+namhaft|ADJX	0.0040	namhaftesten,namhaftestem,namhafte,namhafteste,namhaftere,namhafteres,namhaftestes,namhafterer,namhaftester,namhafteren,namhaften,namhafterem,namhaftem,namhaftes,namhafter
 nennenswert|ADJX	0.0040	nennenswerteres,nennenswerterer,nennenswerterem,nennenswertere,nennenswerteren,nennenswerte,nennenswertestem,nennenswertes,nennenswerter,nennenswertesten,nennenswerten,nennenswertestes,nennenswertester,nennenswertem,nennenswerteste
 nett|ADJX	0.1405	netteren,netterem,nette,netten,netteste,netter,nettes,nettere,nettestem,nettem,nettestes,nettester,nettesten,netterer,netteres
 neu|ADJX	0.0040	neuem,neuen,neustem,neusten,neuer,neueste,neustes,neuster,neues,neuerem,neue,neueren,neuester,neueres,neuste,neuestes,neuere,neuerer,neuesten,neuestem
@@ -1495,7 +1495,7 @@ verschlingen|VVINF	0.0040	verschlinge,verschlingst,verschlingest,verschlingt,ver
 verschönern|VVINF	0.0040	verschönere,verschönert,verschönertest,verschöner,verschönerten,verschönerst,verschönerte,verschöneren,verschönertet,verschöndernd
 versichern|VVINF	0.0040	versichertet,versicherst,versicherte,versichere,versichertest,versicheren,versichert,versicherten,versichernd
 versiert|ADJX	0.0040	versiertem,versierteres,versierten,versierterer,versierte,versierterem,versiertes,versierter,versierteren,versiertere,versierteste,versiertestem,versiertesten,versiertestes,versiertester
-verstehen|VVINF	0.0957	verstehe,verstehst,verstehest,versteht,verstehet,verstand,verstandest,verstandst,verstanden,verstandet,verstände,verstünde,verständest,verstündest,verständen,verstünden
+verstehen|VVINF	0.0057	verstehe,verstehst,verstehest,versteht,verstehet,verstand,verstandest,verstandst,verstanden,verstandet,verstände,verstünde,verständest,verstündest,verständen,verstünden
 verständlich|ADJX	0.0978	verständliche,verständlicheres,verständlicherer,verständlichster,verständlichstes,verständlichsten,verständlichstem,verständlichste,verständlicher,verständlicheren,verständlichere,verständlicherem,verständliches,verständlichen,verständlichem
 verstärken|VVINF	0.0040	verstärktest,verstärkt,verstärk,verstärkte,verstärke,verstärktet,verstärket,verstärkest,verstärkten,verstärkst,verstärkend
 versöhnen|VVINF	0.0040	versöhnte,versöhnest,versöhn,versöhnst,versöhnten,versöhnt,versöhne,versöhnet,versöhntet,versöhntest,versöhnend
