@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 class Textarea extends Component {
   constructor (props) {
     super(props);
-    this.border = '0px';
+    this.border = '0';
     this.input = React.createRef();
     this.dummy = React.createRef();
     this.min = React.createRef();

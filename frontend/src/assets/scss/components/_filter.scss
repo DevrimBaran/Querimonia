@@ -10,14 +10,14 @@
     transform: translateY(-100%);
     &::before {
         content: 'Filter';
-        box-shadow: 0 6px rgba(0, 0, 0, 0.22);
+        box-shadow: 0 0.375em rgba(0, 0, 0, 0.22);
         font-size: 1em;
         position: absolute;
         z-index: 9999;
         background-color: #179c7d;
         color: white;
-        border-radius: 0 0 10px 10px;
-        padding: 2px 50px 5px;
+        border-radius: 0 0 0.625em 0.625em;
+        padding: 0.125em 3.125em 0.3125em;
         vertical-align: inherit;
         bottom: 0;
         left: 50%;
@@ -30,7 +30,7 @@
             bottom: 0;
         }
     }
-    @media only screen and (min-width: 1200px) {
+    @media only screen and (min-width: 75em) {
         &.responsive {
             transform: none;
             position: relative;
@@ -45,7 +45,7 @@
         flex-wrap: wrap;
         justify-content: center;
         align-content: center;
-        margin: 10px 15px;
+        margin: 0.625em 0.9375em;
 
     }
     Select.relation {
@@ -64,8 +64,8 @@
     }
     .relation > .remove {
         position: absolute;
-        top: -5px;
-        right: -5px;
+        top: -0.3125em;
+        right: -0.3125em;
     }
     .clause {
         flex-wrap: nowrap;

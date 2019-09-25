@@ -2,23 +2,23 @@
     display: flex;
     flex-wrap: wrap;
     background-color: white;
-    padding: 2px;
-    margin: 0 -10px;
+    padding: 0.125em;
+    margin: 0 -0.625em;
     z-index: 99999;
-    box-shadow: 0 10px 20px -20px black;
+    box-shadow: 0 0.625em 1.25em -1.25em black;
     & > label {
         font-family: inherit;
         white-space: nowrap;
         display: block;
         width: 100%;
-        padding-bottom: 10px;
+        padding-bottom: 0.625em;
         font-size: 1.3em;
         background-color: $white;
         color: $primaryAccentColor;
         font-weight: bolder;
     }
     & > * {
-        padding-left: 10px;
-        padding-right: 10px;
+        padding-left: 0.625em;
+        padding-right: 0.625em;
     }
 }

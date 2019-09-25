@@ -12,16 +12,10 @@ import EditEntityModal from './EditEntityModal';
 class TaggedText extends Component {
   constructor (props) {
     super(props);
-    let config = this.props.active.configuration;
-    let extractorList = [];
-    for (let i = 0; i < config.extractors.length; i++) {
-      extractorList[config.extractors[i].label] = { name: config.extractors[i].name, type: config.extractors[i].type, color: config.extractors[i].color };
-    }
     this.addEntityRef = React.createRef();
     this.state = {
       editActive: false,
       newEntityQuery: null,
-      extractorList: extractorList,
       selectExtractor: '',
       html: null
     };
@@ -40,7 +34,7 @@ class TaggedText extends Component {
         // String before next entity
         !text.substring(cpos, entity.start) || html.push(<span key={key++} data-key={html.length}>{text.substring(cpos, entity.start)}</span>);
         // String that is entity
-        html.push(<Tag key={key++} disabled={this.props.disabled} data-key={html.length} text={text.substring(entity.start, entity.end)} ids={entity.ids} />);
+        html.push(<Tag key={key++} disabled={this.props.disabled} data-key={html.length} text={text.substring(entity.start, entity.end)} ids={entity.ids} config={this.props.active.configuration} />);
         cpos = entity.end;
       }
     }
@@ -54,7 +48,7 @@ class TaggedText extends Component {
   }
 
   render () {
-    const { text, entities, disabled, dispatch, ...passThrough } = { ...this.props };
+    const { text, entities, active, disabled, dispatch, ...passThrough } = { ...this.props };
     return (
       <div {...passThrough}>
         <p>

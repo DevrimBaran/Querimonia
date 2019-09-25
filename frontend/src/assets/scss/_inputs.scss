@@ -3,7 +3,7 @@
 
 $inputMargin: 1% 2% 1% 1%;
 $inputBorderColor: $secondaryBackgroundColor $secondaryBackgroundColor $tertiaryBackgroundColor $secondaryBackgroundColor;
-$inputBorder: 2px solid;
+$inputBorder: 0.125em solid;
 
 %standardSize {
   width: 10em;
@@ -14,38 +14,45 @@ $inputBorder: 2px solid;
   @extend %font;
 }
 
+input[type=reset], input[type=submit], input[type=button]{
+    @extend %font;
+
+    font-size: 1em;
+    font-weight: 700;
+}
+
 .input {
   @extend %font;
   position: relative;
   display: inline-block;
-  padding: 10px 10px;
+  padding: 0.625em 0.625em;
   flex-grow: 1;
   %labelSize {
     font-family: inherit;
     white-space: nowrap;
-    padding: 0 5px;
+    padding: 0 0.3125em;
     font-size: 1em !important;
-    letter-spacing: 1px;
+    letter-spacing: 0.0625em;
     font-weight: bold;
   }
   label {
     @extend %labelSize;
     position: absolute;
-    top: 5px;
+    top: 0.3125em;
     background-color: $white;
     color: $black !important;
-    border-radius: 10px;
-    left: 18px;
+    border-radius: 0.625em;
+    left: 1.125em;
     z-index: 1;
-    line-height: 14px;
+    line-height: 0.875em;
 
     // &::before {
     //   content: '';
-    //   top: 5px;
-    //   left: -4px;
-    //   width: calc(100% + 8px);
+    //   top: 0.3125em;
+    //   left: -0.25em;
+    //   width: calc(100% + 0.5em);
     //   display: block;
-    //   height: 1px;
+    //   height: 0.0625em;
     //   position: relative;
     //   background-color: $white;
     //   box-sizing: content-box;
@@ -55,8 +62,8 @@ $inputBorder: 2px solid;
   .labelspacer {
       @extend %labelSize;
       position: relative;
-      left: 8px;
-      height: 0px;
+      left: 0.5em;
+      height: 0em;
       width: max-content;
       display: block;
       overflow: hidden;
@@ -65,12 +72,12 @@ $inputBorder: 2px solid;
     font-family: inherit;
     background-color: $white;
     color: $primaryTextColor;
-    border: 1px solid $black;
-    border-radius: 10px;
-    padding: 10px 14px;
-    height: 45px;
+    border: 0.0625em solid $black;
+    border-radius: 0.625em;
+    padding: 0.625em 0.875em;
+    height: 2.8125em;
     width: 100%;
-    min-width: 75px;
+    min-width: 4.6875em;
     left: 0;
     font-size: 1em;
     outline: none;
@@ -80,12 +87,12 @@ $inputBorder: 2px solid;
     }
 
     &[type=checkbox], &[type=colorpicker] {
-      min-width: 40px;
-      width: 40px;
-      height: 40px;
+      min-width: 2.5em;
+      width: 2.5em;
+      height: 2.5em;
       text-align: center;
-      line-height: 40px;
-      font-size: 30px;
+      line-height: 2.5em;
+      font-size: 1.875em;
       padding: 0;
       border: none !important;
       -webkit-appearance: none;
@@ -98,8 +105,8 @@ $inputBorder: 2px solid;
         display: block;
         background-color: inherit;
         color: inherit;
-        border: 1px solid $black;
-        border-radius: 10px;
+        border: 0.0625em solid $black;
+        border-radius: 0.625em;
       }
 
       &:hover::after {
@@ -113,14 +120,14 @@ $inputBorder: 2px solid;
     }
 
     &[type=colorpicker] {
-      font-size: 9px;
+      font-size: 0.5625em;
       font-family: monospace;
       cursor: pointer;
       user-select: none;
     }
   }
   &.select.multiple{
-    height: 60px;
+    height: 3.75em;
     &:focus-within {
       z-index: 10;
     }
@@ -133,11 +140,11 @@ $inputBorder: 2px solid;
   }
 
 
-  input[type=submit], input[type=button], button {
-    max-width: 200px;
+  input[type=submit], input[type=reset], input[type=button], button {
+    max-width: 12.5em;
     background-color: $primaryAccentColor;
     color: $white;
-    box-shadow: 0 6px $grey;
+    box-shadow: 0 0.375em $grey;
     border: none;
 
     &:hover {
@@ -146,13 +153,13 @@ $inputBorder: 2px solid;
 
     &:active {
       background-color: $primaryAccentColorActive;
-      box-shadow: 0 4px $dimgray;
+      box-shadow: 0 0.25em $dimgray;
       transform: translateY(2px);
     }
   }
 
   select {
-    padding-left: 10px; /* chrome + ff add aditional padding to selects -.- */
+    padding-left: 0.625em; /* chrome + ff add aditional padding to selects -.- */
 
   }
 
@@ -172,33 +179,33 @@ $inputBorder: 2px solid;
 
 
 ::-webkit-scrollbar-track {
-  border-radius: 10px;
-  border-left: solid 1px $white;
-  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 0.625em;
+  border-left: solid 0.0625em $white;
+  -webkit-box-shadow: inset 0 0 0.375em rgba(0, 0, 0, 0.3);
   background-color: #F5F5F5;
-  margin: 5px;
+  margin: 0.3125em;
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 0.625em;
+  height: 0.625em;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 0.625em;
   background-color: rgba(0, 0, 0, 0.6);
 }
 
 button.action-button{
   background-color: #179c7d;
-  color: #fff;
-  box-shadow: 0 6px rgba(0, 0, 0, 0.22);
+  color: $white !important;
+  box-shadow: 0 0.375em rgba(0, 0, 0, 0.22);
   border: none;
   font-family: inherit;
-  border-radius: 10px;
-  padding: 10px 14px;
-  height: 45px;
-  min-width: 75px;
+  border-radius: 0.625em;
+  padding: 0.625em 0.875em;
+  height: 2.8125em;
+  min-width: 4.6875em;
   left: 0;
   font-size: 1em;
   outline: none;
@@ -206,7 +213,7 @@ button.action-button{
   text-align: center;
   cursor: pointer;
   display: inline-block;
-  margin-bottom: 14px;
+  margin-bottom: 0.875em;
   white-space: nowrap;
 
   &:hover {
@@ -216,7 +223,7 @@ button.action-button{
 
   &:active {
     background-color: $primaryAccentColorActive;
-    box-shadow: 0 4px $dimgray;
+    box-shadow: 0 0.25em $dimgray;
     transform: translateY(2px);
   }
 }
@@ -225,16 +232,18 @@ button.action-button{
     font-weight: bolder;
   }
 
-  [disabled], [disabled]:hover {
-    opacity: 0.4;
+  i[disabled], i[disabled]:hover, [disabled], [disabled]:hover {
+    color: $primaryAccentColorDimed !important;
     cursor: not-allowed;
+  }
+  i:not(.fa-download){
+    color: $primaryAccentColor;
   }
 
 
 // END Icons Design
 
 
-///*
 //*   Buttons
 //**/
 //
@@ -272,7 +281,7 @@ button.action-button{
 //    @extend %font;
 //    @extend %inputs;
 //    @extend %standardSize;
-//    padding-left: 5px;
+//    padding-left: 0.3125em;
 //    margin: $inputMargin;
 //}
 //
@@ -284,9 +293,9 @@ button.action-button{
 //    @extend %inputs;
 //    @extend %font;
 //    width: 100%;
-//    height: 150px;
+//    height: 9.375em;
 //    .visible {
-//        padding-left: 5px;
+//        padding-left: 0.3125em;
 //    }
 //}
 //
@@ -308,11 +317,11 @@ button.action-button{
 //    display: block;
 //    content: "";
 //    float: left;
-//    margin-right: 5px;
+//    margin-right: 0.3125em;
 //}
 //
 //input[type="checkbox"]:checked+label::before {
-//    box-shadow: inset 0px 0px 0px 3px #fff;
+//    box-shadow: inset 0em 0em 0em 0.1875em #fff;
 //    background-color: #8cad2d;
 //}
 

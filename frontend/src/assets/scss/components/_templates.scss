@@ -7,7 +7,7 @@
 .Template h2, .Template .h2{
     font-size: 1.5em;
     font-weight: bold;
-    margin: 0px 0px 6px 0px;
+    margin: 0em 0em 0.375em 0em;
     width: 100%;
 }
 
@@ -16,7 +16,7 @@
     margin: 1%;
     padding: 2%;
     width: 48%;
-    border-radius: 5px;
+    border-radius: 0.3125em;
     overflow: hidden;
     background-color: $primaryBackgroundColor;
 }
@@ -34,11 +34,11 @@
 }
 
 .Template  .id{
-    margin: 0px;
+    margin: 0em;
 }
 
 .Template .floatRight p {
-    margin: 8px 0px 2px 0px;
+    margin: 0.5em 0em 0.125em 0em;
 }
 
 /* 
@@ -46,5 +46,5 @@
 **/
 
 .row.flex-row.height{
-    height: 150px;
+    height: 9.375em;
 }

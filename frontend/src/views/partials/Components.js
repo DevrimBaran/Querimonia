@@ -62,22 +62,22 @@ function Single (active, dispatch, helpers) {
     <React.Fragment>
       <Block>
         <Row>
-          <Row vertical className='max-width center' style={{ width: '50%' }}>
+          <Row vertical className='max-width' style={{ width: '50%' }}>
             <h6 className='center'>Regeln</h6>
-            <DeepObject center save={save} filter={(key) => (key === 'id' || key === 'name' || key === 'priority')} data={active} template={template} />
+            <DeepObject save={save} filter={(key) => (key === 'id' || key === 'name' || key === 'priority')} data={active} template={template} />
             <Content className='xml' style={{ width: '100%' }}>
               <DeepObject save={save} filter={(key) => (key === 'rulesXml')} data={active} template={template} />
             </Content>
           </Row>
-          <Row vertical className='max-width center' style={{ width: '50%' }}>
+          <Row vertical className='max-width' style={{ width: '50%' }}>
             <h6 className='center'>Antwortvariationen</h6>
-            <Content className='margin center'>
-              <DeepObject save={save} filter={(key) => (key === 'texts')} data={active} template={template} />
-            </Content>
+            <DeepObject style={{ overflow: 'hidden' }} save={save} filter={(key) => (key === 'texts')} data={active} template={template} />
+            {/* <Content className='margin center'>
+            </Content> */}
             <h6 className='center'>Aktionen</h6>
-            <Content className='margin'>
-              <DeepObject save={save} filter={(key) => (key === 'actions')} data={active} template={template} />
-            </Content>
+            <DeepObject save={save} filter={(key) => (key === 'actions')} data={active} template={template} />
+            {/* <Content className='margin'>
+            </Content> */}
             <div className='center margin'>
               {helpers.save()}
             </div>

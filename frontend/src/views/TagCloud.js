@@ -144,7 +144,7 @@ class TagCloud extends Component {
     row.append('td')
       .text(d => d.value)
       .style('text-align', 'right')
-      .style('padding-left', '20px');
+      .style('padding-left', '1.25em');
   };
 
     onChange = (e) => {
@@ -193,7 +193,8 @@ class TagCloud extends Component {
       return Math.max(fmax * ((size - tmin) / (tmax - tmin)), fmin);
     };
 
-    fetchData = () => {
+    fetchData = (e) => {
+      e && e.preventDefault();
       this.setState(state => ({ redraw: state.redraw + 1 }));
       Api.get('/api/stats/tagcloud', this.state.query)
         .then(this.lemmatizeData);
@@ -242,14 +243,25 @@ class TagCloud extends Component {
         <React.Fragment>
           <Block>
             <Row vertical>
-              <Form>
+              <Form onSubmit={this.fetchData}>
                 <Input type='date' label='Eingangsdatum (von)' name='date_min' onChange={this.changeQuery} value={this.state.query.date_min} />
                 <Input type='date' label='Eingangsdatum (bis)' name='date_max' onChange={this.changeQuery} value={this.state.query.date_max} />
                 <Input type='number' label='Wortanzahl' name='count' onChange={this.changeQuery} value={this.state.query.count} />
-                <Input type='select' label='Emotion' multiple name='emotion' onChange={this.changeQuery} value={this.state.query.emotion} />
-                <Input type='select' label='Kategorie' multiple name='subject' onChange={this.changeQuery} value={this.state.query.subject} />
+                <Input type='select' label='Emotion' multiple name='emotion' onChange={this.changeQuery} value={this.state.query.emotion} values={[
+                  { label: 'Ekel', value: 'Ekel' },
+                  { label: 'Freude', value: 'Freude' },
+                  { label: 'Furcht', value: 'Furcht' },
+                  { label: 'Kummer', value: 'Kummer' },
+                  { label: 'Verachtung', value: 'Verachtung' },
+                  { label: 'Wut', value: 'Wut' },
+                  { label: 'Überraschung', value: 'Überraschung' }
+                ]} />
+                <Input type='select' label='Kategorie' multiple name='subject' onChange={this.changeQuery} value={this.state.query.subject} values={[
+                  { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
+                  { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
+                  { label: 'Sonstiges', value: 'Sonstiges' }
+                ]} />
                 <Input type='checkbox' label='Nur Wörter' name='words_only' onChange={this.changeQuery} value={this.state.query.words_only} />
-                <Input type='submit' onClick={this.fetchData} value='Aktualisieren' />
               </Form>
               <div style={{ display: 'flex', 'justifyContent': 'space-evenly', 'alignItems': 'center' }}>
                 <span>
@@ -257,7 +269,7 @@ class TagCloud extends Component {
                   <DownloadButton disabled={this.state.listView} icon='fas fa-3x fa-file-image' type='image/svg+xml; charset=utf-8' name='Tagcloud.svg' onClick={this.downloadSvg} />
                 </span>
                 <span>
-                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '90px', '--height': '35px' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
+                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '5.625em', '--height': '2.1875em' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
                 </span>
                 <span>
                   <Input type='checkbox' label='Stammformen' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
@@ -266,7 +278,7 @@ class TagCloud extends Component {
                   <Input type='colorpicker' label='Farbton' name='color' onChange={this.onChange} value={this.state.color} />
                 </span>
               </div>
-              <Content style={{ paddingTop: '0px' }}>
+              <Content style={{ paddingTop: '0em' }}>
                 <D3
                   id='d3Container'
                   render={this.renderCloud}
@@ -280,9 +292,9 @@ class TagCloud extends Component {
                 <div style={{
                   position: 'absolute',
                   backgroundColor: 'white',
-                  top: '-20px',
-                  left: '0px',
-                  right: '0px',
+                  top: '-1.25em',
+                  left: '0em',
+                  right: '0em',
                   height: '100%',
                   display: this.state.listView ? 'block' : 'none'
                 }}>

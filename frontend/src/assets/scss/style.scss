@@ -28,7 +28,16 @@
 @import 'components/form';
 @import 'components/TextBuilder';
 @import 'components/deepObject';
+@import 'components/notifications';
+@import "table";
 
+@each $dpr in (1, 1.1, 1.25, 1.50, 1.75, 2) {
+    @media (resolution: #{$dpr}dppx){
+        body {
+            font-size: #{100% / $dpr};
+        }
+    }
+}
 
 #root {
     display: flex;
@@ -45,10 +54,10 @@
 .Block {
     overflow: auto;
     width: 100%;
-    border-right: 1px solid $grey;
-    margin: 20px;
-    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    border-right: 0.0625em solid $grey;
+    margin: 1.25em;
+    box-shadow: 1.25em 1.25em 2.5em rgba(0, 0, 0, 0.3);
+    border-radius: 0.625em;
     background: $white;
 
     &:last-of-type {
@@ -60,10 +69,10 @@
     width: 100%;
     flex-grow: 0;
     flex-basis: 100%;
-    border-right: 1px solid $grey;
-    margin: 20px;
-    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    border-right: 0.0625em solid $grey;
+    margin: 1.25em;
+    box-shadow: 1.25em 1.25em 2.5em rgba(0, 0, 0, 0.3);
+    border-radius: 0.625em;
     background: $white;
     display: grid;
     grid-template-columns: repeat(2, auto);
@@ -77,27 +86,33 @@
     overflow: auto;
     flex-grow: 1;
     flex-shrink: 1;
+    flex-basis: 100%;
 }
 
 .row {
-    overflow: auto;
     height: 100%;
     width: 100%;
 
     &.flex-column {
-        overflow-x: hidden;
+        overflow-y: auto;
+        & > .content {
+            max-height: fit-content;
+        }
         &.fit {
             height: auto;
             width: max-content;
         }
         & > * {
-            padding: 20px 20px 0;
+            padding: 1.25em 1.25em 0;
         }
     }
 
     &.flex-row {
-        overflow-y: hidden;
+        overflow-x: auto;
         justify-content: space-between;
+        & > .content {
+            max-width: fit-content;
+        }
         &.fit {
             width: auto;
             height: max-content;
@@ -125,12 +140,12 @@
     position: absolute;
     top: 0;
     content: "€";
-    right: 18px;
+    right: 1.125em;
 }
 
 .complaintSummary {
     background-color: var(--primaryBackgroundColor);
-    padding: 0.5em 30px 1em 30px;
+    padding: 0.5em 1.875em 1em 1.875em;
     color: $black;
 
     &:hover {
@@ -152,7 +167,7 @@
     }
 
     h3 {
-        margin: 0px;
+        margin: 0em;
     }
 
     .date {
@@ -182,7 +197,7 @@
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        padding: 10px 5px;
+        padding: 0.625em 0.3125em;
     }
 
     textarea.dummy {
@@ -201,11 +216,11 @@
 }
 
 .dot {
-    height: 10px;
-    width: 10px;
+    height: 0.625em;
+    width: 0.625em;
     border-radius: 50%;
     display: inline-block;
-    margin-left: 5px;
+    margin-left: 0.3125em;
 }
 
 .plus-item {
@@ -213,19 +228,19 @@
     opacity: 0.15;
     color: $primary;
     cursor: pointer;
-    bottom: 10px;
-    right: 30px;
+    bottom: 0.625em;
+    right: 1.875em;
     border-radius: 50%;
 }
 
 .action-button {
     cursor: pointer;
-    padding: 5px;
+    padding: 0.3125em;
 }
 
 .action-button-disabled {
     cursor: default;
-    padding: 5px;
+    padding: 0.3125em;
     color: rgb(150, 150, 150);
 }
 
@@ -233,111 +248,14 @@
     color: rgb(196, 100, 22);
 }
 
+.crone:hover {
+    filter: brightness(80%);
+}
+
 :hover > .plus-item {
     opacity: 1;
     background: white;
 }
-
-.responsive-table {
-    width: 90%;
-    height: 100%;
-    margin: 0 auto;
-    overflow: auto;
-    border-radius: 10px;
-    clear: both;
-
-    table {
-        // margin: 0px auto;
-        position: relative;
-        width: 100%;
-        border-spacing: 0;
-        border-collapse: collapse;
-    }
-
-    thead {
-        box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.4);
-        padding-bottom: 2px;
-    }
-
-    thead th {
-        background-color: $primary;
-        color: $white;
-        position: sticky;
-        text-align: left;
-        max-width: 600px;
-        margin-bottom: 20px;
-        padding: 15px 20px;
-        top: 0;
-
-        &:last-child {
-            right: 0;
-            z-index: 2;
-        }
-    }
-
-    tbody th {
-        position: sticky;
-        padding: 10px 0 10px 10px;
-        right: 0;
-        z-index: 1;
-        background-color: inherit;
-        border-left: 1px solid transparent;
-        .row {
-            align-items: center;
-            justify-content: space-evenly;
-        }
-    }
-
-    tbody td {
-        max-width: 600px;
-        padding: 15px 20px;
-        text-align: left;
-    }
-
-    tbody tr {
-        box-shadow: 0 10px 20px -20px black;
-        background-color: $white;
-    }
-
-    tbody tr:nth-of-type(even) {
-        background-color: $lightgrey;
-    }
-
-    tbody tr:hover {
-        background-color: #d1ebe5;
-    }
-}
-.stats-table {
-    width: calc(100%);
-    height: 100%;
-    border-radius: 10px;
-    clear: both;
-    table {
-        position: relative;
-        width: 100%;
-        border-spacing: 0;
-
-    }
-    tbody th {
-        background: $primary;
-        color: $white;
-        position: sticky;
-        text-align: center;
-        max-width: 600px;
-        margin-bottom: 20px;
-        padding: 20px 0;
-
-        &:first-child {
-            left: 0;
-            z-index: 2;
-        }
-    }
-    tbody td {
-        padding: 15px 10px;
-        text-align: center;
-    }
-}
-
 
 .object > .object {
     display: flex;
@@ -351,7 +269,7 @@
 }
 
 .padding {
-    padding: 0 30px;
+    padding: 0 1.875em;
 }
 
 #editor {
@@ -362,7 +280,7 @@
 #Import {
     textarea {
         width: 100%;
-        max-width: 600px;
+        max-width: 37.5em;
         margin: auto;
         display: block;
         margin-bottom: 1em;
@@ -370,17 +288,14 @@
 }
 
 .log {
-    padding: 5px;
+    padding: 0.3125em;
 
     .category {
         font-weight: bold;
     }
 
-    .datetime {
-    }
-
     .message {
-        padding: 0 20px;
+        padding: 0 1.25em;
         word-break: break-all;
     }
 }

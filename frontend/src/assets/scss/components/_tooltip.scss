@@ -9,8 +9,8 @@
 .tooltip {
     z-index: 99999;
     position: absolute;
-    border: 1px solid $black;
-    padding: 10px 20px;
+    border: 0.0625em solid $black;
+    padding: 0.625em 1.25em;
     background-color: #fff;
     &.top {
         transform: translate3d(-50%, -100%, 0);

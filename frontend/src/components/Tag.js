@@ -91,8 +91,7 @@ class Tag extends Component {
 const mapStateToProps = (state, props) => {
   return {
     entities: state.complaintStuff.entities,
-    complaintId: state.complaintStuff.id,
-    config: state.complaintStuff.config
+    complaintId: state.complaintStuff.id
   };
 };
 

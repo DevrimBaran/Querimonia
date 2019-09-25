@@ -272,7 +272,7 @@ export function refreshResponses (id) {
     dispatch({
       type: 'REFRESH_RESPONSES_START'
     });
-    Api.get('/api/complaints/' + id + '/response', {})
+    Api.patch('/api/complaints/' + id + '/response/refresh', {})
       .then(data => {
         dispatch({
           type: 'REFRESH_RESPONSES_END',
@@ -285,20 +285,31 @@ export function refreshResponses (id) {
 export function fetchStuff (id) {
   return function (dispatch, getState) {
     if (!getState().complaints.data.byId[id]) return;
-    const { configuration } = getState().complaints.data.byId[id];
+    const { state } = getState().complaints.data.byId[id];
     dispatch({
       type: 'FETCH_SINGLE_COMPLAINT_START',
       id: id
     });
+    if (state === 'NEW') {
+      Api.patch('/api/complaints/' + id, { state: 'IN_PROGRESS' })
+        .then(data => {
+          console.log(data);
+          dispatch({
+            type: 'UPDATE_SINGLE',
+            endpoint: 'complaints',
+            data: data
+          });
+        });
+    };
     dispatch((dispatch) => {
       Promise.all([
         Api.get('/api/complaints/' + id + '/entities', {}),
         Api.get('/api/complaints/' + id + '/response', {}),
         Api.get('/api/combinations/' + id, {}),
         Api.get('/api/complaints/' + id + '/log', {}),
-        Api.get('/api/complaints/' + id + '/text', {}),
-        Api.get('/api/config/' + configuration.id, {})
+        Api.get('/api/complaints/' + id + '/text', {})
       ]).then(data => {
+        console.log(data);
         dispatch({
           type: 'FETCH_SINGLE_COMPLAINT_END',
           entities: data[0],
@@ -306,8 +317,7 @@ export function fetchStuff (id) {
           actions: data[1].actions,
           combinations: data[2],
           log: data[3],
-          text: data[4].text,
-          config: data[5]
+          text: data[4].text
         });
       });
     });

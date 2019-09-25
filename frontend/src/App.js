@@ -8,6 +8,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import View from './components/View';
+import Notifications from './components/Notifications';
 
 import Home from './views/Home';
 import Import from './views/Import';
@@ -166,6 +167,7 @@ class App extends Component {
           {login.access === 1 &&
             <View hotkey='K' label='Konfigurationen' endpoint='config' path='configurations' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />}
           <View menu='bottomMenu' hotkey='?' label='Impressum (?)' path='/impressum' component={Impressum} />
+          <Notifications />
         </Router>
       </React.Fragment>
     );

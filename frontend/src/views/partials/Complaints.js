@@ -56,6 +56,7 @@ const sortedEntities = (data, complaintId, dispatch, disabled) => {
       <Tag text={entity.value} ids={[entity.id]} disabled={disabled} />,
       <Button
         disabled={disabled}
+        className='crone'
         onClick={() => dispatch(changeEntity(complaintId, entity.id, { preferred: !entity.preferred }))}
         style={{ color: (entity.preferred ? 'orange' : 'lightgray') }}
         icon={'fas fa-crown'}
@@ -68,11 +69,10 @@ function Header () {
   return (
     <thead>
       <tr>
-        <th>Anliegen</th>
+        <th>Nr.</th>
         <th>Status</th>
         <th>Vorschau</th>
-        <th>Emotion</th>
-        <th>Sentiment</th>
+        <th>Emotion / Sentiment</th>
         <th>Kategorie</th>
         <th>Datum</th>
         <th>Aktionen</th>
@@ -94,8 +94,8 @@ function Overlay (dispatch, filter) {
     e.stopPropagation();
     return api.get(`/api/complaints/xml`, query, null, 'blob');
   };
-  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-file-code'
-    onClick={xml}>Gefilterte Beschwerden herunterladen</DownloadButton>;
+  return <DownloadButton name={`Beschwerden${Date.now()}.xml`} type='text/xml; charset=utf-8' icon='fas fa-download'
+    onClick={xml}>Beschwerden herunterladen</DownloadButton>;
 }
 
 function List (data, dispatch, helpers) {
@@ -115,15 +115,14 @@ function List (data, dispatch, helpers) {
       <td>{data.id}</td>
       <td>{states[data.state]}</td>
       <td>{data.preview}</td>
-      <td>{data.sentiment.emotion.value}</td>
-      <td><Sentiment tendency={data.sentiment.tendency} /></td>
+      <td>{data.sentiment.emotion.value} / <Sentiment tendency={data.sentiment.tendency} /> </td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
       <th>
         <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
           icon={data.state === 'ANALYSING' ? 'fas fa-sync fa-spin' : 'fas fa-sync'} onClick={refresh} />
         <DownloadButton name={`Anliegen ${data.id}.xml`} type='text/xml; charset=utf-8'
-          disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-code'
+          disabled={data.state === 'ANALYSING' || data.state === 'ERROR'} icon='fas fa-file-download'
           onClick={xml} />
         {helpers.remove}
       </th>
@@ -178,8 +177,15 @@ function Single (active, dispatch, helpers) {
         <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
         <Collapsible label='Details' />
         <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
-          ['Konfiguration', (<Link to={'/configurations/' + active.configuration.id}>
-            {active.configuration.name + ' (' + active.configuration.id + ')'}</Link>)],
+          ['Konfiguration', (
+            active.configuration ? (
+              <Link to={'/configurations/' + active.configuration.id}>
+                {active.configuration.name + ' (' + active.configuration.id + ')'}
+              </Link>
+            ) : (
+              <span>gelöscht</span>
+            )
+          )],
           ['Eingangsdatum', (localize(active.receiveDate))],
           ['Eingangszeit', (active.receiveTime)],
           ['Status', (states[active.state])],

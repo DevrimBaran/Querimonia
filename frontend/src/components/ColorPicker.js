@@ -143,7 +143,6 @@ class ColorPicker extends Component {
                 return <input key={c} type='checkbox' checked={false} onChange={this.onSelect} name={c} value={color.background()} style={{ borderWidth: '0', backgroundColor: color.background(), color: color.font() }} />;
               })}
             </div>
-            {/* <canvas onClick={this.canvasClick} ref={this.canvas} width='100px' height='100px' style={{ padding: '0', width: '100px', height: '100px', borderRadius: '50%' }} /> */}
             <div className='hslpicker'>
               <div className='fas' onClick={this.hueClick} style={{ '--perc': this.state.h / 360 }}>
                 <svg width='100%' height='100%'>

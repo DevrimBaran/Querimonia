@@ -19,9 +19,12 @@ export default {
     },
     texts: {
       type: 'array',
+      attributes: {
+        className: 'content'
+      },
       children: {
         type: 'textarea',
-        label: '#$i',
+        label: 'Antwortvariation',
         attributes: {
           min: 2,
           max: 5
@@ -38,33 +41,9 @@ export default {
             type: 'text',
             label: 'Name'
           },
-          actionCode: {
-            type: 'select',
-            label: 'Art',
-            attributes: {
-              values: [
-                { value: 'ATTACH_VOUCHER', label: 'Gutschein' },
-                { value: 'SEND_MAIL', label: 'E-Mail' }
-              ]
-            }
-          },
-          parameters: {
-            type: 'object',
-            label: 'Parameter',
-            children: {
-              'E-Mail': {
-                type: 'text',
-                label: 'E-Mail'
-              },
-              Text: {
-                type: 'text',
-                label: 'Text'
-              },
-              Gutscheinwert: {
-                type: 'number',
-                label: 'Gutscheinwert'
-              }
-            }
+          email: {
+            type: 'mail',
+            label: 'E-Mail'
           }
         }
       }

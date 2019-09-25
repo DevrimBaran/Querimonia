@@ -38,7 +38,6 @@ class DeepObject extends Component {
   add = () => {
     const newData = this.props.data.slice();
     newData.push(this.templateToDefault(this.props.template.children));
-    console.log('add', newData);
     if (this.props.deepChange) {
       this.props.deepChange(this.props.name, newData);
     } else {
@@ -99,6 +98,7 @@ class DeepObject extends Component {
       } else {
         return (
           <span className='deep-array' key={key}>
+            #{Number(key) + 1}
             <Input type={template.type} key={key} label={template.label.replace(/\$i/g, (Number(key) + 1))} {...template.attributes} value={value} name={key} onChange={this.onChange} />
             <i className='fa fa-trash' onClick={this.remove(key)} />
           </span>
@@ -113,7 +113,7 @@ class DeepObject extends Component {
         return (
           <React.Fragment>
             {template.label && template.label.indexOf('$i') === -1 && <h3>{template.label}</h3>}
-            {data.map(this.renderIndex)}
+            <div className='array-items'>{data.map(this.renderIndex)}</div>
             <i className='fa fa-plus' onClick={this.add} />
           </React.Fragment>
         );
@@ -132,17 +132,17 @@ class DeepObject extends Component {
     }
   }
   render () {
-    console.log('render');
+    const { save, filter, data, template, deepChange, className = '', ...passThrough } = { ...this.props };
     if (this.props.template) {
       if (this.isArray()) {
         return (
-          <div className='deep-object'>
+          <div className={className + ' deep-object'} {...passThrough}>
             {this.renderData(this.props.data)}
           </div>
         );
       } else {
         return (
-          <div className='object'>
+          <div className={className + ' object'} {...passThrough}>
             {this.renderData(this.props.data)}
           </div>
         );

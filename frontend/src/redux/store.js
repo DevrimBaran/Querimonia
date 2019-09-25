@@ -45,7 +45,7 @@ const initialState = {
         name: 'sentiment',
         type: 'select',
         multiple: 'multiple',
-        icon: 'utf8 masks', // 'fas fa-theater-masks',
+        icon: 'fas fa-theater-masks',
         values: [
           { label: 'Ekel', value: 'Ekel' },
           { label: 'Freude', value: 'Freude' },
@@ -61,11 +61,11 @@ const initialState = {
         name: 'subject',
         type: 'select',
         multiple: 'multiple',
+        icon: 'fas fa-bars',
         values: [
           { label: 'Fahrt nicht erfolgt', value: 'Fahrt nicht erfolgt' },
           { label: 'Fahrer unfreundlich', value: 'Fahrer unfreundlich' },
           { label: 'Sonstiges', value: 'Sonstiges' }
-
         ]
       },
       {
@@ -73,6 +73,7 @@ const initialState = {
         name: 'sort_by',
         type: 'select',
         multiple: 'multiple',
+        icon: 'fas fa-sort',
         values: [
           { label: 'Eingangsdatum (absteigend)', value: 'upload_date_asc' },
           { label: 'Eingangsdatum (aufsteigend)', value: 'upload_date_desc' },
@@ -85,12 +86,14 @@ const initialState = {
       {
         label: 'Eingangsdatum (von)',
         name: 'date_min',
-        type: 'date'
+        type: 'date',
+        icon: 'fas fa-calendar-day'
       },
       {
         label: 'Eingangsdatum (bis)',
         name: 'date_max',
-        type: 'date'
+        type: 'date',
+        icon: 'fas fa-calendar-day'
       }
     ],
     pagination: {

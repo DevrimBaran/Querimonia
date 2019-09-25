@@ -5,6 +5,8 @@
 @import "font-awesome/solid";
 @import "_style";
 @import "_images";
+@import "_table";
+
 
 * {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
@@ -149,7 +151,7 @@ textarea {
     width: 100%;
     padding: 0em;
     font-size: 1em;
-    margin: 8px 0;
+    margin: 0.5em 0;
     border: none;
     box-sizing: border-box;
     color: var(--primaryTextColor);
@@ -178,7 +180,7 @@ textarea:focus {
     float: left;
 }
 .complaintSummary h3 {
-    margin: 0px;
+    margin: 0em;
 }
 .complaintSummary .date {
     float: left;
@@ -193,7 +195,7 @@ textarea:focus {
 }
 /* Dieser Schatten umgibt groessere Fenster */
 .shadow {
-    box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 1.25em 1.25em 2.5em rgba(0, 0, 0, 0.3);
     background-color: var(--secondaryBackgroundColor);
 }
 

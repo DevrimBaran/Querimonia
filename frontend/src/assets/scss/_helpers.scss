@@ -1,12 +1,12 @@
 .center {
     text-align: center;
     justify-content: center;
-    margin: 0px auto;
+    margin: 0em auto;
 }
 .centerleft {
     text-align: left;
     justify-content: center;
-    margin: 0px auto;
+    margin: 0em auto;
 }
 .underline {
     text-decoration: underline;
@@ -23,6 +23,8 @@
 
 .max-width{
     max-width: 30em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .paddingVertical {
@@ -52,7 +54,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    font-size: 90px;
+    font-size: 5.625em;
     transform: translate(-50%, -50%);
     animation: fa-spin-center 1s infinite steps(8);
 }
@@ -106,9 +108,9 @@
         position: absolute;
         left: 50%;
         bottom: 100%;
-        border: 1px solid $grey;
+        border: 0.0625em solid $grey;
         background-color: $white;
-        padding: 10px;
+        padding: 0.625em;
         transform: translateX(-50%); 
         display: none;
         z-index: 99999;
@@ -119,12 +121,12 @@
             transform-origin: center center;
             transform: rotate(45deg);
             background-color: $white;
-            border-bottom: 1px solid $grey;
-            border-right: 1px solid $grey;
-            width: 14px;
-            height: 14px;
-            top: 18px;
-            left: calc(50% - 7px);
+            border-bottom: 0.0625em solid $grey;
+            border-right: 0.0625em solid $grey;
+            width: 0.875em;
+            height: 0.875em;
+            top: 1.125em;
+            left: calc(50% - 0.4375em);
         }
     }
     &:hover {

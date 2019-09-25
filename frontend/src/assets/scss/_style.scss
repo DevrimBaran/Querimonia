@@ -17,7 +17,7 @@ body {
     flex-direction: column;
     justify-content: center;
     left: 0;
-    padding: 20px 0;
+    padding: 1.25em 0;
     position: absolute;
     right: 0;
     top: 0;
@@ -70,14 +70,14 @@ body {
 .tag-item-tooltip {
     background: #c01916;
     color: white;
-    margin-top: 5px;
+    margin-top: 0.3125em;
     z-index: 100;
     display: none;
-    padding: 15px;
-    font-size: 14px;
+    padding: 0.9375em;
+    font-size: 0.875em;
     line-height: 1;
     position: absolute;
-    min-width: 60px;
+    min-width: 3.75em;
     left: 50%;
     transform: translateX(-50%);
     text-align: center;

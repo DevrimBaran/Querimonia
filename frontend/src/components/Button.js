@@ -11,12 +11,11 @@ import { withRouter } from 'react-router-dom';
 class Button extends Component {
   onClick = (e) => {
     e.stopPropagation();
+    e.preventDefault();
     if (!this.props.disabled) {
       if (!this.props.confirm || window.confirm(this.props.confirm)) {
         this.props.onClick && this.props.onClick(e);
         this.props.href && this.props.history.push(this.props.href);
-      } else {
-        e.preventDefault();
       }
     }
     return false;
