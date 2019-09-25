@@ -250,7 +250,7 @@ public class ComplaintControllerTest {
     ResponseEntity<?> responseEntity =
         complaintController.uploadComplaint(new MockMultipartFile("TestFile.txt", "TestFile.txt",
             "text/plain",
-            testText.getBytes(Charset.defaultCharset())), Optional.of(1L), Optional.empty());
+            testText.getBytes(Charset.forName("UTF-8"))), Optional.of(1L), Optional.empty());
     assertEquals("Wrong status code on success", HttpStatus.CREATED,
         responseEntity.getStatusCode());
     Complaint body = (Complaint) responseEntity.getBody();

@@ -28,14 +28,16 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   private long id;
 
   @JoinColumn(name = "component_id")
-  @ManyToOne()
+  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
   @NonNull
   private ResponseComponent component = new ResponseComponent();
 
-  @OneToMany()
+  @OneToMany(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "component_id")
   @NonNull
   private List<NamedEntity> entities = new ArrayList<>();
+
+  private boolean used = false;
 
   /**
    * Creates a new completed response component. Can also be used for JSON creation.
@@ -50,10 +52,21 @@ public class CompletedResponseComponent implements Identifiable<Long> {
           ResponseComponent component,
       @NonNull
       @JsonProperty("entities")
-          List<NamedEntity> entities
+          List<NamedEntity> entities,
+      @JsonProperty("used")
+          boolean used
   ) {
     this.entities = entities;
     this.component = component;
+    this.used = used;
+  }
+
+  public CompletedResponseComponent(
+      @NonNull ResponseComponent component,
+      @NonNull List<NamedEntity> entities) {
+    this.component = component;
+    this.entities = entities;
+    this.used = false;
   }
 
   @SuppressWarnings("unused")
@@ -84,5 +97,14 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   @Override
   public Long getId() {
     return id;
+  }
+
+  /**
+   * This is true, if the component is already used in the response text.
+   *
+   * @return true, if the component is used in the response text, else false.
+   */
+  public boolean isUsed() {
+    return used;
   }
 }

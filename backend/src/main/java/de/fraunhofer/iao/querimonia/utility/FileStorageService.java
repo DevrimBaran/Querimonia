@@ -113,7 +113,8 @@ public class FileStorageService {
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
         case ".txt":
-          text = Files.readString(Paths.get(fullFilePath), Charset.defaultCharset());
+          System.out.println(Charset.defaultCharset().displayName());
+          text = Files.readString(Paths.get(fullFilePath), Charset.forName("UTF-8"));
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));

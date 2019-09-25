@@ -18,12 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -56,8 +53,7 @@ public class StatsController {
   /**
    * Combines two lists into one.
    */
-  private static <T> List<T> combineLists(List<T> list1,
-                                                      List<T> list2) {
+  private static <T> List<T> combineLists(List<T> list1, List<T> list2) {
     list1.addAll(list2);
     return list1;
   }
@@ -289,9 +285,13 @@ public class StatsController {
           .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
           .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
           // get their word lists
-          .map(Complaint::getResponseSuggestion).map(ResponseSuggestion::getResponseComponents)
+          .map(Complaint::getResponseSuggestion)
+          .filter(Objects::nonNull)
+          .map(ResponseSuggestion::getResponseComponents)
           .reduce(new ArrayList<>(), StatsController::combineLists)
-          .stream().map(CompletedResponseComponent::getComponent).map(ResponseComponent::getId)
+          .stream()
+          .map(CompletedResponseComponent::getComponent)
+          .map(ResponseComponent::getId)
           .forEach(id -> result.merge(id, 1, Integer::sum));
       if (maxComplaintCount != Integer.MAX_VALUE) {
         LinkedHashMap<Long, Integer> resultFixSize = new LinkedHashMap<>();
