@@ -148,7 +148,7 @@ public class FileStorageService {
       return text;
     } catch (IOException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
+          "Fehler beim Dateiupload:\n" + e.getMessage(), e, "Server Error");
     }
   }
 
