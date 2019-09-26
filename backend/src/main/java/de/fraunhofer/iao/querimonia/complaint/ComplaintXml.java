@@ -119,6 +119,7 @@ public class ComplaintXml {
     output.emotion = new Classifier();
     output.emotion.step = 4;
     output.emotion.software = "Querimonia-Emotion";
+    output.emotion.classList = new LinkedList<>();
 
     for (Map.Entry<String, Double> entry:
         complaint.getSentiment().getEmotion().getProbabilities().entrySet()) {
