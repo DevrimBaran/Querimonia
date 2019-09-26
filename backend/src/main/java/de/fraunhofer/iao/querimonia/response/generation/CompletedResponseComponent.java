@@ -28,7 +28,7 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   private long id;
 
   @JoinColumn(name = "component_id")
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  @ManyToOne(cascade = {CascadeType.PERSIST})
   @NonNull
   private ResponseComponent component = new ResponseComponent();
 
