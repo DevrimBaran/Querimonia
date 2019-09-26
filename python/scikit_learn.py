@@ -27,4 +27,3 @@ def classify(text):
                      "Sonstiges": pickle_model.predict_proba(input_data)[0][4]}
 
     return probabilities
-    
