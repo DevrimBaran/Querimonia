@@ -18,5 +18,10 @@ public enum ClassifierType {
   /**
    * Defines that no classifier should be used.
    */
-  NONE
+  NONE,
+
+  /**
+   * Our own Classifier.
+   */
+  ML_CLASSIFIER
 }
