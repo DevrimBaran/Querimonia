@@ -9,14 +9,14 @@ def classify(text):
     inputDF = pandas.DataFrame()
     inputDF['text'] = texts
 
-    pkl_vectorizer = "C:/Users/baran/PycharmProjects/test/resources/pickle_CountVector_model.pkl"
+    pkl_vectorizer = "/pickle_CountVector_model.pkl"
     with open(pkl_vectorizer, 'rb') as file:
         pickle_count_vec_model = pickle.load(file)
 
     # transform the training and validation data using count vectorizer object
     input_data = pickle_count_vec_model.transform(inputDF['text'])
 
-    pkl_model = "C:/Users/baran/PycharmProjects/test/resources/pickle_model.pkl"
+    pkl_model = "/resources/pickle_model.pkl"
     with open(pkl_model, 'rb') as file:
         pickle_model = pickle.load(file)
 
