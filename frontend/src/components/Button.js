@@ -21,7 +21,7 @@ class Button extends Component {
     return false;
   }
   render () {
-    const { icon, onClick, disabled, children, confirm, href, className = '', staticContext, ...passThrough } = { ...this.props };
+    const { icon, onClick, disabled, children, confirm, href, className = '', staticContext, history, location, match, ...passThrough } = { ...this.props };
     if (children) {
       return (
         <button disabled={disabled} onClick={this.onClick} className={className + ' action-button'} {...passThrough}>

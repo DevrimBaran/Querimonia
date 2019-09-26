@@ -20,7 +20,9 @@
 .padding {
     padding: $standardpadding;
 }
-
+.grid {
+    display: grid;
+}
 .max-width{
     max-width: 30em;
     margin-left: auto;
