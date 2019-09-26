@@ -55,7 +55,6 @@ public class ResponseComponentManager {
     this.fileStorageService = fileStorageService;
   }
 
-
   /**
    * Add a new component to the repository.
    *
