@@ -106,6 +106,32 @@ public class ComplaintXml {
 
       output.classifier.classList.add(classes);
     }
+
+    output.sentiment = new Classifier();
+    output.sentiment.step = 3;
+    output.sentiment.type = "sentiment";
+    output.sentiment.software = "Querimonia-Sentiment";
+
+    Classes sentimentClasses = new Classes();
+    sentimentClasses.confidence = complaint.getSentiment().getTendency();
+    output.sentiment.classList = List.of(sentimentClasses);
+
+    output.emotion = new Classifier();
+    output.emotion.step = 4;
+    output.emotion.software = "Querimonia-Emotion";
+
+    for (Map.Entry<String, Double> entry:
+        complaint.getSentiment().getEmotion().getProbabilities().entrySet()) {
+      Classes classes = new Classes();
+      classes.classification = entry.getKey();
+      classes.confidence = entry.getValue();
+
+      classes.best = complaint.getSentiment().getEmotion().getValue().equals(entry.getKey()) ? "true" :
+          null;
+
+      output.classifier.classList.add(classes);
+    }
+
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
@@ -183,6 +209,12 @@ public class ComplaintXml {
 
     @XmlPath("analysis[2]")
     public Classifier classifier;
+
+    @XmlPath("analysis[3]")
+    public Classifier sentiment;
+
+    @XmlPath("analysis[4]")
+    public Classifier emotion;
   }
 
   @XmlAccessorType(XmlAccessType.FIELD)
@@ -277,6 +309,8 @@ public class ComplaintXml {
 
     @XmlAttribute(name = "best-class")
     public String best;
+
+    @XmlAttribute()
 
     @XmlValue
     public String classification;
