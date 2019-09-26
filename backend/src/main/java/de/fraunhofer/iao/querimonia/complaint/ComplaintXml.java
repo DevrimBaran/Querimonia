@@ -129,7 +129,7 @@ public class ComplaintXml {
       classes.best = complaint.getSentiment().getEmotion().getValue().equals(entry.getKey()) ? "true" :
           null;
 
-      output.classifier.classList.add(classes);
+      output.emotion.classList.add(classes);
     }
 
   }
