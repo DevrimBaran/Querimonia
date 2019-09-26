@@ -4,6 +4,7 @@ import de.fraunhofer.iao.querimonia.config.Configuration;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.utility.WebSocketController;
 import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.utility.log.ComplaintLog;
 import de.fraunhofer.iao.querimonia.utility.log.LogCategory;
@@ -145,8 +146,7 @@ public class ComplaintBuilder {
     return this;
   }
 
-  @SendTo("")
-  private String broadcastStateChange(ComplaintState oldState) {
+  private void broadcastStateChange(ComplaintState oldState) {
     JSONObject response = new JSONObject();
     try {
       response.put("id", this.id);
@@ -155,7 +155,7 @@ public class ComplaintBuilder {
     } catch (JSONException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler");
     }
-    return response.toString();
+    new WebSocketController().stateChange(response.toString());
   }
 
   /**
