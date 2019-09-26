@@ -29,6 +29,8 @@ public class ClassifierFactory {
         return new MockClassifier(
             definition.getCategoryName(),
             ((MockClassifierDefinition) definition).getExpectedCategories());
+      case ML_CLASSIFIER:
+        return new MlClassifier();
       default:
         throw new IllegalArgumentException(
             "Unbekannter Typ: " + definition.getClassifierType().name());

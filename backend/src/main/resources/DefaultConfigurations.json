@@ -53,14 +53,106 @@
       {
         "name": "Farbfestlegung für Eingangsdatum",
         "type": "NONE",
-        "color": "#c7c7c7",
+        "color": "#b4beda",
         "label": "Eingangsdatum"
       },
       {
         "name": "Farbfestlegung für Eingangszeit",
         "type": "NONE",
-        "color": "#c7c7c7",
+        "color": "#cdd9b5",
         "label": "Eingangszeit"
+      },
+      {
+        "name": "Email Extraktor",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#800080",
+        "label": "E-Mail"
+      }
+    ],
+    "classifiers": [
+      {
+        "type": "KIKUKO_CLASSIFIER",
+        "name": "beschwerde3klassifikator3",
+        "propertyName": "Kategorie"
+      }
+    ],
+    "sentimentAnalyzer": {
+      "type": "QUERIMONIA_SENTIMENT",
+      "name": "Querimonia-Sentiment-Analyse"
+    },
+    "emotionAnalyzer": {
+      "type": "QUERIMONIA_EMOTION",
+      "name": "Querimonia-Emotionsanalyse"
+    }
+  },
+  {
+    "name": "Volle Konfiguration mit simplem Klassifikator",
+    "extractors": [
+      {
+        "name": "Linien Extraktor",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#aff4fa",
+        "label": "Linie"
+      },
+      {
+        "name": "[Extern] Geldbetrag",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#f5ff8a",
+        "label": "Geldbetrag"
+      },
+      {
+        "name": "Vorgangsnummer",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#ffaeae",
+        "label": "Vorgangsnummer"
+      },
+      {
+        "name": "[Regex] Datums Extraktion 2",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#c7c7c7",
+        "label": "Datum"
+      },
+      {
+        "name": "[Extern] Person",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#ffaeae",
+        "label": "Name"
+      },
+      {
+        "name": "[Extern] Telefonnummer",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#acc2b9",
+        "label": "Telefonnummer"
+      },
+      {
+        "name": "[Fuzzy] Haltestellen",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#408080",
+        "label": "Haltestelle"
+      },
+      {
+        "name": "[Fuzzy] Ortsnamen",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#cdfa8f",
+        "label": "Ort"
+      },
+      {
+        "name": "Farbfestlegung für Eingangsdatum",
+        "type": "NONE",
+        "color": "#b4beda",
+        "label": "Eingangsdatum"
+      },
+      {
+        "name": "Farbfestlegung für Eingangszeit",
+        "type": "NONE",
+        "color": "#cdd9b5",
+        "label": "Eingangszeit"
+      },
+      {
+        "name": "Email Extraktor",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#800080",
+        "label": "E-Mail"
       }
     ],
     "classifiers": [
@@ -133,14 +225,106 @@
       {
         "name": "Farbfestlegung für Eingangsdatum",
         "type": "NONE",
-        "color": "#c7c7c7",
+        "color": "#bfb7d7",
         "label": "Eingangsdatum"
       },
       {
         "name": "Farbfestlegung für Eingangszeit",
         "type": "NONE",
-        "color": "#c7c7c7",
+        "color": "#a7e7bd",
         "label": "Eingangszeit"
+      },
+      {
+        "name": "Email Extraktor",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#b4bde4",
+        "label": "E-Mail"
+      }
+    ],
+    "classifiers": [
+      {
+        "type": "KIKUKO_CLASSIFIER",
+        "name": "beschwerde3klassifikator3",
+        "propertyName": "Kategorie"
+      }
+    ],
+    "sentimentAnalyzer": {
+      "type": "NONE",
+      "name": "Ohne Sentiment-Analyse"
+    },
+    "emotionAnalyzer": {
+      "type": "NONE",
+      "name": "Ohne Sentiment-Analyse"
+    }
+  },
+  {
+    "name": "Ohne Sentiment-Analyse mit simplem Klassifikator",
+    "extractors": [
+      {
+        "name": "Linien Extraktor",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#aff4fa",
+        "label": "Linie"
+      },
+      {
+        "name": "[Extern] Geldbetrag",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#f5ff8a",
+        "label": "Geldbetrag"
+      },
+      {
+        "name": "Vorgangsnummer",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#ffaeae",
+        "label": "Vorgangsnummer"
+      },
+      {
+        "name": "[Regex] Datums Extraktion 2",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#c7c7c7",
+        "label": "Datum"
+      },
+      {
+        "name": "[Extern] Person",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#ffaeae",
+        "label": "Name"
+      },
+      {
+        "name": "[Extern] Telefonnummer",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#acc2b9",
+        "label": "Telefonnummer"
+      },
+      {
+        "name": "[Fuzzy] Haltestellen",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#408080",
+        "label": "Haltestelle"
+      },
+      {
+        "name": "[Fuzzy] Ortsnamen",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#cdfa8f",
+        "label": "Ort"
+      },
+      {
+        "name": "Farbfestlegung für Eingangsdatum",
+        "type": "NONE",
+        "color": "#bfb7d7",
+        "label": "Eingangsdatum"
+      },
+      {
+        "name": "Farbfestlegung für Eingangszeit",
+        "type": "NONE",
+        "color": "#a7e7bd",
+        "label": "Eingangszeit"
+      },
+      {
+        "name": "Email Extraktor",
+        "type": "KIKUKO_PIPELINE",
+        "color": "#b4bde4",
+        "label": "E-Mail"
       }
     ],
     "classifiers": [

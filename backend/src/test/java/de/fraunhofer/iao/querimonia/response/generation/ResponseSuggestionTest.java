@@ -45,11 +45,11 @@ public class ResponseSuggestionTest {
             .createResponseComponent();
 
     CompletedResponseComponent completedResponseComponent1 = new CompletedResponseComponent(
-        responseComponent1, Collections.emptyList());
+        responseComponent1.toPersistableComponent(), Collections.emptyList());
     CompletedResponseComponent completedResponseComponent2 = new CompletedResponseComponent(
-        responseComponent2, Collections.emptyList());
+        responseComponent2.toPersistableComponent(), Collections.emptyList());
     CompletedResponseComponent completedResponseComponent3 = new CompletedResponseComponent(
-        responseComponent3, Collections.emptyList());
+        responseComponent3.toPersistableComponent(), Collections.emptyList());
 
     ResponseSuggestion suggestion1 = new ResponseSuggestion(
         Collections.singletonList(completedResponseComponent1), "");
@@ -81,7 +81,7 @@ public class ResponseSuggestionTest {
             .createResponseComponent();
 
     CompletedResponseComponent completedResponseComponent1 = new CompletedResponseComponent(
-        responseComponent1, Collections.emptyList());
+        responseComponent1.toPersistableComponent(), Collections.emptyList());
 
     ResponseSuggestion suggestion1 = new ResponseSuggestion(
         Collections.singletonList(completedResponseComponent1), "");

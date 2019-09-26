@@ -3,7 +3,6 @@ package de.fraunhofer.iao.querimonia.response.generation;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.response.action.Action;
 import de.fraunhofer.iao.querimonia.response.rules.Rule;
 import de.fraunhofer.iao.querimonia.response.rules.RuleParser;
@@ -21,20 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-/**
- * Copy class of response component to create two tables in db.
- */
 @Entity
-@JsonPropertyOrder(value = {
-    "id",
-    "name",
-    "priority",
-    "rulesXml",
-    "requiredEntities",
-    "componentTexts",
-    "actions"
-})
-public class ResponseComponent implements Identifiable<Long> {
+public class PersistentResponseComponent implements Identifiable<Long> {
 
   /**
    * The unique primary key of the component.
@@ -63,7 +50,7 @@ public class ResponseComponent implements Identifiable<Long> {
    * The component texts for the component.
    */
   @ElementCollection(fetch = FetchType.EAGER)
-  @CollectionTable(name = "component_text_table",
+  @CollectionTable(name = "alternate_component_text_table",
                    joinColumns = @JoinColumn(name = "component_id"))
   @Column(length = 5000, nullable = false)
   @JsonProperty("texts")
@@ -73,9 +60,9 @@ public class ResponseComponent implements Identifiable<Long> {
   /**
    * The list of actions.
    */
-  @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+  @OneToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
   @Fetch(value = FetchMode.SUBSELECT)
-  @JoinColumn(name = "component_id")
+  @JoinColumn(name = "persisted_component_id")
   @Column(name = "action_id")
   @NonNull
   private List<Action> actions = new ArrayList<>();
@@ -103,13 +90,12 @@ public class ResponseComponent implements Identifiable<Long> {
   @NonNull
   private final List<List<ResponseSlice>> componentSlices;
 
-  // constructor for builder
-  ResponseComponent(long id,
-                    @NonNull String componentName,
-                    int priority,
-                    @NonNull List<String> componentTexts,
-                    @NonNull List<Action> actions,
-                    @NonNull String rulesXml
+  PersistentResponseComponent(long id,
+                              @NonNull String componentName,
+                              int priority,
+                              @NonNull List<String> componentTexts,
+                              @NonNull List<Action> actions,
+                              @NonNull String rulesXml
   ) {
     this.id = id;
     this.componentName = componentName;
@@ -123,7 +109,7 @@ public class ResponseComponent implements Identifiable<Long> {
 
   @SuppressWarnings("unused")
   @JsonCreator
-  ResponseComponent(
+  PersistentResponseComponent(
       @NonNull
       @JsonProperty("name")
           String componentName,
@@ -148,7 +134,7 @@ public class ResponseComponent implements Identifiable<Long> {
   }
 
   @SuppressWarnings("unused")
-  ResponseComponent() {
+  PersistentResponseComponent() {
     // required for hibernate
     this.componentSlices = createSlices();
     this.rootRule = parseRulesXml(this.rulesXml);
@@ -261,57 +247,6 @@ public class ResponseComponent implements Identifiable<Long> {
     return actions;
   }
 
-  /**
-   * Returns a copy of this component.
-   *
-   * @return a copy of this component.
-   */
-  @JsonIgnore
-  public ResponseComponent copy() {
-    return new ResponseComponentBuilder(this).createResponseComponent();
-  }
-
-  public ResponseComponent withId(long componentId) {
-    return new ResponseComponentBuilder(this)
-        .setId(componentId)
-        .createResponseComponent();
-  }
-
-  public ResponseComponent withComponentName(@NonNull String componentName) {
-    return new ResponseComponentBuilder(this)
-        .setComponentName(componentName)
-        .createResponseComponent();
-  }
-
-  public ResponseComponent withPriority(int priority) {
-    return new ResponseComponentBuilder(this)
-        .setPriority(priority)
-        .createResponseComponent();
-  }
-
-  public ResponseComponent withComponentTexts(@NonNull List<String> componentTexts) {
-    return new ResponseComponentBuilder(this)
-        .setComponentTexts(componentTexts)
-        .createResponseComponent();
-  }
-
-  public ResponseComponent withActions(@NonNull List<Action> actions) {
-    return new ResponseComponentBuilder(this)
-        .setActions(actions)
-        .createResponseComponent();
-  }
-
-  public ResponseComponent withRulesXml(@NonNull String rulesXml) {
-    return new ResponseComponentBuilder(this)
-        .setRulesXml(rulesXml)
-        .createResponseComponent();
-  }
-
-  public PersistentResponseComponent toPersistableComponent() {
-    return new PersistentResponseComponent(id, componentName, priority, componentTexts, actions,
-        rulesXml);
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -322,7 +257,7 @@ public class ResponseComponent implements Identifiable<Long> {
       return false;
     }
 
-    ResponseComponent that = (ResponseComponent) o;
+    PersistentResponseComponent that = (PersistentResponseComponent) o;
 
     return new EqualsBuilder()
         .append(priority, that.priority)
