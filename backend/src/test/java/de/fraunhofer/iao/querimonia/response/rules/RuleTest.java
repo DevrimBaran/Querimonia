@@ -147,11 +147,14 @@ public class RuleTest {
         .createResponseComponent();
 
     CompletedResponseComponent completedResponseComponent1 =
-        new CompletedResponseComponent(responseComponent1, Collections.emptyList());
+        new CompletedResponseComponent(responseComponent1.toPersistableComponent(),
+            Collections.emptyList());
     CompletedResponseComponent completedResponseComponent2 =
-        new CompletedResponseComponent(responseComponent2, Collections.emptyList());
+        new CompletedResponseComponent(responseComponent2.toPersistableComponent(),
+            Collections.emptyList());
     CompletedResponseComponent completedResponseComponent3 =
-        new CompletedResponseComponent(responseComponent3, Collections.emptyList());
+        new CompletedResponseComponent(responseComponent3.toPersistableComponent(),
+            Collections.emptyList());
 
     List<CompletedResponseComponent> completedResponseComponents1 = List.of(
         completedResponseComponent1, completedResponseComponent2, completedResponseComponent3);
@@ -187,7 +190,7 @@ public class RuleTest {
     assertTrue(propertyRule1.isPotentiallyRespected(complaint));
     assertTrue(propertyRule1.isRespected(complaint, completedResponseComponents));
     assertFalse(propertyRule2.isPotentiallyRespected(complaint));
-    assertFalse(propertyRule2.isRespected(complaint,completedResponseComponents));
+    assertFalse(propertyRule2.isRespected(complaint, completedResponseComponents));
 
     assertEquals(propertyRule1, propertyRule1);
     assertNotEquals(propertyRule1, null);
@@ -214,9 +217,9 @@ public class RuleTest {
     ComplaintBuilder complaint = new ComplaintBuilder(COMPLAINT_F);
     List<CompletedResponseComponent> completedResponseComponents = Collections.emptyList();
     UploadDateRule uploadDateRule1 = new UploadDateRule(
-        LocalDate.of(2019,6,1), null);
+        LocalDate.of(2019, 6, 1), null);
     UploadDateRule uploadDateRule2 = new UploadDateRule(
-        null, LocalDate.of(2019,6,1));
+        null, LocalDate.of(2019, 6, 1));
 
     assertTrue(uploadDateRule1.isPotentiallyRespected(complaint));
     assertTrue(uploadDateRule1.isRespected(complaint, completedResponseComponents));
@@ -232,9 +235,9 @@ public class RuleTest {
     ComplaintBuilder complaint = new ComplaintBuilder(COMPLAINT_F);
     List<CompletedResponseComponent> completedResponseComponents = Collections.emptyList();
     UploadTimeRule uploadTimeRule1 = new UploadTimeRule(
-        LocalTime.of(11,30,45), null);
+        LocalTime.of(11, 30, 45), null);
     UploadTimeRule uploadTimeRule2 = new UploadTimeRule(
-        null, LocalTime.of(11,30,45));
+        null, LocalTime.of(11, 30, 45));
 
     assertTrue(uploadTimeRule1.isPotentiallyRespected(complaint));
     assertTrue(uploadTimeRule1.isRespected(complaint, completedResponseComponents));

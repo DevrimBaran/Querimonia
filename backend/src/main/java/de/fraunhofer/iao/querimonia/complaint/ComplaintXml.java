@@ -38,6 +38,8 @@ public class ComplaintXml {
    */
   public ComplaintXml(Complaint complaint) {
     input = new Input();
+    input.text = complaint.getText();
+
     input.metadata = new Metadata();
 
     input.metadata.date = complaint.getReceiveDate().atTime(complaint.getReceiveTime()).toString();
@@ -109,9 +111,9 @@ public class ComplaintXml {
   @XmlAccessorType(XmlAccessType.FIELD)
   private static class Input {
     private Input() {
-
     }
 
+    public String text;
     public List<File> file;
     public Metadata metadata;
   }

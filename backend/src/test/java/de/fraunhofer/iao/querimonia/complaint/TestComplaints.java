@@ -167,10 +167,10 @@ public class TestComplaints {
 
     public static final ResponseSuggestion SUGGESTION_B = new ResponseSuggestion(
         List.of(new CompletedResponseComponent(
-                TestComponents.COMPONENT_A,
+                TestComponents.COMPONENT_A.toPersistableComponent(),
                 List.of(TestEntities.ENTITY_A)
             ), new CompletedResponseComponent(
-                TestComponents.COMPONENT_B,
+                TestComponents.COMPONENT_B.toPersistableComponent(),
                 Collections.emptyList()
             )
         ),
@@ -179,10 +179,10 @@ public class TestComplaints {
 
     public static final ResponseSuggestion SUGGESTION_C = new ResponseSuggestion(
         List.of(new CompletedResponseComponent(
-                TestComponents.COMPONENT_C,
+                TestComponents.COMPONENT_C.toPersistableComponent(),
                 ENTITIES_F
             ), new CompletedResponseComponent(
-                TestComponents.COMPONENT_D,
+                TestComponents.COMPONENT_D.toPersistableComponent(),
                 Collections.emptyList()
             )
         ),

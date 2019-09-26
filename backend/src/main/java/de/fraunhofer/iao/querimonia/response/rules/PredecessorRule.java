@@ -2,7 +2,7 @@ package de.fraunhofer.iao.querimonia.response.rules;
 
 import de.fraunhofer.iao.querimonia.complaint.ComplaintBuilder;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.PersistentResponseComponent;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public class PredecessorRule implements Rule {
       return currentResponseState.stream()
           // position does not matter
           .map(CompletedResponseComponent::getComponent)
-          .map(ResponseComponent::getComponentName)
+          .map(PersistentResponseComponent::getComponentName)
           .anyMatch(name -> name.matches(predecessorRegex));
 
     } else if (currentResponseState.isEmpty()) {
