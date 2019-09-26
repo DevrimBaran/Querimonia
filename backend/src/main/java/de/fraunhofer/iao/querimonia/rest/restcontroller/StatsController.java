@@ -7,7 +7,7 @@ import de.fraunhofer.iao.querimonia.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.PersistentResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restobjects.CategoryStats;
 import de.fraunhofer.iao.querimonia.rest.restobjects.MonthStats;
@@ -291,7 +291,7 @@ public class StatsController {
           .reduce(new ArrayList<>(), StatsController::combineLists)
           .stream()
           .map(CompletedResponseComponent::getComponent)
-          .map(ResponseComponent::getId)
+          .map(PersistentResponseComponent::getId)
           .forEach(id -> result.merge(id, 1, Integer::sum));
       if (maxComplaintCount != Integer.MAX_VALUE) {
         LinkedHashMap<Long, Integer> resultFixSize = new LinkedHashMap<>();

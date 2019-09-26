@@ -28,9 +28,9 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   private long id;
 
   @JoinColumn(name = "component_id")
-  @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+  @ManyToOne(cascade = CascadeType.ALL)
   @NonNull
-  private ResponseComponent component = new ResponseComponent();
+  private PersistentResponseComponent component = new ResponseComponent().toPersistableComponent();
 
   @OneToMany(cascade = CascadeType.PERSIST)
   @JoinColumn(name = "component_id")
@@ -49,7 +49,7 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   public CompletedResponseComponent(
       @NonNull
       @JsonProperty("component")
-          ResponseComponent component,
+          PersistentResponseComponent component,
       @NonNull
       @JsonProperty("entities")
           List<NamedEntity> entities,
@@ -62,7 +62,7 @@ public class CompletedResponseComponent implements Identifiable<Long> {
   }
 
   public CompletedResponseComponent(
-      @NonNull ResponseComponent component,
+      @NonNull PersistentResponseComponent component,
       @NonNull List<NamedEntity> entities) {
     this.component = component;
     this.entities = entities;
@@ -90,7 +90,7 @@ public class CompletedResponseComponent implements Identifiable<Long> {
    * @return the component that is used in this completed component.
    */
   @NonNull
-  public ResponseComponent getComponent() {
+  public PersistentResponseComponent getComponent() {
     return component;
   }
 

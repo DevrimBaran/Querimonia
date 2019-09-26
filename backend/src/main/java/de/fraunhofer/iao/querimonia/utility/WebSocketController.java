@@ -9,7 +9,9 @@ public class WebSocketController {
   SimpMessagingTemplate template;
 
   public void stateChange(String message) {
-    template.convertAndSend("", message);
+    if (template != null) {
+      template.convertAndSend("", message);
+    }
   }
 
 }

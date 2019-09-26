@@ -75,7 +75,8 @@ public class DefaultResponseGenerator implements ResponseGenerator {
               .collect(Collectors.toList());
 
           generatedResponse
-              .add(new CompletedResponseComponent(currentComponent, matchingEntities, false));
+              .add(new CompletedResponseComponent(currentComponent.toPersistableComponent(),
+                  matchingEntities, false));
           // restart on the component with the highest priority again
           continue outer;
         }
