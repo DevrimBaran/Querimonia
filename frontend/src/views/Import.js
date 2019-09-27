@@ -46,7 +46,7 @@ class Import extends Component {
         break;
       default:
         response = api.post('/api/complaints/import', { text: this.state.value, respond_to: '' });
-        return;
+        break;
     }
     this.setState({ loading: true });
     response.then(this.parseResponse);

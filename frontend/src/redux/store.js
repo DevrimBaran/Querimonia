@@ -23,6 +23,7 @@ const initialState = {
       {
         label: 'Stichwort',
         icon: 'fas fa-search',
+        multiple: 'multiple',
         name: 'keywords',
         type: 'text'
       },
