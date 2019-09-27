@@ -46,6 +46,15 @@ public class ResponseSuggestion implements Identifiable<Long> {
     this.responseComponents = responseComponents;
   }
 
+  private ResponseSuggestion(
+      long id,
+      @NonNull List<CompletedResponseComponent> responseComponents,
+      @NonNull String response) {
+    this.response = response;
+    this.responseComponents = responseComponents;
+    this.id = id;
+  }
+
   @SuppressWarnings("unused")
   public ResponseSuggestion() {
     // for hibernate
@@ -73,6 +82,15 @@ public class ResponseSuggestion implements Identifiable<Long> {
   @Override
   public Long getId() {
     return id;
+  }
+
+  public ResponseSuggestion withResponseComponents(
+      @NonNull List<CompletedResponseComponent> responseComponents) {
+    return new ResponseSuggestion(this.id, responseComponents, this.response);
+  }
+
+  public ResponseSuggestion withResponse(@NonNull String response) {
+    return new ResponseSuggestion(this.id, this.responseComponents, response);
   }
 
   @Override

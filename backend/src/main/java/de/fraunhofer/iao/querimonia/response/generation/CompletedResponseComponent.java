@@ -1,7 +1,6 @@
 package de.fraunhofer.iao.querimonia.response.generation;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import de.fraunhofer.iao.querimonia.nlp.NamedEntity;
@@ -23,7 +22,6 @@ public class CompletedResponseComponent implements Identifiable<Long> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  @JsonIgnore
   @Column(name = "id")
   private long id;
 
@@ -69,6 +67,17 @@ public class CompletedResponseComponent implements Identifiable<Long> {
     this.used = false;
   }
 
+  private CompletedResponseComponent(
+      long id,
+      @NonNull PersistentResponseComponent component,
+      @NonNull List<NamedEntity> entities,
+      boolean used) {
+    this.id = id;
+    this.component = component;
+    this.entities = entities;
+    this.used = used;
+  }
+
   @SuppressWarnings("unused")
   public CompletedResponseComponent() {
     // for hibernate
@@ -106,5 +115,9 @@ public class CompletedResponseComponent implements Identifiable<Long> {
    */
   public boolean isUsed() {
     return used;
+  }
+
+  public CompletedResponseComponent withUsed(boolean used) {
+    return new CompletedResponseComponent(id, component, entities, used);
   }
 }

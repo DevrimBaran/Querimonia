@@ -1,7 +1,7 @@
 package de.fraunhofer.iao.querimonia.rest.restcontroller;
 
 import de.fraunhofer.iao.querimonia.manager.ComplaintManager;
-import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
+import de.fraunhofer.iao.querimonia.rest.restobjects.TextInput;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -71,17 +71,24 @@ public class ResponseController {
   }
 
   /**
-   * This route allows saving responses.
+   * This route allows saving the text of the response.
    *
-   * @param complaintId        the id of the complaint of the response.
-   * @param responseSuggestion the new response.
+   * @param complaintId the id of the complaint of the response.
+   * @param newText     the new text of the response
    *
    * @return the updated response.
    */
-  @PutMapping("api/complaints/{complaintId}/response")
+  @PatchMapping("api/complaints/{complaintId}/response")
   public ResponseEntity<?> saveResponse(@PathVariable long complaintId, @RequestBody
-      ResponseSuggestion responseSuggestion) {
+      TextInput newText) {
     return ControllerUtility.tryAndCatch(
-        () -> complaintManager.saveResponse(complaintId, responseSuggestion));
+        () -> complaintManager.saveResponse(complaintId, newText));
+  }
+
+  @PatchMapping("api/complaints/{complaintId}/response/{componentId}")
+  public ResponseEntity<?> setUsed(@PathVariable long complaintId, @PathVariable long componentId,
+                                   @RequestParam boolean used) {
+    return ControllerUtility.tryAndCatch(() -> complaintManager.setUsed(complaintId, componentId,
+        used));
   }
 }
