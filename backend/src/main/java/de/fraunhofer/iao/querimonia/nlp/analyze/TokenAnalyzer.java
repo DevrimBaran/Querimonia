@@ -7,14 +7,8 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.languagetool.tagging.de.GermanTagger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 
 /**
  * This class analysed the specified text for their tokens.
@@ -53,7 +47,7 @@ public class TokenAnalyzer implements StopWordFilter {
     String stopwordsString =
         "aber, alle, allem, allen, aller, alles, als, also, am, an, ander, andere, anderem, "
             + "anderen, anderer, anderes, anderm, andern, anderr, anders, auch, auf, aus, bei, bin"
-            + ", bis, bist, da, damit, dann, der, den, des, dem, die, das, daß, derselbe, "
+            + ", bis, bist, da, damit, dann, der, den, des, dem, die, das, daß, dass, derselbe, "
             + "derselben, denselben, desselben, demselben, dieselbe, dieselben, dasselbe, dazu, "
             + "dein, deine, deinem, deinen, deiner, deines, denn, derer, dessen, dich, dir, du, "
             + "dies, diese, diesem, diesen, dieser, dieses, doch, dort, durch, ein, eine, einem, "

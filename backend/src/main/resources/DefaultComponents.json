@@ -528,9 +528,9 @@
     "name": "Vorfallsdatum",
     "priority": 100,
     "texts": [
-      "Der beschriebene Vorfall ereignete sich angeblich am ${Datum}.\n",
-      "Ihren Beschreibungen zufolge trat der Vorfall am ${Datum} auf.\n",
-      "Das beschriebene Problem spielte sich scheinbar am ${Datum} ab.\n"
+      "Der beschriebene Vorfall ereignete sich angeblich am ${Datum#Vorfallsdatum}.\n",
+      "Ihren Beschreibungen zufolge trat der Vorfall am ${Datum#Vorfallsdatum} auf.\n",
+      "Das beschriebene Problem spielte sich scheinbar am ${Datum#Vorfallsdatum} ab.\n"
     ],
     "rulesXml": "<Rules><And><Predecessor matches=\"Problembeschreibung.*\" position=\"last\"/><EntityAvailable label=\"Datum\"/></And></Rules>",
     "actions": []

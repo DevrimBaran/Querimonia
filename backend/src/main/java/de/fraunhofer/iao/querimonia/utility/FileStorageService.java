@@ -21,7 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -113,8 +113,7 @@ public class FileStorageService {
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
         case ".txt":
-          System.out.println(Charset.defaultCharset().displayName());
-          text = Files.readString(Paths.get(fullFilePath), Charset.forName("UTF-8"));
+          text = Files.readString(Paths.get(fullFilePath), StandardCharsets.UTF_8);
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
@@ -149,7 +148,7 @@ public class FileStorageService {
       return text;
     } catch (IOException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
-          "Fehler beim Dateiupload:\n" + e.getMessage(), "Server Error");
+          "Fehler beim Dateiupload:\n" + e.getMessage(), e, "Server Error");
     }
   }
 
