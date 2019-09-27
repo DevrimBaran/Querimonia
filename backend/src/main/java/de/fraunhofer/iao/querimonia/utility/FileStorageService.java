@@ -8,6 +8,7 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.tika.parser.txt.CharsetDetector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -106,15 +107,20 @@ public class FileStorageService {
    */
   public String getTextFromData(String fileName) {
     String fullFilePath = fileStorageLocation.toString() + File.separator + fileName;
+    CharsetDetector detector = new CharsetDetector();
 
     try (InputStream fileInputStream = new FileInputStream(fullFilePath)) {
 
       String text = null;
+      String utfEightString;
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
         case ".txt":
-          text = Files.readString(Paths.get(fullFilePath), StandardCharsets.UTF_8);
-          break;
+          text = Files.readString(Paths.get(fullFilePath));
+          detector.setText(text.getBytes());
+          detector.detect();
+          utfEightString = detector.getString(text.getBytes(), "UTF-8");
+          return utfEightString;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
           if (!document.isEncrypted()) {
