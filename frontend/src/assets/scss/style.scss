@@ -280,6 +280,8 @@
 }
 
 #Import {
+    height: auto;
+    flex-grow: 0;
     textarea {
         width: 100%;
         max-width: 37.5rem;
