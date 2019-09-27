@@ -1274,12 +1274,17 @@ paths:
         - name: componentId
           in: path
           required: true
-          example: 1
           description: Id der Komponente, deren used-Wert gesetzt werden soll.
+          schema:
+            type: integer
+            format: int64
+            example: 1
         - name: used
           in: query
           required: true
-          example: true
+          schema:
+            type: boolean
+            example: true
           description: Ob die Komponente genutzt wird oder nicht
       responses:
         200:
