@@ -29,6 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service for saving files in filesystem and retrieving them. Inspired by
@@ -77,7 +78,7 @@ public class FileStorageService {
    */
   public String storeFile(MultipartFile file) {
     // Normalize file name
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
     try {
       // Check if the file's name contains invalid characters
@@ -112,15 +113,14 @@ public class FileStorageService {
     try (InputStream fileInputStream = new FileInputStream(fullFilePath)) {
 
       String text = null;
-      String utfEightString;
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
         case ".txt":
-          text = Files.readString(Paths.get(fullFilePath));
-          detector.setText(text.getBytes());
+          detector.setText(Files.readString(Paths.get(fullFilePath)).getBytes());
           detector.detect();
-          utfEightString = detector.getString(text.getBytes(), "UTF-8");
-          return utfEightString;
+          text = detector.getString(Files.readString(Paths.get(fullFilePath)).getBytes(),
+              "UTF-8");
+          break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
           if (!document.isEncrypted()) {
