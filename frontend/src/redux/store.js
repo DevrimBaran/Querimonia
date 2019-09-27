@@ -188,6 +188,7 @@ const initialState = {
     actions: [],
     log: [],
     combinations: [],
+    response: null,
     text: null,
     config: null,
     counter: 0,

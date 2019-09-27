@@ -212,13 +212,12 @@ function complaintStuff (state = {}, action) {
           calculated: []
         },
         components: [],
-        actions: [],
         combinations: [],
         log: [],
+        response: null,
         text: null,
         config: null,
         id: action.id,
-        counter: 0,
         done: false
       };
     }
@@ -231,11 +230,10 @@ function complaintStuff (state = {}, action) {
           calculated: action.entities.map ? calculateEntities(action.entities) : []
         },
         components: action.components,
-        actions: action.actions,
+        response: action.response,
         combinations: action.combinations,
         log: action.log,
         text: action.text,
-        counter: 0,
         done: true
       };
     }
@@ -249,8 +247,14 @@ function complaintStuff (state = {}, action) {
       return {
         ...state,
         components: action.components,
-        actions: action.actions,
+        text: action.response,
         done: true
+      };
+    }
+    case 'USE_COMPONENT': {
+      return {
+        ...state,
+        components: state.components.map(c => c.id === action.id ? { ...c, used: true } : c)
       };
     }
     case 'MODIFY_ENTITY': {
@@ -260,8 +264,7 @@ function complaintStuff (state = {}, action) {
           byId: action.data.reduce((obj, item) => { obj[item.id] = item; return obj; }, {}),
           ids: action.data.map(item => item.id),
           calculated: calculateEntities(action.data)
-        },
-        counter: state.counter + 1
+        }
       };
     }
     default: {

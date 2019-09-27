@@ -83,6 +83,17 @@ export const api = {
       return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
     }).join('&');
     return fetchJson(endpoint + (query ? '?' + query : ''), getOptions('put', {}, options), responseFormat);
+  },
+  querypatch: function (endpoint, query, options, responseFormat) {
+    query = Object.keys(query).filter((name) => query[name]).map((name) => {
+      if (Array.isArray(query[name])) {
+        return query[name].map(element => {
+          return encodeURIComponent(name) + '=' + encodeURIComponent(element);
+        }).join('&');
+      }
+      return encodeURIComponent(name) + '=' + encodeURIComponent(query[name]);
+    }).join('&');
+    return fetchJson(endpoint + (query ? '?' + query : ''), getOptions('patch', {}, options), responseFormat);
   }
 };
 

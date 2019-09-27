@@ -28,6 +28,9 @@ input[type=reset], input[type=submit], input[type=button] {
   height: 4.125rem;
   padding: 0.625rem 0.625rem;
   flex-grow: 1;
+  &.textarea {
+    height: max-content;
+  }
 
   %labelSize {
     font-family: inherit;
