@@ -71,8 +71,8 @@
     ],
     "classifiers": [
       {
-        "type": "KIKUKO_CLASSIFIER",
-        "name": "beschwerde3klassifikator3",
+        "type": "ML_CLASSIFIER",
+        "name": "Querimonia Klassifizierer",
         "propertyName": "Kategorie"
       }
     ],
@@ -243,8 +243,8 @@
     ],
     "classifiers": [
       {
-        "type": "KIKUKO_CLASSIFIER",
-        "name": "beschwerde3klassifikator3",
+        "type": "ML_CLASSIFIER",
+        "name": "Querimonia Klassifizierer",
         "propertyName": "Kategorie"
       }
     ],

@@ -276,7 +276,7 @@ public class StatsController {
     return ControllerUtility.tryAndCatch(() -> {
       int maxComplaintCount = count.orElse(Integer.MAX_VALUE);
 
-      LinkedHashMap<Long, Integer> result = new LinkedHashMap<>();
+      LinkedHashMap<String, Integer> result = new LinkedHashMap<>();
 
       StreamSupport.stream(complaintRepository.findAll().spliterator(),
           false)
@@ -286,16 +286,15 @@ public class StatsController {
           .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
           // get their word lists
           .map(Complaint::getResponseSuggestion)
-          .filter(Objects::nonNull)
           .map(ResponseSuggestion::getResponseComponents)
           .reduce(new ArrayList<>(), StatsController::combineLists)
           .stream()
           .map(CompletedResponseComponent::getComponent)
-          .map(PersistentResponseComponent::getId)
-          .forEach(id -> result.merge(id, 1, Integer::sum));
+          .map(PersistentResponseComponent::getComponentName)
+          .forEach(name -> result.merge(name, 1, Integer::sum));
       if (maxComplaintCount != Integer.MAX_VALUE) {
-        LinkedHashMap<Long, Integer> resultFixSize = new LinkedHashMap<>();
-        result.entrySet().stream().sorted(Map.Entry.<Long, Integer>comparingByValue().reversed())
+        LinkedHashMap<String, Integer> resultFixSize = new LinkedHashMap<>();
+        result.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
             .limit(maxComplaintCount)
             .forEach(rule -> resultFixSize.put(rule.getKey(),rule.getValue()));
         return  resultFixSize;
