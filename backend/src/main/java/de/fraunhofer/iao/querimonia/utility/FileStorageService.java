@@ -8,6 +8,7 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.tika.parser.txt.CharsetDetector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Service for saving files in filesystem and retrieving them. Inspired by
@@ -76,7 +78,7 @@ public class FileStorageService {
    */
   public String storeFile(MultipartFile file) {
     // Normalize file name
-    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+    String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
     try {
       // Check if the file's name contains invalid characters
@@ -106,6 +108,7 @@ public class FileStorageService {
    */
   public String getTextFromData(String fileName) {
     String fullFilePath = fileStorageLocation.toString() + File.separator + fileName;
+    CharsetDetector detector = new CharsetDetector();
 
     try (InputStream fileInputStream = new FileInputStream(fullFilePath)) {
 
@@ -113,7 +116,10 @@ public class FileStorageService {
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
         case ".txt":
-          text = Files.readString(Paths.get(fullFilePath), StandardCharsets.UTF_8);
+          detector.setText(Files.readString(Paths.get(fullFilePath)).getBytes());
+          detector.detect();
+          text = detector.getString(Files.readString(Paths.get(fullFilePath)).getBytes(),
+              "UTF-8");
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
