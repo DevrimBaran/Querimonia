@@ -64,7 +64,8 @@ def complaint_sender():
     q = complaint_sender_queue
     while True:
         user_id, user_message = q.get()
-        r = requests.post("https://querimonia.iao.fraunhofer.de/dev/api/complaints/import", json={"text": user_message}, auth=credentials)
+        r = requests.post("https://querimonia.iao.fraunhofer.de/dev/api/complaints/import",
+                          json={"text": user_message, "url": f"127.0.0.1:59127"}, auth=credentials)
         complaint_id = int(r.json()["id"])
         sendBot.send_message(user_id, f"Vielen Dank für Ihre Nachricht. Ihr Anliegen wird unter der ID {str(complaint_id)} bearbeitet.")
         # save for later
@@ -81,7 +82,10 @@ def start_flask():
 def complaint_receiver():
     content = request.json
     complaint_id = content["id"]
-    complaint_message = content["message"]
+    if content.get("message") is None:
+        complaint_message = content["message"]
+    else:
+        complaint_message = content["responseText"]
     # get user id and send answer
     user_id = complaint_data[complaint_id]
     del complaint_data[complaint_id]
