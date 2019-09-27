@@ -3,11 +3,11 @@
 
 $inputMargin: 1% 2% 1% 1%;
 $inputBorderColor: $secondaryBackgroundColor $secondaryBackgroundColor $tertiaryBackgroundColor $secondaryBackgroundColor;
-$inputBorder: 0.125em solid;
+$inputBorder: 0.125rem solid;
 
 %standardSize {
-  width: 10em;
-  height: 2em;
+  width: 10rem;
+  height: 2rem;
 }
 
 %inputs {
@@ -17,7 +17,7 @@ $inputBorder: 0.125em solid;
 input[type=reset], input[type=submit], input[type=button]{
     @extend %font;
 
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: 700;
 }
 
@@ -25,46 +25,32 @@ input[type=reset], input[type=submit], input[type=button]{
   @extend %font;
   position: relative;
   display: inline-block;
-  padding: 0.625em 0.625em;
+  padding: 0.625rem 0.625rem;
   flex-grow: 1;
   %labelSize {
     font-family: inherit;
     white-space: nowrap;
-    padding: 0 0.3125em;
-    font-size: 1em !important;
-    letter-spacing: 0.0625em;
+    padding: 0 0.3125rem;
+    font-size: 1rem !important;
+    letter-spacing: 0.0625rem;
     font-weight: bold;
   }
   label {
     @extend %labelSize;
     position: absolute;
-    top: 0.3125em;
+    top: 0.3125rem;
     background-color: $white;
     color: $black !important;
-    border-radius: 0.625em;
-    left: 1.125em;
+    border-radius: 0.625rem;
+    left: 1.125rem;
     z-index: 1;
-    line-height: 0.875em;
-
-    // &::before {
-    //   content: '';
-    //   top: 0.3125em;
-    //   left: -0.25em;
-    //   width: calc(100% + 0.5em);
-    //   display: block;
-    //   height: 0.0625em;
-    //   position: relative;
-    //   background-color: $white;
-    //   box-sizing: content-box;
-    //   z-index: -2;
-    // }
+    line-height: 0.875rem;
   }
   .labelspacer {
       @extend %labelSize;
       position: relative;
-      left: 0.5em;
-      height: 0em;
-      width: max-content;
+      margin: 0 0.5rem;
+      height: 0rem;
       display: block;
       overflow: hidden;
   }
@@ -72,14 +58,14 @@ input[type=reset], input[type=submit], input[type=button]{
     font-family: inherit;
     background-color: $white;
     color: $primaryTextColor;
-    border: 0.0625em solid $black;
-    border-radius: 0.625em;
-    padding: 0.625em 0.875em;
-    height: 2.8125em;
+    border: 0.0625rem solid $black;
+    border-radius: 0.625rem;
+    padding: 0.625rem 0.875rem;
+    height: 2.8125rem;
     width: 100%;
-    min-width: 4.6875em;
+    min-width: 4.6875rem;
     left: 0;
-    font-size: 1em;
+    font-size: 1rem;
     outline: none;
 
     &:focus {
@@ -87,12 +73,12 @@ input[type=reset], input[type=submit], input[type=button]{
     }
 
     &[type=checkbox], &[type=colorpicker] {
-      min-width: 2.5em;
-      width: 2.5em;
-      height: 2.5em;
+      min-width: 2.5rem;
+      width: 2.5rem;
+      height: 2.5rem;
       text-align: center;
-      line-height: 2.5em;
-      font-size: 1.875em;
+      line-height: 2.5rem;
+      font-size: 1.875rem;
       padding: 0;
       border: none !important;
       -webkit-appearance: none;
@@ -105,8 +91,8 @@ input[type=reset], input[type=submit], input[type=button]{
         display: block;
         background-color: inherit;
         color: inherit;
-        border: 0.0625em solid $black;
-        border-radius: 0.625em;
+        border: 0.0625rem solid $black;
+        border-radius: 0.625rem;
       }
 
       &:hover::after {
@@ -120,14 +106,14 @@ input[type=reset], input[type=submit], input[type=button]{
     }
 
     &[type=colorpicker] {
-      font-size: 0.5625em;
+      font-size: 0.5625rem;
       font-family: monospace;
       cursor: pointer;
       user-select: none;
     }
   }
   &.select.multiple{
-    height: 3.75em;
+    // height: 3.75rem;
     &:focus-within {
       z-index: 10;
     }
@@ -141,10 +127,10 @@ input[type=reset], input[type=submit], input[type=button]{
 
 
   input[type=submit], input[type=reset], input[type=button], button {
-    max-width: 12.5em;
+    max-width: 12.5rem;
     background-color: $primaryAccentColor;
     color: $white;
-    box-shadow: 0 0.375em $grey;
+    box-shadow: 0 0.375rem $grey;
     border: none;
 
     &:hover {
@@ -153,13 +139,13 @@ input[type=reset], input[type=submit], input[type=button]{
 
     &:active {
       background-color: $primaryAccentColorActive;
-      box-shadow: 0 0.25em $dimgray;
+      box-shadow: 0 0.25rem $dimgray;
       transform: translateY(2px);
     }
   }
 
   select {
-    padding-left: 0.625em; /* chrome + ff add aditional padding to selects -.- */
+    padding-left: 0.625rem; /* chrome + ff add aditional padding to selects -.- */
 
   }
 
@@ -179,41 +165,41 @@ input[type=reset], input[type=submit], input[type=button]{
 
 
 ::-webkit-scrollbar-track {
-  border-radius: 0.625em;
-  border-left: solid 0.0625em $white;
-  -webkit-box-shadow: inset 0 0 0.375em rgba(0, 0, 0, 0.3);
+  border-radius: 0.625rem;
+  border-left: solid 0.0625rem $white;
+  -webkit-box-shadow: inset 0 0 0.375rem rgba(0, 0, 0, 0.3);
   background-color: #F5F5F5;
-  margin: 0.3125em;
+  margin: 0.3125rem;
 }
 
 ::-webkit-scrollbar {
-  width: 0.625em;
-  height: 0.625em;
+  width: 0.625rem;
+  height: 0.625rem;
 }
 
 ::-webkit-scrollbar-thumb {
-  border-radius: 0.625em;
+  border-radius: 0.625rem;
   background-color: rgba(0, 0, 0, 0.6);
 }
 
 button.action-button{
   background-color: #179c7d;
   color: $white !important;
-  box-shadow: 0 0.375em rgba(0, 0, 0, 0.22);
+  box-shadow: 0 0.375rem rgba(0, 0, 0, 0.22);
   border: none;
   font-family: inherit;
-  border-radius: 0.625em;
-  padding: 0.625em 0.875em;
-  height: 2.8125em;
-  min-width: 4.6875em;
+  border-radius: 0.625rem;
+  padding: 0.625rem 0.875rem;
+  height: 2.8125rem;
+  min-width: 4.6875rem;
   left: 0;
-  font-size: 1em;
+  font-size: 1rem;
   outline: none;
   font-weight: 700;
   text-align: center;
   cursor: pointer;
   display: inline-block;
-  margin-bottom: 0.875em;
+  margin-bottom: 0.875rem;
   white-space: nowrap;
 
   &:hover {
@@ -223,7 +209,7 @@ button.action-button{
 
   &:active {
     background-color: $primaryAccentColorActive;
-    box-shadow: 0 0.25em $dimgray;
+    box-shadow: 0 0.25rem $dimgray;
     transform: translateY(2px);
   }
 }
@@ -281,7 +267,7 @@ button.action-button{
 //    @extend %font;
 //    @extend %inputs;
 //    @extend %standardSize;
-//    padding-left: 0.3125em;
+//    padding-left: 0.3125rem;
 //    margin: $inputMargin;
 //}
 //
@@ -293,9 +279,9 @@ button.action-button{
 //    @extend %inputs;
 //    @extend %font;
 //    width: 100%;
-//    height: 9.375em;
+//    height: 9.375rem;
 //    .visible {
-//        padding-left: 0.3125em;
+//        padding-left: 0.3125rem;
 //    }
 //}
 //
@@ -305,8 +291,8 @@ button.action-button{
 //
 //input[type="checkbox"] {
 //    @extend %inputs;
-//    width: 2em;
-//    height: 2em;
+//    width: 2rem;
+//    height: 2rem;
 //    display: block;
 //    margin-left: auto;
 //    margin-right: auto;
@@ -317,11 +303,11 @@ button.action-button{
 //    display: block;
 //    content: "";
 //    float: left;
-//    margin-right: 0.3125em;
+//    margin-right: 0.3125rem;
 //}
 //
 //input[type="checkbox"]:checked+label::before {
-//    box-shadow: inset 0em 0em 0em 0.1875em #fff;
+//    box-shadow: inset 0rem 0rem 0rem 0.1875rem #fff;
 //    background-color: #8cad2d;
 //}
 

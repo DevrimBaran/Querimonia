@@ -1,9 +1,9 @@
 nav {
     position: relative;
-    width: 12em;
-    border-radius: 0em 0.625em 0.625em 0em;
-    margin: 1.25em 1.25em 1.25em 0;
-    box-shadow: 0.625em 1.25em 2.5em rgba(0, 0, 0, 0.3);
+    width: 12rem;
+    border-radius: 0rem 0.625rem 0.625rem 0rem;
+    margin: 1.25rem 1.25rem 1.25rem 0;
+    box-shadow: 0.625rem 1.25rem 2.5rem rgba(0, 0, 0, 0.3);
     background: $white;
     overflow-y: hidden;
     display: flex;
@@ -11,12 +11,12 @@ nav {
     flex-direction: column;
 
     #logo {
-        padding: 0.625em 0.625em 1.25em 0.625em;
+        padding: 0.625rem 0.625rem 1.25rem 0.625rem;
     }
 
     .scrollable{
         overflow: auto;
-        box-shadow: 0 0.625em 1.25em -1.25em black, 0 -0.625em 1.25em -1.25em;
+        box-shadow: 0 0.625rem 1.25rem -1.25rem black, 0 -0.625rem 1.25rem -1.25rem;
         background: $white;
         height: 100%;
         display: flex;
@@ -37,25 +37,25 @@ nav {
 
     > ul {
         //list-style: none;
-        margin: 0em;
-        padding: 1.25em 4% 0.9375em 4%;
-        //box-shadow: 0 0.625em 1.25em -1.25em black, 0 -0.625em 1.25em -1.25em ;
+        margin: 0rem;
+        padding: 1.25rem 4% 0.9375rem 4%;
+        //box-shadow: 0 0.625rem 1.25rem -1.25rem black, 0 -0.625rem 1.25rem -1.25rem ;
 
         li > a {
             display: block;
-            padding: 0.625em 0em 0.625em 10%;
-            margin: 0 0.3125em 5%;
+            padding: 0.625rem 0rem 0.625rem 10%;
+            margin: 0 0.3125rem 5%;
             color: black;
             background: rgba($dimgray, 0.2);
-            border-radius: 0.3125em;
+            border-radius: 0.3125rem;
             overflow-x: hidden;
 
             transition: all 0.15s ease-out;
 
             &:hover {
-                border-radius: 0.3125em;
+                border-radius: 0.3125rem;
                 background: rgba($primaryAccentColorActive, 0.6);
-                box-shadow: 0 0.25em $primaryAccentColor;
+                box-shadow: 0 0.25rem $primaryAccentColor;
             }
 
 
@@ -63,7 +63,7 @@ nav {
                 color: $white;
                 background-color: $primaryAccentColor;
                 transform: scale(1.1, 1.1);
-                box-shadow: 0 0.1875em $dimgray;
+                box-shadow: 0 0.1875rem $dimgray;
             }
         }
 

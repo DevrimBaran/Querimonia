@@ -175,7 +175,7 @@ function Single (active, dispatch, helpers) {
           entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
         <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
         <Collapsible label='Details' />
-        <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
+        <ListTable styles={[{ paddingRight: '1rem', fontWeight: 'bold' }]} data={[
           ['Konfiguration', (
             active.configuration ? (
               <Link to={'/configurations/' + active.configuration.id}>
@@ -221,7 +221,7 @@ function Single (active, dispatch, helpers) {
             styles={[{
               fontWeight: 'bold'
             }, {
-              padding: '0 1em'
+              padding: '0 1rem'
             }]}
           />
         </Content>
@@ -252,7 +252,7 @@ function Single (active, dispatch, helpers) {
               ))
             }
             styles={[{}, {
-              padding: '0 1em'
+              padding: '0 1rem'
             }, {}]}
           />
         </Content>

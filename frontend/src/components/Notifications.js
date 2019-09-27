@@ -48,7 +48,7 @@ class Notifications extends Component {
     });
   }
 
-  changeFavicon = (filename) => {
+  favicon = (filename) => {
     this.url.pathname = `/${filename}.ico`;
     this.icon.href = this.url.href;
   }
@@ -92,6 +92,7 @@ class Notifications extends Component {
   }
   render () {
     // const { a, b, ...passThrough } = { ...this.props };
+    this.favicon(this.state.notifications.length === 0 ? 'favicon' : 'favicon-letter');
     return (
       <div id='notifications' data-count={this.state.notifications.length}>
         <div className='header'>

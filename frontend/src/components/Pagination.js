@@ -44,7 +44,7 @@ class Pagination extends Component {
     if (this.props.page > 2) {
       pagelinks.push(
         <li key={0} onClick={() => this.onClick('page', 0)}>
-          0
+          1
         </li>
       );
     }
@@ -53,7 +53,7 @@ class Pagination extends Component {
       if (page >= 0 && page <= lastPage) {
         pagelinks.push(
           <li key={page} className={page === this.props.page ? 'current' : ''} onClick={() => this.onClick('page', page)} >
-            {page}
+            {page + 1}
           </li>
         );
       }
@@ -61,7 +61,7 @@ class Pagination extends Component {
     if (this.props.page + 2 < lastPage) {
       pagelinks.push(
         <li key={lastPage} onClick={() => this.onClick('page', lastPage)} >
-          {lastPage}
+          {lastPage + 1}
         </li>
       );
     }

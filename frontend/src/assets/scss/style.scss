@@ -33,7 +33,7 @@
 
 @each $dpr in (1, 1.1, 1.25, 1.50, 1.75, 2) {
     @media (resolution: #{$dpr}dppx){
-        body {
+        html {
             font-size: #{100% / $dpr};
         }
     }
@@ -46,18 +46,18 @@
 }
 
 .centerColumn{
-    max-width: 30em;
-    padding: 1em;
+    max-width: 30rem;
+    padding: 1rem;
     margin: auto;
 }
 
 .Block {
     overflow: auto;
     width: 100%;
-    border-right: 0.0625em solid $grey;
-    margin: 1.25em;
-    box-shadow: 1.25em 1.25em 2.5em rgba(0, 0, 0, 0.3);
-    border-radius: 0.625em;
+    border-right: 0.0625rem solid $grey;
+    margin: 1.25rem;
+    box-shadow: 1.25rem 1.25rem 2.5rem rgba(0, 0, 0, 0.3);
+    border-radius: 0.625rem;
     background: $white;
 
     &:last-of-type {
@@ -69,10 +69,10 @@
     width: 100%;
     flex-grow: 0;
     flex-basis: 100%;
-    border-right: 0.0625em solid $grey;
-    margin: 1.25em;
-    box-shadow: 1.25em 1.25em 2.5em rgba(0, 0, 0, 0.3);
-    border-radius: 0.625em;
+    border-right: 0.0625rem solid $grey;
+    margin: 1.25rem;
+    box-shadow: 1.25rem 1.25rem 2.5rem rgba(0, 0, 0, 0.3);
+    border-radius: 0.625rem;
     background: $white;
     display: grid;
     grid-template-columns: repeat(2, auto);
@@ -89,7 +89,7 @@
     flex-basis: 100%;
 }
 .grid {
-    padding: 0.9375em 0.625em;
+    padding: 0.9375rem 0.625rem;
 }
 .row {
     height: 100%;
@@ -105,7 +105,7 @@
             width: max-content;
         }
         & > * {
-            padding: 1.25em 1.25em 0;
+            padding: 1.25rem 1.25rem 0;
         }
     }
 
@@ -142,12 +142,12 @@
     position: absolute;
     top: 0;
     content: "€";
-    right: 1.125em;
+    right: 1.125rem;
 }
 
 .complaintSummary {
     background-color: var(--primaryBackgroundColor);
-    padding: 0.5em 1.875em 1em 1.875em;
+    padding: 0.5rem 1.875rem 1rem 1.875rem;
     color: $black;
 
     &:hover {
@@ -155,7 +155,7 @@
     }
 
     p {
-        height: 2.3em;
+        height: 2.3rem;
         overflow: hidden;
         clear: both;
         padding-top: 0;
@@ -163,23 +163,23 @@
     }
 
     .title {
-        margin: 0em;
+        margin: 0rem;
         width: 80%;
         float: left;
     }
 
     h3 {
-        margin: 0em;
+        margin: 0rem;
     }
 
     .date {
         float: left;
         width: 20%;
-        margin: 0em;
+        margin: 0rem;
     }
 
     .date p {
-        height: 1em;
+        height: 1rem;
         text-align: right;
         padding-top: 0;
         margin: 0;
@@ -199,7 +199,7 @@
         position: relative;
         box-sizing: border-box;
         width: 100%;
-        padding: 0.625em 0.3125em;
+        padding: 0.625rem 0.3125rem;
     }
 
     textarea.dummy {
@@ -218,11 +218,11 @@
 }
 
 .dot {
-    height: 0.625em;
-    width: 0.625em;
+    height: 0.625rem;
+    width: 0.625rem;
     border-radius: 50%;
     display: inline-block;
-    margin-left: 0.3125em;
+    margin-left: 0.3125rem;
 }
 
 .plus-item {
@@ -230,19 +230,19 @@
     opacity: 0.15;
     color: $primary;
     cursor: pointer;
-    bottom: 0.625em;
-    right: 1.875em;
+    bottom: 0.625rem;
+    right: 1.875rem;
     border-radius: 50%;
 }
 
 .action-button {
     cursor: pointer;
-    padding: 0.3125em;
+    padding: 0.3125rem;
 }
 
 .action-button-disabled {
     cursor: default;
-    padding: 0.3125em;
+    padding: 0.3125rem;
     color: rgb(150, 150, 150);
 }
 
@@ -267,7 +267,7 @@
 }
 
 .padding {
-    padding: 0 1.875em;
+    padding: 0 1.875rem;
 }
 
 #editor {
@@ -278,22 +278,22 @@
 #Import {
     textarea {
         width: 100%;
-        max-width: 37.5em;
+        max-width: 37.5rem;
         margin: auto;
         display: block;
-        margin-bottom: 1em;
+        margin-bottom: 1rem;
     }
 }
 
 .log {
-    padding: 0.3125em;
+    padding: 0.3125rem;
 
     .category {
         font-weight: bold;
     }
 
     .message {
-        padding: 0 1.25em;
+        padding: 0 1.25rem;
         word-break: break-all;
     }
 }

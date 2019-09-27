@@ -2,9 +2,9 @@ input.FileInput {
     display: none;
 }
 label.FileInput {
-    height: 3.75em;
-    line-height: 3.75em;
-    min-width: 3.75em;
+    height: 3.75rem;
+    line-height: 3.75rem;
+    min-width: 3.75rem;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -14,12 +14,12 @@ label.FileInput {
     left: 0;
     background-color: #fff;
     color: #202124;
-    border: 0.0625em solid #202124;
-    border-radius: 0.625em;
+    border: 0.0625rem solid #202124;
+    border-radius: 0.625rem;
     cursor: pointer;
     i {
         display: block;
-        font-size: 1.8em;
+        font-size: 1.8rem;
         padding: 0;
     }
     span {
@@ -27,7 +27,7 @@ label.FileInput {
         i {
             display: inline;
             font-size: inherit;
-            margin-left: 0.2em;
+            margin-left: 0.2rem;
         }
     }
     &::before {
@@ -46,18 +46,18 @@ label.FileInput {
     label.FileInput {
         height: 100%;
         i {
-            font-size: 5.625em;
-            line-height: 8.75em;
+            font-size: 5.625rem;
+            line-height: 8.75rem;
             &::after {
                 @extend %font;
                 content: 'Lassen Sie die Datei hier los';
                 display: block;
-                font-size: 1.875em;
-                line-height: 3.75em;
+                font-size: 1.875rem;
+                line-height: 3.75rem;
                 width: 80%;
                 white-space: initial;
                 margin: auto;
-                letter-spacing: 0em;
+                letter-spacing: 0rem;
                 font-weight: bold;
             }
         }

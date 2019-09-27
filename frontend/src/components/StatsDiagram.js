@@ -111,10 +111,11 @@ const renderBarchartPercent = (target, data3, d3) => {
   let colors = data3.colors;
 
   let width = 270;
-  var height = 350;
+  const barHeight = 32;
+  var height = barHeight * data.length;
 
   var widthView = 500;
-  var heightView = 400;
+  var heightView = height + 50;
 
   // set the ranges
   var x = d3.scaleLinear()
@@ -145,8 +146,8 @@ const renderBarchartPercent = (target, data3, d3) => {
     .data(data)
     .enter().append('rect')
     .attr('class', 'bar')
-    .attr('x', function (d, i) { return x(d.value[1] - d.value[0]); })
-    .attr('height', y.bandwidth())
+    .attr('x', function (d, i) { return x(d.value[1] - d.value[0]) + 1; })
+    .attr('height', barHeight)
     .attr('y', function (d, i) { return y(d.key); })
     .attr('width', function (d, i) { return x(d.value[0]); })
     .attr('fill', (d, i) => d.value[2]);
@@ -183,24 +184,25 @@ const renderBarchartPercent = (target, data3, d3) => {
   legend.append('text')
     .attr('x', legendRectSize + legendSpacing / 2)
     .attr('y', legendRectSize - legendSpacing / 4)
-    .style('font-size', '0.8125em')
+    .style('font-size', '0.8125rem')
     .text(function (d, i) { return Object.keys(colors)[i]; });
 };
 const renderBarchart = (target, data3, d3) => {
   let data = data3.data.reverse();
 
   let width = 350;
-  var height = 350;
+  const barHeight = 32;
+  var height = barHeight * data.length;
 
   var widthView = 500;
-  var heightView = 400;
+  var heightView = height + 50;
 
   // set the ranges
   var x = d3.scaleLinear()
     .range([0, width]);
   var y = d3.scaleBand()
     .range([height, 0])
-    .padding(0.1);
+    .padding(0);
 
   d3.select(target).selectAll('div').remove();
   var svg = d3.select(target)
@@ -220,11 +222,16 @@ const renderBarchart = (target, data3, d3) => {
     .data(data)
     .enter().append('rect')
     .attr('class', 'bar')
-    .attr('x', function (d, i) { return 0; })
-    .attr('height', y.bandwidth())
+    .attr('x', 1)
+    // .attr('height', y.bandwidth())
+    .attr('height', barHeight)
     .attr('y', function (d, i) { return y(d.key); })
+    // .attr('y', function (d, i) { return i * 20.1; })
     .attr('width', function (d) { return x(d.value); })
-    .attr('fill', (d, i) => '#179c7d');
+    .attr('fill', '#179c7d')
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', '2')
+    .attr('stroke-dasharray', d => x(d.value) + ', ' + barHeight);
 
   const xAxisTicks = x.ticks()
     .filter(tick => Number.isInteger(tick));

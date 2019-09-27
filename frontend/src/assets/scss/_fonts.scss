@@ -8,52 +8,52 @@ html {
 }
 h1, .h1 {
     @extend %font;
-    font-size: 2.5em;
+    font-size: 2.5rem;
     font-weight: bold;
 }
 h2, .h2 {
     @extend %font;
-    font-size: 1.3em;
+    font-size: 1.3rem;
     font-weight: bold;
 }
 h3, .h3 {
     @extend %font;
-    font-size: 1.1em;
+    font-size: 1.1rem;
     font-weight: bold;
 }
 h4, .h4 {
     @extend %font;
-    font-size: 1.2em;
+    font-size: 1.2rem;
     color: $secondaryTextColor;
 }
 h5, .h5 {
     @extend %font;
-    font-size: 1.3em;
+    font-size: 1.3rem;
     font-weight: normal;
     color: $secondaryTextColor;
 }
 h6, .h6 {
     @extend %font;
-    font-size: 1em;
+    font-size: 1rem;
     font-weight: bold;
     text-transform: uppercase;
     color: $secondaryTextColor;
 }
 p, .p {
     @extend %font;
-    font-size: 1em;
-    max-width: 30em;
+    font-size: 1rem;
+    max-width: 30rem;
 }
 a, .a {
     @extend p;
     color: $primaryTextColor;
-    font-size: 1em;
+    font-size: 1rem;
 }
 label, .label {
     @extend %font;
-    letter-spacing: 0.0625em;
+    letter-spacing: 0.0625rem;
 }
 th{
-    font-size: 1.2em;
-    letter-spacing: 0.0625em;
+    font-size: 1.2rem;
+    letter-spacing: 0.0625rem;
 }

@@ -17,22 +17,23 @@
         @extend %inputs;
         flex-direction: column;
         border-top: none;
-        width: calc(100% - 1.25em);
+        width: calc(100% - 1.25rem);
         display: none;
         border-top: none;
         position: absolute;
-        top: calc(100% - 1.25em);
-        border: 0.0625em solid;
+        top: calc(100% - 1.25rem);
+        border: 0.0625rem solid;
         border-top: none;
-        padding-top: 0.625em;
-        border-radius: 0 0 0.625em 0.625em;
+        padding-top: 0.625rem;
+        border-radius: 0 0 0.625rem 0.625rem;
+        z-index: 9;
         & > input {
             margin: 0;
             border: none;
             cursor: pointer;
             border-radius: 0;
             &:last-child {
-                border-radius: 0 0 0.625em 0.625em;
+                border-radius: 0 0 0.625rem 0.625rem;
             }
             &:hover, &.active {
                 background-color: $lightgrey;

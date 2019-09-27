@@ -97,7 +97,9 @@ class Autocomplete extends Component {
               <input value={this.state.value} onKeyUp={this.onKeyUp} id={id} autoComplete='off' type='text' onChange={this.onChange} {...passThroughProps} />
               {this.state.words.length > 0 && (
                 <div className='predictions'>
-                  {this.state.words.map(this.mapWords)}
+                  {this.state.words.filter((value, index, self) => {
+                    return self.indexOf(value) === index;
+                  }).map(this.mapWords)}
                 </div>
               )}
             </div>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: https://codemirror.net/LICENSE
 
@@ -624,7 +625,7 @@
         { zwspSupported = test.offsetWidth <= 1 && test.offsetHeight > 2 && !(ie && ie_version < 8); }
     }
     var node = zwspSupported ? elt("span", "\u200b") :
-      elt("span", "\u00a0", null, "display: inline-block; width: 0.0625em; margin-right: -0.0625em");
+      elt("span", "\u00a0", null, "display: inline-block; width: 0.0625rem; margin-right: -0.0625rem");
     node.setAttribute("cm-text", "");
     return node
   }
@@ -1712,7 +1713,7 @@
     // The padding-right forces the element to have a 'border', which
     // is needed on Webkit to be able to get line-level bounding
     // rectangles for it (in measureChar).
-    var content = eltP("span", null, null, webkit ? "padding-right: 0.00625em" : null);
+    var content = eltP("span", null, null, webkit ? "padding-right: 0.00625rem" : null);
     var builder = {pre: eltP("pre", [content], "CodeMirror-line"), content: content,
                    col: 0, pos: 0, cm: cm,
                    trailingSpace: false,
@@ -3576,8 +3577,8 @@
 
   var NativeScrollbars = function(place, scroll, cm) {
     this.cm = cm;
-    var vert = this.vert = elt("div", [elt("div", null, null, "min-width: 0.0625em")], "CodeMirror-vscrollbar");
-    var horiz = this.horiz = elt("div", [elt("div", null, null, "height: 100%; min-height: 0.0625em")], "CodeMirror-hscrollbar");
+    var vert = this.vert = elt("div", [elt("div", null, null, "min-width: 0.0625rem")], "CodeMirror-vscrollbar");
+    var horiz = this.horiz = elt("div", [elt("div", null, null, "height: 100%; min-height: 0.0625rem")], "CodeMirror-hscrollbar");
     vert.tabIndex = horiz.tabIndex = -1;
     place(vert); place(horiz);
 
@@ -4342,7 +4343,7 @@
     // Behavior of elts with overflow: auto and padding is
     // inconsistent across browsers. This is used to ensure the
     // scrollable area is big enough.
-    d.heightForcer = elt("div", null, null, "position: absolute; height: " + scrollerGap + "px; width: 0.0625em;");
+    d.heightForcer = elt("div", null, null, "position: absolute; height: " + scrollerGap + "px; width: 0.0625rem;");
     // Will contain the gutters, if any.
     d.gutters = elt("div", null, "CodeMirror-gutters");
     d.lineGutter = null;
@@ -8187,8 +8188,8 @@
   }
 
   function hiddenTextarea() {
-    var te = elt("textarea", null, null, "position: absolute; bottom: -1em; padding: 0; width: 0.0625em; height: 1em; outline: none");
-    var div = elt("div", [te], null, "overflow: hidden; position: relative; width: 0.1875em; height: 0em;");
+    var te = elt("textarea", null, null, "position: absolute; bottom: -1rem; padding: 0; width: 0.0625rem; height: 1rem; outline: none");
+    var div = elt("div", [te], null, "overflow: hidden; position: relative; width: 0.1875rem; height: 0rem;");
     // The textarea is kept positioned near the cursor to prevent the
     // fact that it'll be scrolled into view on input from scrolling
     // our fake cursor out of view. On webkit, when wrap=off, paste is
@@ -9536,7 +9537,7 @@
     var oldCSS = te.style.cssText, oldWrapperCSS = input.wrapper.style.cssText;
     var wrapperBox = input.wrapper.offsetParent.getBoundingClientRect();
     input.wrapper.style.cssText = "position: static";
-    te.style.cssText = "position: absolute; width: 1.875em; height: 1.875em;\n      top: " + (e.clientY - wrapperBox.top - 5) + "px; left: " + (e.clientX - wrapperBox.left - 5) + "px;\n      z-index: 1000; background: " + (ie ? "rgba(255, 255, 255, .05)" : "transparent") + ";\n      outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
+    te.style.cssText = "position: absolute; width: 1.875rem; height: 1.875rem;\n      top: " + (e.clientY - wrapperBox.top - 5) + "px; left: " + (e.clientX - wrapperBox.left - 5) + "px;\n      z-index: 1000; background: " + (ie ? "rgba(255, 255, 255, .05)" : "transparent") + ";\n      outline: none; border-width: 0; outline: none; overflow: hidden; opacity: .05; filter: alpha(opacity=5);";
     var oldScrollY;
     if (webkit) { oldScrollY = window.scrollY; } // Work around Chrome issue (#2712)
     display.input.focus();

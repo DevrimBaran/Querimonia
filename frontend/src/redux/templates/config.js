@@ -16,7 +16,8 @@ export default (extractors) => ({
       children: {
         name: {
           label: 'Name',
-          type: 'text'
+          type: 'hidden',
+          default: ''
         },
         type: {
           label: 'Typ',
@@ -43,7 +44,8 @@ export default (extractors) => ({
       children: {
         name: {
           label: 'Name',
-          type: 'text'
+          type: 'hidden',
+          default: ''
         },
         type: {
           label: 'Typ',
@@ -104,8 +106,14 @@ export default (extractors) => ({
           name: {
             type: 'select',
             label: 'Typ',
+            conditional: 'type',
             attributes: {
-              values: extractors
+              required: true,
+              values: {
+                NONE: [''],
+                KIKUKO_CLASSIFIER: extractors,
+                ML_CLASSIFIER: ['Querimonia Klassifikator']
+              }
             }
           },
           propertyName: {
@@ -113,8 +121,24 @@ export default (extractors) => ({
             label: 'Eigenschaft'
           },
           type: {
-            type: 'hidden',
-            default: 'KIKUKO_CLASSIFIER'
+            type: 'select',
+            attributes: {
+              required: true,
+              values: [
+                {
+                  label: 'Ohne',
+                  value: 'NONE'
+                },
+                {
+                  label: 'Querimonia',
+                  value: 'ML_CLASSIFIER'
+                },
+                {
+                  label: 'KIKuKo',
+                  value: 'KIKUKO_CLASSIFIER'
+                }
+              ]
+            }
           }
         }
       }

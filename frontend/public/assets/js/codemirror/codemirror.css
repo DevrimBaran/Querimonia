@@ -3,7 +3,7 @@
 .CodeMirror {
   /* Set height, width, borders, and global font properties here */
   font-family: monospace;
-  height: 18.75em;
+  height: 18.75rem;
   color: black;
   direction: ltr;
 }
@@ -11,10 +11,10 @@
 /* PADDING */
 
 .CodeMirror-lines {
-  padding: 0.25em 0; /* Vertical padding around content */
+  padding: 0.25rem 0; /* Vertical padding around content */
 }
 .CodeMirror pre {
-  padding: 0 0.25em; /* Horizontal padding of content */
+  padding: 0 0.25rem; /* Horizontal padding of content */
 }
 
 .CodeMirror-scrollbar-filler, .CodeMirror-gutter-filler {
@@ -24,14 +24,14 @@
 /* GUTTER */
 
 .CodeMirror-gutters {
-  border-right: 0.0625em solid #ddd;
+  border-right: 0.0625rem solid #ddd;
   background-color: #f7f7f7;
   white-space: nowrap;
 }
 .CodeMirror-linenumbers {}
 .CodeMirror-linenumber {
-  padding: 0 0.1875em 0 0.3125em;
-  min-width: 1.25em;
+  padding: 0 0.1875rem 0 0.3125rem;
+  min-width: 1.25rem;
   text-align: right;
   color: #999;
   white-space: nowrap;
@@ -43,13 +43,13 @@
 /* CURSOR */
 
 .CodeMirror-cursor {
-  border-left: 0.0625em solid black;
+  border-left: 0.0625rem solid black;
   border-right: none;
   width: 0;
 }
 /* Shown when moving in bi-directional text */
 .CodeMirror div.CodeMirror-secondarycursor {
-  border-left: 0.0625em solid silver;
+  border-left: 0.0625rem solid silver;
 }
 .cm-fat-cursor .CodeMirror-cursor {
   width: auto;
@@ -96,11 +96,11 @@
 
 .CodeMirror-rulers {
   position: absolute;
-  left: 0; right: 0; top: -3.125em; bottom: -1.25em;
+  left: 0; right: 0; top: -3.125rem; bottom: -1.25rem;
   overflow: hidden;
 }
 .CodeMirror-ruler {
-  border-left: 0.0625em solid #ccc;
+  border-left: 0.0625rem solid #ccc;
   top: 0; bottom: 0;
   position: absolute;
 }
@@ -141,7 +141,7 @@
 .cm-s-default .cm-error {color: #f00;}
 .cm-invalidchar {color: #f00;}
 
-.CodeMirror-composing { border-bottom: 0.125em solid; }
+.CodeMirror-composing { border-bottom: 0.125rem solid; }
 
 /* Default styles for common addons */
 
@@ -163,17 +163,17 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 
 .CodeMirror-scroll {
   overflow: scroll !important; /* Things will break if this is overridden */
-  /* 1.875em is the magic margin used to hide the element's real scrollbars */
+  /* 1.875rem is the magic margin used to hide the element's real scrollbars */
   /* See overflow: hidden in .CodeMirror */
-  margin-bottom: -1.875em; margin-right: -1.875em;
-  padding-bottom: 1.875em;
+  margin-bottom: -1.875rem; margin-right: -1.875rem;
+  padding-bottom: 1.875rem;
   height: 100%;
   outline: none; /* Prevent dragging from highlighting the element */
   position: relative;
 }
 .CodeMirror-sizer {
   position: relative;
-  border-right: 1.875em solid transparent;
+  border-right: 1.875rem solid transparent;
 }
 
 /* The fake, visible scrollbars. Used to force redraw during scrolling
@@ -211,7 +211,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
   height: 100%;
   display: inline-block;
   vertical-align: top;
-  margin-bottom: -1.875em;
+  margin-bottom: -1.875rem;
 }
 .CodeMirror-gutter-wrapper {
   position: absolute;
@@ -234,7 +234,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 
 .CodeMirror-lines {
   cursor: text;
-  min-height: 0.0625em; /* prevents collapsing before first draw */
+  min-height: 0.0625rem; /* prevents collapsing before first draw */
 }
 .CodeMirror pre {
   /* Reset some styles that the rest of the page might have set */
@@ -270,7 +270,7 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #a22;}
 .CodeMirror-linewidget {
   position: relative;
   z-index: 2;
-  padding: 0.00625em; /* Force widget margins to stay inside of the container */
+  padding: 0.00625rem; /* Force widget margins to stay inside of the container */
 }
 
 .CodeMirror-widget {}
@@ -330,7 +330,7 @@ div.CodeMirror-dragcursors {
 }
 
 /* Used to force a border model for a node */
-.cm-force-border { padding-right: 0.00625em; }
+.cm-force-border { padding-right: 0.00625rem; }
 
 @media print {
   /* Hide the cursor when printing */

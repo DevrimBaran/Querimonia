@@ -36,6 +36,7 @@ class ErrorModal extends Component {
     } else {
       console.error(error);
     }
+    return null;
   }
 
   removeError = (e) => {
@@ -57,7 +58,7 @@ class ErrorModal extends Component {
             ['Nachricht:', error && error.message]
           ]}
           styles={[
-            { fontWeight: 'bold', padding: '0 1em', whiteSpace: 'nowrap', verticalAlign: 'top' },
+            { fontWeight: 'bold', padding: '0 1rem', whiteSpace: 'nowrap', verticalAlign: 'top' },
             { verticalAlign: 'top' }
           ]}
         />

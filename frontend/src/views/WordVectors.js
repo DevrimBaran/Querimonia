@@ -203,7 +203,7 @@ class WordVectors extends Component {
         <Block>
           <Row vertical>
             <h1 className='center'>Wortvektoren</h1>
-            <Content className='center'>
+            <Content className='center' style={{ maxHeight: 'none' }}>
               <Input type='select' label='Textkorpus' required id='textkorpora' name='textkorpora' value={this.state.corpora} values={this.corpora} onChange={this.changeCorpora} />
               <p className='center' style={{ textAlign: 'justify' }}>{this.getDescription()}</p>
               <div className='smallmargin'>
@@ -212,8 +212,8 @@ class WordVectors extends Component {
               </div>
               <ListTable
                 header={['Wort', 'Wahrscheinichkeit']}
-                headerStyles={[{ textAlign: 'left', paddingRight: '1em' }]}
-                styles={[{ textAlign: 'left', paddingRight: '1em' }]}
+                headerStyles={[{ textAlign: 'left', paddingRight: '1rem' }]}
+                styles={[{ textAlign: 'left', paddingRight: '1rem' }]}
                 data={this.state.result}
                 style={{ margin: 'auto' }}
               />
