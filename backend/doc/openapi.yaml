@@ -5,10 +5,8 @@ info:
     Querimonia ist eine Plattform zum automatischen Beschwerdemanagement. Über die hier
     beschriebene API kann mit dem Backend kommuniziert werden. Dies beinhaltet Upload von
     neuen Beschwerden, Abrufen der gespeicherten Beschwerden, Anfragen von Antworttexten, etc.
-  version: 1.0.0
+  version: 1.0.1
 servers:
-  - url: https://beschwerdemanagement.iao.fraunhofer.de/dev
-  - url: https://beschwerdemanagement.iao.fraunhofer.de
   - url: https://querimonia.iao.fraunhofer.de/dev
   - url: https://querimonia.iao.fraunhofer.de
   - url: http://localhost:8080
@@ -1235,21 +1233,57 @@ paths:
         500:
           $ref: '#/components/responses/UnexpectedError'
 
-    put:
+    patch:
       tags:
         - responses
       summary: Aktualisiert die Antwort einer Beschwerde.
-      description: Hier können der Antworttext und die verwendeten Komponenten gespeichert werden.
+      description: Hier kann der Antworttext gespeichert werden.
       operationId: updateResponse
 
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ResponseSuggestion'
+              type: object
+              properties:
+                text:
+                  type: string
       responses:
         200:
           description: Die Antwort wurde aktualisiert.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSuggestion'
+        404:
+          $ref: '#/components/responses/NotFoundError'
+        500:
+          $ref: '#/components/responses/UnexpectedError'
+
+  /api/complaints/{complaintId}/response/{componentId}:
+    parameters:
+      - $ref: '#/components/parameters/ComplaintIdParameter'
+
+    patch:
+      tags:
+        - responses
+      summary: Speichert, ob eine Komponente benutzt wurde oder nicht.
+      description: Speichert, ob eine Komponente benutzt wurde oder nicht.
+      operationId: setUsed
+      parameters:
+        - name: componentId
+          in: path
+          required: true
+          example: 1
+          description: Id der Komponente, deren used-Wert gesetzt werden soll.
+        - name: used
+          in: query
+          required: true
+          example: true
+          description: Ob die Komponente genutzt wird oder nicht
+      responses:
+        200:
+          description: Erfolgreiches Setzen
           content:
             application/json:
               schema:
