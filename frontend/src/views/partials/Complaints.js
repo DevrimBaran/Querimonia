@@ -114,7 +114,7 @@ function List (data, dispatch, helpers) {
     <tr className='pointer' key={data.id} onClick={helpers.edit}>
       <td>{data.id}</td>
       <td>{states[data.state]}</td>
-      <td>{data.preview}</td>
+      <td>{data.preview}&hellip;</td>
       <td>{data.sentiment.emotion.value} / <Sentiment tendency={data.sentiment.tendency} /> </td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>

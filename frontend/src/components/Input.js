@@ -80,7 +80,14 @@ class Input extends Component {
       let input;
       switch (this.props.type) {
         case 'select': {
-          input = (<select value={value} name={name} onChange={this.onChange} ref={this.target} {...injectedProp} {...passThroughProps}>
+          let dataLabel = multiple && values && value && values.find(v => (v.value || v) === value[0]);
+          if (dataLabel) {
+            dataLabel = dataLabel.label;
+            if (value.length > 1) {
+              dataLabel += ' +' + (value.length - 1);
+            }
+          }
+          input = (<select value={value} data-label={dataLabel || '-'} name={name} onChange={this.onChange} ref={this.target} {...injectedProp} {...passThroughProps}>
             {this.props.required || <option key='null' value=''>-</option>}
             {
               values && values.map((data, i) => {

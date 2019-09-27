@@ -124,11 +124,30 @@ input[type=reset], input[type=submit], input[type=button] {
     }
   }
 
-  select[multiple]:focus {
-    height: auto;
-
-    option:hover {
-      background-color: rgba($primary, 0.5);
+  select[multiple] {
+    option {
+      min-height: 0;
+      // display: none;
+      height: 0;
+      opacity: 0;
+    }
+    &::after {
+      content: attr(data-label);
+      vertical-align: sub;
+      display: inline-block;
+    }
+    &:focus {
+      height: auto;
+      &::after {
+        display: none;
+      }
+      option {
+        height: auto;
+        opacity: 1;
+      }
+      option:hover {
+        background-color: rgba($primary, 0.5);
+      }
     }
   }
 
