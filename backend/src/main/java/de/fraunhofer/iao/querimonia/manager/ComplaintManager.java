@@ -449,11 +449,40 @@ public class ComplaintManager {
    *
    * @return the new response.
    */
-  public synchronized ResponseSuggestion saveResponse(long complaintId, ResponseSuggestion body) {
+  public synchronized ResponseSuggestion saveResponse(long complaintId, TextInput body) {
     Complaint complaint = getComplaint(complaintId);
-    checkForbiddenStates(complaint, ERROR, ANALYSING);
-    storeComplaint(complaint.withResponseSuggestion(body));
-    return body;
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+    var newSuggestion = complaint.getResponseSuggestion().withResponse(body.getText());
+    storeComplaint(complaint.withResponseSuggestion(newSuggestion));
+    return newSuggestion;
+  }
+
+  /**
+   * Sets the used flag of a response component.
+   *
+   * @param complaintId the id of the complaint.
+   * @param componentId the id of the component.
+   * @param used        if it is used.
+   *
+   * @return the updated response.
+   */
+  public synchronized ResponseSuggestion setUsed(long complaintId, long componentId, boolean used) {
+    var complaint = getComplaint(complaintId);
+    checkForbiddenStates(complaint, ERROR, ANALYSING, CLOSED);
+    var response = complaint.getResponseSuggestion();
+    var components = new ArrayList<>(response.getResponseComponents());
+
+    // update the component with the given id
+    components.replaceAll(completedResponseComponent -> {
+      if (completedResponseComponent.getId() == componentId) {
+        completedResponseComponent.withUsed(used);
+      }
+      return completedResponseComponent;
+    });
+
+    var newResponse = response.withResponseComponents(components);
+    storeComplaint(complaint.withResponseSuggestion(newResponse));
+    return newResponse;
   }
 
   /**
