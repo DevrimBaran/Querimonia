@@ -56,6 +56,7 @@ const sortedEntities = (data, complaintId, dispatch, disabled) => {
       <Tag text={entity.value} ids={[entity.id]} disabled={disabled} />,
       <Button
         disabled={disabled}
+        className='crone'
         onClick={() => dispatch(changeEntity(complaintId, entity.id, { preferred: !entity.preferred }))}
         style={{ color: (entity.preferred ? 'orange' : 'lightgray') }}
         icon={'fas fa-crown'}

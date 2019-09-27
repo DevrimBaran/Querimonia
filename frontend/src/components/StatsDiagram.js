@@ -22,7 +22,7 @@ class StatsDiagram extends Component {
     let index = 0;
     if (data.colors) {
       index = 1;
-    } else if (data.data.find(d => d.value < 0)) {
+    } else if (id.startsWith('Sentiment')) {
       index = 2;
     }
     return (

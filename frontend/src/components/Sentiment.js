@@ -43,7 +43,7 @@ const smilies = [
 export default function Sentiment (props) {
   let { small, tendency, className = '', ...passThrough } = { ...props };
   className += ' emotion';
-  if (!tendency) {
+  if (tendency === null) {
     return (
       <span role='img' className={className} {...passThrough}>
         ---
