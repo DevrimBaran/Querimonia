@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 import { fetchData, remove } from '../redux/actions/';
 
@@ -16,7 +15,7 @@ export default (endpoint, partial, stateToProps, path) => {
   return connect((state, props) => ({ filter: state[endpoint].filter, ...state[endpoint].data, ...(stateToProps ? stateToProps(state) : {}) }))(class extends Component {
     edit = (id) => {
       return (e) => {
-        this.props.history.push(path + '/' + id);
+        this.props.history.push('/' + path + '/' + id);
       };
     }
     copy = (id) => {
@@ -33,11 +32,7 @@ export default (endpoint, partial, stateToProps, path) => {
         });
       };
       return (
-        <Link to={'/' + endpoint + '/0'}>
-          <span className='action-button'>
-            <i title='Kopieren' className='far fa-copy' onClick={dispatchCopy} />
-          </span>
-        </Link>
+        <Button icon='far fa-copy' onClick={dispatchCopy} href={'/' + path + '/0'} />
       );
     }
     componentDidMount = () => {

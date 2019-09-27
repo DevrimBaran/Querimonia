@@ -1,16 +1,16 @@
 .tag-tooltip {
   & > div {
-    margin-left: 0.4em;
-    border: 0.125em solid black;
+    margin-left: 0.4rem;
+    border: 0.125rem solid black;
     text-align: center;
     float: left;
-    padding: 0.25em;
+    padding: 0.25rem;
     &:first-child {
       margin-left: 0;
     }
     i, b {
       display: block;
-      margin-bottom: 0.125em;
+      margin-bottom: 0.125rem;
     }
     .action-button {
       display: inline;

@@ -9,15 +9,11 @@ import React, { Component } from 'react';
 
 class Table extends Component {
   render () {
-    const classes = (this.props.className ? this.props.className : 'responsive-table');
-    const { className, ...passThroughProps } = this.props;
-
-    let injectedProp = {
-      className: classes
-    };
-
+    const { className = '', fix = 'right', ...passThroughProps } = this.props;
+    let classes = ' responsive-table';
+    fix && (classes += ' fix-' + fix);
     return (
-      <div {...injectedProp} {...passThroughProps} >
+      <div className={className + classes} {...passThroughProps} >
         <table>
           {this.props.children}
         </table>

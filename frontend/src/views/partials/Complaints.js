@@ -114,8 +114,13 @@ function List (data, dispatch, helpers) {
     <tr className='pointer' key={data.id} onClick={helpers.edit}>
       <td>{data.id}</td>
       <td>{states[data.state]}</td>
-      <td>{data.preview}</td>
-      <td>{data.sentiment.emotion.value} / <Sentiment tendency={data.sentiment.tendency} /> </td>
+      <td>{data.preview}&hellip;</td>
+      <td>
+        <span>
+          {data.sentiment.emotion.value}<br />
+          <Sentiment tendency={data.sentiment.tendency} />
+        </span>
+      </td>
       <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
       <th>
@@ -176,7 +181,7 @@ function Single (active, dispatch, helpers) {
           entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
         <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
         <Collapsible label='Details' />
-        <ListTable styles={[{ paddingRight: '1em', fontWeight: 'bold' }]} data={[
+        <ListTable styles={[{ paddingRight: '1rem', fontWeight: 'bold' }]} data={[
           ['Konfiguration', (
             active.configuration ? (
               <Link to={'/configurations/' + active.configuration.id}>
@@ -222,7 +227,7 @@ function Single (active, dispatch, helpers) {
             styles={[{
               fontWeight: 'bold'
             }, {
-              padding: '0 1em'
+              padding: '0 1rem'
             }]}
           />
         </Content>
@@ -253,7 +258,7 @@ function Single (active, dispatch, helpers) {
               ))
             }
             styles={[{}, {
-              padding: '0 1em'
+              padding: '0 1rem'
             }, {}]}
           />
         </Content>

@@ -3,50 +3,50 @@
 .collapsible {
     position: relative;
     overflow: hidden;
-    height: 1.875em;
-    min-height: 1.875em;
+    height: 1.875rem;
+    min-height: 1.875rem;
     box-sizing: content-box;
-    padding-left: 0em !important;
-    padding-right: 0em !important;
+    padding-left: 0rem !important;
+    padding-right: 0rem !important;
     .handle {
         position: relative;
         display: block;
-        line-height: 0.9375em;
+        line-height: 0.9375rem;
         width: 100%;
-        height: 0.9375em;
+        height: 0.9375rem;
         cursor: pointer;
         color: $primaryTextColor;
-        font-size: 0.9375em;      
-        //padding: 0.625em 0;
+        font-size: 0.9375rem;      
+        //padding: 0.625rem 0;
         z-index: 1;
         &::before {
             position: relative;
             display: block;
             content: '';
-            top: 0.4375em;
-            border-top: 0.0625em solid $tertiaryBackgroundColor;
+            top: 0.4375rem;
+            border-top: 0.0625rem solid $tertiaryBackgroundColor;
         }
         i {
             position: relative;
-            padding: 0 0.3125em 0 0.625em;
-            margin-left: 0.625em;
+            padding: 0 0.3125rem 0 0.625rem;
+            margin-left: 0.625rem;
             background-color: $primaryBackgroundColor;
         }
         span {
             position: relative;
-            padding-right: 0.625em;
+            padding-right: 0.625rem;
             background-color: $primaryBackgroundColor;
         }
     }
     & + * {
-        padding-top: 0em !important;
-        margin-top: 0em !important;
+        padding-top: 0rem !important;
+        margin-top: 0rem !important;
     }
     &.disabled .handle {
         color: $grey;
         cursor: initial;
         &::before {
-            border-top: 0.0625em solid $tertiaryBackgroundColor;
+            border-top: 0.0625rem solid $tertiaryBackgroundColor;
         }
         span {
             color: $grey;
@@ -56,7 +56,7 @@
         & + * {
             display: none;
             & + .collapsible {
-                padding-top: 0em;
+                padding-top: 0rem;
             }
         }
     }

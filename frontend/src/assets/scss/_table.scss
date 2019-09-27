@@ -3,11 +3,11 @@
   height: 100%;
   margin: 0 auto;
   overflow: auto;
-  border-radius: 0.625em;
+  border-radius: 0.625rem;
   clear: both;
 
   table {
-    // margin: 0em auto;
+    // margin: 0rem auto;
     position: relative;
     width: 100%;
     border-spacing: 0;
@@ -15,8 +15,8 @@
   }
 
   thead {
-    box-shadow: 0 0.3125em 0.3125em 0 rgba(0, 0, 0, 0.4);
-    padding-bottom: 0.125em;
+    box-shadow: 0 0.3125rem 0.3125rem 0 rgba(0, 0, 0, 0.4);
+    padding-bottom: 0.125rem;
   }
 
   thead th {
@@ -24,24 +24,42 @@
     color: $white;
     position: sticky;
     text-align: left;
-    max-width: 37.5em;
-    margin-bottom: 1.25em;
-    padding: 0.9375em 1.25em;
+    max-width: 37.5rem;
+    margin-bottom: 1.25rem;
+    padding: 0.9375rem 1.25rem;
     top: 0;
+    font-size: 1rem;
+  }
 
-    &:last-child {
+  &.fix-left {
+    thead th:first-child {
+      left: 0;
+      z-index: 2;
+    }
+    tbody th {
+      left: 0;
+    }
+  }
+  
+  &.fix-right {
+    thead th:last-child {
       right: 0;
       z-index: 2;
+    }
+    tbody th {
+      right: 0;
     }
   }
 
   tbody th {
     position: sticky;
-    padding: 0.625em 0 0.625em 0.625em;
-    right: 0;
+    padding: 0.625rem 0 0.625rem 0.625rem;
     z-index: 1;
     background-color: inherit;
-    border-left: 0.0625em solid transparent;
+    border-left: 0.0625rem solid transparent;
+    font-weight: normal;
+    font-size: 1rem;
+    text-align: left;
     .row {
       align-items: center;
       justify-content: space-evenly;
@@ -49,13 +67,13 @@
   }
 
   tbody td {
-    max-width: 37.5em;
-    padding: 0.9375em 1.25em;
+    max-width: 37.5rem;
+    padding: 0.9375rem 1.25rem;
     text-align: left;
   }
 
   tbody tr {
-    box-shadow: 0 0.625em 1.25em -1.25em $black;
+    box-shadow: 0 0.625rem 1.25rem -1.25rem $black;
     background-color: $white;
   }
 
@@ -70,7 +88,7 @@
 .stats-table {
   width: 100%;
   height: 100%;
-  border-radius: 0.625em;
+  border-radius: 0.625rem;
   clear: both;
   table {
     position: relative;
@@ -83,11 +101,11 @@
     color: $white;
     position: sticky;
     text-align: center;
-    max-width: 37.5em;
-    margin-bottom: 1.25em;
-    padding: 1.25em 0;
-    border-right: 0.3125em solid $grey;
-    border-bottom: 0.3125em solid $grey;
+    max-width: 37.5rem;
+    margin-bottom: 1.25rem;
+    padding: 1.25rem 0;
+    border-right: 0.3125rem solid $grey;
+    border-bottom: 0.3125rem solid $grey;
 
     &:first-child {
       left: 0;
@@ -95,7 +113,7 @@
     }
   }
   tbody td {
-    padding: 0.9375em 0.625em;
+    padding: 0.9375rem 0.625rem;
     text-align: center;
   }
 }

@@ -2,9 +2,9 @@
 // -------------------------
 
 .#{$fa-css-prefix}-border {
-  border: solid .08em $fa-border-color;
-  border-radius: .1em;
-  padding: .2em .25em .15em;
+  border: solid .08rem $fa-border-color;
+  border-radius: .1rem;
+  padding: .2rem .25rem .15rem;
 }
 
 .#{$fa-css-prefix}-pull-left { float: left; }
@@ -15,6 +15,6 @@
 .far,
 .fal,
 .fab {
-  &.#{$fa-css-prefix}-pull-left { margin-right: .3em; }
-  &.#{$fa-css-prefix}-pull-right { margin-left: .3em; }
+  &.#{$fa-css-prefix}-pull-left { margin-right: .3rem; }
+  &.#{$fa-css-prefix}-pull-right { margin-left: .3rem; }
 }

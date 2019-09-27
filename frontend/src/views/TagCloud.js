@@ -39,7 +39,7 @@ class TagCloud extends Component {
       query: {
         date_min: undefined,
         date_max: undefined,
-        count: 0,
+        count: 70,
         emotion: undefined,
         subject: undefined,
         words_only: true
@@ -144,7 +144,7 @@ class TagCloud extends Component {
     row.append('td')
       .text(d => d.value)
       .style('text-align', 'right')
-      .style('padding-left', '1.25em');
+      .style('padding-left', '1.25rem');
   };
 
     onChange = (e) => {
@@ -269,7 +269,7 @@ class TagCloud extends Component {
                   <DownloadButton disabled={this.state.listView} icon='fas fa-3x fa-file-image' type='image/svg+xml; charset=utf-8' name='Tagcloud.svg' onClick={this.downloadSvg} />
                 </span>
                 <span>
-                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '5.625em', '--height': '2.1875em' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
+                  <Toggle on='fas fa-cloud' off='fas fa-list' state={!this.state.listView} style={{ '--width': '5.625rem', '--height': '2.1875rem' }} onChange={(e) => this.setState({ listView: !e.target.checked })} />
                 </span>
                 <span>
                   <Input type='checkbox' label='Stammformen' name='lemmatize' onChange={this.onChange} value={this.state.lemmatize} />
@@ -278,7 +278,7 @@ class TagCloud extends Component {
                   <Input type='colorpicker' label='Farbton' name='color' onChange={this.onChange} value={this.state.color} />
                 </span>
               </div>
-              <Content style={{ paddingTop: '0em' }}>
+              <Content style={{ paddingTop: '0rem' }}>
                 <D3
                   id='d3Container'
                   render={this.renderCloud}
@@ -292,9 +292,9 @@ class TagCloud extends Component {
                 <div style={{
                   position: 'absolute',
                   backgroundColor: 'white',
-                  top: '-1.25em',
-                  left: '0em',
-                  right: '0em',
+                  top: '-1.25rem',
+                  left: '0rem',
+                  right: '0rem',
                   height: '100%',
                   display: this.state.listView ? 'block' : 'none'
                 }}>

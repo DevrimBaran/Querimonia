@@ -15,13 +15,13 @@
   ul {
     list-style: none;
     margin: 0;
-    padding: 0.625em;
+    padding: 0.625rem;
     display: inline-flex;
     
 
     li {
-      border: 0.0625em solid $primary;
-      padding: 0.3125em 0.625em;
+      border: 0.0625rem solid $primary;
+      padding: 0.3125rem 0.625rem;
       cursor: pointer;
 
       &.current {

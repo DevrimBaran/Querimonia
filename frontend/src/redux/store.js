@@ -41,8 +41,8 @@ const initialState = {
         ]
       },
       {
-        label: 'Sentiment',
-        name: 'sentiment',
+        label: 'Emotion',
+        name: 'emotion',
         type: 'select',
         multiple: 'multiple',
         icon: 'fas fa-theater-masks',

@@ -3,9 +3,9 @@
 .tabbed {
     position: relative;
     display: grid;
-    grid-row-gap: -0.0625em;
+    grid-row-gap: -0.0625rem;
     grid-template-columns: auto;
-    grid-template-rows: 2em 1fr;
+    grid-template-rows: 2rem 1fr;
     grid-auto-columns: auto;
     grid-auto-flow: column;
     background-color: inherit;
@@ -14,7 +14,7 @@
     }
     & > .tab {
         grid-row: 1 / 2;
-        margin: 0em;
+        margin: 0rem;
         cursor: pointer;
         &.disabled {
             cursor: not-allowed;
@@ -22,7 +22,7 @@
         white-space: nowrap;
         text-align: center;
         &.active, &:hover:not(.disabled) {
-            border-bottom: 0.125em solid $primary;
+            border-bottom: 0.125rem solid $primary;
         }
     }
     & > .tab.active + .content {
@@ -32,10 +32,10 @@
         grid-column-start: 1;
         grid-column-end: var(--tabCount);
         grid-row: 2 / 3;
-        padding: 1.3em 1.25em 0em 0em;
-        margin-right: -1.25em;
+        padding: 1.3rem 1.25rem 0rem 0rem;
+        margin-right: -1.25rem;
         overflow: auto;
         display: none;
-        padding-top: 0.3125em;
+        padding-top: 0.3125rem;
     }
 }

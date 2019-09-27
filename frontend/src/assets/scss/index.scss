@@ -93,7 +93,7 @@
 }
 #root {
     background-color: var(--tertiaryBackgroundColor);
-    --contentMargin: 1em;
+    --contentMargin: 1rem;
 }
 /**
 *   Text allgemein sollte in einer div.content stehen, damit die Lesbarkeit garantiert wird.
@@ -102,27 +102,27 @@
 */
 div.content{
     background-color: var(--primaryBackgroundColor);
-    //padding:  1.3em var(--contentMargin) 0em var(--contentMargin);
+    //padding:  1.3rem var(--contentMargin) 0rem var(--contentMargin);
     overflow: auto;
 }
 
 
 p {
     color: var(--primaryTextColor);
-    margin: 0.3em 0.3em 0.3em 0em;
-    max-width: 30em; //ungefähr 60 Zeichen pro Zeile
+    margin: 0.3rem 0.3rem 0.3rem 0rem;
+    max-width: 30rem; //ungefähr 60 Zeichen pro Zeile
 }
 .small {
-    font-size: 0.85em
+    font-size: 0.85rem
 }
 .tiny {
-    font-size: 0.7em
+    font-size: 0.7rem
 }
 /* 'normale' Buttons, ohne besondere Prioritaet */
 button {
-    width: 10em;
-    height: 2em;
-    font-size: 1em;
+    width: 10rem;
+    height: 2rem;
+    font-size: 1rem;
     background-color: var(--buttonColor);
     color: var(--primaryTextColor);
     outline: none;
@@ -143,15 +143,15 @@ button.important:hover {
 /* Auf diese Art koennen erkannte Daten im Text markiert werden */
 span.highlight {
     background-color: var(--mediumYellow);
-    padding: .05em .2em .05em .2em;
-    border-radius: .3em;
+    padding: .05rem .2rem .05rem .2rem;
+    border-radius: .3rem;
 }
 /* Die Textarea ermoeglicht das direkte bearbeiten von Text */
 textarea {
     width: 100%;
-    padding: 0em;
-    font-size: 1em;
-    margin: 0.5em 0;
+    padding: 0rem;
+    font-size: 1rem;
+    margin: 0.5rem 0;
     border: none;
     box-sizing: border-box;
     color: var(--primaryTextColor);
@@ -162,40 +162,40 @@ textarea:focus {
 }
 .complaintSummary {
     background-color: var(--primaryBackgroundColor);
-    padding:  0.5em var(--contentMargin) 1em var(--contentMargin);
+    padding:  0.5rem var(--contentMargin) 1rem var(--contentMargin);
 }
 .complaintSummary:hover {
     background-color: var(--secondaryBackgroundColor);
 }
 .complaintSummary p {
-    height: 2.3em;
+    height: 2.3rem;
     overflow: hidden;
     clear: both;
     padding-top: 0;
     text-align: justify;
 }
 .complaintSummary .title{
-    margin: 0em;
+    margin: 0rem;
     width: 80%;
     float: left;
 }
 .complaintSummary h3 {
-    margin: 0em;
+    margin: 0rem;
 }
 .complaintSummary .date {
     float: left;
     width: 20%;
-    margin: 0em;
+    margin: 0rem;
 }
 .complaintSummary .date p {
-    height: 1em;
+    height: 1rem;
     text-align: right;
     padding-top: 0;
     margin: 0;
 }
 /* Dieser Schatten umgibt groessere Fenster */
 .shadow {
-    box-shadow: 1.25em 1.25em 2.5em rgba(0, 0, 0, 0.3);
+    box-shadow: 1.25rem 1.25rem 2.5rem rgba(0, 0, 0, 0.3);
     background-color: var(--secondaryBackgroundColor);
 }
 

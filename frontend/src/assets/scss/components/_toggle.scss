@@ -2,8 +2,8 @@ label.toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    --height: 1.25em;
-    --width: 2.8125em;
+    --height: 1.25rem;
+    --width: 2.8125rem;
     input {
         display: none;
         & + .toggle-input {
@@ -21,12 +21,12 @@ label.toggle {
             }
             .toggle-toggle {
                 position: relative;
-                margin: 0 0.625em;
+                margin: 0 0.625rem;
                 width: var(--width);
                 height: var(--height);
                 border-radius: var(--height);
                 display: inline-flex;
-                border: 0.0625em solid $black;
+                border: 0.0625rem solid $black;
                 box-sizing: content-box;
                 vertical-align: text-bottom;
             }
@@ -78,7 +78,7 @@ label.toggle {
                 width: 0;
             }
             .toggle-dot {
-                right: 0em;
+                right: 0rem;
             }
             .toggle-post {
                 width: var(--width);

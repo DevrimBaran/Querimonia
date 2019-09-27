@@ -20,7 +20,7 @@ class StatsTable extends Component {
 
   renderTable1 = (data) => {
     return (
-      <Table>
+      <Table fix=''>
         <thead>
           <tr>
             {data.header.map((h, i) => <th key={i}>{h}</th>)}
@@ -40,7 +40,7 @@ class StatsTable extends Component {
     let s = data.keys;
     let stati = Object.keys(data.colors);
     return (
-      <Table>
+      <Table fix='left'>
         <thead>
           <tr>
             <th>%</th>

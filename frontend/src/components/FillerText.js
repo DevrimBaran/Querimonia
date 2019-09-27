@@ -73,7 +73,7 @@ class FillerText extends Component {
     this.values[label] = value;
     return <Input
       style={options[0].style}
-      label={label}
+      label={label.replace(/#(.*)$/, ' ($1)')}
       inline
       onChange={this.onChange}
       name={label}

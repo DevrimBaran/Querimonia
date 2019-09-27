@@ -17,16 +17,17 @@ class StatsDiagram extends Component {
   }
 
   render () {
-    const { id, data, style } = { ...this.props };
+    const { type = 0, data, style } = { ...this.props };
+    console.log(type);
     let barcharts = [renderBarchart, renderBarchartPercent, renderBarchartSentiment];
     let index = 0;
     if (data.colors) {
       index = 1;
-    } else if (id.startsWith('Sentiment')) {
+    } else if (type === 'Sentiment') {
       index = 2;
     }
     return (
-      <D3 id={id} style={style} data={data} render={barcharts[index]} />
+      <D3 style={style} data={data} render={barcharts[index]} />
     );
   }
 }
@@ -35,10 +36,11 @@ const renderBarchartSentiment = (target, data3, d3) => {
   let data = data3.data.reverse();
 
   let width = 350;
-  var height = 350;
+  const barHeight = 32;
+  var height = barHeight * data.length;
 
   var widthView = 500;
-  var heightView = 400;
+  var heightView = height + 50;
 
   // set the ranges
   var x = d3.scaleLinear()
@@ -47,7 +49,7 @@ const renderBarchartSentiment = (target, data3, d3) => {
 
   var y = d3.scaleBand()
     .range([height, 0])
-    .padding(0.1)
+    .padding(0)
     .domain(data.map(function (d, i) { return d.key; }));
 
   // append the svg object to the body of the page
@@ -80,8 +82,11 @@ const renderBarchartSentiment = (target, data3, d3) => {
     .attr('y', function (d, i) { return y(d.key); })
     .attr('x', function (d, i) { return Math.abs(d.value) <= 0.02 ? x(-0.02) : Math.min(x(0), x(d.value)); })
     .attr('width', function (d) { return Math.abs(d.value) <= 0.02 ? x(0.02) - x(-0.02) : Math.abs(x(d.value) - x(0)); })
-    .attr('height', y.bandwidth())
-    .attr('fill', (d, i) => (d.value < -0.02 ? 'red' : d.value > 0.02 ? 'green' : 'gray'));
+    .attr('height', barHeight)
+    .attr('fill', (d, i) => (d.value < -0.02 ? 'red' : d.value > 0.02 ? 'green' : 'gray'))
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', '2')
+    .attr('stroke-dasharray', d => (Math.abs(d.value) <= 0.02 ? x(0.02) - x(-0.02) : Math.abs(x(d.value) - x(0))) + ', ' + barHeight);
   svg.append('line')
     .style('stroke', 'black')
     .style('stroke-dasharray', '10')
@@ -111,10 +116,16 @@ const renderBarchartPercent = (target, data3, d3) => {
   let colors = data3.colors;
 
   let width = 270;
-  var height = 350;
+  const barHeight = 32;
+  var legendRectSize = 12;
+  var legendSpacing = 8;
+
+  var height = barHeight * data.map(d => d.key).filter((value, index, self) => {
+    return self.indexOf(value) === index;
+  }).length;
 
   var widthView = 500;
-  var heightView = 400;
+  var heightView = Math.max(height + 50, (Object.values(colors).length) * (legendRectSize + legendSpacing));
 
   // set the ranges
   var x = d3.scaleLinear()
@@ -122,7 +133,7 @@ const renderBarchartPercent = (target, data3, d3) => {
 
   var y = d3.scaleBand()
     .range([height, 0])
-    .padding(0.2);
+    .padding(0);
 
   // append the svg object to the body of the page
   // append a 'group' element to 'svg'
@@ -145,11 +156,14 @@ const renderBarchartPercent = (target, data3, d3) => {
     .data(data)
     .enter().append('rect')
     .attr('class', 'bar')
-    .attr('x', function (d, i) { return x(d.value[1] - d.value[0]); })
-    .attr('height', y.bandwidth())
+    .attr('x', function (d, i) { return x(d.value[1] - d.value[0]) + 1; })
+    .attr('height', barHeight)
     .attr('y', function (d, i) { return y(d.key); })
     .attr('width', function (d, i) { return x(d.value[0]); })
-    .attr('fill', (d, i) => d.value[2]);
+    .attr('fill', (d, i) => d.value[2])
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', '2')
+    .attr('stroke-dasharray', d => x(d.value[0]) + ', ' + barHeight);
 
   // add the x Axis
   svg.append('g')
@@ -160,8 +174,6 @@ const renderBarchartPercent = (target, data3, d3) => {
   svg.append('g')
     .call(d3.axisLeft(y));
 
-  var legendRectSize = 12;
-  var legendSpacing = 8;
   var legend = svg.selectAll('.legend')
     .data(Object.values(colors))
     .enter()
@@ -170,7 +182,7 @@ const renderBarchartPercent = (target, data3, d3) => {
     .attr('transform', function (d, i) {
       var height = legendRectSize + legendSpacing;
       var horz = 280;
-      var vert = i * height + 50;
+      var vert = i * height;
       return 'translate(' + horz + ',' + vert + ')';
     });
 
@@ -183,24 +195,25 @@ const renderBarchartPercent = (target, data3, d3) => {
   legend.append('text')
     .attr('x', legendRectSize + legendSpacing / 2)
     .attr('y', legendRectSize - legendSpacing / 4)
-    .style('font-size', '0.8125em')
+    .style('font-size', '0.8125rem')
     .text(function (d, i) { return Object.keys(colors)[i]; });
 };
 const renderBarchart = (target, data3, d3) => {
   let data = data3.data.reverse();
 
   let width = 350;
-  var height = 350;
+  const barHeight = 32;
+  var height = barHeight * data.length;
 
   var widthView = 500;
-  var heightView = 400;
+  var heightView = height + 50;
 
   // set the ranges
   var x = d3.scaleLinear()
     .range([0, width]);
   var y = d3.scaleBand()
     .range([height, 0])
-    .padding(0.1);
+    .padding(0);
 
   d3.select(target).selectAll('div').remove();
   var svg = d3.select(target)
@@ -220,11 +233,16 @@ const renderBarchart = (target, data3, d3) => {
     .data(data)
     .enter().append('rect')
     .attr('class', 'bar')
-    .attr('x', function (d, i) { return 0; })
-    .attr('height', y.bandwidth())
+    .attr('x', 1)
+    // .attr('height', y.bandwidth())
+    .attr('height', barHeight)
     .attr('y', function (d, i) { return y(d.key); })
+    // .attr('y', function (d, i) { return i * 20.1; })
     .attr('width', function (d) { return x(d.value); })
-    .attr('fill', (d, i) => '#179c7d');
+    .attr('fill', '#179c7d')
+    .attr('stroke', '#ffffff')
+    .attr('stroke-width', '2')
+    .attr('stroke-dasharray', d => x(d.value) + ', ' + barHeight);
 
   const xAxisTicks = x.ticks()
     .filter(tick => Number.isInteger(tick));

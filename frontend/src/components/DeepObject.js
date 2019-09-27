@@ -80,7 +80,20 @@ class DeepObject extends Component {
       if (template.children) {
         return (<DeepObject data={value} template={template} name={key} key={key} deepChange={this.deepChange} />);
       } else {
-        return (<Input type={template.type} key={key} label={template.label} {...template.attributes} value={value} name={key} onChange={this.onChange} />);
+        const { values, ...attributes } = template.attributes || {};
+        if (template.conditional) {
+          attributes.values = values[this.props.data[template.conditional]];
+          if (Array.isArray(attributes.values)) {
+            if (attributes.values.findIndex(v => (typeof v === 'object' ? v.value === value : v === value)) === -1) {
+              this.onChange({ name: key, value: attributes.values[0] });
+            }
+          } else if (attributes.values !== value) {
+            this.onChange({ name: key, value: attributes.values });
+          }
+        } else {
+          attributes.values = values;
+        }
+        return (<Input type={template.type} key={key} label={template.label} {...attributes} value={value} name={key} onChange={this.onChange} />);
       }
     }
   }
