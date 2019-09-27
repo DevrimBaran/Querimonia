@@ -167,7 +167,7 @@ function Single (active, dispatch, helpers) {
               {helpers.props.complaintStuff.log.map((entry, i) => (
                 <div key={i} className='log'>
                   <span className='category'>[{entry.category}]</span> <span
-                    className='datetime'>{entry.date} {entry.time} UTC</span>
+                    className='datetime'>{entry.date} {entry.time}</span>
                   <br />
                   <div className='message'>
                     {entry.message}
