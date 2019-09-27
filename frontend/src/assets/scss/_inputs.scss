@@ -25,6 +25,7 @@ input[type=reset], input[type=submit], input[type=button] {
   @extend %font;
   position: relative;
   display: inline-block;
+  height: 4.125rem;
   padding: 0.625rem 0.625rem;
   flex-grow: 1;
 
