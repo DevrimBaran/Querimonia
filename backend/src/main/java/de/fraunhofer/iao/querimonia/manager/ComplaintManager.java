@@ -889,7 +889,9 @@ public class ComplaintManager {
     } catch (JSONException e) {
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler");
     }
-    template.convertAndSend("/complaints/state", response.toString());
+    if (template != null) {
+      template.convertAndSend("/complaints/state", response.toString());
+    }
 
   }
 
