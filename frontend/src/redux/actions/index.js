@@ -282,6 +282,27 @@ export function refreshResponses (id) {
       });
   };
 }
+export function useComponent (complaintId, id) {
+  return function (dispatch, getState) {
+    Api.patch('/api/complaints/' + complaintId + '/response/' + id + '?used=true', {});
+    dispatch({
+      type: 'USE_COMPONENT',
+      id: id
+    });
+  };
+}
+export function updateResponseText (id, text) {
+  return function (dispatch, getState) {
+    Api.patch('/api/complaints/' + id + '/response', { text: text });
+    // .then(data => {
+    //   dispatch({
+    //     type: 'REFRESH_RESPONSES_END',
+    //     components: data.components,
+    //     actions: data.actions
+    //   });
+    // });
+  };
+}
 export function fetchStuff (id) {
   return function (dispatch, getState) {
     if (!getState().complaints.data.byId[id]) return;
@@ -314,7 +335,7 @@ export function fetchStuff (id) {
           type: 'FETCH_SINGLE_COMPLAINT_END',
           entities: data[0],
           components: data[1].components,
-          actions: data[1].actions,
+          response: data[1].response,
           combinations: data[2],
           log: data[3],
           text: data[4].text

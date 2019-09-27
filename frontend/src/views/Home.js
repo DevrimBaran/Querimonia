@@ -28,7 +28,7 @@ function Home () {
               </div>
               <h1> Was kann Querimonia?</h1>
               <br />
-              <div className='boxWithMargin'>
+              <div className='boxWithMargin' style={{ maxWidth: '100%', width: '80%' }}>
                 <div className='fiftyFifty'>
                   <div className='leftBox'>
                     <h2>Erkennen von Entitäten</h2>

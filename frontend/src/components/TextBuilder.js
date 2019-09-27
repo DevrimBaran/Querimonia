@@ -8,7 +8,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { finishComplaint, refreshResponses } from '../redux/actions/';
+import { finishComplaint, refreshResponses, updateResponseText, useComponent } from '../redux/actions/';
 
 import Content from './../components/Content';
 import Response from './../components/Response';
@@ -23,8 +23,7 @@ class TextBuilder extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      response: '',
-      used: {}
+      response: props.response
     };
   }
   changeText = (e) => {
@@ -33,13 +32,18 @@ class TextBuilder extends Component {
     }));
   }
   onSelect = (value, id) => {
+    this.props.dispatch(useComponent(this.props.complaintId, id));
     this.setState((state) => ({
-      response: state.response + value,
-      used: { ...state.used, [id]: true }
+      response: state.response + value
     }));
   }
+  componentDidUpdate = (prevProps, prevState) => {
+    if (prevState.response !== this.state.response) {
+      this.props.dispatch(updateResponseText(this.props.complaintId, this.state.response));
+    }
+  }
   refresh = (e) => {
-    this.props.dispatch(refreshResponses(this.props.complaintId));
+    this.props.dispatch(refreshResponses(this.props.complaintId, this.props.complaintId));
   }
   finish = () => {
     fetch('https://querimonia.iao.fraunhofer.de/tmp/done', {
@@ -59,13 +63,14 @@ class TextBuilder extends Component {
   render () {
     const { disabled, components = [] } = { ...this.props };
     const actions = components.reduce((array, component) => array.concat(component.component.actions), []);
-    console.log(actions);
-    const disableResponses = components.filter(c => !this.state.used[c.id]).length === 0;
+    const disableResponses = components.filter(c => !c.used).length === 0;
     const disableActions = actions.length === 0;
+    console.log(actions);
+    console.log(components);
     return (
       <React.Fragment>
         <Input type='textarea' readOnly={disabled} min='5' value={this.state.response} onChange={this.changeText} />
-        <Row>
+        <Row style={{ maxHeight: 'max-content', height: '100%' }}>
           {disabled || <Button onClick={this.finish}>Abschließen</Button>}
           <Button confirm='Der bisherige Antworttext wird gelöscht. Sind Sie sicher?' onClick={this.refresh}>Antwortbausteine neu generieren</Button>
         </Row>
@@ -77,8 +82,8 @@ class TextBuilder extends Component {
           <Tabbed>
             <div label='Antworten' disabled={disableResponses}>
               {
-                components.filter(c => !this.state.used[c.component.id]).map((c, i) => {
-                  return (<Response key={c.component.id} component={c.component} onSelect={(e) => { this.onSelect(e.value, c.component.id); }} />);
+                components.filter(c => !c.used).map((c, i) => {
+                  return (<Response key={c.component.id} component={c.component} onSelect={(e) => { this.onSelect(e.value, c.id); }} />);
                 })
               }
             </div>
@@ -99,6 +104,7 @@ const mapStateToProps = (state, props) => {
     entities: state.complaintStuff.entities,
     complaintId: state.complaintStuff.id,
     components: state.complaintStuff.components,
+    response: state.complaintStuff.response,
     // actions: state.complaintStuff.actions,
     counter: state.complaintStuff.counter
   };
