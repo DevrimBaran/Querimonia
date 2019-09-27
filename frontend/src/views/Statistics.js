@@ -75,7 +75,7 @@ class Statistics extends Component {
     Promise.all(requests).then((values) => {
     });
   };
-  
+
   componentDidMount = () => {
     Promise.all([
       Api.get('/api/stats/categoriesStats', {}),
@@ -262,7 +262,7 @@ class Statistics extends Component {
                     </Grid>
                     <Grid columns='45% 55%' rows='100%' style={{ overflow: 'hidden' }}>
                       <StatsTable data={this.categoriesData[this.state.categories]} />
-                      <StatsDiagram style={{ overflow: 'auto' }} data={this.categoriesData[this.state.categories]} />
+                      <StatsDiagram style={{ overflow: 'auto' }} type={this.catArray[this.state.categories].label} data={this.categoriesData[this.state.categories]} />
                     </Grid>
                   </div>
                   <div className='row flex-column' titleHeader='Häufigsten erkannte Werte zu jedem Entitäts-Label' label='Entitäten'>
