@@ -16,8 +16,8 @@ public class WebSocketController {
 
   public void sendStateChange(String message) {
     if (template != null) {
-      log.debug("sending message " + message);
-      template.convertAndSend("", message);
+      log.info("sending message " + message);
+      template.convertAndSend("/complaint/state", message);
     }
   }
 

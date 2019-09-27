@@ -70,7 +70,7 @@ public class GeneralController {
 
   @PostMapping("api/sendMessageTest")
   public void send() {
-    template.convertAndSend("Test message");
+    template.convertAndSend("/complaint/state","Test message");
   }
 
 }
