@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,6 +26,7 @@ public class GeneralController {
   private final ConfigurationManager configurationManager;
   private final CombinationManager combinationManager;
   private final ResponseComponentManager responseComponentManager;
+  private SimpMessagingTemplate template;
 
   /**
    * Creates a new controller. This is called by spring.
@@ -34,11 +36,14 @@ public class GeneralController {
       ComplaintManager complaintManager,
       ConfigurationManager configurationManager,
       CombinationManager combinationManager,
-      ResponseComponentManager componentManager) {
+      ResponseComponentManager componentManager,
+      @Autowired SimpMessagingTemplate template
+  ) {
     this.complaintManager = complaintManager;
     this.configurationManager = configurationManager;
     this.combinationManager = combinationManager;
     this.responseComponentManager = componentManager;
+    this.template = template;
   }
 
   /**
@@ -64,6 +69,11 @@ public class GeneralController {
       combinationManager.addDefaultCombinations();
       configurationManager.addDefaultConfigurations();
     });
+  }
+
+  @PostMapping("api/sendMessageTest")
+  public void send() {
+    template.convertAndSend("Test message");
   }
 
 }
