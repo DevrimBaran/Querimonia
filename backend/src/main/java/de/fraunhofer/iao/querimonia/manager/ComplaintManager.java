@@ -475,7 +475,7 @@ public class ComplaintManager {
     // update the component with the given id
     components.replaceAll(completedResponseComponent -> {
       if (completedResponseComponent.getId() == componentId) {
-        completedResponseComponent.withUsed(used);
+        return completedResponseComponent.withUsed(used);
       }
       return completedResponseComponent;
     });
