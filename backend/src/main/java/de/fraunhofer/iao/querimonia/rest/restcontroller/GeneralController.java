@@ -26,8 +26,7 @@ public class GeneralController {
   private final ConfigurationManager configurationManager;
   private final CombinationManager combinationManager;
   private final ResponseComponentManager responseComponentManager;
-  private SimpMessagingTemplate template;
-
+  @Autowired SimpMessagingTemplate template;
   /**
    * Creates a new controller. This is called by spring.
    */
@@ -36,14 +35,12 @@ public class GeneralController {
       ComplaintManager complaintManager,
       ConfigurationManager configurationManager,
       CombinationManager combinationManager,
-      ResponseComponentManager componentManager,
-      @Autowired SimpMessagingTemplate template
+      ResponseComponentManager componentManager
   ) {
     this.complaintManager = complaintManager;
     this.configurationManager = configurationManager;
     this.combinationManager = combinationManager;
     this.responseComponentManager = componentManager;
-    this.template = template;
   }
 
   /**
