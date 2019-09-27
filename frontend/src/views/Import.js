@@ -98,8 +98,8 @@ class ImportBlock extends Component {
     return (
       // <Block onDragOver={this.onDragOver} onDragLeave={this.onDragLeave}>
       <Block>
-        <h1 className='center'>Import</h1>
         <Row vertical className='centerColumn'>
+          <h1 className='center'>Import</h1>
           {/* <div className='input' id='Import' onDrop={this.onDrop} onDragOver={this.onDragOver}> */}
           <div className={'input'} id='Import'>
             {this.state.type !== 'file' && <textarea className='textarea' style={{ resize: 'none', height: '200px' }} onChange={this.onChange} ref={this.textInput} placeholder='Geben Sie eine Beschwerde ein oder wählen Sie eine Datei aus.' />}
@@ -109,7 +109,7 @@ class ImportBlock extends Component {
               <Input type='button' disabled={!this.state.type || this.state.loading} name='uploadButton' onClick={this.onClick} value='Importieren' />
             </div>
           </div>
-          <Content>
+          <Content style={{ height: '100%' }}>
             <div style={{ height: '100%' }} id='response'>
               {this.state.loading ? (
                 <div className='center'>
