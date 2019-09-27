@@ -139,22 +139,8 @@ public class ComplaintBuilder {
    * @return this complaint builder.
    */
   public ComplaintBuilder setState(@NonNull ComplaintState state) {
-    ComplaintState oldState = this.state;
     this.state = Objects.requireNonNull(state);
-    broadcastStateChange(oldState);
     return this;
-  }
-
-  private void broadcastStateChange(ComplaintState oldState) {
-    JSONObject response = new JSONObject();
-    try {
-      response.put("id", this.id);
-      response.put("oldState", oldState);
-      response.put("state", this.state);
-    } catch (JSONException e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler");
-    }
-    new WebSocketController().sendStateChange(response.toString());
   }
 
   /**
