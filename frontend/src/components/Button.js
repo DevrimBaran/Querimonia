@@ -22,14 +22,19 @@ class Button extends Component {
   }
   render () {
     const { icon, onClick, disabled, children, confirm, href, className = '', staticContext, history, location, match, ...passThrough } = { ...this.props };
+    const stack = Array.isArray(icon) && icon.map((c, i) => <i key={i} className={c} />);
+    const catchClick = this.onClick || this.href;
+    let fa = stack ? 'fa-stack' : icon;
     if (children) {
       return (
-        <button disabled={disabled} onClick={this.onClick} className={className + ' action-button'} {...passThrough}>
-          {icon && <i className={icon} />} {children}
+        <button disabled={disabled} onClick={catchClick ? this.onClick : undefined} className={className + ' action-button'} {...passThrough}>
+          {icon && <i className={fa}>{stack}</i>} {children}
         </button>
       );
     } else {
-      return <i className={icon + ' action-button ' + className} disabled={disabled} onClick={this.onClick} {...passThrough} />;
+      return <i className={fa + ' action-button ' + className} disabled={disabled} onClick={catchClick ? this.onClick : undefined} {...passThrough}>
+        {stack}
+      </i>;
     }
   }
 }

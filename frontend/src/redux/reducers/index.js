@@ -161,6 +161,20 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
         }
       };
     }
+    case 'UPDATE_STATE': {
+      if (!state.byId[action.id]) return state;
+      return {
+        ...state,
+        active: state.active && {
+          ...state.active,
+          state: state.active.id === action.id ? action.state : state.active.id
+        },
+        byId: {
+          ...state.byId,
+          [action.id]: { ...state.byId[action.id], state: action.state }
+        }
+      };
+    }
     case 'ACTIVATE_CONFIG': {
       return {
         ...state,

@@ -106,23 +106,6 @@ export function refreshComplaint (id) {
             data: response,
             endpoint: 'complaints'
           });
-          (function (id) {
-            var check = () => {
-              Api.get('/api/complaints/' + id, {})
-                .then((response) => {
-                  if (!response.state || response.state !== 'ANALYSING') {
-                    dispatch({
-                      type: 'UPDATE_SINGLE',
-                      data: response,
-                      endpoint: 'complaints'
-                    });
-                  } else {
-                    setTimeout(check, 10000);
-                  }
-                });
-            };
-            setTimeout(check, 10000);
-          })(id);
         });
     });
   };

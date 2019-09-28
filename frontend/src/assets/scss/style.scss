@@ -235,21 +235,6 @@
     border-radius: 50%;
 }
 
-.action-button {
-    cursor: pointer;
-    padding: 0.3125rem;
-}
-
-.action-button-disabled {
-    cursor: default;
-    padding: 0.3125rem;
-    color: rgb(150, 150, 150);
-}
-
-.action-button:hover {
-    color: rgb(196, 100, 22);
-}
-
 .crone:hover {
     filter: brightness(80%);
 }

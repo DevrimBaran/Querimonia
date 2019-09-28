@@ -167,7 +167,7 @@ class App extends Component {
           {login.access === 1 &&
             <View hotkey='K' label='Konfigurationen' endpoint='config' path='configurations' stateToProps={(state) => ({ allExtractors: state.allExtractors })} component={Config} />}
           <View menu='bottomMenu' hotkey='?' label='Impressum (?)' path='/impressum' component={Impressum} />
-          <Notifications />
+          <Notifications dispatch={this.props.dispatch} />
         </Router>
       </React.Fragment>
     );

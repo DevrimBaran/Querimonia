@@ -19,16 +19,16 @@ class Notifications extends Component {
     this.icon = document.querySelector('link[rel*=icon]');
     this.url = new URL(this.icon.href);
     this.total = 0;
+    this.timeout = 0;
     this.state = {
       hidden: false,
+      animate: false,
+      showNew: true,
+      showAnalyse: true,
+      showError: true,
+      showDone: true,
       notifications: {}
     };
-  }
-
-  stompMessage = (e) => {
-    const msg = JSON.parse(e.body);
-    msg.order = this.total++;
-    this.setState(state => ({ notifications: { ...state.notifications, [msg.id]: msg } }));
   }
 
   closeAll = () => {
@@ -53,6 +53,20 @@ class Notifications extends Component {
     this.setState(state => ({ hidden: !state.hidden }));
   }
 
+  onMessage = (e) => {
+    const msg = JSON.parse(e.body);
+    this.props.dispatch({
+      type: 'UPDATE_STATE',
+      id: msg.id,
+      state: msg.state,
+      endpoint: 'complaints'
+    });
+    msg.order = this.total++;
+    clearTimeout(this.timeout);
+    this.setState(state => ({ animate: false, notifications: { ...state.notifications, [msg.id]: msg } }));
+    this.timeout = setTimeout(() => this.setState({ animate: true }), 200);
+  }
+
   onClick = (id) => {
     const notification = this.state.notifications[id];
     this.close(id);
@@ -62,13 +76,17 @@ class Notifications extends Component {
   mapNotification = (notification) => {
     let text = false;
     if (notification.oldState === null) {
-      text = 'Neue Beschwerde eingegangen.';
+      text = this.state.showNew && 'Neue Beschwerde eingegangen.';
     } else if (notification.state === 'ANALYSING') {
-      text = 'Analyse gestartet.';
+      text = this.state.showAnalyse && 'Analyse gestartet.';
     } else if (notification.oldState === 'ANALYSING') {
-      text = `Analyse ${notification.state === 'ERROR' ? 'mit Fehler' : ''} abgeschlossen`;
+      if (notification.state === 'ERROR') {
+        text = this.state.showError && 'Fehler bei Analyse';
+      } else {
+        text = this.state.showDone && 'Analyse abgeschlossen';
+      }
     }
-    if (!text) return <React.Fragment />;
+    if (!text) return undefined;
     return (
       <div key={notification.id} className='notification' onClick={() => this.onClick(notification.id)}>
         <div className='title'>
@@ -84,26 +102,49 @@ class Notifications extends Component {
     const sock = new SockJS(`${process.env.REACT_APP_BACKEND_PATH}/api/websocket`);
     const stompClient = Stomp.over(sock);
     stompClient.connect({}, frame => {
-      stompClient.subscribe('/complaints/state', this.stompMessage);
+      stompClient.subscribe('/complaints/state', this.onMessage);
     });
-    // sock.onopen = this.socketOpen;
-    // sock.onclose = this.socketClose;
-    // sock.onmessage = this.socketMessage;
   }
   render () {
     // const { a, b, ...passThrough } = { ...this.props };
     const notifications = Object.values(this.state.notifications).sort((a, b) => a.order - b.order);
+    const mappedNotifications = notifications.map(this.mapNotification).filter(n => n);
     this.toggleFavicon();
     return (
-      <div id='notifications' data-count={notifications.length}>
-        <div className='header'>
-          <Button title='Minimieren' icon={`fas fa-caret-${this.state.hidden ? 'right' : 'down'}`} style={{ color: 'white' }} onClick={this.toggle}>
-            {notifications.length} Benachrichtigungen
-          </Button>
-          <Button title='Alle schließen' icon='fas fa-times' style={{ color: 'white' }} onClick={this.closeAll} />
-        </div>
+      <div id='notifications' data-animate={this.state.animate || undefined} data-count={notifications.length} style={{ '--notifications': mappedNotifications.length }}>
+        {this.state.hidden ? (
+          <div className='header'>
+            <Button title='Benachrichtigungen' icon={['far fa-envelope', 'counter']} style={{ fontSize: '2rem' }} onClick={this.toggle} />
+          </div>
+        ) : (
+          <div className='header'>
+            <Button title='Benachrichtigungen' icon='fas fa-caret-down' onClick={this.toggle}>
+              <span>{mappedNotifications.length}</span>
+              <span className='dimPrimary'> {notifications.length - mappedNotifications.length || undefined}</span>
+              <span> Benachrichtigungen</span>
+            </Button>
+            <Button title='Filter' icon='fas white fa-filter' onClick={() => this.setState(state => ({ showFilter: !this.state.showFilter }))} />
+            {this.state.showFilter && (
+              <div className='notificationFilter'>
+                <Button title='Filter' icon={this.state.showNew ? ['fas fa-plus'] : ['fas primary fa-slash', 'fas dimPrimary fa-plus']} onClick={() => this.setState(state => ({ showNew: !this.state.showNew }))}>
+                  Neue Beschwerde
+                </Button>
+                <Button title='Filter' icon={this.state.showAnalyse ? ['fas fa-project-diagram'] : ['fas primary fa-slash', 'fas dimPrimary fa-project-diagram']} onClick={() => this.setState(state => ({ showAnalyse: !this.state.showAnalyse }))}>
+                  Analyse gestartet
+                </Button>
+                <Button title='Filter' icon={this.state.showDone ? ['fas fa-check'] : ['fas primary fa-slash', 'fas dimPrimary fa-check']} onClick={() => this.setState(state => ({ showDone: !this.state.showDone }))}>
+                  Analyse abgeschlossen
+                </Button>
+                <Button title='Filter' icon={this.state.showError ? ['fas fa-exclamation'] : ['fas primary fa-slash', 'fas dimPrimary fa-exclamation']} onClick={() => this.setState(state => ({ showError: !this.state.showError }))}>
+                  Fehler bei Analyse
+                </Button>
+              </div>
+            )}
+            <Button title='Alle schließen' icon='fas white fa-times' onClick={this.closeAll} />
+          </div>
+        )}
         <div className={'notificationList'} style={{ display: this.state.hidden ? 'none' : 'block' }}>
-          {notifications.map(this.mapNotification)}
+          {mappedNotifications}
         </div>
       </div>
     );
