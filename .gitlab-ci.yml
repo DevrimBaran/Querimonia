@@ -135,7 +135,7 @@ build-python:
     - pip3 install pipenv --user
     - pip3 install flake8 --user
     - ~/.local/bin/pipenv install
-    - ~/.local/bin/pipenv run python -m spacy download de_core_news_sm==2.1.0
+    #- ~/.local/bin/pipenv run python -m spacy download de
     - ~/.local/bin/flake8 --ignore E501 .
     - echo "DEPLOY=True" > .env
   artifacts:
