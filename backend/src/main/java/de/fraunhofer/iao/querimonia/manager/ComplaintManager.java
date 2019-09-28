@@ -892,7 +892,7 @@ public class ComplaintManager {
           + "bei erstellen der Socket Nachricht");
     }
     if (template != null) {
-      template.convertAndSend("/complaints/state", response);
+      template.convertAndSend("/complaints/state", response.toString());
     }
 
   }
