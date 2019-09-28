@@ -299,7 +299,7 @@ class TagCloud extends Component {
                   display: this.state.listView ? 'block' : 'none'
                 }}>
                   <ListTable
-                    style={{ margin: 'auto' }}
+                    style={{ margin: 'auto', paddingTop: '1.125rem' }}
                     header={['Wort', 'Vorkommen']}
                     data={this.createWordArray().map(w => (
                       [

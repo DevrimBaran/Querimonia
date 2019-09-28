@@ -6,7 +6,7 @@
 
 import React, { Component } from 'react';
 import SockJS from 'sockjs-client';
-
+import { Stomp } from '@stomp/stompjs/esm6';
 // eslint-disable-next-line
 import { withRouter } from 'react-router-dom';
 
@@ -33,6 +33,12 @@ class Notifications extends Component {
 
   socketMessage = (e) => {
     console.log('new Message', e);
+  }
+
+  stompMessage = (e) => {
+    console.log('STOMP', e);
+    const msg = JSON.parse(e.body);
+    console.log('new Message', msg);
   }
 
   closeAll = () => {
@@ -77,7 +83,7 @@ class Notifications extends Component {
       <div key={i} className='notification' onClick={() => this.onClick(i)}>
         <div className='title'>
           <span>Anliegen {notification.id}</span>
-          <Button title='Schließen' className='close' icon='fas fa-trash-alt' onClick={() => this.close(i)} />
+          <Button title='Schließen' className='close' icon='fas fa-times' onClick={() => this.close(i)} />
         </div>
         <p>{text}</p>
       </div>
@@ -85,7 +91,18 @@ class Notifications extends Component {
   }
 
   componentDidMount = () => {
+    console.log('mount');
     const sock = new SockJS(`${process.env.REACT_APP_BACKEND_PATH}/api/websocket`);
+    const stompClient = Stomp.over(sock);
+    document.sock = sock;
+    document.stomp = stompClient;
+    stompClient.connect({}, function (frame) {
+      console.log('frame', frame);
+      stompClient.subscribe('/complaints/state', this.stompMessage);
+    });
+    stompClient.onUnhandledMessage((...args) => {
+      console.log(...args);
+    });
     sock.onopen = this.socketOpen;
     sock.onclose = this.socketClose;
     sock.onmessage = this.socketMessage;
@@ -96,10 +113,10 @@ class Notifications extends Component {
     return (
       <div id='notifications' data-count={this.state.notifications.length}>
         <div className='header'>
-          <Button title='Minimieren' icon={`fas fa-caret-${this.state.hidden ? 'right' : 'down'}`} onClick={this.toggle}>
+          <Button title='Minimieren' icon={`fas fa-caret-${this.state.hidden ? 'right' : 'down'}`} style={{ color: 'white' }} onClick={this.toggle}>
             {this.state.notifications.length} Benachrichtigungen
           </Button>
-          <Button title='Alle schließen' icon='fas fa-trash-alt' onClick={this.closeAll} />
+          <Button title='Alle schließen' icon='fas fa-times' style={{ color: 'white' }} onClick={this.closeAll} />
         </div>
         <div className={'notificationList'} style={{ display: this.state.hidden ? 'none' : 'block' }}>
           {this.state.notifications.map(this.mapNotification)}

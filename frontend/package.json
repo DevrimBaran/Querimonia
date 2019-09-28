@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "@stomp/stompjs": "^5.4.2",
     "d3": "^5.11.0",
     "deepmerge": "^4.0.0",
     "env-cmd": "^9.0.3",
@@ -20,7 +21,8 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "sockjs-client": "1.0.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "websocket": "^1.0.30"
   },
   "scripts": {
     "start": "env-cmd -f .env.dev react-scripts start",
