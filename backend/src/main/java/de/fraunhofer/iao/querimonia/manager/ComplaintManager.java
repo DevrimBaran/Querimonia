@@ -362,6 +362,7 @@ public class ComplaintManager {
         try {
           var newBuilder
               = complaintFactory.analyzeComplaint(builder, keepUserInformation);
+          sendStateChange(builder.getId(), builder.getState(), state);
           newBuilder.setState(state);
           storeComplaint(newBuilder.createComplaint());
         } catch (Exception e) {
@@ -880,14 +881,15 @@ public class ComplaintManager {
     }
   }
 
-  private void sendStateChange(long id, ComplaintState oldState, ComplaintState newState) {
+  private synchronized void sendStateChange(long id, ComplaintState oldState, ComplaintState newState) {
     JSONObject response = new JSONObject();
     try {
       response.put("id", id);
       response.put("oldState", oldState);
       response.put("state", newState);
     } catch (JSONException e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler");
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler "
+          + "bei erstellen der Socket Nachricht");
     }
     if (template != null) {
       template.convertAndSend("/complaints/state", response.toString());
