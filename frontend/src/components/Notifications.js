@@ -5,57 +5,47 @@
  */
 
 import React, { Component } from 'react';
-import SockJS from 'sockjs-client';
-import { Stomp } from '@stomp/stompjs/esm6';
+// import SockJS from 'sockjs-client';
 // eslint-disable-next-line
 import { withRouter } from 'react-router-dom';
 
 import Button from './Button';
 
+const Stomp = window.Stomp;
+const SockJS = window.SockJS;
 class Notifications extends Component {
   constructor (props) {
     super(props);
     this.icon = document.querySelector('link[rel*=icon]');
     this.url = new URL(this.icon.href);
+    this.total = 0;
     this.state = {
       hidden: false,
-      notifications: []
+      notifications: {}
     };
   }
 
-  socketOpen = () => {
-    console.log('Socket opened');
-  }
-
-  socketClose = () => {
-    console.log('Socket closed');
-  }
-
-  socketMessage = (e) => {
-    console.log('new Message', e);
-  }
-
   stompMessage = (e) => {
-    console.log('STOMP', e);
     const msg = JSON.parse(e.body);
-    console.log('new Message', msg);
+    msg.order = this.total++;
+    this.setState(state => ({ notifications: { ...state.notifications, [msg.id]: msg } }));
   }
 
   closeAll = () => {
-    this.setState({ notifications: [] });
+    this.setState({ notifications: {} });
   }
 
-  close = (i) => {
+  close = (id) => {
     this.setState(state => {
-      const remaining = state.notifications.concat();
-      remaining.splice(i, 1);
-      console.log(state.notifications, remaining);
+      const remaining = { ...state.notifications };
+      delete remaining[id];
       return { notifications: remaining };
     });
   }
 
-  favicon = (filename) => {
-    this.url.pathname = `/${filename}.ico`;
+  toggleFavicon = () => {
+    const showLetter = (Object.keys(this.state.notifications).length > 0);
+    this.url.pathname = showLetter ? '/favicon2.ico' : '/favicon.ico';
     this.icon.href = this.url.href;
   }
 
@@ -63,13 +53,13 @@ class Notifications extends Component {
     this.setState(state => ({ hidden: !state.hidden }));
   }
 
-  onClick = (i) => {
-    const notification = this.state.notifications[i];
-    this.close(i);
+  onClick = (id) => {
+    const notification = this.state.notifications[id];
+    this.close(id);
     this.props.history.push(`/complaints/${notification.id}`);
   }
 
-  mapNotification = (notification, i) => {
+  mapNotification = (notification) => {
     let text = false;
     if (notification.oldState === null) {
       text = 'Neue Beschwerde eingegangen.';
@@ -80,10 +70,10 @@ class Notifications extends Component {
     }
     if (!text) return <React.Fragment />;
     return (
-      <div key={i} className='notification' onClick={() => this.onClick(i)}>
+      <div key={notification.id} className='notification' onClick={() => this.onClick(notification.id)}>
         <div className='title'>
           <span>Anliegen {notification.id}</span>
-          <Button title='Schließen' className='close' icon='fas fa-times' onClick={() => this.close(i)} />
+          <Button title='Schließen' className='close' icon='fas fa-times' onClick={() => this.close(notification.id)} />
         </div>
         <p>{text}</p>
       </div>
@@ -91,35 +81,29 @@ class Notifications extends Component {
   }
 
   componentDidMount = () => {
-    console.log('mount');
     const sock = new SockJS(`${process.env.REACT_APP_BACKEND_PATH}/api/websocket`);
     const stompClient = Stomp.over(sock);
-    document.sock = sock;
-    document.stomp = stompClient;
-    stompClient.connect({}, function (frame) {
-      console.log('frame', frame);
+    stompClient.connect({}, frame => {
       stompClient.subscribe('/complaints/state', this.stompMessage);
     });
-    stompClient.onUnhandledMessage((...args) => {
-      console.log(...args);
-    });
-    sock.onopen = this.socketOpen;
-    sock.onclose = this.socketClose;
-    sock.onmessage = this.socketMessage;
+    // sock.onopen = this.socketOpen;
+    // sock.onclose = this.socketClose;
+    // sock.onmessage = this.socketMessage;
   }
   render () {
     // const { a, b, ...passThrough } = { ...this.props };
-    this.favicon(this.state.notifications.length === 0 ? 'favicon' : 'favicon-letter');
+    const notifications = Object.values(this.state.notifications).sort((a, b) => a.order - b.order);
+    this.toggleFavicon();
     return (
-      <div id='notifications' data-count={this.state.notifications.length}>
+      <div id='notifications' data-count={notifications.length}>
         <div className='header'>
           <Button title='Minimieren' icon={`fas fa-caret-${this.state.hidden ? 'right' : 'down'}`} style={{ color: 'white' }} onClick={this.toggle}>
-            {this.state.notifications.length} Benachrichtigungen
+            {notifications.length} Benachrichtigungen
           </Button>
           <Button title='Alle schließen' icon='fas fa-times' style={{ color: 'white' }} onClick={this.closeAll} />
         </div>
         <div className={'notificationList'} style={{ display: this.state.hidden ? 'none' : 'block' }}>
-          {this.state.notifications.map(this.mapNotification)}
+          {notifications.map(this.mapNotification)}
         </div>
       </div>
     );
