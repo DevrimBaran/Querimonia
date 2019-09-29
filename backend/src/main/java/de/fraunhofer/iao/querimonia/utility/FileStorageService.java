@@ -1,6 +1,9 @@
 package de.fraunhofer.iao.querimonia.utility;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.glaforge.i18n.io.CharsetToolkit;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -8,7 +11,7 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.tika.parser.txt.CharsetDetector;
+import org.mozilla.universalchardet.UniversalDetector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -17,19 +20,17 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * Service for saving files in filesystem and retrieving them. Inspired by
@@ -37,6 +38,108 @@ import java.util.Objects;
  */
 @Service
 public class FileStorageService {
+
+  //public static void main(String[] args) throws IOException {
+  //  InputStream inputStream = new FileInputStream(
+  //      "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\ANSItest.txt");
+  //  String encoding = guessEncoding(inputStream).toString();
+  //  System.out.println(encoding);
+  //  BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+  //      "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\ANSItest.txt"),
+  //      Charset.forName(encoding)));
+  //  BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+  //      "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\ANSItest1.txt"),
+  //      StandardCharsets.UTF_8));
+  //  String text;
+  //  while ((text = br.readLine()) != null) {
+  //    System.out.println(text);
+  //    bufferedWriter.write(text);
+  //    bufferedWriter.flush();
+  //  }
+  //}
+
+  public static String guessEncoding(InputStream input) throws IOException {
+    // Load input data
+    long count = 0;
+    int n = 0, EOF = -1;
+    byte[] buffer = new byte[4096];
+    ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+    while ((EOF != (n = input.read(buffer))) && (count <= Integer.MAX_VALUE)) {
+      output.write(buffer, 0, n);
+      count += n;
+    }
+
+    if (count > Integer.MAX_VALUE) {
+      throw new RuntimeException("Inputstream too large.");
+    }
+
+    byte[] data = output.toByteArray();
+
+    // Detect encoding
+    Map<String, int[]> encodingsScores = new HashMap<>();
+
+    // * GuessEncoding
+    updateEncodingsScores(encodingsScores, new CharsetToolkit(data).guessEncoding().displayName());
+
+    // * ICU4j
+    CharsetDetector charsetDetector = new CharsetDetector();
+    charsetDetector.setText(data);
+    charsetDetector.enableInputFilter(true);
+    CharsetMatch cm = charsetDetector.detect();
+    if (cm != null) {
+      updateEncodingsScores(encodingsScores, cm.getName());
+    }
+
+    // * juniversalchardset
+    UniversalDetector universalDetector = new UniversalDetector(null);
+    universalDetector.handleData(data, 0, data.length);
+    universalDetector.dataEnd();
+    String encodingName = universalDetector.getDetectedCharset();
+    if (encodingName != null) {
+      updateEncodingsScores(encodingsScores, encodingName);
+    }
+
+    // Find winning encoding
+    Map.Entry<String, int[]> maxEntry = null;
+    for (Map.Entry<String, int[]> e : encodingsScores.entrySet()) {
+      if (maxEntry == null || (e.getValue()[0] > maxEntry.getValue()[0])) {
+        maxEntry = e;
+      }
+    }
+
+    String winningEncoding = maxEntry.getKey();
+    //dumpEncodingsScores(encodingsScores);
+    return winningEncoding;
+  }
+
+  private static void updateEncodingsScores(Map<String, int[]> encodingsScores, String encoding) {
+    String encodingName = encoding.toLowerCase();
+    int[] encodingScore = encodingsScores.get(encodingName);
+
+    if (encodingScore == null) {
+      encodingsScores.put(encodingName, new int[] { 1 });
+    } else {
+      encodingScore[0]++;
+    }
+  }
+
+  private static void dumpEncodingsScores(Map<String, int[]> encodingsScores) {
+    System.out.println(toString(encodingsScores));
+  }
+
+  private static String toString(Map<String, int[]> encodingsScores) {
+    String GLUE = ", ";
+    StringBuilder sb = new StringBuilder();
+
+    for (Map.Entry<String, int[]> e : encodingsScores.entrySet()) {
+      sb.append(e.getKey() + ":" + e.getValue()[0] + GLUE);
+    }
+    int len = sb.length();
+    sb.delete(len - GLUE.length(), len);
+
+    return "{ " + sb.toString() + " }";
+  }
 
   public static final String JSON_ERROR_TEXT =
       "Die Default-Elemente konnten nicht geladen werden.";
@@ -78,7 +181,7 @@ public class FileStorageService {
    */
   public String storeFile(MultipartFile file) {
     // Normalize file name
-    String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
     try {
       // Check if the file's name contains invalid characters
@@ -116,10 +219,9 @@ public class FileStorageService {
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
         case ".txt":
-          detector.setText(Files.readString(Paths.get(fullFilePath)).getBytes());
-          detector.detect();
-          text = detector.getString(Files.readString(Paths.get(fullFilePath)).getBytes(),
-              "UTF-8");
+          InputStream inputStream = new FileInputStream(fullFilePath);
+          String encoding = guessEncoding(inputStream).toString();
+          text = Files.readString(Paths.get(fullFilePath), StandardCharsets.UTF_8);
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));

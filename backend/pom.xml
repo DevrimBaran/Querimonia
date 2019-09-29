@@ -25,15 +25,19 @@
             <version>2.0.15</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika</artifactId>
-            <version>1.22</version>
-            <type>pom</type>
+            <groupId>com.ibm.icu</groupId>
+            <artifactId>icu4j</artifactId>
+            <version>64.2</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-parsers</artifactId>
-            <version>1.22</version>
+            <groupId>com.googlecode.juniversalchardet</groupId>
+            <artifactId>juniversalchardet</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.guessencoding</groupId>
+            <artifactId>guessencoding</artifactId>
+            <version>1.4</version>
         </dependency>
         <dependency>
             <groupId>org.apache.poi</groupId>
