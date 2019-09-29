@@ -42,24 +42,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Service
 public class FileStorageService {
 
-  //public static void main(String[] args) throws IOException {
-  //InputStream inputStream = new FileInputStream(
-  //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt");
-  //String encoding = guessEncoding(inputStream).toString();
-  //System.out.println(encoding);
-  //BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
-  //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt"),
-  //    Charset.forName(encoding)));
-  //BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-  //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test2.txt"),
-  //    StandardCharsets.UTF_8));
-  //String text;
-  //while ((text = br.readLine()) != null) {
-  //  System.out.println(text);
-  //  bufferedWriter.write(text + "\n");
-  //  bufferedWriter.flush();
-  //}
-  //
   public static String guessEncoding(InputStream input) throws IOException {
     // Load input data
     long count = 0;
@@ -223,21 +205,25 @@ public class FileStorageService {
           String encoding = guessEncoding(inputStream).toString();
           BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
               fullFilePath), Charset.forName(encoding)));
-          //BufferedReader brUtf8 = new BufferedReader(new InputStreamReader(new FileInputStream(
-          //    fullFilePath), StandardCharsets.UTF_8));
-          //BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
-          //    new FileOutputStream("utf8tempfile.txt"), StandardCharsets.UTF_8));
-          //bufferedWriter.write(br.readLine());
-          String notUtf8Text;
-          notUtf8Text = br.readLine();
-          byte[] ptext = notUtf8Text.getBytes(encoding);
-          text = new String(ptext, UTF_8);
-          //File file = new File("utf8tempfile.txt");
-          //if (file.delete()) {
-          //  System.out.println("File deleted successfully");
-          //} else {
-          //  System.out.println("Failed to delete the file");
-          //}
+          BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+              new FileOutputStream("utf8tempfile.txt"), StandardCharsets.UTF_8));
+          BufferedReader brUtf8 = new BufferedReader(new InputStreamReader(new FileInputStream(
+              "utf8tempfile.txt"), StandardCharsets.UTF_8));
+          String brText;
+          while ((brText = br.readLine()) != null) {
+            bufferedWriter.write(brText);
+            bufferedWriter.flush();
+          }
+          String readText;
+          while ((readText = brUtf8.readLine()) != null) {
+            text = readText;
+          }
+          File file = new File("utf8tempfile.txt");
+          if (file.delete()) {
+            System.out.println("File deleted successfully");
+          } else {
+            System.out.println("Failed to delete the file");
+          }
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
