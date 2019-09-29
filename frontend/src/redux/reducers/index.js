@@ -95,7 +95,6 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       };
     }
     case 'MODIFY_ACTIVE': {
-      console.log(action.data);
       return {
         ...state,
         active: {
@@ -117,7 +116,7 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       return {
         ...state,
         active: {
-          ...state.active,
+          ...action.data,
           saving: false
         }
       };

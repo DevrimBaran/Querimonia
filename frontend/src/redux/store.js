@@ -76,12 +76,12 @@ const initialState = {
         multiple: 'multiple',
         icon: 'fas fa-sort',
         values: [
-          { label: 'Eingangsdatum (absteigend)', value: 'upload_date_asc' },
-          { label: 'Eingangsdatum (aufsteigend)', value: 'upload_date_desc' },
-          { label: 'Kategorie (absteigend)', value: 'subject_asc' },
-          { label: 'Kategorie (aufsteigend)', value: 'subject_desc' },
-          { label: 'Stimmung (absteigend)', value: 'sentiment_asc' },
-          { label: 'Stimmung (aufsteigend)', value: 'sentiment_desc' }
+          { label: 'Eingangsdatum (absteigend)', value: 'upload_date_desc' },
+          { label: 'Eingangsdatum (aufsteigend)', value: 'upload_date_asc' },
+          { label: 'Kategorie (absteigend)', value: 'subject_desc' },
+          { label: 'Kategorie (aufsteigend)', value: 'subject_asc' },
+          { label: 'Stimmung (absteigend)', value: 'sentiment_desc' },
+          { label: 'Stimmung (aufsteigend)', value: 'sentiment_asc' }
         ]
       },
       {

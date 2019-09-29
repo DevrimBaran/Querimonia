@@ -83,19 +83,24 @@ class Notifications extends Component {
     if (notification.oldState === null) {
       text = this.state.showNew && 'Neue Beschwerde eingegangen.';
       icon = 'fas fa-plus';
+      this.count.new++;
     } else if (notification.state === 'ANALYSING') {
       text = this.state.showAnalyse && 'Analyse gestartet.';
       icon = 'fas fa-project-diagram';
+      this.count.analyse++;
     } else if (notification.state === 'IN_PROGRESS') {
       text = this.state.showProgress && 'Wird bearbeitet.';
       icon = 'fas fa-tools';
+      this.count.progress++;
     } else if (notification.oldState === 'ANALYSING') {
       if (notification.state === 'ERROR') {
         text = this.state.showError && 'Fehler bei Analyse';
         icon = 'fas fa-exclamation';
+        this.count.error++;
       } else {
         text = this.state.showDone && 'Analyse abgeschlossen';
         icon = 'fas fa-check';
+        this.count.done++;
       }
     }
     if (!text) return undefined;
@@ -124,6 +129,7 @@ class Notifications extends Component {
     // const { a, b, ...passThrough } = { ...this.props };
     const notifications = Object.values(this.state.notifications).sort((a, b) => b.order - a.order);
     let total = 0;
+    this.count = { new: 0, analyse: 0, progress: 0, error: 0, done: 0 };
     const mappedNotifications = notifications.map(this.mapNotification).filter(n => {
       return n && ++total <= this.state.count ? n : false;
     }).sort((a, b) => a.order - b.order);
@@ -152,19 +158,19 @@ class Notifications extends Component {
             {this.state.showFilter && (
               <div className='notificationFilter'>
                 <Button title={`Benachrichtigungen ${this.state.showNew ? 'verstecken' : 'anzeigen'}`} icon={this.state.showNew ? ['fas fa-plus'] : ['fas dimPrimary fa-plus', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showNew: !this.state.showNew }))}>
-                  Neue Beschwerde
+                  Neue Beschwerde ({this.count.new})
                 </Button>
                 <Button title={`Benachrichtigungen ${this.state.showAnalyse ? 'verstecken' : 'anzeigen'}`} icon={this.state.showAnalyse ? ['fas fa-project-diagram'] : ['fas dimPrimary fa-project-diagram', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showAnalyse: !this.state.showAnalyse }))}>
-                  Analyse gestartet
+                  Analyse gestartet ({this.count.analyse})
                 </Button>
                 <Button title={`Benachrichtigungen ${this.state.showDone ? 'verstecken' : 'anzeigen'}`} icon={this.state.showDone ? ['fas fa-check'] : ['fas dimPrimary fa-check', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showDone: !this.state.showDone }))}>
-                  Analyse abgeschlossen
+                  Analyse abgeschlossen ({this.count.done})
                 </Button>
                 <Button title={`Benachrichtigungen ${this.state.showProgress ? 'verstecken' : 'anzeigen'}`} icon={this.state.showProgress ? ['fas fa-tools'] : ['fas dimPrimary fa-tools', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showProgress: !this.state.showProgress }))}>
-                  Wird bearbeitet
+                  Wird bearbeitet ({this.count.progress})
                 </Button>
                 <Button title={`Benachrichtigungen ${this.state.showError ? 'verstecken' : 'anzeigen'}`} icon={this.state.showError ? ['fas fa-exclamation'] : ['fas dimPrimary fa-exclamation', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showError: !this.state.showError }))}>
-                  Fehler bei Analyse
+                  Fehler bei Analyse ({this.count.error})
                 </Button>
                 <Input label='Anzahl' min='0' type='number' value={this.state.count} onChange={(e) => this.setState({ count: e.value })} />
               </div>

@@ -44,7 +44,6 @@ export function setActive (endpoint, id) {
 export function saveActive (endpoint) {
   return function (dispatch, getState) {
     let data = getState()[endpoint].data;
-    console.log('saveActive', data);
     let active = data.active;
     dispatch({
       type: 'SAVE_START',
@@ -57,6 +56,7 @@ export function saveActive (endpoint) {
         .then(data => {
           dispatch({
             type: 'SAVE_END',
+            data: data,
             endpoint: endpoint
           });
         });
