@@ -39,24 +39,24 @@ import java.util.Map;
 @Service
 public class FileStorageService {
 
-  //public static void main(String[] args) throws IOException {
-  //  InputStream inputStream = new FileInputStream(
-  //      "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\ANSItest.txt");
-  //  String encoding = guessEncoding(inputStream).toString();
-  //  System.out.println(encoding);
-  //  BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
-  //      "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\ANSItest.txt"),
-  //      Charset.forName(encoding)));
-  //  BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-  //      "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\ANSItest1.txt"),
-  //      StandardCharsets.UTF_8));
-  //  String text;
-  //  while ((text = br.readLine()) != null) {
-  //    System.out.println(text);
-  //    bufferedWriter.write(text);
-  //    bufferedWriter.flush();
-  //  }
-  //}
+  public static void main(String[] args) throws IOException {
+    //InputStream inputStream = new FileInputStream(
+    //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt");
+    //String encoding = guessEncoding(inputStream).toString();
+    //System.out.println(encoding);
+    //BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+    //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt"),
+    //    Charset.forName(encoding)));
+    //BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+    //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test2.txt"),
+    //    StandardCharsets.UTF_8));
+    //String text;
+    //while ((text = br.readLine()) != null) {
+    //  System.out.println(text);
+    //  bufferedWriter.write(text + "\n");
+    //  bufferedWriter.flush();
+    //}
+  }
 
   public static String guessEncoding(InputStream input) throws IOException {
     // Load input data
@@ -221,7 +221,11 @@ public class FileStorageService {
         case ".txt":
           InputStream inputStream = new FileInputStream(fullFilePath);
           String encoding = guessEncoding(inputStream).toString();
-          text = Files.readString(Paths.get(fullFilePath), StandardCharsets.UTF_8);
+          BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+              fullFilePath), Charset.forName(encoding)));
+          String readText;
+          while ((readText = br.readLine()) != null)
+            text = readText + "\n";
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
