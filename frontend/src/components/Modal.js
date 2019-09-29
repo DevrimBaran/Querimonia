@@ -8,7 +8,6 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Button from '../components/Button';
 import Row from '../components/Row';
-import Content from '../components/Content';
 
 class Modal extends Component {
   constructor (props) {

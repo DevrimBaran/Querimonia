@@ -10,6 +10,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import Button from './Button';
+import Grid from './Grid';
+import Input from './Input';
 
 const Stomp = window.Stomp;
 const SockJS = window.SockJS;
@@ -25,8 +27,10 @@ class Notifications extends Component {
       animate: false,
       showNew: true,
       showAnalyse: true,
+      showProgress: false,
       showError: true,
       showDone: true,
+      count: 5,
       notifications: {}
     };
   }
@@ -75,26 +79,37 @@ class Notifications extends Component {
 
   mapNotification = (notification) => {
     let text = false;
+    let icon = '';
     if (notification.oldState === null) {
       text = this.state.showNew && 'Neue Beschwerde eingegangen.';
+      icon = 'fas fa-plus';
     } else if (notification.state === 'ANALYSING') {
       text = this.state.showAnalyse && 'Analyse gestartet.';
+      icon = 'fas fa-project-diagram';
+    } else if (notification.state === 'IN_PROGRESS') {
+      text = this.state.showProgress && 'Wird bearbeitet.';
+      icon = 'fas fa-tools';
     } else if (notification.oldState === 'ANALYSING') {
       if (notification.state === 'ERROR') {
         text = this.state.showError && 'Fehler bei Analyse';
+        icon = 'fas fa-exclamation';
       } else {
         text = this.state.showDone && 'Analyse abgeschlossen';
+        icon = 'fas fa-check';
       }
     }
     if (!text) return undefined;
     return (
-      <div key={notification.id} className='notification' onClick={() => this.onClick(notification.id)}>
-        <div className='title'>
-          <span>Anliegen {notification.id}</span>
-          <Button title='Schließen' className='close' icon='fas fa-times' onClick={() => this.close(notification.id)} />
-        </div>
-        <p>{text}</p>
-      </div>
+      <Grid columns='auto 1fr' key={notification.id} className='notification' onClick={() => this.onClick(notification.id)}>
+        <i className={icon + ' icon'} />
+        <span className='text'>
+          <div className='title'>
+            <span>Anliegen {notification.id}</span>
+            <Button title='Schließen' className='close' icon='fas fa-times' onClick={() => this.close(notification.id)} />
+          </div>
+          <p>{text}</p>
+        </span>
+      </Grid>
     );
   }
 
@@ -107,45 +122,56 @@ class Notifications extends Component {
   }
   render () {
     // const { a, b, ...passThrough } = { ...this.props };
-    const notifications = Object.values(this.state.notifications).sort((a, b) => a.order - b.order);
-    const mappedNotifications = notifications.map(this.mapNotification).filter(n => n);
+    const notifications = Object.values(this.state.notifications).sort((a, b) => b.order - a.order);
+    let total = 0;
+    const mappedNotifications = notifications.map(this.mapNotification).filter(n => {
+      return n && ++total <= this.state.count ? n : false;
+    }).sort((a, b) => a.order - b.order);
     this.toggleFavicon();
     return (
-      <div id='notifications' data-animate={this.state.animate || undefined} data-count={notifications.length} style={{ '--notifications': mappedNotifications.length }}>
+      <div id='notifications' data-animate={this.state.animate || undefined} data-count={notifications.length} style={{ '--notifications': mappedNotifications.length, '--hidden': notifications.length - mappedNotifications.length }}>
+        {mappedNotifications.length > 0 && !this.state.hidden && (
+          <div className={'notificationList'}>
+            {mappedNotifications}
+          </div>
+        )}
         {this.state.hidden ? (
-          <div className='header'>
-            <Button title='Benachrichtigungen' icon={['far fa-envelope', 'counter']} style={{ fontSize: '2rem' }} onClick={this.toggle} />
+          <div className='footer'>
+            <Button title='Benachrichtigungen' icon={['fas fa-envelope white', 'counter']} style={{ fontSize: '2rem' }} onClick={this.toggle} />
           </div>
         ) : (
-          <div className='header'>
+          <div className='footer'>
             <Button title='Benachrichtigungen' icon='fas fa-caret-down' onClick={this.toggle}>
               <span>{mappedNotifications.length}</span>
-              <span className='dimPrimary'> {notifications.length - mappedNotifications.length || undefined}</span>
+              {notifications.length - mappedNotifications.length > 0 && (
+                <span className='dimPrimary'> +{notifications.length - mappedNotifications.length}</span>
+              )}
               <span> Benachrichtigungen</span>
             </Button>
             <Button title='Filter' icon='fas white fa-filter' onClick={() => this.setState(state => ({ showFilter: !this.state.showFilter }))} />
             {this.state.showFilter && (
               <div className='notificationFilter'>
-                <Button title='Filter' icon={this.state.showNew ? ['fas fa-plus'] : ['fas primary fa-slash', 'fas dimPrimary fa-plus']} onClick={() => this.setState(state => ({ showNew: !this.state.showNew }))}>
+                <Button title={`Benachrichtigungen ${this.state.showNew ? 'verstecken' : 'anzeigen'}`} icon={this.state.showNew ? ['fas fa-plus'] : ['fas dimPrimary fa-plus', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showNew: !this.state.showNew }))}>
                   Neue Beschwerde
                 </Button>
-                <Button title='Filter' icon={this.state.showAnalyse ? ['fas fa-project-diagram'] : ['fas primary fa-slash', 'fas dimPrimary fa-project-diagram']} onClick={() => this.setState(state => ({ showAnalyse: !this.state.showAnalyse }))}>
+                <Button title={`Benachrichtigungen ${this.state.showAnalyse ? 'verstecken' : 'anzeigen'}`} icon={this.state.showAnalyse ? ['fas fa-project-diagram'] : ['fas dimPrimary fa-project-diagram', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showAnalyse: !this.state.showAnalyse }))}>
                   Analyse gestartet
                 </Button>
-                <Button title='Filter' icon={this.state.showDone ? ['fas fa-check'] : ['fas primary fa-slash', 'fas dimPrimary fa-check']} onClick={() => this.setState(state => ({ showDone: !this.state.showDone }))}>
+                <Button title={`Benachrichtigungen ${this.state.showDone ? 'verstecken' : 'anzeigen'}`} icon={this.state.showDone ? ['fas fa-check'] : ['fas dimPrimary fa-check', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showDone: !this.state.showDone }))}>
                   Analyse abgeschlossen
                 </Button>
-                <Button title='Filter' icon={this.state.showError ? ['fas fa-exclamation'] : ['fas primary fa-slash', 'fas dimPrimary fa-exclamation']} onClick={() => this.setState(state => ({ showError: !this.state.showError }))}>
+                <Button title={`Benachrichtigungen ${this.state.showProgress ? 'verstecken' : 'anzeigen'}`} icon={this.state.showProgress ? ['fas fa-tools'] : ['fas dimPrimary fa-tools', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showProgress: !this.state.showProgress }))}>
+                  Wird bearbeitet
+                </Button>
+                <Button title={`Benachrichtigungen ${this.state.showError ? 'verstecken' : 'anzeigen'}`} icon={this.state.showError ? ['fas fa-exclamation'] : ['fas dimPrimary fa-exclamation', 'fas primary fa-slash']} onClick={() => this.setState(state => ({ showError: !this.state.showError }))}>
                   Fehler bei Analyse
                 </Button>
+                <Input label='Anzahl' min='0' type='number' value={this.state.count} onChange={(e) => this.setState({ count: e.value })} />
               </div>
             )}
             <Button title='Alle schließen' icon='fas white fa-times' onClick={this.closeAll} />
           </div>
         )}
-        <div className={'notificationList'} style={{ display: this.state.hidden ? 'none' : 'block' }}>
-          {mappedNotifications}
-        </div>
       </div>
     );
   }

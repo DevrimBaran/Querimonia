@@ -29,10 +29,11 @@
     color: $white !important;
 }
 #notifications {
-    &[data-count="0"] {
-        display: none;
-    }
+    // &[data-count="0"] {
+    //     display: none;
+    // }
     counter-reset: notifications var(--notifications);
+    counter-reset: hidden var(--hidden);
     position: absolute;
     z-index: 999999999;
     bottom: 1.25rem;
@@ -57,11 +58,11 @@
         }
     }
     &[data-animate] {
-        .header {
+        .footer {
             animation: notificationBlink 0.5s ease-in-out 0s 3;
         }
     }
-    .header {
+    .footer {
         display: flex;
         position: relative;
         align-items: center;
@@ -99,22 +100,40 @@
     .notificationList {
         display: flex;
         flex-direction: column;
+        border-top: 0.0625rem solid $black;
         border-left: 0.0625rem solid $black;
         border-right: 0.0625rem solid $black;
+        padding-bottom: 1rem;
+        bottom: -1rem;
+        border-radius: 0.625rem 0.625rem 0 0;
+        position: relative;
         .notification {
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-            background-color: $white;
-            padding: 0.3125rem 0.625rem;
+            &:first-of-type {
+                border-radius: 0.625rem 0.625rem 0 0;
+            }
             height: 3.5rem;
+            width: 100%;
             overflow: hidden;
+            background-color: $white;
+            cursor: pointer;
+            padding: 0.3125rem 0.625rem;
             animation: notificationHeight 0.2s ease-out;
-            .title {
+            .icon {
+                align-self: center;
+                text-align: center;
+                width: 2rem;
+                font-size: 1.5rem;
+                margin-right: 0.5rem;
+            }
+            .text {
                 display: flex;
-                align-items: center;
-                justify-content: space-between;
-                font-weight: bold;
+                flex-direction: column;
+                .title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-weight: bold;
+                }
             }
             &:hover {
                 background-color: $lightgrey;

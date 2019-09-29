@@ -3,6 +3,11 @@
     justify-content: center;
     margin: 0rem auto;
 }
+.clearfix::after {
+    content: '';
+    clear: both;
+    display: table;
+}
 .justify {
     text-align: justify;
 }

@@ -8,7 +8,6 @@
 import React, { Component } from 'react';
 
 import Tag from './Tag';
-import EditEntityModal from './EditEntityModal';
 class TaggedText extends Component {
   constructor (props) {
     super(props);

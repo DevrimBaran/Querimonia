@@ -7,10 +7,11 @@
 
 import React from 'react';
 
-import { changeEntity, refreshComplaint } from '../../redux/actions/';
+import { changeEntity, refreshComplaint, remove } from '../../redux/actions/';
 
 import localize from '../../utility/date';
 import Row from '../../components/Row';
+import Grid from '../../components/Grid';
 import Content from '../../components/Content';
 import Collapsible from '../../components/Collapsible';
 import Sentiment from '../../components/Sentiment';
@@ -148,12 +149,29 @@ function Single (active, dispatch, helpers) {
     active.state === 'CLOSED' || error;
   return (
     <div className='builderBlock'>
-      {!error && (
-        <Row vertical>
-          <h6 className='center'>Antwort</h6>
-          <TextBuilder disabled={disabled} />
-        </Row>
-      )}
+      <Row vertical>
+        {error ? (
+          <Grid rows='50% 50%' columns='100%' style={{ margin: 'auto' }}>
+            <Button
+              title='Erneut auswerten'
+              icon='fas fa-sync'
+              disabled={active.state === 'ANALYSING'}
+              onClick={(e) => dispatch(refreshComplaint(active.id))}
+            >Erneut auswerten</Button>
+            <Button
+              title='Beschwerde löschen'
+              icon='fa fa-trash-alt'
+              confirm='Wollen sie das Element wirklich löschen?'
+              onClick={(e) => dispatch(remove('complaints', active.id))}
+            >Beschwerde löschen</Button>
+          </Grid>
+        ) : (
+          <React.Fragment>
+            <h6 className='center'>Antwort</h6>
+            <TextBuilder disabled={disabled} />
+          </React.Fragment>
+        )}
+      </Row>
       <Row vertical style={{ maxWidth: '40rem' }}>
         <h6 className='center'>Meldetext</h6>
         <Content>
