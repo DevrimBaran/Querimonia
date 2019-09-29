@@ -290,8 +290,7 @@ public class StatsController {
           .reduce(new ArrayList<>(), StatsController::combineLists)
           .stream()
           .map(CompletedResponseComponent::getComponent)
-          .map(PersistentResponseComponent::getComponentName)
-          .forEach(name -> result.merge(name, 1, Integer::sum));
+          .forEach(comp -> result.merge(comp.getComponentName()+" ("+comp.getId()+")", 1, Integer::sum));
       if (maxComplaintCount != Integer.MAX_VALUE) {
         LinkedHashMap<String, Integer> resultFixSize = new LinkedHashMap<>();
         result.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
@@ -335,17 +334,22 @@ public class StatsController {
       if (comp.isEmpty()) {
         return result;
       }
-      LocalDate firstDate = comp.get().getReceiveDate().withDayOfMonth(1);
+      LocalDate firstDate = comp.get().getReceiveDate();
       LocalDate endday = LocalDate.now();
       if (dateMax.isPresent()) {
         endday = LocalDate.parse(dateMax.get());
       }
-      for (LocalDate date = firstDate; date.isBefore(endday); date = date.plusMonths(1)) {
+      for (LocalDate date = firstDate; !date.isAfter(endday); date = date.plusMonths(1).withDayOfMonth(1)) {
         LinkedHashMap<String, Double> resultComplaintsStatus = new LinkedHashMap<>();
         Optional<Long> processingHours = Optional.empty();
         double  avgProcessing = 0d;
         final LocalDate minDate = date;
-        final LocalDate maxDate = date.withDayOfMonth(date.lengthOfMonth());
+        final LocalDate maxDate;
+        if (endday.isBefore(date.withDayOfMonth(date.lengthOfMonth()))) {
+          maxDate = endday;
+        } else {
+          maxDate = date.withDayOfMonth(date.lengthOfMonth());
+        }
         long countComplaints =  StreamSupport.stream(complaintRepository.findAll().spliterator(),
               false)
               .filter(compl -> ComplaintFilter.filterByDate(compl, Optional.of(minDate.toString()),
