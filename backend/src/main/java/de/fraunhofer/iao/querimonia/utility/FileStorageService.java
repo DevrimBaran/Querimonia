@@ -20,6 +20,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -40,22 +41,22 @@ import java.util.Map;
 public class FileStorageService {
 
   //public static void main(String[] args) throws IOException {
-    //InputStream inputStream = new FileInputStream(
-    //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt");
-    //String encoding = guessEncoding(inputStream).toString();
-    //System.out.println(encoding);
-    //BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
-    //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt"),
-    //    Charset.forName(encoding)));
-    //BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-    //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test2.txt"),
-    //    StandardCharsets.UTF_8));
-    //String text;
-    //while ((text = br.readLine()) != null) {
-    //  System.out.println(text);
-    //  bufferedWriter.write(text + "\n");
-    //  bufferedWriter.flush();
-    //}
+  //InputStream inputStream = new FileInputStream(
+  //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt");
+  //String encoding = guessEncoding(inputStream).toString();
+  //System.out.println(encoding);
+  //BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
+  //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt"),
+  //    Charset.forName(encoding)));
+  //BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+  //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test2.txt"),
+  //    StandardCharsets.UTF_8));
+  //String text;
+  //while ((text = br.readLine()) != null) {
+  //  System.out.println(text);
+  //  bufferedWriter.write(text + "\n");
+  //  bufferedWriter.flush();
+  //}
   //
   public static String guessEncoding(InputStream input) throws IOException {
     // Load input data
@@ -117,7 +118,7 @@ public class FileStorageService {
     int[] encodingScore = encodingsScores.get(encodingName);
 
     if (encodingScore == null) {
-      encodingsScores.put(encodingName, new int[] { 1 });
+      encodingsScores.put(encodingName, new int[] {1});
     } else {
       encodingScore[0]++;
     }
@@ -175,7 +176,6 @@ public class FileStorageService {
    * Stores the file in the upload folder.
    *
    * @param file the file to store.
-   *
    * @return the file name.
    */
   public String storeFile(MultipartFile file) {
@@ -205,7 +205,6 @@ public class FileStorageService {
    * Extracts text out of a file.
    *
    * @param fileName the name of the file
-   *
    * @return the extracted complaint text.
    */
   public String getTextFromData(String fileName) {
@@ -222,9 +221,17 @@ public class FileStorageService {
           String encoding = guessEncoding(inputStream).toString();
           BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
               fullFilePath), Charset.forName(encoding)));
-          String readText;
-          while ((readText = br.readLine()) != null) {
-            text = readText;
+          BufferedReader brUtf8 = new BufferedReader(new InputStreamReader(new FileInputStream(
+              fullFilePath), StandardCharsets.UTF_8));
+          BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+              new FileOutputStream("utf8tempfile.txt"), StandardCharsets.UTF_8));
+          bufferedWriter.write(br.readLine());
+          text = brUtf8.readLine();
+          File file = new File("utf8tempfile.txt");
+          if (file.delete()) {
+            System.out.println("File deleted successfully");
+          } else {
+            System.out.println("Failed to delete the file");
           }
           break;
         case ".pdf":
@@ -270,9 +277,7 @@ public class FileStorageService {
    * @param valueType the array type for the deserialization.
    * @param filename  the relative path to the file.
    * @param <T>       the type of the elements of the array.
-   *
    * @return a list of type T containing the elements of the JSON array of the file.
-   *
    * @throws QuerimoniaException on an IO-Error or a JSON-Parse-Error.
    */
   @NonNull
