@@ -259,7 +259,7 @@ button.action-button {
   .fa-stack, &.fa-stack {
     width: calc(1em + 2 * 0.3125rem);
     height: calc(1em + 2 * 0.3125rem);
-    font-size: inherit;
+    // font-size: inherit;
     line-height: 100%;
     & > * {
       display: flex;
@@ -271,6 +271,9 @@ button.action-button {
       justify-content: center;
       align-items: center;
       flex-direction: column;
+    }
+    i {
+      color: inherit;
     }
   }
 }

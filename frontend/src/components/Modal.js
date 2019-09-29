@@ -7,6 +7,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Button from '../components/Button';
+import Row from '../components/Row';
+import Content from '../components/Content';
 
 class Modal extends Component {
   constructor (props) {
@@ -71,11 +73,11 @@ class Modal extends Component {
         (<div ref={this.modal} className={className + ' modal'} htmlFor={htmlFor} {...passThrough} >
           <div className='background' onClick={this.hide} />
           <div className={contentName}>
-            <b style={{ align: 'center' }}>{title}</b>
-            <br />
-            <br />
-            {this.props.children}
-            <Button className={'modal-button'} icon='fas fa-times-circle fa-x' onClick={this.hide} />
+            <Row vertical>
+              <b style={{ align: 'center' }}>{title}</b>
+              {this.props.children}
+              <Button className={'modal-button'} icon='fas fa-times-circle fa-x' onClick={this.hide} />
+            </Row>
           </div>
         </div>),
         document.body

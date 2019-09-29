@@ -110,12 +110,14 @@ class EditEntityModal extends Component {
             <span>{text}</span>
           </div>
         </div>
-        <Input label='Label' type='select' value={label} values={Object.keys(extractorList)} name='label' onChange={this.onChange} />
-        <Input label='Ausgewählt' type='text' readOnly className='entitytextbox' name='note' value={start !== end ? text.substring(start, end) : 'Bitte markieren sie den gewünschten Abschnitt!'} />
-        <Input label='Wert' type='text' className='entitytextbox' name='value' value={value} onChange={this.onChange} />
-        <Input label='Start' type='number' name='start' value={start} min={0} max={end} onChange={this.onChange} />
-        <Input label='Ende' type='number' name='end' value={end} min={start} onChange={this.onChange} />
-        <Button disabled={!((start < end || (start === end && value)) && label)} style={{ padding: '0.125rem', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-save' onClick={this.addEntity}>Speichern</Button>
+        <div style={{ padding: '2rem 0 0 0' }}>
+          <Input label='Label' type='select' value={label} values={Object.keys(extractorList)} name='label' onChange={this.onChange} />
+          <Input label='Ausgewählt' type='text' readOnly className='entitytextbox' name='note' value={start !== end ? text.substring(start, end) : 'Bitte markieren sie den gewünschten Abschnitt!'} />
+          <Input label='Wert' type='text' className='entitytextbox' name='value' value={value} onChange={this.onChange} />
+          <Input label='Start' type='number' name='start' value={start} min={0} max={end} onChange={this.onChange} />
+          <Input label='Ende' type='number' name='end' value={end} min={start} onChange={this.onChange} />
+          <Button disabled={!((start < end || (start === end && value)) && label)} style={{ padding: '0.125rem', cursor: 'pointer', fontSize: 'medium' }} icon='fas fa-save' onClick={this.addEntity}>Speichern</Button>
+        </div>
       </Modal>
     );
   }

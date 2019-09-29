@@ -32,10 +32,9 @@
         grid-column-start: 1;
         grid-column-end: var(--tabCount);
         grid-row: 2 / 3;
-        padding: 1.3rem 1.25rem 0rem 0rem;
-        margin-right: -1.25rem;
-        overflow: auto;
+        padding: 0.3125rem 2rem 0rem 0rem;
+        // margin-right: -1.25rem;
+        overflow: auto scroll;
         display: none;
-        padding-top: 0.3125rem;
     }
 }

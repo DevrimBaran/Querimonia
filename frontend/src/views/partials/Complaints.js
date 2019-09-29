@@ -141,39 +141,67 @@ function Single (active, dispatch, helpers) {
       <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>
     );
   }
-  const disabled =
-    active.state === 'CLOSED' ||
+  const error =
     active.state === 'ANALYSING' ||
     active.state === 'ERROR';
+  const disabled =
+    active.state === 'CLOSED' || error;
   return (
     <div className='builderBlock'>
-      <Row vertical>
-        <h6 className='center'>Antwort</h6>
-        <TextBuilder disabled={disabled} />
-      </Row>
-      <Row vertical>
+      {!error && (
+        <Row vertical>
+          <h6 className='center'>Antwort</h6>
+          <TextBuilder disabled={disabled} />
+        </Row>
+      )}
+      <Row vertical style={{ maxWidth: '40rem' }}>
         <h6 className='center'>Meldetext</h6>
         <Content>
-          <Tabbed>
-            <div label='Überarbeitet'>
-              <TaggedText disabled={disabled} active={active} dispatch={dispatch}
-                text={helpers.props.complaintStuff.text}
-                entities={helpers.props.complaintStuff.entities} />
-            </div>
+          <Tabbed active={error ? 1 : 0} >
+            {!error && (
+              <div label='Überarbeitet'>
+                <TaggedText disabled={disabled} active={active} dispatch={dispatch}
+                  className='justify'
+                  text={helpers.props.complaintStuff.text}
+                  entities={helpers.props.complaintStuff.entities} />
+                <Button
+                  className='plus-item'
+                  title='Neue Entität hinzufügen'
+                  onClick={e => EditEntityModal.open(e)}
+                  icon={'fas fa-plus-circle fa-2x'}
+                  data-start='0'
+                  data-end='0'
+                  data-label=''
+                  data-id=''
+                  data-mode='add'
+                />
+              </div>
+            )}
             <div label='Original'>
-              <p>{helpers.props.complaintStuff.text}</p>
+              <p className='justify'>{helpers.props.complaintStuff.text}</p>
+              <Button
+                className='plus-item fa-2x'
+                title='Text kopieren'
+                onClick={e => navigator.clipboard.writeText(helpers.props.complaintStuff.text)}
+                icon={['fas fa-circle', 'fas fa-copy fa-1x white']}
+              />
             </div>
             <div label='Log'>
               {helpers.props.complaintStuff.log.map((entry, i) => (
                 <div key={i} className='log'>
-                  <span className='category'>[{entry.category}]</span> <span
-                    className='datetime'>{entry.date} {entry.time}</span>
+                  <span className='category'>[{entry.category}]</span>
+                  <span className='datetime'> {entry.date} {entry.time}</span>
                   <br />
-                  <div className='message'>
-                    {entry.message}
-                  </div>
+                  <p>{entry.message}</p>
                 </div>
               ))}
+              <Button
+                className='plus-item'
+                title='Ans Ende springen'
+                // onClick={e => e.target.parentNode.scroll}
+                onClick={e => e.target.parentElement.scrollTop = e.target.parentElement.scrollHeight}
+                icon={'fas fa-chevron-circle-down fa-2x'}
+              />
             </div>
           </Tabbed>
         </Content>
