@@ -202,28 +202,14 @@ public class FileStorageService {
       switch (suffix) {
         case ".txt":
           InputStream inputStream = new FileInputStream(fullFilePath);
-          String encoding = guessEncoding(inputStream).toString();
+          String encoding = guessEncoding(inputStream);
           BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
               fullFilePath), Charset.forName(encoding)));
-          BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
-              new FileOutputStream("utf8tempfile.txt"), StandardCharsets.UTF_8));
-          BufferedReader brUtf8 = new BufferedReader(new InputStreamReader(new FileInputStream(
-              "utf8tempfile.txt"), StandardCharsets.UTF_8));
-          String brText;
-          while ((brText = br.readLine()) != null) {
-            bufferedWriter.write(brText);
-            bufferedWriter.flush();
-          }
           String readText;
-          while ((readText = brUtf8.readLine()) != null) {
+          while ((readText = br.readLine()) != null) {
             text = readText;
           }
-          File file = new File("utf8tempfile.txt");
-          if (file.delete()) {
-            System.out.println("File deleted successfully");
-          } else {
-            System.out.println("Failed to delete the file");
-          }
+
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
