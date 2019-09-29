@@ -23,7 +23,7 @@ class Notifications extends Component {
     this.total = 0;
     this.timeout = 0;
     this.state = {
-      hidden: false,
+      hidden: true,
       animate: false,
       showNew: true,
       showAnalyse: true,

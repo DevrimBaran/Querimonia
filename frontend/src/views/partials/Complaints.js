@@ -227,7 +227,7 @@ function Single (active, dispatch, helpers) {
           entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
         <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
         <Collapsible label='Details' />
-        <ListTable styles={[{ paddingRight: '1rem', fontWeight: 'bold' }]} data={[
+        <ListTable style={{ paddingRight: '3.25rem' }} styles={[{ paddingRight: '1rem', fontWeight: 'bold' }, { width: '100%' }]} data={[
           ['Konfiguration', (
             active.configuration ? (
               <Link to={'/configurations/' + active.configuration.id}>
@@ -236,11 +236,11 @@ function Single (active, dispatch, helpers) {
             ) : (
               <span>gelöscht</span>
             )
-          )],
-          ['Eingangsdatum', (localize(active.receiveDate))],
-          ['Eingangszeit', (active.receiveTime)],
-          ['Status', (states[active.state])],
-          ['ID', (active.id)],
+          ), ''],
+          ['Eingangsdatum', (localize(active.receiveDate)), ''],
+          ['Eingangszeit', (active.receiveTime), ''],
+          ['Status', (states[active.state]), ''],
+          ['ID', (active.id), ''],
           {
             map: (cb) => (active.properties.map((property) => {
               return (
@@ -268,12 +268,13 @@ function Single (active, dispatch, helpers) {
           disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
           collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
         />
-        <Content>
+        <Content style={{ marginRight: '1.25rem', overflow: 'auto scroll' }}>
           <ListTable data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
             styles={[{
               fontWeight: 'bold'
             }, {
-              padding: '0 1rem'
+              padding: '0 1rem',
+              width: '100%'
             }]}
           />
         </Content>
@@ -289,7 +290,7 @@ function Single (active, dispatch, helpers) {
                           helpers.props.complaintStuff.combinations.length !== 0)
           }
         />
-        <Content>
+        <Content style={{ marginRight: '1.25rem', overflow: 'auto scroll' }}>
           <ListTable
             header={['Linie', 'Haltestelle', 'Ort']}
             data={
@@ -303,9 +304,8 @@ function Single (active, dispatch, helpers) {
                 ]
               ))
             }
-            styles={[{}, {
-              padding: '0 1rem'
-            }, {}]}
+            style={{ width: '100%' }}
+            styles={[{}, {}, {}]}
           />
         </Content>
       </Row>

@@ -33,7 +33,6 @@
     //     display: none;
     // }
     counter-reset: notifications var(--notifications);
-    counter-reset: hidden var(--hidden);
     position: absolute;
     z-index: 999999999;
     bottom: 1.25rem;

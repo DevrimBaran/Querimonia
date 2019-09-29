@@ -6,8 +6,8 @@
     height: 1.875rem;
     min-height: 1.875rem;
     box-sizing: content-box;
-    padding-left: 0rem !important;
-    padding-right: 0rem !important;
+    // padding-left: 0rem !important;
+    // padding-right: 0rem !important;
     .handle {
         position: relative;
         display: block;
@@ -28,7 +28,7 @@
         }
         i {
             position: relative;
-            padding: 0 0.3125rem 0 0.625rem;
+            padding: 0 0.3125rem;
             margin-left: 0.625rem;
             background-color: $primaryBackgroundColor;
         }

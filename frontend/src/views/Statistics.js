@@ -279,7 +279,7 @@ class Statistics extends Component {
                       <StatsDiagram style={{ overflow: 'auto' }} data={this.entitiesData[this.state.entities]} />
                     </Grid>
                   </div>
-                  <div className='row flex-column' titleHeader='Meist verwendeten Regeln mit ihrer Anzahl ' label='Regeln' style={{ height: '1this.state.entities0%', display: 'flex', flexDirection: 'column' }}>
+                  <div className='row flex-column' titleHeader='Meist verwendeten Regeln mit ihrer Anzahl ' label='Regeln' style={{ height: '100%' }}>
                     <Grid columns='auto auto' style={{ borderBottom: '0.3125rem solid grey' }}>
                       <div style={{ textAlign: 'center' }}>
                         <Input type='select' required label='Option' values={this.rulArray} name='rules' value={this.state.rules} onChange={this.onChange} />
