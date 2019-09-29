@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 /**
  * Service for saving files in filesystem and retrieving them. Inspired by
  * https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
@@ -221,18 +223,21 @@ public class FileStorageService {
           String encoding = guessEncoding(inputStream).toString();
           BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
               fullFilePath), Charset.forName(encoding)));
-          BufferedReader brUtf8 = new BufferedReader(new InputStreamReader(new FileInputStream(
-              fullFilePath), StandardCharsets.UTF_8));
-          BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
-              new FileOutputStream("utf8tempfile.txt"), StandardCharsets.UTF_8));
-          bufferedWriter.write(br.readLine());
-          text = brUtf8.readLine();
-          File file = new File("utf8tempfile.txt");
-          if (file.delete()) {
-            System.out.println("File deleted successfully");
-          } else {
-            System.out.println("Failed to delete the file");
-          }
+          //BufferedReader brUtf8 = new BufferedReader(new InputStreamReader(new FileInputStream(
+          //    fullFilePath), StandardCharsets.UTF_8));
+          //BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
+          //    new FileOutputStream("utf8tempfile.txt"), StandardCharsets.UTF_8));
+          //bufferedWriter.write(br.readLine());
+          String notUtf8Text;
+          notUtf8Text = br.readLine();
+          byte[] ptext = notUtf8Text.getBytes(encoding);
+          text = new String(ptext, UTF_8);
+          //File file = new File("utf8tempfile.txt");
+          //if (file.delete()) {
+          //  System.out.println("File deleted successfully");
+          //} else {
+          //  System.out.println("Failed to delete the file");
+          //}
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
