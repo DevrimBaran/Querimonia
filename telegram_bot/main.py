@@ -83,9 +83,9 @@ def complaint_receiver():
     content = request.json
     complaint_id = content["id"]
     if content.get("message") is None:
-        complaint_message = content["message"]
-    else:
         complaint_message = content["responseText"]
+    else:
+        complaint_message = content["message"]
     # get user id and send answer
     user_id = complaint_data[complaint_id]
     del complaint_data[complaint_id]
