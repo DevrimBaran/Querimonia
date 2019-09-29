@@ -27,6 +27,11 @@ export default (endpoint, partial, stateToProps) => {
         }
       }
     }
+    componentDidUpdate = (oldProps) => {
+      if (this.props.match.params.id !== oldProps.match.params.id) {
+        this.componentDidMount();
+      }
+    }
     render () {
       return (
         <React.Fragment>

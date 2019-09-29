@@ -47,8 +47,7 @@ class Notifications extends Component {
     });
   }
 
-  toggleFavicon = () => {
-    const showLetter = (Object.keys(this.state.notifications).length > 0);
+  toggleFavicon = (showLetter) => {
     this.url.pathname = showLetter ? '/favicon2.ico' : '/favicon.ico';
     this.icon.href = this.url.href;
   }
@@ -74,6 +73,7 @@ class Notifications extends Component {
   onClick = (id) => {
     const notification = this.state.notifications[id];
     this.close(id);
+    console.log(this.props.history, this.props.location);
     this.props.history.push(`/complaints/${notification.id}`);
   }
 
@@ -133,7 +133,7 @@ class Notifications extends Component {
     const mappedNotifications = notifications.map(this.mapNotification).filter(n => {
       return n && ++total <= this.state.count ? n : false;
     }).sort((a, b) => a.order - b.order);
-    this.toggleFavicon();
+    this.toggleFavicon(mappedNotifications.length > 0);
     return (
       <div id='notifications' data-animate={this.state.animate || undefined} data-count={notifications.length} style={{ '--notifications': mappedNotifications.length, '--hidden': notifications.length - mappedNotifications.length }}>
         {mappedNotifications.length > 0 && !this.state.hidden && (
