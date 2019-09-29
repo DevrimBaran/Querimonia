@@ -39,7 +39,7 @@ import java.util.Map;
 @Service
 public class FileStorageService {
 
-  public static void main(String[] args) throws IOException {
+  //public static void main(String[] args) throws IOException {
     //InputStream inputStream = new FileInputStream(
     //    "C:\\Users\\baran\\stupro-2019-mmk-bm\\backend\\src\\main\\resources\\Test.txt");
     //String encoding = guessEncoding(inputStream).toString();
@@ -56,8 +56,7 @@ public class FileStorageService {
     //  bufferedWriter.write(text + "\n");
     //  bufferedWriter.flush();
     //}
-  }
-
+  //
   public static String guessEncoding(InputStream input) throws IOException {
     // Load input data
     long count = 0;
@@ -224,8 +223,9 @@ public class FileStorageService {
           BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(
               fullFilePath), Charset.forName(encoding)));
           String readText;
-          while ((readText = br.readLine()) != null)
-            text = readText + "\n";
+          while ((readText = br.readLine()) != null) {
+            text = readText;
+          }
           break;
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
