@@ -24,18 +24,25 @@ import de.fraunhofer.iao.querimonia.utility.exception.NotFoundException;
 import de.fraunhofer.iao.querimonia.utility.exception.QuerimoniaException;
 import de.fraunhofer.iao.querimonia.utility.log.LogCategory;
 import de.fraunhofer.iao.querimonia.utility.log.LogEntry;
+import org.eclipse.persistence.jaxb.JAXBContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.StringReader;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -63,6 +70,9 @@ public class ComplaintManager {
   private final ComplaintFactory complaintFactory;
   private final ConfigurationManager configurationManager;
   private final CombinationRepository lineStopCombinationRepository;
+
+  @Autowired
+  private SimpMessagingTemplate template;
 
   /**
    * Constructor gets only called by spring. Sets up the complaint manager.
@@ -94,7 +104,7 @@ public class ComplaintManager {
    * Returns the complaints of the database with filtering and sorting.
    *
    * @see ComplaintController#getComplaints(Optional, Optional, Optional, Optional, Optional,
-   *     Optional, Optional, Optional, Optional) getComplaints
+   * Optional, Optional, Optional, Optional) getComplaints
    */
   public synchronized List<Complaint> getComplaints(
       Optional<Integer> count, Optional<Integer> page, Optional<String[]> sortBy,
@@ -140,9 +150,7 @@ public class ComplaintManager {
    * @param file     the file that should be uploaded.
    * @param configId the id of the config that should be used for analysis, if not given the
    *                 active configuration gets used.
-   *
    * @return the new created complaint.
-   *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadComplaint(MultipartFile, Optional, Optional) uploadComplaint
    */
@@ -159,9 +167,7 @@ public class ComplaintManager {
    * @param input    the text that should be uploaded.
    * @param configId the id of the config that should be used for analysis, if not given the
    *                 active configuration gets used.
-   *
    * @return the new created complaint.
-   *
    * @throws QuerimoniaException on errors during upload, text extraction or text analysis.
    * @see ComplaintController#uploadText(TextInput, Optional, Optional) uploadText
    */
@@ -172,7 +178,6 @@ public class ComplaintManager {
     var complaintBuilder = complaintFactory.createBaseComplaint(input.getText(), configuration);
     complaintBuilder.setCallbackRoute(callbackUrl.orElse(null));
     complaintBuilder.setState(ANALYSING);
-
     var complaint = complaintBuilder.createComplaint();
     // store unfinished state (otherwise the id would be 0 when returned)
     storeComplaint(complaint);
@@ -184,6 +189,7 @@ public class ComplaintManager {
     // run analysis
     runAnalysisAsync(complaintBuilder, false, ComplaintState.NEW);
 
+    sendStateChange(complaint.getId(), null, ANALYSING);
     return complaint;
   }
 
@@ -201,6 +207,7 @@ public class ComplaintManager {
    */
   private void onException(ComplaintBuilder complaintBuilder, Throwable e) {
     e.printStackTrace();
+    sendStateChange(complaintBuilder.getId(), complaintBuilder.getState(), ERROR);
     complaintBuilder
         .setState(ERROR)
         .appendLogItem(LogCategory.ERROR, "Fehler bei Analyse: " + e.getMessage());
@@ -212,9 +219,7 @@ public class ComplaintManager {
    * Method for getting a complaint with an id.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the complaint with the given id.
-   *
    * @throws NotFoundException when no complaint with the given id exists.
    * @see ComplaintController#getComplaint(long) getComplaint
    */
@@ -227,9 +232,7 @@ public class ComplaintManager {
    * Returns the text of a complaint.
    *
    * @param complaintId the id of the complaint
-   *
    * @return the text of the complaint.
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getText(long) getText
    */
@@ -241,9 +244,7 @@ public class ComplaintManager {
    * Returns the xml String of a complaint.
    *
    * @param complaintId the id of the complaint
-   *
    * @return the xml of the complaint
-   *
    * @throws NotFoundException if no complaint with the given id exists
    */
   public String getXml(long complaintId) {
@@ -292,6 +293,7 @@ public class ComplaintManager {
     // update state
     Optional<ComplaintState> newState = updateRequest.getNewState();
     if (newState.isPresent()) {
+      sendStateChange(builder.getId(), builder.getState(), newState.get());
       builder
           .setState(newState.get())
           .appendLogItem(LogCategory.GENERAL, "Status der Beschwerde auf " + newState.get()
@@ -330,10 +332,10 @@ public class ComplaintManager {
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, CLOSED);
 
+    sendStateChange(builder.getId(), builder.getState(), ANALYSING);
     builder
         .setConfiguration(getConfigurationFromId(configId))
         .setState(ANALYSING);
-
     // run analysis
     var state = complaint.getState();
     if (state == ERROR || state == ANALYSING) {
@@ -360,6 +362,7 @@ public class ComplaintManager {
         try {
           var newBuilder
               = complaintFactory.analyzeComplaint(builder, keepUserInformation);
+          sendStateChange(builder.getId(), builder.getState(), state);
           newBuilder.setState(state);
           storeComplaint(newBuilder.createComplaint());
         } catch (Exception e) {
@@ -378,9 +381,7 @@ public class ComplaintManager {
    * Sets the state of a complaint to closed and executes all actions.
    *
    * @param complaintId the id of the complaint that should be closed.
-   *
    * @return the closed complaint.
-   *
    * @throws QuerimoniaException if the complaint with the given id does not exist or the
    *                             complaint cannot be closed in its state.
    * @see ComplaintController#closeComplaint(long) closeComplaint
@@ -389,6 +390,7 @@ public class ComplaintManager {
     Complaint complaint = getComplaint(complaintId);
     ComplaintBuilder builder = new ComplaintBuilder(complaint);
     checkForbiddenStates(complaint, ANALYSING, CLOSED);
+    sendStateChange(complaintId, builder.getState(), CLOSED);
     builder.setState(CLOSED)
         .setCloseDate(LocalDate.now(ZoneId.of("Europe/Berlin")))
         .setCloseTime(LocalTime.now(ZoneId.of("Europe/Berlin")));
@@ -405,11 +407,6 @@ public class ComplaintManager {
         .forEach(Action::executeAction);
     builder.appendLogItem(LogCategory.GENERAL, "Beschwerde geschlossen");
     executeCallback(builder);
-    //  TODO: move E-Mail sending to an action
-    //   ComplaintUtility.sendEMail("Nachricht " + complaintId,
-    //        complaint.getResponseSuggestion().getResponse(), "stupross19beschwerdemanagement@iao"
-    //            + ".fraunhofer.de", "stupross19beschwerdemanagement@iao.fraunhofer.de");
-
     complaint = builder.createComplaint();
     storeComplaint(complaint);
 
@@ -446,7 +443,6 @@ public class ComplaintManager {
    *
    * @param complaintId the id of the complaint.
    * @param body        the new response.
-   *
    * @return the new response.
    */
   public synchronized ResponseSuggestion saveResponse(long complaintId, TextInput body) {
@@ -463,7 +459,6 @@ public class ComplaintManager {
    * @param complaintId the id of the complaint.
    * @param componentId the id of the component.
    * @param used        if it is used.
-   *
    * @return the updated response.
    */
   public synchronized ResponseSuggestion setUsed(long complaintId, long componentId, boolean used) {
@@ -489,7 +484,7 @@ public class ComplaintManager {
    * Return the amount of complaints that match the given parameters.
    *
    * @see ComplaintController#countComplaints(Optional, Optional, Optional, Optional, Optional,
-   *     Optional)  countComplaints
+   * Optional)  countComplaints
    */
   public synchronized String countComplaints(Optional<String[]> state, Optional<String> dateMin,
                                              Optional<String> dateMax, Optional<String[]> sentiment,
@@ -503,9 +498,7 @@ public class ComplaintManager {
    * Returns the log of a complaint.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the log of a complaint.
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getLog(long) getLog
    */
@@ -517,9 +510,7 @@ public class ComplaintManager {
    * Returns all entities of a complaint.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return all entities of a complaint.
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ComplaintController#getEntities(long) getEntities
    */
@@ -566,7 +557,6 @@ public class ComplaintManager {
    * @param complaintId the id of the complaint.
    * @param entityId    the id of the entity.
    * @param entity      the new entity that replaces the entity with the given id.
-   *
    * @return a updated list of entities of the given complaint.
    */
   public List<NamedEntity> updateEntity(long complaintId, long entityId, NamedEntity entity) {
@@ -660,7 +650,6 @@ public class ComplaintManager {
    * entities from the same context.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the list of the combinations.
    */
   public List<Combination> getCombinations(long complaintId) {
@@ -741,9 +730,7 @@ public class ComplaintManager {
    *                 #DEFAULT_TEXTS_DEFAULT_COUNT} texts will be added.
    * @param configId the id of the config that should be used for the analysis. If this is not
    *                 given, the active config will be used.
-   *
    * @return the list of added complaints.
-   *
    * @throws QuerimoniaException on an unexpected server error or if no config with the given id
    *                             exists in the database.
    * @see ComplaintController#addDefaultComplaints(Optional, Optional) addDefaultComplaints
@@ -780,9 +767,7 @@ public class ComplaintManager {
    * Refreshed the response for a complaint.
    *
    * @param complaintId the id of the complaint.
-   *
    * @return the new creates response
-   *
    * @throws NotFoundException if no complaint with the given id exists.
    * @see ResponseController#refreshResponse(long) refreshResponse
    */
@@ -802,7 +787,6 @@ public class ComplaintManager {
    * Returns all complaints with the given state.
    *
    * @param state the state of the complaints.
-   *
    * @return a list of all complaints that are in the given state.
    */
   public List<Complaint> getComplaintsWithState(ComplaintState state) {
@@ -834,7 +818,6 @@ public class ComplaintManager {
    *
    * @param complaint       the complaint to check.
    * @param forbiddenStates the states that are not allowed.
-   *
    * @throws QuerimoniaException if the state of the complaint is one of the forbidden states.
    */
   private void checkForbiddenStates(Complaint complaint, ComplaintState... forbiddenStates) {
@@ -874,15 +857,14 @@ public class ComplaintManager {
    * @param emotion  If given, only complaints with this emotion will be returned.
    * @param subject  If given, only complaints with this subject will be returned.
    * @param keywords If given, only complaints that contain the keywords will returned.
-   *
    * @return a response entity with the following contents:
-   *     <ul>
-   *     <li>status code 200 and a xml of the sorted, filtered complaints
-   *     setting as response body on success.</li>
-   *     <li>status code 400 and a the exception as response body when the sorting parameters are
-   *     invalid</li>
-   *     <li>status code 500 and the exception as response body on an unexpected server error.</li>
-   *     </ul>
+   * <ul>
+   * <li>status code 200 and a xml of the sorted, filtered complaints
+   * setting as response body on success.</li>
+   * <li>status code 400 and a the exception as response body when the sorting parameters are
+   * invalid</li>
+   * <li>status code 500 and the exception as response body on an unexpected server error.</li>
+   * </ul>
    */
   public String getXmls(Optional<String[]> sortBy, Optional<String[]> state,
                         Optional<String> dateMin, Optional<String> dateMax,
@@ -896,6 +878,49 @@ public class ComplaintManager {
       e.printStackTrace();
       throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, "Xml konnte nicht erstellt "
           + "werden", "Xml-Converter Fehler");
+    }
+  }
+
+  private synchronized void sendStateChange(long id, ComplaintState oldState, ComplaintState newState) {
+    JSONObject response = new JSONObject();
+    try {
+      response.put("id", id);
+      response.put("oldState", oldState);
+      response.put("state", newState);
+    } catch (JSONException e) {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler "
+          + "bei erstellen der Socket Nachricht");
+    }
+    if (template != null) {
+      template.convertAndSend("/complaints/state", response.toString());
+    }
+
+  }
+
+  public Object parse(String xmlInput) {
+    // create JAXB context and instantiate marshaller
+    JAXBContext context;
+    Object obj = null;
+
+    try {
+      context = JAXBContextFactory.createContext(new Class[] {ComplaintXml.class,
+          ComplaintXml.ComplaintXmls.class}, null);
+      Unmarshaller um = context.createUnmarshaller();
+      obj = um.unmarshal(new StringReader(xmlInput));
+    } catch (JAXBException e) {
+      e.printStackTrace();
+    }
+    ComplaintXml oneXml;
+    ComplaintXml.ComplaintXmls multipleXml;
+    if (obj instanceof ComplaintXml) {
+      oneXml = (ComplaintXml) obj;
+      return oneXml;
+    } else if (obj instanceof ComplaintXml.ComplaintXmls) {
+      multipleXml = (ComplaintXml.ComplaintXmls) obj;
+      return multipleXml;
+    } else {
+      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR,
+          "Xml parsing error", "Xml");
     }
   }
 }
