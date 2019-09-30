@@ -260,7 +260,6 @@ function complaintStuff (state = {}, action) {
       return {
         ...state,
         components: action.components,
-        text: action.response,
         done: true
       };
     }

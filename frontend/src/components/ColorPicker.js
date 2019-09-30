@@ -137,7 +137,7 @@ class ColorPicker extends Component {
         <input ref={this.input} style={{ color: color.font(), backgroundColor: color.background(), ...style }} readOnly type='colorpicker' value={value || this.state.value} onClick={this.show} onChange={this.onChange} {...passThrough} />
         {ReactDOM.createPortal((
           <div className='colorpicker' ref={this.colorpicker} style={{ display: this.state.show ? 'flex' : 'none' }}>
-            <div className='input' style={{ width: Math.ceil(Math.sqrt(Color.predefinedColors.length)) * 42 + 'px' }}>
+            <div className='input' style={{ width: Math.ceil(Math.sqrt(Color.predefinedColors.length)) * 42 + 'px', height: 'auto' }}>
               {Color.predefinedColors.map(c => {
                 const color = new Color(c);
                 return <input key={c} type='checkbox' checked={false} onChange={this.onSelect} name={c} value={color.background()} style={{ borderWidth: '0', backgroundColor: color.background(), color: color.font() }} />;

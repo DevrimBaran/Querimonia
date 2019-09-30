@@ -83,9 +83,9 @@ function Home () {
                   <h2>Antwort generieren</h2>
                   <br />
                   <p>
-                    Mit Querimonia können Sie eine automatisch generierte Antwort zu einet Beschwerde erstellen.
-                    Durch das Erkennen der Entitäten und das Erkennen der Stimmung werden Ihnen passende Antwortbausteine
-                    vorgeschlagen, aus denen Sie eine Antwort zusammenfügen können.
+                    Mit Querimonia können Sie eine automatisch generierte Antwort zu einer Beschwerde erstellen.
+                    Durch das Erkennen der Entitäten und der Stimmung werden Ihnen passende Antwortbausteine
+                    vorgeschlagen, aus denen Sie eine Antwort zusammenbauen können.
                   </p>
                   <i className='fas fa-arrow-right fa-3x' id='arrow' />
                 </div>
