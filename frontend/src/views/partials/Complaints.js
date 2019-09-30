@@ -122,7 +122,7 @@ function List (data, dispatch, helpers) {
           <Sentiment tendency={data.sentiment.tendency} />
         </span>
       </td>
-      <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
+      <td>{data.properties.map((properties) => properties.value + ' (' + Math.round((properties.probabilities[properties.value] * 100)) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
       <th>
         <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}

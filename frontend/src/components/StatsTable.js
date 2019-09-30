@@ -29,7 +29,7 @@ class StatsTable extends Component {
         <tbody>
           {data.data.map((d, i) => <tr key={i}>
             {data.header[0] === 'ID' ? <td><Link to={'/components/' + d.key}>{d.key}</Link></td> : <td>{d.key}</td>}
-            <td>{parseFloat(Number(d.value).toFixed(2))}</td>
+            <td>{Number(d.value).toFixed(2)}</td>
           </tr>)}
         </tbody>
       </Table>
@@ -51,7 +51,7 @@ class StatsTable extends Component {
           {stati.map((d, i) => <tr key={i}>
             <th>{d}</th>
             {s.map((l, j) =>
-              <td key={j}>{parseFloat(Number((data.data.filter(v => v.value[3] === d).find((v, k) => v.value[4] === l) ? data.data.filter(v => v.value[3] === d).find((v, k) => v.value[4] === l).value[0] : 0).toFixed(2)))}</td>
+              <td className='td-align-right' key={j}>{Number((data.data.filter(v => v.value[3] === d).find((v, k) => v.value[4] === l) ? data.data.filter(v => v.value[3] === d).find((v, k) => v.value[4] === l).value[0] : 0)).toFixed(2)}</td>
             )}
           </tr>)}
         </tbody>

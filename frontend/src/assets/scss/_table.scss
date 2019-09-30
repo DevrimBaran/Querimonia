@@ -40,7 +40,7 @@
       left: 0;
     }
   }
-  
+
   &.fix-right {
     thead th:last-child {
       right: 0;
@@ -75,6 +75,10 @@
   tbody tr {
     box-shadow: 0 0.625rem 1.25rem -1.25rem $black;
     background-color: $white;
+  }
+
+  .td-align-right {
+    text-align: right;
   }
 
   tbody tr:nth-of-type(even) {
