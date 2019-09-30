@@ -94,9 +94,7 @@ public class FileStorageService {
         maxEntry = e;
       }
     }
-
-    String winningEncoding = maxEntry.getKey();
-    return winningEncoding;
+    return maxEntry.getKey();
   }
 
   /**
@@ -115,7 +113,7 @@ public class FileStorageService {
     }
   }
 
-  public static final String JSON_ERROR_TEXT =
+  private static final String JSON_ERROR_TEXT =
       "Die Default-Elemente konnten nicht geladen werden.";
   private final Path fileStorageLocation;
 
@@ -189,6 +187,7 @@ public class FileStorageService {
       String text = null;
       String suffix = fullFilePath.substring(fullFilePath.lastIndexOf("."));
       switch (suffix) {
+        //read a txt file.
         case ".txt":
           InputStream inputStream = new FileInputStream(fullFilePath);
           String encoding = guessEncoding(inputStream);
@@ -198,8 +197,8 @@ public class FileStorageService {
           while ((readText = br.readLine()) != null) {
             text = readText;
           }
-
           break;
+        //read a pdf file.
         case ".pdf":
           PDDocument document = PDDocument.load(new File(fullFilePath));
           if (!document.isEncrypted()) {
