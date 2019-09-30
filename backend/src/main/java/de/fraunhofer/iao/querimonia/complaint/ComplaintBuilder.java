@@ -14,7 +14,6 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
-import org.springframework.messaging.handler.annotation.SendTo;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -140,22 +139,8 @@ public class ComplaintBuilder {
    * @return this complaint builder.
    */
   public ComplaintBuilder setState(@NonNull ComplaintState state) {
-    ComplaintState oldState = this.state;
     this.state = Objects.requireNonNull(state);
-    broadcastStateChange(oldState);
     return this;
-  }
-
-  private void broadcastStateChange(ComplaintState oldState) {
-    JSONObject response = new JSONObject();
-    try {
-      response.put("id", this.id);
-      response.put("oldState", oldState);
-      response.put("state", this.state);
-    } catch (JSONException e) {
-      throw new QuerimoniaException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), e, "Fehler");
-    }
-    new WebSocketController().stateChange(response.toString());
   }
 
   /**

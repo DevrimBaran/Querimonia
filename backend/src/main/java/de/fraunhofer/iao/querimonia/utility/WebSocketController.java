@@ -1,16 +1,23 @@
 package de.fraunhofer.iao.querimonia.utility;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Controller;
 
+@Controller
 public class WebSocketController {
 
-  @Autowired
-  SimpMessagingTemplate template;
+  private static Logger log = LoggerFactory.getLogger(WebSocketController.class);
 
-  public void stateChange(String message) {
+  @Autowired
+  private SimpMessagingTemplate template;
+
+  public void sendStateChange(String message) {
     if (template != null) {
-      template.convertAndSend("", message);
+      log.info("sending message " + message);
+      template.convertAndSend("/complaints/state", message);
     }
   }
 
