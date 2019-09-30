@@ -7,6 +7,7 @@ import de.fraunhofer.iao.querimonia.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
+import de.fraunhofer.iao.querimonia.response.generation.PersistentResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restobjects.CategoryStats;
 import de.fraunhofer.iao.querimonia.rest.restobjects.MonthStats;
@@ -69,6 +70,7 @@ public class StatsController {
    * @param sentiment only complaints with this sentiment will be evaluated.
    * @param subject   only complaints with this subject will be evaluated.
    * @param wordsOnly if this is true, all words that contain no letters will be skipped.
+   *
    * @return a map with the most common words and their frequency.
    */
   @GetMapping("/api/stats/tagcloud")
@@ -114,11 +116,12 @@ public class StatsController {
   /**
    * Returns a map which contains the most common categories and their stats.
    *
-   * @param count     how many categories should be returned.
-   *                  The count most common categories will be returned in the map.
-   * @param dateMin   no complaints before this date will be evaluated.
-   * @param dateMax   no complaints after this date will be evaluated.
-   * @param subject   only complaints with this subject will be evaluated.
+   * @param count   how many categories should be returned.
+   *                The count most common categories will be returned in the map.
+   * @param dateMin no complaints before this date will be evaluated.
+   * @param dateMax no complaints after this date will be evaluated.
+   * @param subject only complaints with this subject will be evaluated.
+   *
    * @return a map with the most common categories and their stats.
    */
   @GetMapping("/api/stats/categoriesStats")
@@ -145,7 +148,8 @@ public class StatsController {
           StatsController::combineLists).stream().map(ComplaintProperty::getValue)
           .forEach(entry -> {
             int value = resultCategorie.getOrDefault(entry, 0) + 1;
-            resultCategorie.put(entry, value); });
+            resultCategorie.put(entry, value);
+          });
       ArrayList<String> resultCategoriesSorted = new ArrayList<>();
       resultCategorie.entrySet().stream()
           .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
@@ -205,11 +209,12 @@ public class StatsController {
   /**
    * Returns a map which contains labels of entities and the most found entities.
    *
-   * @param count     how many entities should be returned. The most found entities will be
-   *                  returned in the map.
-   * @param dateMin   no complaints before this date will be evaluated.
-   * @param dateMax   no complaints after this date will be evaluated.
-   * @param subject   only complaints with this subject will be evaluated.
+   * @param count   how many entities should be returned. The most found entities will be
+   *                returned in the map.
+   * @param dateMin no complaints before this date will be evaluated.
+   * @param dateMax no complaints after this date will be evaluated.
+   * @param subject only complaints with this subject will be evaluated.
+   *
    * @return a map with the labels of entities and the most found entities.
    */
   @GetMapping("/api/stats/entitiesStats")
@@ -240,12 +245,12 @@ public class StatsController {
             result.put(ent.getLabel(), value);
           });
       if (maxComplaintCount != Integer.MAX_VALUE) {
-        for (String key: result.keySet()) {
+        for (String key : result.keySet()) {
           LinkedHashMap<String, Integer> newValue = new LinkedHashMap<>();
           result.get(key).entrySet().stream()
               .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
               .limit(maxComplaintCount)
-              .forEach(ent -> newValue.put(ent.getKey(),ent.getValue()));
+              .forEach(ent -> newValue.put(ent.getKey(), ent.getValue()));
           result.replace(key, newValue);
         }
       }
@@ -262,6 +267,7 @@ public class StatsController {
    * @param dateMax   no complaints after this date will be evaluated.
    * @param sentiment only complaints with this sentiment will be evaluated.
    * @param subject   only complaints with this subject will be evaluated.
+   *
    * @return a map with the most common rules and their number of occurrences.
    */
   @GetMapping("/api/stats/rulesStats")
@@ -289,13 +295,14 @@ public class StatsController {
           .reduce(new ArrayList<>(), StatsController::combineLists)
           .stream()
           .map(CompletedResponseComponent::getComponent)
-          .forEach(comp -> result.merge(comp.getComponentName()+" ("+comp.getId()+")", 1, Integer::sum));
+          .map(PersistentResponseComponent::getComponentName)
+          .forEach(name -> result.merge(name, 1, Integer::sum));
       if (maxComplaintCount != Integer.MAX_VALUE) {
         LinkedHashMap<String, Integer> resultFixSize = new LinkedHashMap<>();
         result.entrySet().stream().sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
             .limit(maxComplaintCount)
-            .forEach(rule -> resultFixSize.put(rule.getKey(),rule.getValue()));
-        return  resultFixSize;
+            .forEach(rule -> resultFixSize.put(rule.getKey(), rule.getValue()));
+        return resultFixSize;
       }
 
       return result;
@@ -309,14 +316,15 @@ public class StatsController {
    * @param dateMax   no months after this date will be evaluated.
    * @param sentiment only complaints with this sentiment will be evaluated.
    * @param subject   only complaints with this subject will be evaluated.
+   *
    * @return a map with the months and their stats.
-   * */
+   */
   @GetMapping("/api/stats/monthsStats")
   public ResponseEntity<?> getMonthsStats(
-        @RequestParam("date_min") Optional<String> dateMin,
-        @RequestParam("date_max") Optional<String> dateMax,
-        @RequestParam("sentiment") Optional<String[]> sentiment,
-        @RequestParam("subject") Optional<String[]> subject) {
+      @RequestParam("date_min") Optional<String> dateMin,
+      @RequestParam("date_max") Optional<String> dateMax,
+      @RequestParam("sentiment") Optional<String[]> sentiment,
+      @RequestParam("subject") Optional<String[]> subject) {
 
     return ControllerUtility.tryAndCatch(() -> {
 
@@ -324,12 +332,12 @@ public class StatsController {
 
       String[] sortBy = {"upload_date_asc"};
       Optional<Complaint> comp = StreamSupport.stream(complaintRepository.findAll().spliterator(),
-            false)
-            // filter complaints
-            .filter(compl -> ComplaintFilter.filterByDate(compl, dateMin, dateMax))
-            .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
-            .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
-            .min(ComplaintFilter.createComplaintComparator(Optional.of(sortBy)));
+          false)
+          // filter complaints
+          .filter(compl -> ComplaintFilter.filterByDate(compl, dateMin, dateMax))
+          .filter(compl -> ComplaintFilter.filterBySubject(compl, subject))
+          .filter(compl -> ComplaintFilter.filterByEmotion(compl, sentiment))
+          .min(ComplaintFilter.createComplaintComparator(Optional.of(sortBy)));
       if (comp.isEmpty()) {
         return result;
       }
@@ -338,10 +346,11 @@ public class StatsController {
       if (dateMax.isPresent()) {
         endday = LocalDate.parse(dateMax.get());
       }
-      for (LocalDate date = firstDate; !date.isAfter(endday); date = date.plusMonths(1).withDayOfMonth(1)) {
+      for (LocalDate date = firstDate; !date.isAfter(endday);
+           date = date.plusMonths(1).withDayOfMonth(1)) {
         LinkedHashMap<String, Double> resultComplaintsStatus = new LinkedHashMap<>();
         Optional<Long> processingHours = Optional.empty();
-        double  avgProcessing = 0d;
+        double avgProcessing = 0d;
         final LocalDate minDate = date;
         final LocalDate maxDate;
         if (endday.isBefore(date.withDayOfMonth(date.lengthOfMonth()))) {
@@ -349,23 +358,23 @@ public class StatsController {
         } else {
           maxDate = date.withDayOfMonth(date.lengthOfMonth());
         }
-        long countComplaints =  StreamSupport.stream(complaintRepository.findAll().spliterator(),
-              false)
-              .filter(compl -> ComplaintFilter.filterByDate(compl, Optional.of(minDate.toString()),
-                  Optional.of(maxDate.toString()))).count();
-        for (ComplaintState state: ComplaintState.values()) {
+        long countComplaints = StreamSupport.stream(complaintRepository.findAll().spliterator(),
+            false)
+            .filter(compl -> ComplaintFilter.filterByDate(compl, Optional.of(minDate.toString()),
+                Optional.of(maxDate.toString()))).count();
+        for (ComplaintState state : ComplaintState.values()) {
           // create stream of all complaints
           String[] stateArray = {state.toString()};
 
           final long countStateCom = StreamSupport.stream(complaintRepository
-                    .findAll().spliterator(), false)
-                // filter complaints
-                .filter(compl -> ComplaintFilter.filterByDate(
-                    compl, Optional.of(minDate.toString()), Optional.of(maxDate.toString())))
-                // get their word lists
-                .filter(complaint -> ComplaintFilter.filterByState(
-                    complaint, Optional.of(stateArray))).count();
-          resultComplaintsStatus.put(state.toString(), (double)countStateCom / countComplaints);
+              .findAll().spliterator(), false)
+              // filter complaints
+              .filter(compl -> ComplaintFilter.filterByDate(
+                  compl, Optional.of(minDate.toString()), Optional.of(maxDate.toString())))
+              // get their word lists
+              .filter(complaint -> ComplaintFilter.filterByState(
+                  complaint, Optional.of(stateArray))).count();
+          resultComplaintsStatus.put(state.toString(), (double) countStateCom / countComplaints);
 
           if (state == ComplaintState.CLOSED) {
             processingHours = StreamSupport.stream(complaintRepository
@@ -382,7 +391,7 @@ public class StatsController {
                 .reduce(Long::sum);
           }
           avgProcessing =
-          processingHours.map(hours -> hours / ((double) countStateCom)).orElse(0d);
+              processingHours.map(hours -> hours / ((double) countStateCom)).orElse(0d);
         }
 
         MonthStats monthStats = new MonthStats(countComplaints, resultComplaintsStatus,
