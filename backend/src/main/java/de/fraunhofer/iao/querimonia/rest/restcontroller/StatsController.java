@@ -7,7 +7,6 @@ import de.fraunhofer.iao.querimonia.manager.filter.ComplaintFilter;
 import de.fraunhofer.iao.querimonia.nlp.Sentiment;
 import de.fraunhofer.iao.querimonia.repository.ComplaintRepository;
 import de.fraunhofer.iao.querimonia.response.generation.CompletedResponseComponent;
-import de.fraunhofer.iao.querimonia.response.generation.PersistentResponseComponent;
 import de.fraunhofer.iao.querimonia.response.generation.ResponseSuggestion;
 import de.fraunhofer.iao.querimonia.rest.restobjects.CategoryStats;
 import de.fraunhofer.iao.querimonia.rest.restobjects.MonthStats;
@@ -77,7 +76,7 @@ public class StatsController {
       @RequestParam("count") Optional<Integer> count,
       @RequestParam("date_min") Optional<String> dateMin,
       @RequestParam("date_max") Optional<String> dateMax,
-      @RequestParam("sentiment") Optional<String[]> sentiment,
+      @RequestParam("emotion") Optional<String[]> sentiment,
       @RequestParam("subject") Optional<String[]> subject,
       @RequestParam("words_only") Optional<Boolean> wordsOnly) {
 
