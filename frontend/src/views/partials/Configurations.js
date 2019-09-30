@@ -71,7 +71,7 @@ function Single (active, dispatch, helpers) {
         <Row vertical center>
           <h6 className='center'>Konfiguration</h6>
           <Content className='margin config max-width' style={{ margin: 'auto' }}>
-            <DeepObject data={active} template={template(helpers.props.allExtractors['KIKUKO_PIPELINE'])} save={modifyActive} />
+            <DeepObject data={active} template={template(helpers.props.allExtractors['KIKUKO_TOOL'])} save={modifyActive} />
           </Content>
           <div className='center margin'>
             {helpers.save()}

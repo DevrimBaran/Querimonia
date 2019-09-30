@@ -54,7 +54,7 @@ class Statistics extends Component {
       data: null
     };
   }
-  
+
   componentDidMount = () => {
     Promise.all([
       Api.get('/api/stats/categoriesStats', {}),
