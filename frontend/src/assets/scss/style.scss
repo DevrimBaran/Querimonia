@@ -75,7 +75,8 @@
     border-radius: 0.625rem;
     background: $white;
     display: grid;
-    grid-template-columns: repeat(2, auto);
+    grid-template-columns: fit-content(50%) fit-content(50%);
+    place-content: center;
     &:last-of-type {
         border-right: none;
     }
@@ -226,28 +227,16 @@
 }
 
 .plus-item {
-    position: absolute;
+    position: sticky;
     opacity: 0.15;
     color: $primary;
     cursor: pointer;
-    bottom: 0.625rem;
-    right: 1.875rem;
+    bottom: 0rem;;
+    left: 100%;
+    width: 1em !important;
+    height: 1em !important;
+    padding: 0 !important;
     border-radius: 50%;
-}
-
-.action-button {
-    cursor: pointer;
-    padding: 0.3125rem;
-}
-
-.action-button-disabled {
-    cursor: default;
-    padding: 0.3125rem;
-    color: rgb(150, 150, 150);
-}
-
-.action-button:hover {
-    color: rgb(196, 100, 22);
 }
 
 .crone:hover {
@@ -292,7 +281,7 @@
 }
 
 .log {
-    padding: 0.3125rem;
+    padding: 0.3125rem 0;
 
     .category {
         font-weight: bold;

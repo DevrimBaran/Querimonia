@@ -8,11 +8,9 @@
 import React, { Component } from 'react';
 
 import Tag from './Tag';
-import EditEntityModal from './EditEntityModal';
 class TaggedText extends Component {
   constructor (props) {
     super(props);
-    this.addEntityRef = React.createRef();
     this.state = {
       editActive: false,
       newEntityQuery: null,
@@ -43,10 +41,6 @@ class TaggedText extends Component {
     return html;
   };
 
-  addEntity = (e) => {
-    EditEntityModal.open(e);
-  }
-
   render () {
     const { text, entities, active, disabled, dispatch, ...passThrough } = { ...this.props };
     return (
@@ -54,11 +48,6 @@ class TaggedText extends Component {
         <p>
           <span>{this.parseText(text, entities.calculated)}</span>
         </p>
-        {disabled ||
-          <div className='plus-item'>
-            <i onClick={this.addEntity} ref={this.addEntityRef} className={'fas fa-plus-circle fa-2x'} data-start='0' data-end='0' data-label='' data-id='' data-mode='add' />
-          </div>
-        }
       </div>
     );
   }

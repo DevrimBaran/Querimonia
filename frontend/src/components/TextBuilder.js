@@ -43,7 +43,7 @@ class TextBuilder extends Component {
     }
   }
   refresh = (e) => {
-    this.props.dispatch(refreshResponses(this.props.complaintId, this.props.complaintId));
+    this.props.dispatch(refreshResponses(this.props.complaintId));
   }
   finish = () => {
     fetch('https://querimonia.iao.fraunhofer.de/tmp/done', {

@@ -44,7 +44,6 @@ export function setActive (endpoint, id) {
 export function saveActive (endpoint) {
   return function (dispatch, getState) {
     let data = getState()[endpoint].data;
-    console.log('saveActive', data);
     let active = data.active;
     dispatch({
       type: 'SAVE_START',
@@ -57,6 +56,7 @@ export function saveActive (endpoint) {
         .then(data => {
           dispatch({
             type: 'SAVE_END',
+            data: data,
             endpoint: endpoint
           });
         });
@@ -106,23 +106,6 @@ export function refreshComplaint (id) {
             data: response,
             endpoint: 'complaints'
           });
-          (function (id) {
-            var check = () => {
-              Api.get('/api/complaints/' + id, {})
-                .then((response) => {
-                  if (!response.state || response.state !== 'ANALYSING') {
-                    dispatch({
-                      type: 'UPDATE_SINGLE',
-                      data: response,
-                      endpoint: 'complaints'
-                    });
-                  } else {
-                    setTimeout(check, 10000);
-                  }
-                });
-            };
-            setTimeout(check, 10000);
-          })(id);
         });
     });
   };

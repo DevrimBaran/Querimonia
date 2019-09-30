@@ -1,50 +1,138 @@
-#notifications {
-    &[data-count="0"] {
-        display: none;
+@keyframes notificationHeight {
+    0% {
+        height: 0rem;
     }
+    100% {}
+}
+@keyframes notificationBlink {
+    0% {}
+    25% {
+        background-color: $primaryAccentColorDimed;
+        border-color: $primaryAccentColorDimed;
+    }
+    50% {}
+    100% {}
+}
+.dimPrimary {
+    color: $primaryAccentColorDimed !important;
+}
+.primary {
+    color: $primary !important;
+}
+.black {
+    color: $black !important;
+}
+.grey, .black {
+    color: $grey !important;
+}
+.white {
+    color: $white !important;
+}
+#notifications {
+    // &[data-count="0"] {
+    //     display: none;
+    // }
+    counter-reset: notifications var(--notifications);
     position: absolute;
     z-index: 999999999;
     bottom: 1.25rem;
     right: 1.25rem;
-    .header {
+    .counter {
+        left: auto;
+        right: 0;
+        bottom: auto;
+        display: inline-block;
+        background-color: $white;
+        color: $black;
+        border-radius: 50%;
+        padding: 0rem 0.4rem;
+        width: auto;
+        font-size: 40%;
+        line-height: 100%;
+        font-style: normal;
+        font-weight: bold;
+        &::after {
+            vertical-align: middle;
+            content: counter(notifications);
+        }
+    }
+    &[data-animate] {
+        .footer {
+            animation: notificationBlink 0.5s ease-in-out 0s 3;
+        }
+    }
+    .footer {
         display: flex;
+        position: relative;
         align-items: center;
         justify-content: space-between;
+        border: 0.0625rem solid $primary;
+        border-radius: 0.625rem 0.625rem 0 0;
+        padding: 0.3125rem 0.625rem;
         background-color: $primary;
-        border: 1px solid $primary;
-        border-radius: 10px 10px 0 0;
-        padding: 5px 10px;
-        button.action-button {
-            color: $white;
+        .action-button {
             margin-bottom: 0;
             box-shadow: none;
-            padding: 0 10px 0 0;
-            height: 1rem;
-            &:hover {
-                background-color: $primary;
-            } 
+            padding: 0 0.625rem 0 0;
+            // height: auto;
+            background-color: transparent;
         }
-        h3 {
-            color: $white;
-            width: 100%;
+    }
+    .notificationFilter {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        background-color: $white;
+        bottom: 2.5rem;
+        right: 2.5rem;
+        border: 0.0625rem solid #179c7d;
+        border-radius: 0.625rem;
+        padding: 0.3125rem 0.625rem;
+        .action-button {
+            align-self: flex-start !important;
+            color: $black;
+            i {
+                color: $primary;
+            }
         }
     }
     .notificationList {
         display: flex;
         flex-direction: column;
-        border-left: 1px solid $black;
-        border-right: 1px solid $black;
+        border-top: 0.0625rem solid $black;
+        border-left: 0.0625rem solid $black;
+        border-right: 0.0625rem solid $black;
+        padding-bottom: 1rem;
+        bottom: -1rem;
+        border-radius: 0.625rem 0.625rem 0 0;
+        position: relative;
         .notification {
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
+            &:first-of-type {
+                border-radius: 0.625rem 0.625rem 0 0;
+            }
+            height: 3.5rem;
+            width: 100%;
+            overflow: hidden;
             background-color: $white;
-            padding: 5px 10px;
-            .title {
+            cursor: pointer;
+            padding: 0.3125rem 0.625rem;
+            animation: notificationHeight 0.2s ease-out;
+            .icon {
+                align-self: center;
+                text-align: center;
+                width: 2rem;
+                font-size: 1.5rem;
+                margin-right: 0.5rem;
+            }
+            .text {
                 display: flex;
-                align-items: center;
-                justify-content: space-between;
-                font-weight: bold;
+                flex-direction: column;
+                .title {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    font-weight: bold;
+                }
             }
             &:hover {
                 background-color: $lightgrey;

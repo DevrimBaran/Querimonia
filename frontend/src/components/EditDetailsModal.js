@@ -40,18 +40,34 @@ class EditDetailsModal extends Component {
   }
   onOpen = (e) => {
     this.setState(e.target.dataset);
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+  onClose = (e) => {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
   register = (show) => {
     EditDetailsModal.open = (e) => {
       show(e);
     };
   }
+  hideModals = () => {
+    for (const modal of document.querySelectorAll('.modal.show')) {
+      modal.classList.remove('show');
+    }
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+  handleKeyDown = (e) => {
+    // Esc-Button-Event
+    if (e.code === 'Escape') {
+      this.hideModals();
+    }
+  }
   render () {
     const { title, category, sentiment, emotion, propertyindex, mode } = { ...this.state };
     let emotionList = ['Ekel', 'Freude', 'Furcht', 'Trauer', 'Ueberraschung', 'Verachtung', 'Wut'];
     let categoryList = (propertyindex ? Object.keys(this.props.active.properties[propertyindex].probabilities) : null);
     return (
-      <Modal title={title} register={this.register} contentName={'editModal'} onOpen={this.onOpen}>
+      <Modal title={title} register={this.register} contentName={'editModal'} onClose={this.onClose} onOpen={this.onOpen}>
         { mode === 'category'
           ? <Input label='Kategorie' type='select' required value={category} values={categoryList}name={'category'} onChange={this.onChange} />
           : (mode === 'sentiment'

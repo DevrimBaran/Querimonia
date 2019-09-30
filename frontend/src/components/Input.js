@@ -69,7 +69,7 @@ class Input extends Component {
     render () {
       const classes = '';
       const { className, onChange, type, label, values, value, initialValue, checked, name, required, inline, icon, multiple, id = this.props.name, ...passThroughProps } = this.props;
-
+      const wrapperAttributes = { 'data-value': '-' };
       let injectedProp = {
         className: className ? className + ' ' + classes : classes,
         type: type,
@@ -80,14 +80,15 @@ class Input extends Component {
       let input;
       switch (this.props.type) {
         case 'select': {
-          let dataLabel = multiple && values && value && values.find(v => (v.value || v) === value[0]);
-          if (dataLabel) {
-            dataLabel = dataLabel.label;
+          let dataValue = multiple && values && value && values.find(v => (v.value || v) === value[0]);
+          if (dataValue) {
+            dataValue = dataValue.label;
             if (value.length > 1) {
-              dataLabel += ' +' + (value.length - 1);
+              dataValue += ' +' + (value.length - 1);
             }
+            wrapperAttributes['data-value'] = dataValue;
           }
-          input = (<select value={value} data-label={dataLabel || '-'} name={name} onChange={this.onChange} ref={this.target} {...injectedProp} {...passThroughProps}>
+          input = (<select value={value} name={name} onChange={this.onChange} ref={this.target} {...injectedProp} {...passThroughProps}>
             {this.props.required || <option key='null' value=''>-</option>}
             {
               values && values.map((data, i) => {
@@ -130,7 +131,7 @@ class Input extends Component {
       required && (inputClasses += ' required');
       multiple && (inputClasses += ' multiple');
       return (
-        <div className={inputClasses} style={type === 'hidden' ? { display: 'none' } : {}}>
+        <div className={inputClasses} style={type === 'hidden' ? { display: 'none' } : {}} {...wrapperAttributes}>
           {label && (
             <React.Fragment>
               <label htmlFor={id}>

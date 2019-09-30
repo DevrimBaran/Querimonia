@@ -6,17 +6,19 @@
 
 .scrollableText {
     position: relative;
-    height: 60%;
+    height: 100%;
     font-size: 1rem;
     font-family: Arial;
-    padding: 0.3125rem;
-    overflow: scroll;
+    overflow: auto scroll;
     letter-spacing: 0.03125rem;
     line-height: 1.375rem;
     div {
         position: absolute;
-        left: 0.3125rem;
         top: 0.3125rem;
+        right: 2rem;
+        bottom: 2rem;
+        left: 0.625rem;
+        text-align: justify;
         &:first-child {
             user-select: none;
             span:nth-child(even) {
@@ -88,7 +90,7 @@
         opacity: 0.4;
         background-color: black;
     }
-    .content {
+    & > .content {
         position: absolute;
         top: 50%;
         left: 50%;
@@ -98,6 +100,11 @@
         background-color: $primaryBackgroundColor;
         width: 80%;
         height: 80%;
+        & > .row {
+            & > * {
+                padding: 0.625rem;
+            }
+        }
     }
     .editModal {
         position: absolute;
@@ -107,8 +114,12 @@
         padding: 1.875rem;
         transform: translate3d(-50%, -50%, 0);
         background-color: $primaryBackgroundColor;
-        height: 8.75rem;
-        
+        height: 15rem;
+        & > .row {
+            & > * {
+                padding: 0.625rem;
+            }
+        }
     }
     .modal-button {
         position: absolute;

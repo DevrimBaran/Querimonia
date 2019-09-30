@@ -7,6 +7,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import Button from '../components/Button';
+import Row from '../components/Row';
 
 class Modal extends Component {
   constructor (props) {
@@ -36,16 +37,6 @@ class Modal extends Component {
       modal.classList.remove('show');
     }
   }
-  handleKeyDown = (e) => {
-    // Esc-Button-Event
-    if (e.keyCode === 27) {
-      this.hideModals();
-      // +-Button-Event
-    } else if (e.ctrlKey && e.keyCode === 107) {
-      this.onClick();
-      e.preventDefault();
-    }
-  }
   componentDidMount = () => {
     this.props.register && this.props.register(this.show);
 
@@ -53,7 +44,6 @@ class Modal extends Component {
     elements.forEach((element) => {
       element.classList.add('hasModal');
       element.addEventListener('click', this.onClick);
-      document.addEventListener('keydown', this.handleKeyDown);
     });
   }
   componentWillUnmount = () => {
@@ -61,7 +51,6 @@ class Modal extends Component {
     elements.forEach((element) => {
       element.classList.remove('hasModal');
       element.removeEventListener('click', this.onClick);
-      document.removeEventListener('keydown', this.handleKeyDown);
     });
   }
   render () {
@@ -71,11 +60,11 @@ class Modal extends Component {
         (<div ref={this.modal} className={className + ' modal'} htmlFor={htmlFor} {...passThrough} >
           <div className='background' onClick={this.hide} />
           <div className={contentName}>
-            <b style={{ align: 'center' }}>{title}</b>
-            <br />
-            <br />
-            {this.props.children}
-            <Button className={'modal-button'} icon='fas fa-times-circle fa-x' onClick={this.hide} />
+            <Row vertical>
+              <b style={{ align: 'center' }}>{title}</b>
+              {this.props.children}
+              <Button className={'modal-button'} icon='fas fa-times-circle fa-x' onClick={this.hide} />
+            </Row>
           </div>
         </div>),
         document.body

@@ -27,25 +27,18 @@
     color: #179c7d;
 }
 
-.footer{
-   float: left;
-   margin-left: 40%;
-   margin-bottom: 5%;
-   margin-top: 10%;
-}
-
 .tooltipStartseite {
     position: relative;
     display: inline-block;
-  }
+    
+    .tooltiptext {
+        opacity: 0;
+        animation: fadeIn 2s infinite alternate;
+        font-size: 3.75rem !important;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -75%);
+    }
+}
 
-  .tooltipStartseite .tooltiptext {
-    opacity: 0;
-    animation: fadeIn 2s infinite alternate;
-    width: 4.0625rem;
-    height: 4.0625rem;
-    font-size: 3.75rem !important;
-    position: absolute;
-    top: 2.1875rem;
-    left: 105%;
-  }

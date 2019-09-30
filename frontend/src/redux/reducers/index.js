@@ -95,7 +95,6 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       };
     }
     case 'MODIFY_ACTIVE': {
-      console.log(action.data);
       return {
         ...state,
         active: {
@@ -117,7 +116,7 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
       return {
         ...state,
         active: {
-          ...state.active,
+          ...action.data,
           saving: false
         }
       };
@@ -158,6 +157,20 @@ function data (state = { byId: {}, active: false, ids: [], fetching: false }, ac
         byId: {
           ...state.byId,
           [action.data.id]: action.data
+        }
+      };
+    }
+    case 'UPDATE_STATE': {
+      if (!state.byId[action.id]) return state;
+      return {
+        ...state,
+        active: state.active && {
+          ...state.active,
+          state: state.active.id === action.id ? action.state : state.active.id
+        },
+        byId: {
+          ...state.byId,
+          [action.id]: { ...state.byId[action.id], state: action.state }
         }
       };
     }
@@ -247,7 +260,6 @@ function complaintStuff (state = {}, action) {
       return {
         ...state,
         components: action.components,
-        text: action.response,
         done: true
       };
     }

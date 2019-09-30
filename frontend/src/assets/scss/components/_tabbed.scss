@@ -25,17 +25,15 @@
             border-bottom: 0.125rem solid $primary;
         }
     }
-    & > .tab.active + .content {
-        display: block;
+    & > .tab:not(.active) + .content {
+        display: none;
     }
     & > .content {
         grid-column-start: 1;
         grid-column-end: var(--tabCount);
         grid-row: 2 / 3;
-        padding: 1.3rem 1.25rem 0rem 0rem;
-        margin-right: -1.25rem;
-        overflow: auto;
-        display: none;
-        padding-top: 0.3125rem;
+        padding: 0.3125rem 2rem 0rem 0rem;
+        // margin-right: -1.25rem;
+        overflow: auto scroll;
     }
 }

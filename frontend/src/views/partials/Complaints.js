@@ -7,10 +7,11 @@
 
 import React from 'react';
 
-import { changeEntity, refreshComplaint } from '../../redux/actions/';
+import { changeEntity, refreshComplaint, remove } from '../../redux/actions/';
 
 import localize from '../../utility/date';
 import Row from '../../components/Row';
+import Grid from '../../components/Grid';
 import Content from '../../components/Content';
 import Collapsible from '../../components/Collapsible';
 import Sentiment from '../../components/Sentiment';
@@ -121,7 +122,7 @@ function List (data, dispatch, helpers) {
           <Sentiment tendency={data.sentiment.tendency} />
         </span>
       </td>
-      <td>{data.properties.map((properties) => properties.value + ' (' + (properties.probabilities[properties.value] * 100) + '%)').join(', ')}</td>
+      <td>{data.properties.map((properties) => properties.value + ' (' + Math.round((properties.probabilities[properties.value] * 100)) + '%)').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
       <th>
         <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
@@ -141,39 +142,84 @@ function Single (active, dispatch, helpers) {
       <div className='center'><i className='fa-spinner fa-spin fa fa-5x primary' /></div>
     );
   }
-  const disabled =
-    active.state === 'CLOSED' ||
+  const error =
     active.state === 'ANALYSING' ||
     active.state === 'ERROR';
+  const disabled =
+    active.state === 'CLOSED' || error;
   return (
     <div className='builderBlock'>
       <Row vertical>
-        <h6 className='center'>Antwort</h6>
-        <TextBuilder disabled={disabled} />
+        {error ? (
+          <Grid rows='50% 50%' columns='100%' style={{ margin: 'auto' }}>
+            <Button
+              title='Erneut auswerten'
+              icon='fas fa-sync'
+              disabled={active.state === 'ANALYSING'}
+              onClick={(e) => dispatch(refreshComplaint(active.id))}
+            >Erneut auswerten</Button>
+            <Button
+              title='Beschwerde löschen'
+              icon='fa fa-trash-alt'
+              confirm='Wollen sie das Element wirklich löschen?'
+              onClick={(e) => dispatch(remove('complaints', active.id))}
+            >Beschwerde löschen</Button>
+          </Grid>
+        ) : (
+          <React.Fragment>
+            <h6 className='center'>Antwort</h6>
+            <TextBuilder disabled={disabled} />
+          </React.Fragment>
+        )}
       </Row>
-      <Row vertical>
+      <Row vertical style={{ maxWidth: '40rem' }}>
         <h6 className='center'>Meldetext</h6>
         <Content>
-          <Tabbed>
-            <div label='Überarbeitet'>
-              <TaggedText disabled={disabled} active={active} dispatch={dispatch}
-                text={helpers.props.complaintStuff.text}
-                entities={helpers.props.complaintStuff.entities} />
-            </div>
+          <Tabbed active={error ? 1 : 0} >
+            {!error && (
+              <div label='Überarbeitet'>
+                <TaggedText disabled={disabled} active={active} dispatch={dispatch}
+                  className='justify'
+                  text={helpers.props.complaintStuff.text}
+                  entities={helpers.props.complaintStuff.entities} />
+                <Button
+                  className='plus-item'
+                  title='Neue Entität hinzufügen'
+                  onClick={e => EditEntityModal.open(e)}
+                  icon={'fas fa-plus-circle fa-2x'}
+                  data-start='0'
+                  data-end='0'
+                  data-label=''
+                  data-id=''
+                  data-mode='add'
+                />
+              </div>
+            )}
             <div label='Original'>
-              <p>{helpers.props.complaintStuff.text}</p>
+              <p className='justify'>{helpers.props.complaintStuff.text}</p>
+              <Button
+                className='plus-item fa-2x'
+                title='Text kopieren'
+                onClick={e => navigator.clipboard.writeText(helpers.props.complaintStuff.text)}
+                icon={['fas fa-circle', 'fas fa-copy fa-1x white']}
+              />
             </div>
             <div label='Log'>
               {helpers.props.complaintStuff.log.map((entry, i) => (
                 <div key={i} className='log'>
-                  <span className='category'>[{entry.category}]</span> <span
-                    className='datetime'>{entry.date} {entry.time}</span>
+                  <span className='category'>[{entry.category}]</span>
+                  <span className='datetime'> {entry.date} {entry.time}</span>
                   <br />
-                  <div className='message'>
-                    {entry.message}
-                  </div>
+                  <p>{entry.message}</p>
                 </div>
               ))}
+              <Button
+                className='plus-item'
+                title='Ans Ende springen'
+                // onClick={e => e.target.parentNode.scroll}
+                onClick={e => e.target.parentElement.scrollTop = e.target.parentElement.scrollHeight}
+                icon={'fas fa-chevron-circle-down fa-2x'}
+              />
             </div>
           </Tabbed>
         </Content>
@@ -181,7 +227,7 @@ function Single (active, dispatch, helpers) {
           entities={Object.values(helpers.props.complaintStuff.entities.byId)} />
         <EditDetailsModal active={active} dispatch={dispatch} complaintStuff={helpers.props.complaintStuff} />
         <Collapsible label='Details' />
-        <ListTable styles={[{ paddingRight: '1rem', fontWeight: 'bold' }]} data={[
+        <ListTable style={{ paddingRight: '3.25rem' }} styles={[{ paddingRight: '1rem', fontWeight: 'bold' }, { width: '100%' }]} data={[
           ['Konfiguration', (
             active.configuration ? (
               <Link to={'/configurations/' + active.configuration.id}>
@@ -190,11 +236,11 @@ function Single (active, dispatch, helpers) {
             ) : (
               <span>gelöscht</span>
             )
-          )],
-          ['Eingangsdatum', (localize(active.receiveDate))],
-          ['Eingangszeit', (active.receiveTime)],
-          ['Status', (states[active.state])],
-          ['ID', (active.id)],
+          ), ''],
+          ['Eingangsdatum', (localize(active.receiveDate)), ''],
+          ['Eingangszeit', (active.receiveTime), ''],
+          ['Status', (states[active.state]), ''],
+          ['ID', (active.id), ''],
           {
             map: (cb) => (active.properties.map((property) => {
               return (
@@ -222,12 +268,13 @@ function Single (active, dispatch, helpers) {
           disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
           collapse={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
         />
-        <Content>
+        <Content style={{ marginRight: '1.25rem', overflow: 'auto scroll' }}>
           <ListTable data={sortedEntities(helpers.props.complaintStuff.entities, active.id, dispatch, disabled)}
             styles={[{
               fontWeight: 'bold'
             }, {
-              padding: '0 1rem'
+              padding: '0 1rem',
+              width: '100%'
             }]}
           />
         </Content>
@@ -243,7 +290,7 @@ function Single (active, dispatch, helpers) {
                           helpers.props.complaintStuff.combinations.length !== 0)
           }
         />
-        <Content>
+        <Content style={{ marginRight: '1.25rem', overflow: 'auto scroll' }}>
           <ListTable
             header={['Linie', 'Haltestelle', 'Ort']}
             data={
@@ -257,9 +304,8 @@ function Single (active, dispatch, helpers) {
                 ]
               ))
             }
-            styles={[{}, {
-              padding: '0 1rem'
-            }, {}]}
+            style={{ width: '100%' }}
+            styles={[{}, {}, {}]}
           />
         </Content>
       </Row>
