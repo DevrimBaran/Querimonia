@@ -131,7 +131,7 @@ class Statistics extends Component {
     let data = Object.values(data2);
     let counter = 1;
     let dataKeys = Object.keys(data2).map(name => { let rule = rules.find(r => r.name === name); let id = (rule ? rule.id : 'gelöscht_' + counter++); return { name: name, id: id }; });
-    datas.push({ data: this.sortData(data, dataKeys, true), header: ['ID', 'Anzahl'] });
+    datas.push({ data: this.sortData(data, dataKeys, true), header: ['Regel', 'Anzahl'] });
     return datas;
   };
 
