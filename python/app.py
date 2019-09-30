@@ -43,7 +43,7 @@ class Sentiment(Resource):
                 raise WrongKeyError
             query = content["text"]
             sentiment_value = sentiment_analyse.main(query)
-            return sentiment_value
+            return float(sentiment_value)
         except WrongKeyError:
             return jsonify({"WrongKeyError": "Use text as key"})
         except TypeError:
@@ -61,7 +61,7 @@ class Emotion(Resource):
                 raise WrongKeyError
             query = content["text"]
             emotion_value = emotion_analyse.main(query)
-            return emotion_value
+            return float(emotion_value)
         except WrongKeyError:
             return jsonify({"WrongKeyError": "Use text as key"})
         except TypeError:
