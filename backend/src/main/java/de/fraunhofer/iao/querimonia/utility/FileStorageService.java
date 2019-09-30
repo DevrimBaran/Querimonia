@@ -20,10 +20,8 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,8 +31,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
 /**
  * Service for saving files in filesystem and retrieving them. Inspired by
  * https://www.callicoder.com/spring-boot-file-upload-download-rest-api-example/.
@@ -42,14 +38,21 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Service
 public class FileStorageService {
 
-  public static String guessEncoding(InputStream input) throws IOException {
+  /**
+   * Gets the encoding of the Input txt file.
+   * @param input Is the input txt file.
+   * @return Returns the encoding of the file.
+   * @throws IOException May be thrown because of inputstream.
+   */
+  private static String guessEncoding(InputStream input) throws IOException {
     // Load input data
     long count = 0;
-    int n = 0, EOF = -1;
+    int n = 0;
+    int eof = -1;
     byte[] buffer = new byte[4096];
     ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-    while ((EOF != (n = input.read(buffer))) && (count <= Integer.MAX_VALUE)) {
+    while ((eof != (n = input.read(buffer))) && (count <= Integer.MAX_VALUE)) {
       output.write(buffer, 0, n);
       count += n;
     }
@@ -93,10 +96,14 @@ public class FileStorageService {
     }
 
     String winningEncoding = maxEntry.getKey();
-    //dumpEncodingsScores(encodingsScores);
     return winningEncoding;
   }
 
+  /**
+   * Update the score if encoding can read character.
+   * @param encodingsScores Ther score of the encoding.
+   * @param encoding Is the encoding which is used.
+   */
   private static void updateEncodingsScores(Map<String, int[]> encodingsScores, String encoding) {
     String encodingName = encoding.toLowerCase();
     int[] encodingScore = encodingsScores.get(encodingName);
@@ -106,23 +113,6 @@ public class FileStorageService {
     } else {
       encodingScore[0]++;
     }
-  }
-
-  private static void dumpEncodingsScores(Map<String, int[]> encodingsScores) {
-    System.out.println(toString(encodingsScores));
-  }
-
-  private static String toString(Map<String, int[]> encodingsScores) {
-    String GLUE = ", ";
-    StringBuilder sb = new StringBuilder();
-
-    for (Map.Entry<String, int[]> e : encodingsScores.entrySet()) {
-      sb.append(e.getKey() + ":" + e.getValue()[0] + GLUE);
-    }
-    int len = sb.length();
-    sb.delete(len - GLUE.length(), len);
-
-    return "{ " + sb.toString() + " }";
   }
 
   public static final String JSON_ERROR_TEXT =
@@ -157,9 +147,9 @@ public class FileStorageService {
   }
 
   /**
-   * Stores the file in the upload folder.
+   * Uploads the file.
    *
-   * @param file the file to store.
+   * @param file the file to upload.
    * @return the file name.
    */
   public String storeFile(MultipartFile file) {
@@ -193,7 +183,6 @@ public class FileStorageService {
    */
   public String getTextFromData(String fileName) {
     String fullFilePath = fileStorageLocation.toString() + File.separator + fileName;
-    CharsetDetector detector = new CharsetDetector();
 
     try (InputStream fileInputStream = new FileInputStream(fullFilePath)) {
 
