@@ -22,7 +22,7 @@ public class MlClassifier implements Classifier {
     }
 
     Map<String, Double> flaskResult = FlaskContact.receiveJson(jsonText, "classifier");
-    flaskResult.replaceAll((property, value) -> (double) Math.round(value));
+    flaskResult.replaceAll((property, value) -> ((double) Math.round(value * 1000)) / 1000.0);
 
     return new ComplaintProperty("Kategorie", flaskResult);
   }
