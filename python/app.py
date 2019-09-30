@@ -42,8 +42,8 @@ class Sentiment(Resource):
             if "text" not in content:
                 raise WrongKeyError
             query = content["text"]
-            sentiment_value = sentiment_analyse.main(query)
-            return float(sentiment_value)
+            sentiment_value = sentiment_analyse.main(str(query))
+            return jsonify(sentiment_value)
         except WrongKeyError:
             return jsonify({"WrongKeyError": "Use text as key"})
         except TypeError:
@@ -60,8 +60,8 @@ class Emotion(Resource):
             if "text" not in content:
                 raise WrongKeyError
             query = content["text"]
-            emotion_value = emotion_analyse.main(query)
-            return float(emotion_value)
+            emotion_value = emotion_analyse.main(str(query))
+            return jsonify(emotion_value)
         except WrongKeyError:
             return jsonify({"WrongKeyError": "Use text as key"})
         except TypeError:

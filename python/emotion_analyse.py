@@ -52,7 +52,7 @@ def prozent(dict):
     for value in dict.values():
         sum += value
     for key, value in dict.items():
-        dict[key] = round((100 / sum) * value, 2)
+        dict[key] = round((100 / sum) * float(value), 2)
     if not dict:
         dict['Neutral'] = 0.0
         return dict

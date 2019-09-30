@@ -100,7 +100,7 @@ def main(query):
     value = round(positive_sentiment(query) + negative_sentiment(query), 2)
     # lambda function for set the value in interval of [-1 to 1]
     value = (lambda x: x if -1.0 < x < 1.0 else (1.0 if x > 1.0 else -1.0))(value)
-    return {'sentiment': value}
+    return {'sentiment': float(value)}
 
 
 if __name__ == '__main__':
