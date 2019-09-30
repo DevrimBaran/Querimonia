@@ -69,11 +69,27 @@ class EditEntityModal extends Component {
   }
   onOpen = (e) => {
     this.setState(e.target.dataset);
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
+  onClose = (e) => {
+    document.removeEventListener('keydown', this.handleKeyDown);
   }
   register = (show) => {
     EditEntityModal.open = (e) => {
       show(e);
     };
+  }
+  hideModals = () => {
+    for (const modal of document.querySelectorAll('.modal.show')) {
+      modal.classList.remove('show');
+    }
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+  handleKeyDown = (e) => {
+    // Esc-Button-Event
+    if (e.code === 'Escape') {
+      this.hideModals();
+    }
   }
   render () {
     const { text, entities } = { ...this.props };
@@ -92,7 +108,7 @@ class EditEntityModal extends Component {
       // String from last entity to end of text or complete text if there are no entities
     }, []);
     return (
-      <Modal title={'Entitäten hinzufügen'} register={this.register} onOpen={this.onOpen}>
+      <Modal title={'Entitäten hinzufügen'} register={this.register} onClose={this.onClose} onOpen={this.onOpen}>
         <div className='scrollableText'>
           <div style={{ color: 'transparent', '--color': color.background() }}>
             {spitText.map((text, i) => <span key={i}>{text}</span>)}

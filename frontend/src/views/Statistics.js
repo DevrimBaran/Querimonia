@@ -54,34 +54,14 @@ class Statistics extends Component {
       data: null
     };
   }
-  activateComplaint = () => {
-    let requests = [];
-    requests.push(Api.get('/api/stats/categoriesStats', {})
-      .catch(() => {
-        return { status: 404 };
-      }));
-    requests.push(Api.get('/api/stats/entitiesStats', {})
-      .catch(() => {
-        return { status: 404 };
-      }));
-    requests.push(Api.get('/api/stats/rulesStats', {})
-      .catch(() => {
-        return { status: 404 };
-      }));
-    requests.push(Api.get('/api/stats/monthsStats', {})
-      .catch(() => {
-        return { status: 404 };
-      }));
-    Promise.all(requests).then((values) => {
-    });
-  };
-
+  
   componentDidMount = () => {
     Promise.all([
       Api.get('/api/stats/categoriesStats', {}),
       Api.get('/api/stats/entitiesStats', {}),
       Api.get('/api/stats/rulesStats', {}),
-      Api.get('/api/stats/monthsStats', {})
+      Api.get('/api/stats/monthsStats', {}),
+      Api.get('/api/components', {})
     ]).then((data) => {
       this.catArray = ['Anzahl', 'Sentiment', 'Emotion', 'Status'].map((k, i) => (
         { value: i, label: k }
@@ -97,7 +77,7 @@ class Statistics extends Component {
       ));
       this.categoriesData = this.getComplaintStatsData(data[0]);
       this.entitiesData = this.getEntitiesStatsData(data[1]);
-      this.rulesData = this.getRulesStatsData(data[2]);
+      this.rulesData = this.getRulesStatsData(data[2], data[4]);
       this.monthsData = this.getMonthsStatsData(data[3]);
       this.setState({
         data: data
@@ -145,11 +125,12 @@ class Statistics extends Component {
     return datas;
   };
 
-  getRulesStatsData = (data2) => {
+  getRulesStatsData = (data2, rules) => {
     let datas = [];
 
     let data = Object.values(data2);
-    let dataKeys = Object.keys(data2);
+    let counter = 1;
+    let dataKeys = Object.keys(data2).map(name => { let rule = rules.find(r => r.name === name); let id = (rule ? rule.id : 'gelöscht_' + counter++); return { name: name, id: id }; });
     datas.push({ data: this.sortData(data, dataKeys, true), header: ['ID', 'Anzahl'] });
     return datas;
   };
@@ -185,6 +166,7 @@ class Statistics extends Component {
       .then(data => {
         let oldData = this.state.data;
         oldData[0] = data;
+        this.categoriesData = this.getComplaintStatsData(data);
         this.setState({
           data: oldData
         });
@@ -198,6 +180,7 @@ class Statistics extends Component {
       .then(data => {
         let oldData = this.state.data;
         oldData[1] = data;
+        this.entitiesData = this.getEntitiesStatsData(data);
         this.setState({
           data: oldData
         });
@@ -211,6 +194,7 @@ class Statistics extends Component {
       .then(data => {
         let oldData = this.state.data;
         oldData[2] = data;
+        this.rulesData = this.getRulesStatsData(data, this.state.data[4]);
         this.setState({
           data: oldData
         });
@@ -225,6 +209,7 @@ class Statistics extends Component {
       .then(data => {
         let oldData = this.state.data;
         oldData[3] = data;
+        this.monthsData = this.getMonthsStatsData(data);
         this.setState({
           data: oldData
         });

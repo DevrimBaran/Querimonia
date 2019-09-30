@@ -201,6 +201,10 @@ const renderBarchartPercent = (target, data3, d3) => {
 const renderBarchart = (target, data3, d3) => {
   let data = data3.data.reverse();
 
+  if (data[0] && data[0].key.id) {
+    data = data3.data.map(d => { return { key: d.key.id, value: d.value }; });
+  }
+
   let width = 350;
   const barHeight = 32;
   var height = barHeight * data.length;
