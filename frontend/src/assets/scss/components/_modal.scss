@@ -114,7 +114,12 @@
         padding: 1.875rem;
         transform: translate3d(-50%, -50%, 0);
         background-color: $primaryBackgroundColor;
-        height: auto;
+        height: 15rem;
+        & > .row {
+            & > * {
+                padding: 0.625rem;
+            }
+        }
     }
     .modal-button {
         position: absolute;

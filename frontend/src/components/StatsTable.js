@@ -28,7 +28,9 @@ class StatsTable extends Component {
         </thead>
         <tbody>
           {data.data.map((d, i) => <tr key={i}>
-            {data.header[0] === 'ID' ? <td><Link to={'/components/' + d.key}>{d.key}</Link></td> : <td>{d.key}</td>}
+            {d.key.id && !String(d.key.id).startsWith('gelöscht')
+              ? <td><Link to={'/components/' + d.key.id}>{d.key.name + ' (' + d.key.id + ')'}</Link></td>
+              : <td>{d.key.id ? d.key.name + ' (' + d.key.id + ')' : d.key}</td>}
             <td>{Number(d.value).toFixed(2)}</td>
           </tr>)}
         </tbody>
