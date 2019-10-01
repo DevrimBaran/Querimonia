@@ -25,7 +25,7 @@ function Home () {
             <div className='header'>
               <img src={spotlight} className='spotlight' alt='logo' />
             </div>
-            <h1> Was kann Querimonia?</h1>
+            <h1 style={{ textAlign: 'center' }}> Was kann Querimonia?</h1>
             <br />
             <div className='boxWithMargin clearfix' style={{ maxWidth: '100%', padding: '2rem 0' }}>
               <div className='fiftyFifty'>
@@ -114,7 +114,7 @@ function Home () {
               </div>
             </div>
             <br />
-            <p>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
+            <p style={{ margin: 'auto' }}>&copy; 2019 Fraunhofer IAO, IAT Universität Stuttgart</p>
           </Content>
         </Row>
       </Block>
