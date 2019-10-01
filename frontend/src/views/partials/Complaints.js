@@ -119,7 +119,7 @@ function List (data, dispatch, helpers) {
       <td>
         <span>
           {data.sentiment.emotion.value !== 'Unbekannt' ? data.sentiment.emotion.value : '---'}<br />
-          {data.sentiment.tendency !== 0 ? <Sentiment tendency={data.sentiment.tendency} /> : '---'}
+          {data.sentiment.tendency !== -2 ? <Sentiment tendency={data.sentiment.tendency} /> : '---'}
         </span>
       </td>
       <td>{data.properties.map((properties) => properties.value !== 'Unbekannt' ? (properties.value + ' (' + Math.round((properties.probabilities[properties.value] * 100)) + '%)') : '---').join(', ')}</td>
@@ -256,9 +256,9 @@ function Single (active, dispatch, helpers) {
             }))
           },
           ['Sentiment',
-            active.sentiment.tendency !== 0 ? (
-              <InformationTag text={<Sentiment small tendency={active.sentiment.tendency !== 0 ? active.sentiment.tendency : null} />}
-                probabilities={active.sentiment.tendency} />) : '---', active.sentiment.tendency !== 0 ? (<Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten'icon={'fas fa-edit'} data-sentiment={active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'} onClick={(e) => EditDetailsModal.open(e)} />) : null],
+            active.sentiment.tendency !== -2 ? (
+              <InformationTag text={<Sentiment small tendency={active.sentiment.tendency} />}
+                probabilities={active.sentiment.tendency} />) : '---', active.sentiment.tendency !== -2 ? (<Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten'icon={'fas fa-edit'} data-sentiment={active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'} onClick={(e) => EditDetailsModal.open(e)} />) : null],
           ['Emotion',
           active.sentiment.emotion.value !== 'Unbekannt' ? (
               <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
