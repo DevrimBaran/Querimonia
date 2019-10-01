@@ -118,11 +118,11 @@ function List (data, dispatch, helpers) {
       <td>{data.preview}&hellip;</td>
       <td>
         <span>
-          {data.sentiment.emotion.value}<br />
-          <Sentiment tendency={data.sentiment.tendency} />
+          {data.sentiment.emotion.value !== 'Unbekannt' ? data.sentiment.emotion.value : '---'}<br />
+          {data.sentiment.tendency !== -2 ? <Sentiment tendency={data.sentiment.tendency} /> : '---'}
         </span>
       </td>
-      <td>{data.properties.map((properties) => properties.value + ' (' + Math.round((properties.probabilities[properties.value] * 100)) + '%)').join(', ')}</td>
+      <td>{data.properties.map((properties) => properties.value !== 'Unbekannt' ? (properties.value + ' (' + Math.round((properties.probabilities[properties.value] * 100)) + '%)') : '---').join(', ')}</td>
       <td>{localize(data.receiveDate)} {data.receiveTime}</td>
       <th>
         <Button title='Erneut auswerten' disabled={data.state === 'ANALYSING'}
@@ -244,25 +244,26 @@ function Single (active, dispatch, helpers) {
           {
             map: (cb) => (active.properties.map((property) => {
               return (
-                [property.name, <InformationTag text={property.value} probabilities={property.probabilities} />,
-                  <Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
-                    data-propertyindex={0} data-category={property.value} data-mode={'category'}
-                    onClick={(e) => EditDetailsModal.open(e)} />]
+                [property.name,
+                  property.value !== 'Unbekannt' ? (
+                    <InformationTag text={property.value} probabilities={property.probabilities} />) : '---',
+                    property.value !== 'Unbekannt' ? (<Button title='Kategorie bearbeiten' data-title='Kategorie bearbeiten' icon={'fas fa-edit'}
+                      data-propertyindex={0} data-category={property.value} data-mode={'category'}
+                      onClick={(e) => EditDetailsModal.open(e)} />) : null]
                   .map(cb)
               )
               ;
             }))
           },
           ['Sentiment',
-            <InformationTag text={<Sentiment small tendency={active.sentiment ? active.sentiment.tendency : null} />}
-              probabilities={active.sentiment.tendency} />,
-            <Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten' icon={'fas fa-edit'}
-              data-sentiment={
-                active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'}
-              onClick={(e) => EditDetailsModal.open(e)} />],
-          ['Emotion', <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
-            probabilities={active.sentiment.emotion.probabilities} />, <Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
-            active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />]
+            active.sentiment.tendency !== -2 ? (
+              <InformationTag text={<Sentiment small tendency={active.sentiment.tendency} />}
+                probabilities={active.sentiment.tendency} />) : '---', active.sentiment.tendency !== -2 ? (<Button title='Sentiment bearbeiten' data-title='Sentiment bearbeiten'icon={'fas fa-edit'} data-sentiment={active.sentiment ? active.sentiment.tendency : null} data-mode={'sentiment'} onClick={(e) => EditDetailsModal.open(e)} />) : null],
+          ['Emotion',
+          active.sentiment.emotion.value !== 'Unbekannt' ? (
+              <InformationTag text={(active.sentiment ? active.sentiment.emotion.value : 0)}
+                probabilities={active.sentiment.emotion.probabilities} />) : '---', active.sentiment.emotion.value !== 'Unbekannt' ? (<Button title='Emotion bearbeiten' data-title='Emotion bearbeiten' icon={'fas fa-edit'} data-emotion={
+                active.sentiment ? active.sentiment.emotion.value : 0} data-mode={'emotion'} onClick={(e) => EditDetailsModal.open(e)} />) : null]
         ]} />
         <Collapsible label='Entitäten'
           disabled={helpers.props.complaintStuff.entities && helpers.props.complaintStuff.entities.ids && helpers.props.complaintStuff.entities.ids.length === 0}
