@@ -16,7 +16,7 @@ public class SentimentAnalyzerFactory {
   public static SentimentAnalyzer getFromDefinition(SentimentAnalyzerDefinition definition) {
     switch (definition.getType()) {
       case NONE:
-        return complaintText -> 0.0;
+        return complaintText -> -2.0;
       case QUERIMONIA_SENTIMENT:
         return new FlaskSentiment();
       case MOCK:

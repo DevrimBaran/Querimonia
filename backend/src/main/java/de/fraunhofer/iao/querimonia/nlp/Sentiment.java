@@ -73,7 +73,7 @@ public class Sentiment implements Comparable<Sentiment> {
    * Returns the tendency of the complaint. The tendency is a value between -1 and 1. Positive
    * values mean positive sentiment, where greater values also imply a more positive sentiment.
    * Negative values mean negative sentiment, where smaller values also imply a more negative
-   * sentiment.
+   * sentiment. If the value is -2, then there is no sentiment value available.
    *
    * @return the tendency of the complaint.
    */
