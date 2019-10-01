@@ -35,6 +35,8 @@ class StatsDiagram extends Component {
 const renderBarchartSentiment = (target, data3, d3) => {
   let data = data3.data.reverse();
 
+  data = data.map(d => { return { key: shorterText(String(d.key)), value: d.value }; });
+
   let width = 350;
   const barHeight = 32;
   var height = barHeight * data.length;
@@ -114,6 +116,8 @@ const renderBarchartSentiment = (target, data3, d3) => {
 const renderBarchartPercent = (target, data3, d3) => {
   let data = data3.data;
   let colors = data3.colors;
+
+  data = data.map(d => { return { key: shorterText(String(d.key)), value: d.value }; });
 
   let width = 270;
   const barHeight = 32;
@@ -202,8 +206,9 @@ const renderBarchart = (target, data3, d3) => {
   let data = data3.data.reverse();
 
   if (data[0] && data[0].key.id) {
-    data = data3.data.map(d => { return { key: d.key.id, value: d.value }; });
+    data = data.map(d => { return { key: d.key.id, value: d.value }; });
   }
+  data = data.map(d => { return { key: shorterText(String(d.key)), value: d.value }; });
 
   let width = 350;
   const barHeight = 32;
@@ -260,6 +265,22 @@ const renderBarchart = (target, data3, d3) => {
   // add the y Axis
   svg.append('g')
     .call(d3.axisLeft(y));
+};
+/**
+ * If the text is too long, the last characters are removed and marked with "..."
+ * @param {*} text which is analyzed
+ */
+const shorterText = (text) => {
+  var canvas = shorterText.canvas || (shorterText.canvas = document.createElement('canvas'));
+  var context = canvas.getContext('2d');
+  context.font = '16px helvetica';
+  if (context.measureText(text).width <= 147) {
+    return text;
+  }
+  while (context.measureText(text).width > 134) {
+    text = text.substring(0, text.length - 1);
+  }
+  return text + '...';
 };
 
 export default StatsDiagram;
