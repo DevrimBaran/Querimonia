@@ -152,8 +152,10 @@ public class ComplaintFactory {
 
     // analysis
     var complaintProperties = new ArrayList<ComplaintProperty>();
-    for (ClassifierDefinition classifierDefinition : configuration
-        .getClassifiers()) {
+    List<ClassifierDefinition> classifiers = configuration
+        .getClassifiers();
+    for (int i = 0; i < classifiers.size(); i++) {
+      ClassifierDefinition classifierDefinition = classifiers.get(i);
       ComplaintProperty complaintProperty = classifyComplaint(complaintBuilder, complaintText,
           classifierDefinition);
       complaintProperties.add(complaintProperty);
