@@ -56,7 +56,7 @@ public class Sentiment implements Comparable<Sentiment> {
    * Fallback sentiment when no sentiment is available.
    */
   public static Sentiment getDefaultSentiment() {
-    return new Sentiment(ComplaintProperty.getDefaultProperty("Emotion"), 0.0);
+    return new Sentiment(ComplaintProperty.getDefaultProperty("Emotion"), -2.0);
   }
 
   /**
