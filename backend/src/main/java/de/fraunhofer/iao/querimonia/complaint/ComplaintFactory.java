@@ -151,14 +151,15 @@ public class ComplaintFactory {
     String complaintText = complaintBuilder.getText();
 
     // analysis
-    var complaintProperties = configuration
-        .getClassifiers()
-        .stream()
-        // note: parallel doesnt seem to improve performance
-        .parallel()
-        .map(classifierDefinition -> classifyComplaint(complaintBuilder, complaintText,
-            classifierDefinition))
-        .collect(Collectors.toList());
+    var complaintProperties = new ArrayList<ComplaintProperty>();
+    List<ClassifierDefinition> classifiers = configuration
+        .getClassifiers();
+    for (int i = 0; i < classifiers.size(); i++) {
+      ClassifierDefinition classifierDefinition = classifiers.get(i);
+      ComplaintProperty complaintProperty = classifyComplaint(complaintBuilder, complaintText,
+          classifierDefinition);
+      complaintProperties.add(complaintProperty);
+    }
 
     var emotionProperty = extractEmotion(complaintBuilder, emotionAnalyzerDefinition);
     extractEntities(complaintBuilder, configuration, keepUserInformation);

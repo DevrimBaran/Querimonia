@@ -24,6 +24,7 @@ public class KiKuKoClassifier extends KiKuKoContact implements Classifier {
    * categories.
    *
    * @param input the text which should be classified.
+   *
    * @return the type of the text.
    */
   @Override
