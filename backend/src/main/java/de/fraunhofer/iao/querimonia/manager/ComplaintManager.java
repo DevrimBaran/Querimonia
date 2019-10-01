@@ -744,7 +744,7 @@ public class ComplaintManager {
         .map(textInput -> {
           var complaint = uploadText(textInput, configId, Optional.empty());
           try {
-            Thread.sleep(10000);
+            Thread.sleep(5000);
           } catch (InterruptedException e) {
             logger.error("Safety pause between default complaints interrupted");
           }
