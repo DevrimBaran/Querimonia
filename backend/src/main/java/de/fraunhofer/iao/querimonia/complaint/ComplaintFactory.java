@@ -155,7 +155,6 @@ public class ComplaintFactory {
         .getClassifiers()
         .stream()
         // note: parallel doesnt seem to improve performance
-        .parallel()
         .map(classifierDefinition -> classifyComplaint(complaintBuilder, complaintText,
             classifierDefinition))
         .collect(Collectors.toList());
