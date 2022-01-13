@@ -9,7 +9,18 @@ Mensch-Maschine-Kollaboration mit selbstlernenden Textminingverfahren am Beispie
 ### Beschreibung:
 Querimonia ist eine webbasierte Plattform für die Erprobung und Anwendung von Verfahren zur Aufbereitung und Analyse von Text im Beschwerde-Management, die im Rahmen des Studienprojektes der Universität Stuttgart im Sommersemester 2019 entwickelt wurde. Das Studienprojekt, dass von Studenten der Studiengänge Softwaretechnik B.Sc. und Medieninformatik B.Sc. durchgeführt wurde, wird vom Fraunhofer-Institut für Arbeitswirtschaft und Organisation (IAO) und dem Institut für Arbeitswissenschaft und Technologiemanagement (IAT) der Universität Stuttgart geleitet.
 
-Detailliertere Informationen zum Projekt sind im Wiki von Querimonia nachzulesen.
+#### Das Webtool:
+
+##### HTTP Basic Auth
+
+user: admin
+password: QuerimoniaPass2019
+
+Produktion: https://querimonia.iao.fraunhofer.de/ , alternativ: https://beschwerdemanagement.iao.fraunhofer.de/
+
+Entwicklung:
+https://querimonia.iao.fraunhofer.de/dev/ , alternativ: https://beschwerdemanagement.iao.fraunhofer.de/dev/
+https://querimonia.iao.fraunhofer.de/mock/ , alternativ: https://beschwerdemanagement.iao.fraunhofer.de/mock/
 
 ##### Frontend:
 
