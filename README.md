@@ -44,7 +44,7 @@ https://querimonia.iao.fraunhofer.de/mock/ , alternativ: https://beschwerdemanag
 
 - Git installieren
 
-- Repository clonen (git clone https://stuprogit.iao.fraunhofer.de/mmk-bm/stupro-2019-mmk-bm)
+- Repository clonen (git clone git@github.com:DevrimBaran/Querimonia.git)
 
 - In Frontend Branch wechseln (git checkout frontend)
 
@@ -96,13 +96,13 @@ https://querimonia.iao.fraunhofer.de/mock/ , alternativ: https://beschwerdemanag
 
 - Datenbank “querimonia_db“ erstellen (create database “querimonia_db“)
 
-- Repository klonen (git clone https://stuprogit.iao.fraunhofer.de/mmk-bm/stupro-2019-mmk-bm)
+- Repository klonen (git clone git@github.com:DevrimBaran/Querimonia.git)
 
 - In Backend-Branch wechseln (git checkout backend)
 
 - Python:
 
-  * git clone https://stuprogit.iao.fraunhofer.de/mmk-bm/stupro-2019-mmk-bm.git
+  * git clone git@github.com:DevrimBaran/Querimonia.git
 
   * git checkout python_poc
 
@@ -128,7 +128,19 @@ https://querimonia.iao.fraunhofer.de/mock/ , alternativ: https://beschwerdemanag
 ### Description:
 Querimonia is a web-based platform for the testing and application of procedures for the preparation and analysis of text in complaint management, which was developed as part of the study project of the University of Stuttgart in the summer semester 2019. The study project, which was conducted by students of the Software Engineering B.Sc. and Media Informatics B.Sc. programs, is led by the Fraunhofer Institute for Industrial Engineering and Organization (IAO) and the Institute for Industrial Engineering and Technology Management (IAT) of the University of Stuttgart.
 
-More detailed information on the project can be found in the Querimonia Wiki.
+#### The Webtool:
+
+##### HTTP Basic Auth
+
+user: admin
+password: QuerimoniaPass2019
+
+Production: https://querimonia.iao.fraunhofer.de/ , alternative: https://beschwerdemanagement.iao.fraunhofer.de/
+
+Development:
+https://querimonia.iao.fraunhofer.de/dev/ , alternative: https://beschwerdemanagement.iao.fraunhofer.de/dev/
+https://querimonia.iao.fraunhofer.de/mock/ , alternative: https://beschwerdemanagement.iao.fraunhofer.de/mock/
+
 
 ##### Frontend:
 
@@ -152,7 +164,7 @@ More detailed information on the project can be found in the Querimonia Wiki.
 
 - Install Git
 
-- Clone repository (git clone https://stuprogit.iao.fraunhofer.de/mmk-bm/stupro-2019-mmk-bm)
+- Clone repository (git clone git@github.com:DevrimBaran/Querimonia.git)
 
 - Switch to frontend-branch (git checkout frontend)
 
@@ -204,13 +216,13 @@ More detailed information on the project can be found in the Querimonia Wiki.
 
 - Create database "querimonia_db" (create database "querimonia_db")
 
-- Clone repository (git clone https://stuprogit.iao.fraunhofer.de/mmk-bm/stupro-2019-mmk-bm)
+- Clone repository (git clone git@github.com:DevrimBaran/Querimonia.git)
 
 - Switch to backend-branch (git checkout backend)
 
 - Python:
 
-  * git clone https://stuprogit.iao.fraunhofer.de/mmk-bm/stupro-2019-mmk-bm.git
+  * git clone git@github.com:DevrimBaran/Querimonia.git
   * git checkout python_poc
   * cd python
   * pipenv install
